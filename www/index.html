@@ -287,6 +287,14 @@ html:has(#play.on){background:#0d0a08}
 #fabm button svg{width:19px;height:19px;flex:none;color:var(--acc)}
 @media(max-height:480px){#fab{width:48px;height:48px;bottom:10px;right:12px}#fabm{bottom:68px;right:12px}#items{padding-bottom:70px}}
 @media(prefers-reduced-motion:reduce){#fab,#fab svg,#fabm{transition:none!important}}
+
+/* ===== v31: clear (x) button inside search boxes. Shown only while the box has text (CSS :placeholder-shown, so it follows programmatic changes too) ===== */
+.sfield{position:relative;flex:1;min-width:0;display:flex}
+.sfield input{padding-right:40px}
+.sfield .clr{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:none;align-items:center;justify-content:center;color:var(--mut);background:rgba(255,255,255,.07);transition:background .15s,color .15s}
+.sfield .clr svg{width:11px;height:11px}
+.sfield input:not(:placeholder-shown)~.clr{display:flex}
+.sfield .clr:active{background:var(--ln);color:var(--fg)}
 </style>
 </head>
 <body>
@@ -296,7 +304,7 @@ html:has(#play.on){background:#0d0a08}
   <div id="amenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">My Categories</button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
-  <div class="sb"><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="pill" id="find">Find</button><button class="pill" id="goog">Google</button></div>
+  <div class="sb"><span class="sfield"><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button class="pill" id="find">Find</button><button class="pill" id="goog">Google</button></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
   <div id="items"></div>
   <div id="fbg"></div>
@@ -326,7 +334,7 @@ html:has(#play.on){background:#0d0a08}
     <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
   </div>
   <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
-    <div class="sb"><input id="dq" placeholder="Search…" aria-label="Search"><select class="fld" id="dcat" aria-label="Category"></select></div><div id="dItems"></div></div>
+    <div class="sb"><span class="sfield"><input id="dq" placeholder="Search…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><select class="fld" id="dcat" aria-label="Category"></select></div><div id="dItems"></div></div>
 </section>
 
 <section id="edit" class="v">
@@ -342,7 +350,7 @@ html:has(#play.on){background:#0d0a08}
 <div id="ctx"><div class="sheet" id="csheet"></div></div>
 <div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
-<div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"></div><div id="aItems"></div></div></div>
+<div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
 <div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><button class="lnk" id="atGuest" type="button">Not now, keep using the demo</button></div></div>
 <div id="note" role="status" aria-live="polite"></div>
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
@@ -615,7 +623,10 @@ function exitFs(){
   setTimeout(fixPad,80);
 }
 document.addEventListener('fullscreenchange',()=>setTimeout(fixPad,80)); /* Esc leaves browser fullscreen only; the app layout stays */
-function leavePlay(){setPlay(false);if(fs)exitFs();refresh();show('list')}
+function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';refresh();show('list')} /* Home returns to the list with an empty search */
+document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.querySelector('input');
+  b.addEventListener('pointerdown',e=>e.preventDefault()); /* keep focus (and the on-screen keyboard) on the box */
+  b.addEventListener('click',()=>{i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));i.focus()})});
 /* menu */
 const mn=$('#menu');
 function menuOpen(on){mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}

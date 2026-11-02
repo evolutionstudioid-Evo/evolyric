@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v31 – Search clear button, Home resets the search
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-31`; UI only)
+- A clear (x) button now sits inside the search boxes (Home, the song-list side panel and the Add Songs popup). It only shows while the box has text, clears it, refreshes the list and keeps the cursor/keyboard in the box.
+- Search on Home is emptied when you come back with the Home button after opening a song, so Home shows the full list again (the selected tab/category is kept).
+
 ## v30 – Home "+" button, Copy backup removed from Home
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-30`; UI only)
 - The v29 bottom dock is gone. New song and Import .txt now live behind a single round "+" button at the bottom-right of Home; tapping it opens a small popup with the two choices (tap outside or Esc closes it). The "+" turns into an "x" while open. The song list has extra bottom padding so the last song is never hidden behind the button.

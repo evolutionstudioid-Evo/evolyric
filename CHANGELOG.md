@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v30 – Home "+" button, Copy backup removed from Home
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-30`; UI only)
+- The v29 bottom dock is gone. New song and Import .txt now live behind a single round "+" button at the bottom-right of Home; tapping it opens a small popup with the two choices (tap outside or Esc closes it). The "+" turns into an "x" while open. The song list has extra bottom padding so the last song is never hidden behind the button.
+- "Copy backup" is no longer shown on Home. The code is kept as `copyBackup()` for a future Account > Backup & restore screen; paste-to-restore on Home is unchanged.
+- The "+" and its popup shrink slightly on short (landscape) screens.
+
 ## v29 – Home dock for New song / Import / Backup
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-29`; UI only, same handlers and data)
 - The three underlined text links at the bottom of Home are replaced by one dock: **New song** (primary, filled), **Import .txt** (secondary) and a small icon button for **Copy backup**.

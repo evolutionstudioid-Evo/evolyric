@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v28 – Remove the "Lyric Teleprompter" tagline
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-28`; UI only)
+- Removed the "LYRIC TELEPROMPTER" text under the EvoLyric wordmark on Home. Logo, font and gradient are unchanged.
+- Wordmark resized (27px -> 31px) and centred on the logo now that it is a single line.
+- Hidden metadata (page description, manifest description) still mentions "teleprompter"; it is not shown in the app.
+
 ## v27 – Solid status bar (no blur strip at the top)
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-27`; no data/cloud/auth changes)
 - `apple-mobile-web-app-status-bar-style`: `black-translucent` -> `black`. In the Home Screen app the status bar is now solid black and the page starts right below it, so iOS no longer draws a blurred strip over the top of the header (above the hamburger/three-dots and above the profile photo/logo on Home).

@@ -159,7 +159,7 @@ button,select,.it{touch-action:manipulation}
 #qtg.has b{transform:scale(1)}
 #qtg.bump{animation:qbump .5s var(--spring)}
 @keyframes qbump{35%{transform:scale(1.22)}}
-#qp{position:absolute;top:calc(var(--qt,100px) + 44px);right:8px;z-index:11;width:min(184px,46vw);max-height:max(84px,min(42%,250px,calc(100% - var(--qt,100px) - 44px - 190px)));display:flex;flex-direction:column;background:rgba(34,28,23,.95);border:1px solid var(--ln);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;opacity:0;transform:translateY(-8px) scale(.92);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .24s var(--ease),visibility 0s .24s}
+#qp{position:absolute;top:calc(var(--qt,100px) + 44px);right:8px;z-index:11;width:min(184px,46vw);max-height:max(84px,min(42%,250px,calc(100% - var(--qt,100px) - 44px - 120px)));display:flex;flex-direction:column;background:rgba(34,28,23,.95);border:1px solid var(--ln);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;opacity:0;transform:translateY(-8px) scale(.92);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .24s var(--ease),visibility 0s .24s}
 #qp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .2s var(--ease),transform .34s var(--spring),visibility 0s}
 .qh0{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 4px 11px;font:700 10.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut)}
 #qx{width:30px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--mut);border-radius:8px;transition:background .15s}#qx:active{background:var(--ln)}#qx svg{width:12px;height:12px;transition:transform .25s var(--ease)}
@@ -235,26 +235,25 @@ html:has(#play.on){background:#0d0a08}
 #play:not(.fs){position:fixed;inset:0;width:100%;height:100vh;height:100dvh;z-index:5;padding:env(safe-area-inset-top,0px) 0 0}
 #play:not(.fs) .ctl{padding-bottom:2px}
 
-/* ===== v21: floating Speed controller + Play/Pause (bottom right); old Speed/Size bar removed ===== */
-#spc{position:absolute;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);z-index:13;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
+/* ===== v22: compact floating Speed controller (bottom-right corner); tap on lyrics = play/pause ===== */
+#spc{position:absolute;right:max(4px,env(safe-area-inset-right,0px));bottom:max(3px,calc(env(safe-area-inset-bottom,0px) - 12px));z-index:13;pointer-events:none}
 #spc>*{pointer-events:auto}
-.spb2{display:flex;align-items:center;gap:8px}
-#spb,#ppb{width:46px;height:46px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(34,28,23,.78);border:1px solid var(--ln);color:var(--fg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.35);transition:transform .2s var(--spring),background-color .2s,border-color .2s,color .2s}
-#spb b{font:800 16px/1 'Bricolage Grotesque',system-ui,sans-serif;color:var(--acc)}
-#spb small{font:700 7.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:1.3px;text-transform:uppercase;color:var(--mut);margin-top:2px}
-#spb[aria-expanded=true]{border-color:var(--acc)}
-#ppb{background:var(--acc);border-color:var(--acc);color:#15110e}
-#spb:active,#ppb:active{transform:scale(.92)}
-#spp{width:min(262px,calc(100vw - 20px));padding:10px 12px 8px;background:rgba(34,28,23,.94);border:1px solid var(--ln);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.5);transform-origin:bottom right;opacity:0;transform:translateY(8px) scale(.94);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .26s var(--ease),visibility 0s .26s}
-#spp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .2s var(--ease),transform .34s var(--spring),visibility 0s}
-.sph{display:flex;align-items:baseline;justify-content:space-between;font:700 10.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
-.sph b{font:800 22px/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:0;color:var(--acc)}
-.spr{display:flex;align-items:center;gap:8px}
-#spp .step{width:40px;height:40px;flex:0 0 40px;border-radius:12px;font-size:22px}
-#spp input[type=range]{flex:1;min-width:0;height:34px;margin:0;touch-action:none;transition:transform .2s var(--ease)}
-#spp.act input[type=range]{transform:scaleY(1.5)}
-.spm{display:flex;justify-content:space-between;padding:0 50px;font-size:10.5px;color:var(--mut)}
-@media(prefers-reduced-motion:reduce){#spb,#ppb,#spp,#spp input{transition:none!important}}
+#spb{position:relative;width:40px;height:40px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(34,28,23,.62);border:1px solid rgba(255,255,255,.12);color:var(--fg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:.85;transition:transform .2s var(--spring),opacity .2s}
+#spb b{font:800 14px/1 'Bricolage Grotesque',system-ui,sans-serif;color:var(--acc)}
+#spb small{font:700 6.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);margin-top:2px}
+#spb:active{transform:scale(.92)}
+#spb.hid{opacity:0;transform:scale(.8);pointer-events:none}
+#spp{position:absolute;right:0;bottom:0;width:min(196px,calc(100vw - 12px));padding:5px 8px 3px;background:rgba(34,28,23,.78);border:1px solid rgba(255,255,255,.1);border-radius:14px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 8px 22px rgba(0,0,0,.4);transform-origin:bottom right;opacity:0;transform:scale(.9);visibility:hidden;pointer-events:none;transition:opacity .16s var(--ease),transform .24s var(--ease),visibility 0s .24s}
+#spp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .18s var(--ease),transform .3s var(--spring),visibility 0s}
+.sph{display:flex;align-items:center;gap:6px;font:700 9px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut)}
+.sph b{font:800 15px/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:0;color:var(--acc)}
+#spx{margin-left:auto;width:30px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--mut);border-radius:8px}#spx:active{background:var(--ln)}
+.spr{display:flex;align-items:center;gap:5px}
+#spp .step{width:34px;height:34px;flex:0 0 34px;border-radius:10px;font-size:20px;background:rgba(13,10,8,.45)}
+#spp input[type=range]{flex:1;min-width:0;height:30px;margin:0;touch-action:none;transition:transform .2s var(--ease)}
+#spp.act input[type=range]{transform:scaleY(1.45)}
+.spm{display:flex;justify-content:space-between;padding:0 42px 0 42px;font-size:9px;line-height:1;color:var(--mut);margin-top:-2px}
+@media(prefers-reduced-motion:reduce){#spb,#spp,#spp input{transition:none!important}}
 </style>
 </head>
 <body>
@@ -286,8 +285,8 @@ html:has(#play.on){background:#0d0a08}
   <div id="qpop" role="menu"><h4 id="qpt"></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
   <button id="fsx" aria-label="Exit fullscreen">✕</button>
   <div id="spc">
-    <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>Min 1</span><span>Max 25</span></div></div>
-    <div class="spb2"><button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button><button id="ppb" type="button" aria-label="Play"><svg id="ppi" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button></div>
+    <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
+    <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
   </div>
   <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
     <div class="sb"><input id="dq" placeholder="Search…" aria-label="Search"><select class="fld" id="dcat" aria-label="Category"></select></div><div id="dItems"></div></div>
@@ -506,7 +505,7 @@ const txtEl=$('#txt');txtEl.style.willChange='transform';
 function setPlay(on){
   on=!!on;
   if(on===playing)return;
-  playing=on;updPP();
+  playing=on;
   if(on){
     const L=$('#lyr'),rl=L.scrollTop+L.clientHeight*.35+3;
     waiting=false;skip.clear();
@@ -516,11 +515,29 @@ function setPlay(on){
   }else{
     cancelAnimationFrame(playRaf);playRaf=0;
     if(txtEl.style.transform){const L=$('#lyr');L.scrollTop=Math.round(pos);txtEl.style.transform='';pos=L.scrollTop}
-    wl?.release?.().catch(()=>{});wl=null;
   }
 }
-function acquireWL(){navigator.wakeLock?.request('screen').then(l=>{wl=l;l.addEventListener('release',()=>{if(wl===l)wl=null})}).catch(()=>{})}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&playing&&!wl)acquireWL()});
+/* ---------- v22: keep the screen on the whole time the app is open (independent of play/pause) ----------
+   1) Screen Wake Lock API, re-acquired whenever the browser drops it (tab hidden, fullscreen change, ...).
+   2) Fallback for iOS/PWA builds without a working Wake Lock: a 1.6 KB silent looping video (NoSleep technique),
+      started from the first touch. It has no audio track, so it does not take over audio from other apps. */
+let nsV=null,nsOn=0,needNs=0;
+const NSRC='data:video/mp4;base64,AAAAJGZ0eXBpc29tAAACAGlzb21pc282aXNvMmF2YzFtcDQxAAAC5W1vb3YAAABsbXZoZAAAAAAAAAAAAAAAAAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAHndHJhawAAAFx0a2hkAAAAAwAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAQAAAAEAAAAAABg21kaWEAAAAgbWRoZAAAAAAAAAAAAAAAAAAAKAAAAAAAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAS5taW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAADuc3RibAAAAKJzdHNkAAAAAAAAAAEAAACSYXZjMQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAQABAASAAAAEgAAAAAAAAAARVMYXZjNjAuMzEuMTAyIGxpYngyNjQAAAAAAAAAAAAAABj//wAAACxhdmNDAULACv/hABVnQsAK2nsBEAAAAwAQAAADAKDxImoBAARozg/IAAAAEHBhc3AAAAABAAAAAQAAABBzdHRzAAAAAAAAAAAAAAAQc3RzYwAAAAAAAAAAAAAAFHN0c3oAAAAAAAAAAAAAAAAAAAAQc3RjbwAAAAAAAAAAAAAAKG12ZXgAAAAgdHJleAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAGJ1ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAlqXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNjAuMTYuMTAwAAAAhG1vb2YAAAAQbWZoZAAAAAAAAAABAAAAbHRyYWYAAAAkdGZoZAAAADkAAAABAAAAAAAAAwkAAAgAAAAChQEBAAAAAAAUdGZkdAEAAAAAAAAAAAAAAAAAACx0cnVuAAACBQAAAAUAAACMAgAAAAAAAoUAAAAJAAAACQAAAAkAAAAJAAACsW1kYXQAAAJvBgX//2vcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY0IHIzMTA4IDMxZTE5ZjkgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDIzIC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MCByZWY9MSBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgxOjB4MTExIG1lPWhleCBzdWJtZT0yIHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTAgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0wIDh4OGRjdD0wIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PTAgdGhyZWFkcz0xIGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAga2V5aW50PTI1MCBrZXlpbnRfbWluPTUgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD0xMCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAAOZYiEBH///w9FAAEqv4AAAAAFQZogEfUAAAAFQZpAEfUAAAAFQZpgEPUAAAAFQZqAP9QAAABDbWZyYQAAACt0ZnJhAQAAAAAAAAEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAwkBAQEAAAAQbWZybwAAAAAAAABD';
+function nsStart(){
+  try{
+    if(!nsV){nsV=document.createElement('video');nsV.setAttribute('playsinline','');nsV.setAttribute('webkit-playsinline','');nsV.muted=true;nsV.loop=true;nsV.setAttribute('aria-hidden','true');nsV.tabIndex=-1;
+      nsV.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:.01;pointer-events:none;z-index:-1';nsV.src=NSRC;document.body.append(nsV)}
+    const pr=nsV.play();if(pr&&pr.then)pr.then(()=>{nsOn=1}).catch(()=>{nsOn=0});else nsOn=1}catch(e){nsOn=0}}
+function acquireWL(){
+  if(document.hidden||wl)return;
+  if(!navigator.wakeLock||!navigator.wakeLock.request){needNs=1;if(!nsOn)nsStart();return}
+  navigator.wakeLock.request('screen').then(l=>{wl=l;needNs=0;l.addEventListener('release',()=>{if(wl===l)wl=null})}).catch(()=>{needNs=1;if(!nsOn)nsStart()})}
+const keepAwake=()=>{if(document.hidden)return;if(!wl)acquireWL();if(needNs&&(!nsOn||(nsV&&nsV.paused)))nsStart()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){nsOn=nsV&&!nsV.paused?1:0;keepAwake()}});
+['pointerdown','touchend','click','keydown'].forEach(v=>addEventListener(v,keepAwake,{passive:true,capture:true}));
+['focus','pageshow','online','fullscreenchange'].forEach(v=>addEventListener(v,keepAwake));
+setInterval(keepAwake,15000);
+keepAwake();
 function tick(t){
   if(!playing)return;
   if(!last)last=t;
@@ -584,19 +601,15 @@ $('#dBack').onclick=()=>{drawer(false);leavePlay()};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#qpop').classList.contains('on'))qpClose();else drawer(false)}});
 
 
-/* ---------- v21: floating Speed controller + Play/Pause ---------- */
+/* ---------- v22: compact Speed controller ---------- */
 let spT=0,spDown=0;
-function updPP(){const b=$('#ppb'),i=$('#ppi');if(!b)return;b.setAttribute('aria-label',playing?'Pause':'Play');
-  i.innerHTML=playing?'<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>':'<path d="M8 5.5v13l11-6.5z"/>'}
-function spOpen(on){const p=$('#spp');if(on==null)on=!p.classList.contains('open');p.classList.toggle('open',on);$('#spb').setAttribute('aria-expanded',on?'true':'false');if(!on)p.classList.remove('act');spBump()}
-function spBump(){clearTimeout(spT);if($('#spp').classList.contains('open'))spT=setTimeout(()=>{if(spDown)spBump();else spOpen(false)},3500)} /* back to the compact button when idle */
-$('#spb').onclick=()=>spOpen();
-$('#ppb').onclick=()=>{waiting=false;setPlay(!playing)};
+function spOpen(on){const p=$('#spp'),b=$('#spb');if(on==null)on=!p.classList.contains('open');p.classList.toggle('open',on);b.classList.toggle('hid',on);b.setAttribute('aria-expanded',on?'true':'false');if(!on)p.classList.remove('act');spBump()}
+function spBump(){clearTimeout(spT);if($('#spp').classList.contains('open'))spT=setTimeout(()=>{if(spDown)spBump();else spOpen(false)},3000)} /* idle -> back to the small corner button */
+$('#spb').onclick=()=>spOpen();$('#spx').onclick=()=>spOpen(false);
 $('#spp').addEventListener('pointerdown',spBump);$('#spp').addEventListener('click',spBump);
 $('#sp').addEventListener('pointerdown',()=>{spDown=1;$('#spp').classList.add('act')});
 ['pointerup','pointercancel'].forEach(v=>$('#sp').addEventListener(v,()=>{spDown=0;$('#spp').classList.remove('act');spBump()}));
 $('#sp').addEventListener('input',spBump);
-updPP();
 /* ---------- v17: Song Queue (device-local, separate from the library) ---------- */
 const QBASE='evolyric-queue-v1',RM=()=>matchMedia('(prefers-reduced-motion:reduce)').matches,EASE='cubic-bezier(.22,1,.36,1)';
 let queue=[],qKey='',qFresh=null,nexting=0,endIO=null,endVis=false,qpS=null;

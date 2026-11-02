@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v22 – Compact Speed controller, tap-only play/pause, screen always on
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-22`; no database / cloud / auth changes)
+- Speed controller made much smaller and moved into the bottom-right corner (4px from the right edge, ~3px from the bottom): closed = 40px button; open = a 196x71px translucent panel that replaces the button in the corner (value, -/slider/+, min/max, collapse chevron). It still collapses by itself after ~3 s idle.
+- Play/Pause button removed. Play/pause is only by tapping the lyric area (unchanged gesture).
+- Queue panel height rule adjusted to the smaller Speed panel.
+
+Added
+- Screen always on while the app is open, no matter whether auto-scroll is playing or paused (the old code only held the lock while playing and released it on pause):
+  - Screen Wake Lock API is requested on load and re-acquired whenever the browser drops it (tab returns, fullscreen change, touch, every 15 s check).
+  - Fallback for iOS/PWA builds where the API is missing or refused: a 1.6 KB silent looping video (NoSleep technique), started from the first touch. It has no audio track.
+  - The lock is automatically released by the OS when the app goes to the background or the device is locked manually; it is taken again on return.
+
 ## v21 – Direct Fullscreen performance mode
 Changed (all in `www/index.html`; no database, cloud-sync, auth, Supabase or Cloudflare changes)
 - Selecting a song (library, sidebar Open, Next Song) opens it straight in fullscreen lyrics mode: starts at the top, auto-scroll always PAUSED (even if the previous song was playing). Speed and font stay saved per song.

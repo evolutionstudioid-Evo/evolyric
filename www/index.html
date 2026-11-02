@@ -268,6 +268,12 @@ html:has(#play.on){background:#0d0a08}
 /* right-hand floating controls share one centre line (30px from the edge) */
 #qtg{right:12px}#qp{right:10px}#nxt{right:9px}
 @media(prefers-reduced-motion:reduce){#menu{transition:none!important}}
+
+/* ===== v24: floating buttons (three-dots, queue, speed) nearly vanish (~8%) while auto-scroll runs; 100% when paused, pressed or their panel/menu is open. The hamburger is unchanged. ===== */
+#play #mn,#play #qtg,#play #spb:not(.hid){opacity:1;transition:opacity .45s ease,transform .25s var(--spring),color .2s,border-color .2s,background-color .2s}
+#play.run #mn,#play.run #qtg,#play.run #spb:not(.hid){opacity:.08}
+#play.run #mn[aria-expanded=true],#play.run #qtg[aria-expanded=true],#play.run #mn:active,#play.run #qtg:active,#play.run #spb:active,#play.run #mn:focus-visible,#play.run #qtg:focus-visible,#play.run #spb:focus-visible{opacity:1;transition-duration:.15s}
+@media(prefers-reduced-motion:reduce){#play #mn,#play #qtg,#play #spb{transition:none!important}}
 </style>
 </head>
 <body>
@@ -518,7 +524,7 @@ const txtEl=$('#txt');txtEl.style.willChange='transform';
 function setPlay(on){
   on=!!on;
   if(on===playing)return;
-  playing=on;
+  playing=on;$('#play').classList.toggle('run',on);
   if(on){
     const L=$('#lyr'),rl=L.scrollTop+L.clientHeight*.35+3;
     waiting=false;skip.clear();

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v27 – Solid status bar (no blur strip at the top)
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-27`; no data/cloud/auth changes)
+- `apple-mobile-web-app-status-bar-style`: `black-translucent` -> `black`. In the Home Screen app the status bar is now solid black and the page starts right below it, so iOS no longer draws a blurred strip over the top of the header (above the hamburger/three-dots and above the profile photo/logo on Home).
+- To undo, set the meta back to `black-translucent`.
+- Note: iOS may only apply this after fully closing and reopening the app; if it does not, the Home Screen icon must be re-added (library data is kept in the cloud only for signed-in accounts, so back up first).
+
 ## v26 – Restore the top fade
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-26`; UI only)
 - Restored the soft fade at the top edge of the lyric area (the blur-like fade above the text) exactly as in v24. This reverts the v25 change.

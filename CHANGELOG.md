@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v26 – Restore the top fade
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-26`; UI only)
+- Restored the soft fade at the top edge of the lyric area (the blur-like fade above the text) exactly as in v24. This reverts the v25 change.
+
 ## v25 – Remove top fade
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-25`; UI only)
 - Removed the gradient fade at the top edge of the lyric area (the area under the header). Lyrics now stay fully opaque up to the header. The soft fade at the bottom edge is kept.

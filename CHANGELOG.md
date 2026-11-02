@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v29 – Home dock for New song / Import / Backup
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-29`; UI only, same handlers and data)
+- The three underlined text links at the bottom of Home are replaced by one dock: **New song** (primary, filled), **Import .txt** (secondary) and a small icon button for **Copy backup**.
+- Copy backup is kept (it is the only manual backup/restore: it copies all songs + categories; pasting that text on Home restores them). It now confirms with a toast and a brief highlight instead of changing its label.
+- The dock slims down automatically on short (landscape) screens so the song list keeps its space.
+
 ## v28 – Remove the "Lyric Teleprompter" tagline
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-28`; UI only)
 - Removed the "LYRIC TELEPROMPTER" text under the EvoLyric wordmark on Home. Logo, font and gradient are unchanged.

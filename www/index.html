@@ -197,6 +197,7 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.end{height:2
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
 
 <script src="config.js"></script>
+<script src="cloud.js"></script>
 <script>
 const K='evolyric-v1',$=s=>document.querySelector(s);
 const SPEED_BONUS=3,BOOST1=15+SPEED_BONUS,BOOST2=20+SPEED_BONUS; /* every speed value runs +3 faster */
@@ -206,10 +207,13 @@ const E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=nul
 const SAMPLE={id:'s1',title:'Contoh Lagu',artist:'EvoLyric',speed:5,font:32,lyrics:
 '[Intro]\n(petik pelan)\n\n[Verse 1]\nLampu panggung mulai menyala\nSuara kita mengisi ruang\nSatu per satu baris mengalir\nTanpa kertas yang berserakan\n\n[Chorus]\nGulir saja, biar lirik berjalan\nKita bernyanyi sampai selesai\n\n[Male 1]\nBagian ini milik dia\n\n[Female 1]\nBagian ini milik aku\n\n[All]\nSatu suara, satu panggung\n\n[Interlude]\n(solo gitar)\n\n[Verse 2]\nSetelah lagu ini usai\nTepuk tangan jadi penutup\n\n[Rit]\nPelan… dan selesai'};
 let songs=[],cur=null,ed=null,playing=false,boostSp=0,frac=0,last=0,fs=false,wl=null,skip=new Set(),g=null,delArm=0,t0,waiting=false,lastT=0,startEl=null,lastA=null,cats=[];
-try{const r=localStorage.getItem(K);songs=r?JSON.parse(r):[SAMPLE];if(!Array.isArray(songs))throw 0}catch(e){try{localStorage.setItem(K+'-corrupt',localStorage.getItem(K)||'')}catch(_){}songs=[SAMPLE]}
+const SAMPLE_J=JSON.stringify(SAMPLE);let LK=K,LKC='evolyric-cats-v1'; /* active storage keys: guest = K/KC, signed-in = per-account cache (see cloud.js) */
+try{const h=JSON.parse(localStorage.getItem('evolyric-auth-hint')||'null');if(h&&h.id&&localStorage.getItem(K+':u:'+h.id)!=null){LK=K+':u:'+h.id;LKC='evolyric-cats-v1:u:'+h.id}}catch(e){}
+try{const r=localStorage.getItem(LK);songs=r?JSON.parse(r):[SAMPLE];if(!Array.isArray(songs))throw 0}catch(e){try{localStorage.setItem(LK+'-corrupt',localStorage.getItem(LK)||'')}catch(_){}songs=[SAMPLE]}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}
 let saveBad=0;const KC='evolyric-cats-v1';
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(songs));localStorage.setItem(KC,JSON.stringify(cats));if(saveBad){saveBad=0;$('#svw').hidden=true}}catch(e){saveBad=1;$('#svw').hidden=false}};
+const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify(songs));localStorage.setItem(LKC,JSON.stringify(cats));if(saveBad){saveBad=0;$('#svw').hidden=true}}catch(e){saveBad=1;$('#svw').hidden=false}};
+const save=()=>{saveLocal();if(window.Cloud)Cloud.touch()};
 function toast(){}
 let noteT;function note(m,bad){const n=$('#note');n.textContent=m;n.classList.toggle('bad',!!bad);n.classList.add('on');clearTimeout(noteT);noteT=setTimeout(()=>n.classList.remove('on'),2400)}
 /* ---------- Categories data: category -> list of master song ids (songs are never copied) ---------- */
@@ -217,8 +221,8 @@ const cid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const cname=v=>String(v||'').replace(/\s+/g,' ').trim();
 const byName=(a,b)=>a.name.localeCompare(b.name,'id');
 (function loadCats(){
-  let raw=null;try{raw=localStorage.getItem(KC)}catch(e){}
-  if(raw){try{const a=JSON.parse(raw);if(!Array.isArray(a))throw 0;cats=a.filter(c=>c&&c.id&&c.name).map(c=>({id:c.id,name:c.name,ids:Array.isArray(c.ids)?c.ids:[]}))}catch(e){try{localStorage.setItem(KC+'-corrupt',raw)}catch(_){}cats=[]}}
+  let raw=null;try{raw=localStorage.getItem(LKC)}catch(e){}
+  if(raw){try{const a=JSON.parse(raw);if(!Array.isArray(a))throw 0;cats=a.filter(c=>c&&c.id&&c.name).map(c=>({id:c.id,name:c.name,ids:Array.isArray(c.ids)?c.ids:[]}))}catch(e){try{localStorage.setItem(LKC+'-corrupt',raw)}catch(_){}cats=[]}}
   else{const f=songs.filter(x=>x.fav).map(x=>x.id);if(f.length){cats=[{id:cid(),name:'Favorites',ids:f}];save()}} /* one-time: old star flags become a normal category */
   const ok=new Set(songs.map(x=>x.id));cats.forEach(c=>c.ids=[...new Set(c.ids)].filter(i=>ok.has(i)))})();
 function nameErr(n,except){if(!n)return'Enter a category name';if(n.length>30)return'Maximum 30 characters';if(cats.some(c=>c.id!==except&&c.name.toLowerCase()===n.toLowerCase()))return'That name already exists';return''}
@@ -231,7 +235,7 @@ function press(b,tap,hold){let tm,lp=0;const en=()=>clearTimeout(tm);
   ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,en));
   b.addEventListener('contextmenu',e=>{e.preventDefault();en();hold()});
   b.onclick=()=>{if(lp){lp=0;return}tap()}}
-const show=v=>document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));
+const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle()};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185',all:'#e7e5e4',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
 const HC={r:'rgba(255,69,58,.45)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)'};
@@ -599,7 +603,7 @@ function renderAuth(){
   else{const b=E('button','avb');b.id='avb';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','Account menu: '+u.name);b.append(avatarEl(u));b.onclick=e=>{e.stopPropagation();toggleMenu()};box.append(b)}
   if(!u)closeMenu()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
-  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));h.append(avatarEl(u),t);m.append(h);
+  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
   const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&o.soon){b.disabled=true;b.append(E('em','','Soon'))}else b.onclick=f;m.append(b)};
   it('Profile',null,{soon:1});
   it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
@@ -635,19 +639,40 @@ function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
   return sb}).catch(e=>{clientP=null;throw e}))}
 function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);renderAuth();
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
-  if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n),0)}}
+  if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n),0)}
+  if(window.Cloud){if(n)Cloud.signedIn(n);else Cloud.signedOut()}}
 async function syncProfile(n){ /* refresh display fields only; row + email are created/owned by the DB trigger, identity comes from the JWT via RLS */
   try{const{error}=await sb.from('profiles').update({display_name:n.name,avatar_url:n.avatar||null}).eq('id',n.id);if(error)console.warn('profile sync:',error.message)}catch(e){console.warn('profile sync failed',e)}}
 async function signOut(){closeMenu();const had=user;setHint(null);user=null;profSynced=null;renderAuth();
-  try{if(sb)await sb.auth.signOut();note('Signed out')}catch(e){note('Signed out on this device')}}
+  try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
+/* ---------- Cloud sync hooks (logic lives in cloud.js) ---------- */
+function readLib(u){const a=u?K+':u:'+u:K,b=u?KC+':u:'+u:KC;let ex=false,s=[JSON.parse(SAMPLE_J)],c=[];
+  try{const r=localStorage.getItem(a);if(r!=null){ex=true;const p=JSON.parse(r);if(Array.isArray(p))s=p.filter(x=>x&&x.id)}}catch(e){}
+  try{const r=localStorage.getItem(b);if(r){const p=JSON.parse(r);if(Array.isArray(p))c=p.filter(x=>x&&x.id&&x.name).map(x=>({...x,ids:Array.isArray(x.ids)?x.ids:[]}))}}catch(e){}
+  const ok=new Set(s.map(x=>x.id));c.forEach(x=>x.ids=[...new Set(x.ids)].filter(i=>ok.has(i)));return{songs:s,cats:c,exists:ex}}
+if(window.Cloud)Cloud.init({
+  client:()=>ensureClient(),
+  get:()=>({songs,cats}),
+  put:(s,c)=>{songs=s;cats=c},
+  saveLocal,
+  render:()=>refresh(),
+  busy:()=>!$('#list').classList.contains('on'),
+  notify:note,
+  readLib,
+  isSample:g=>JSON.stringify(g)===SAMPLE_J,
+  useKeys:u=>{LK=u?K+':u:'+u:K;LKC=u?KC+':u:'+u:KC},
+  activeUid:()=>LK===K?null:LK.slice(K.length+3),
+  dropUser:u=>{try{localStorage.removeItem(K+':u:'+u);localStorage.removeItem(KC+':u:'+u)}catch(e){}},
+  onStatus:()=>{const b=document.querySelector('#amenu .cst');if(b)b.textContent=Cloud.statusText()}
+});
 async function initAuth(){
   /* surface OAuth errors returned in the URL */
   const qs=new URLSearchParams(location.search),hs=new URLSearchParams(location.hash.replace(/^#/,'')),er=qs.get('error_description')||hs.get('error_description');
   if(er){try{history.replaceState(null,'',location.pathname)}catch(e){}}
   renderAuth();
-  if(!AUTH_ON){setHint(null);if(er)openAuth(er);return}
+  if(!AUTH_ON){setHint(null);if(window.Cloud)Cloud.signedOut();if(er)openAuth(er);return}
   try{await ensureClient();const{data,error}=await sb.auth.getSession();if(error)throw error;applyUser(data.session?data.session.user:null)}
-  catch(e){authPending=false;if(!navigator.onLine){renderAuth()}else{setHint(null);user=null;renderAuth()}}
+  catch(e){authPending=false;if(!navigator.onLine){renderAuth()}else{setHint(null);user=null;renderAuth();if(window.Cloud)Cloud.signedOut()}}
   if(er)openAuth(er)}
 initAuth();
 refresh();

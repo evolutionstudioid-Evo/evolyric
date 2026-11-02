@@ -42,7 +42,6 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .it{display:block;width:100%;text-align:left;padding:12px 4px;border-bottom:1px solid var(--ln);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .it b{display:flex;justify-content:space-between;gap:8px;font-size:19px;font-weight:400}.key{color:var(--acc);font-size:15px;white-space:nowrap}.it small,.mut{color:var(--mut)}
 .lk{display:flex;gap:18px;padding:12px;flex-wrap:wrap}.lk button{color:var(--acc);text-decoration:underline;padding:8px 0}
-#ptitle{flex:1;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:'Bricolage Grotesque',sans-serif;font-size:18px}
 #secs{position:relative;display:flex;gap:6px;overflow-x:auto;padding:0 12px 8px;min-height:40px}
 .chip{flex:none;padding:6px 12px;border-radius:20px;background:var(--card);border:1px solid var(--ln);font-weight:700;opacity:.7}
 .chip.on{background:#2b231c;border-color:currentColor;opacity:1}
@@ -56,7 +55,6 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #menu,#drawer{position:absolute;z-index:20;background:var(--card);border:1px solid var(--ln);border-radius:14px;display:none}
 #menu{right:10px;top:56px;padding:6px;min-width:190px}#menu button{display:block;width:100%;text-align:left;padding:12px}
 #drawer{display:flex;flex-direction:column;top:0;bottom:0;left:0;width:min(86vw,340px);border-radius:0 16px 16px 0;z-index:30;transform:translateX(-102%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s .3s}#drawer.open{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s}#scrim{position:absolute;inset:0;z-index:25;background:#000;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}#scrim.open{opacity:.45;visibility:visible;transition:opacity .3s,visibility 0s}@media(prefers-reduced-motion:reduce){#drawer,#scrim{transition:none!important}}
-#fsx{display:none;position:absolute;top:8px;right:8px;z-index:15;opacity:.35;width:40px;height:40px;border-radius:50%;background:var(--card)}
 
 #edit .sb{padding-bottom:6px}#edit .sb .fld{padding:5px 10px;line-height:1.25;border-radius:10px}
 .ed{display:flex;flex:1;min-height:0;gap:8px;padding:0 10px 10px}
@@ -117,19 +115,15 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.end{height:2
 /* Stable immersive fullscreen: keep original DOM hierarchy so every control remains clickable. */
 #play.fs{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;min-height:0;z-index:1000;display:flex;flex-direction:column;overflow:hidden;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
 #play.fs .hd{position:relative;z-index:10;min-height:44px;height:44px;padding:2px 10px;flex:none}
-#play.fs #ptitle,#play.fs #mn,#play.fs #fsb{display:none!important}
-#play.fs #dr{display:flex!important;align-items:center;justify-content:center;width:38px;height:38px}
-#play.fs #fsx{display:flex;align-items:center;justify-content:center;position:absolute;top:calc(env(safe-area-inset-top,0px) + 5px);right:10px;z-index:70;width:34px;height:34px;border-radius:50%;background:rgba(34,28,23,.72);color:var(--fg);opacity:.65;font-size:21px}
+
 #play.fs #secs{position:relative;z-index:8;flex:none;height:40px;min-height:40px;padding:0 10px 5px;overflow-x:auto}
 #play.fs #lyr{display:block;flex:1 1 auto;min-height:0;height:auto;overflow-y:auto;padding:0 16px 0;margin:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 18px,#000 calc(100% - 26px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 18px,#000 calc(100% - 26px),transparent 100%)}
 #play.fs #txt{padding-bottom:0!important}
 #play.fs .ctl{display:none!important}
 #play.fs #drawer{position:absolute;top:0;bottom:0;z-index:60;padding-top:env(safe-area-inset-top,0px)}
 #play.fs #scrim{position:absolute;z-index:55}
-#play.fs #menu{display:none!important}
 #play.fs #drawer .hd{height:auto;min-height:54px;padding:8px 10px}
 #play.fs #drawer #dBack{min-height:42px}
-#play.fs #fsx:active{opacity:1}
 #lyr{cursor:pointer}
 .rangeCtl{display:flex;align-items:center;gap:5px;flex:1;min-width:0}
 .rangeCtl label{flex:1;display:flex;flex-direction:column;font-size:12px;color:var(--mut);min-width:0}
@@ -232,8 +226,6 @@ button,select,.it{touch-action:manipulation}
 
 /* ===== v20: play view is pinned to the whole screen (same technique as fullscreen), so it always reaches the bottom edge ===== */
 html:has(#play.on){background:#0d0a08}
-#play:not(.fs){position:fixed;inset:0;width:100%;height:100vh;height:100dvh;z-index:5;padding:env(safe-area-inset-top,0px) 0 0}
-#play:not(.fs) .ctl{padding-bottom:2px}
 
 /* ===== v22: compact floating Speed controller (bottom-right corner); tap on lyrics = play/pause ===== */
 #spc{position:absolute;right:max(4px,env(safe-area-inset-right,0px));bottom:max(3px,calc(env(safe-area-inset-bottom,0px) - 12px));z-index:13;pointer-events:none}
@@ -254,6 +246,28 @@ html:has(#play.on){background:#0d0a08}
 #spp.act input[type=range]{transform:scaleY(1.45)}
 .spm{display:flex;justify-content:space-between;padding:0 42px 0 42px;font-size:9px;line-height:1;color:var(--mut);margin-top:-2px}
 @media(prefers-reduced-motion:reduce){#spb,#spp,#spp input{transition:none!important}}
+
+/* ===== v23: single fullscreen view. Header = menu (left) + three-dots (right); one consistent size system ===== */
+#play.fs:not(.on){display:none!important}
+#play.fs{padding-top:max(env(safe-area-inset-top,0px),8px)}
+#play.fs .hd{height:48px;min-height:48px;padding:4px 10px;gap:8px;align-items:center}
+.grow{flex:1}
+#play.fs .hd .ic{width:40px;height:40px;border-radius:12px;font-size:19px;background:rgba(34,28,23,.72);border:1px solid var(--ln)}
+#play.fs #dr,#play.fs #mn{display:flex!important;align-items:center;justify-content:center;width:40px;height:40px}
+#mbg{position:absolute;inset:0;z-index:19;display:none}#mbg.on{display:block}
+#menu{display:flex;flex-direction:column;position:absolute;z-index:20;right:10px;top:calc(max(env(safe-area-inset-top,0px),8px) + 54px);min-width:176px;padding:5px;background:rgba(34,28,23,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.5);transform-origin:top right;opacity:0;transform:translateY(-6px) scale(.94);visibility:hidden;pointer-events:none;transition:opacity .15s var(--ease),transform .24s var(--ease),visibility 0s .24s}
+#menu.on{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .18s var(--ease),transform .3s var(--spring),visibility 0s}
+#menu button{width:100%;min-height:46px;padding:0 14px;border-radius:10px;font-weight:700;font-size:15px;text-align:left;transition:background .15s}
+#menu button:active{background:var(--ln)}
+/* side panel: always clears the status bar / notch / camera cut-out, so Home and the list-size toggle stay reachable */
+#play.fs #drawer{padding-top:calc(max(env(safe-area-inset-top,0px),28px) + 8px)}
+#play.fs #drawer .hd{height:auto;min-height:56px;padding:6px 10px;gap:8px}
+#play.fs #drawer .hd .ic,#play.fs #drawer .hd .pill{height:42px;min-height:42px}
+#play.fs #drawer .hd .ic{width:42px}
+#play.fs #drawer #dBack{padding:0 16px}
+/* right-hand floating controls share one centre line (30px from the edge) */
+#qtg{right:12px}#qp{right:10px}#nxt{right:9px}
+@media(prefers-reduced-motion:reduce){#menu{transition:none!important}}
 </style>
 </head>
 <body>
@@ -272,10 +286,10 @@ html:has(#play.on){background:#0d0a08}
 
 <section id="play" class="v">
   <div class="hd">
-    <button class="ic" id="dr" aria-label="Song list">☰</button><span id="ptitle"></span>
-    <button class="ic" id="fsb" aria-label="Fullscreen">⛶</button><button class="ic" id="mn" aria-label="Menu">⋮</button>
+    <button class="ic" id="dr" type="button" aria-label="Song list">☰</button><span class="grow"></span><button class="ic" id="mn" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false">⋮</button>
   </div>
-  <div id="menu"><button id="mE">Edit song</button><button id="mR">Restart</button></div>
+  <div id="mbg"></div>
+  <div id="menu" role="menu"><button id="mE" type="button" role="menuitem">Edit song</button><button id="mR" type="button" role="menuitem">Restart</button></div>
   <div id="secs"></div>
   <div id="lyr"><div id="txt"></div></div>
   <button id="nxt" type="button" aria-label="Next song" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5"/></svg></button>
@@ -283,7 +297,6 @@ html:has(#play.on){background:#0d0a08}
   <div id="qp" role="region" aria-label="Song queue"><div class="qh0"><span>Queue</span><button id="qx" type="button" aria-label="Hide queue"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="ql"></div></div>
   <div id="qbg"></div>
   <div id="qpop" role="menu"><h4 id="qpt"></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
-  <button id="fsx" aria-label="Exit fullscreen">✕</button>
   <div id="spc">
     <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
     <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
@@ -466,7 +479,7 @@ function resetTop(){ /* every opened song starts at the top: scroll, auto-scroll
   requestAnimationFrame(()=>{if(!playing||pos<2){L.scrollTop=0;pos=0;txtEl.style.transform=''}})}
 function openSong(s,keep){
   if(typeof songFx==='function')songFx();
-  const was=playing;cur=s;$('#ptitle').textContent=s.title;$('#sp').value=s.speed;
+  const was=playing;cur=s;menuOpen(false);$('#sp').value=s.speed;
   $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
   const f=secEls()[0];startEl=f&&/^intro/.test(f.dataset.k)?f:null;
   setPlay(false); /* a newly opened song is always paused, even if the previous one was auto-scrolling */
@@ -563,29 +576,28 @@ function setFont(v){
   cur.font=nf;$('#txt').style.fontSize=nf+'px';SO=null;
   if(y>S)L.scrollTop=S+(y-S)*nf/old-rl}
 $('#sp').onchange=save;
-function enterFs(){
-  if(fs)return;fs=true;$('#play').classList.add('fs');
-  setTimeout(()=>{fixPad();$('#lyr').scrollTop=$('#lyr').scrollTop;hl()},80);
+function enterFs(){ /* the play view IS the fullscreen view: layout class stays for as long as a song is open; browser fullscreen is best-effort */
+  if(!fs){fs=true;$('#play').classList.add('fs');setTimeout(()=>{fixPad();$('#lyr').scrollTop=$('#lyr').scrollTop;hl()},80)}
   const el=document.documentElement;
-  if(el.requestFullscreen&&!/iPhone|iPad|iPod/.test(navigator.userAgent))el.requestFullscreen().catch(()=>{});
+  if(!document.fullscreenElement&&el.requestFullscreen&&!/iPhone|iPad|iPod/.test(navigator.userAgent))el.requestFullscreen().catch(()=>{});
 }
 function exitFs(){
   if(!fs)return;fs=false;$('#play').classList.remove('fs');
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
   setTimeout(fixPad,80);
 }
-function toggleFs(){fs?exitFs():enterFs()}
-$('#fsb').onclick=toggleFs;$('#fsx').onclick=toggleFs;
-document.addEventListener('fullscreenchange',()=>{if(fs&&!document.fullscreenElement){fs=false;$('#play').classList.remove('fs');setTimeout(fixPad,80)}});
+document.addEventListener('fullscreenchange',()=>setTimeout(fixPad,80)); /* Esc leaves browser fullscreen only; the app layout stays */
 function leavePlay(){setPlay(false);if(fs)exitFs();refresh();show('list')}
 /* menu */
 const mn=$('#menu');
-$('#mn').onclick=()=>{mn.style.display=mn.style.display==='block'?'none':'block'};
-$('#mE').onclick=()=>{mn.style.display='none';setPlay(false);openEdit(cur)};
-$('#mR').onclick=()=>{mn.style.display='none';setPlay(false);skip.clear();$('#lyr').scrollTop=0;waiting=!!startEl;if(waiting)toast('Ketuk layar atau tekan play untuk mulai')};
+function menuOpen(on){mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}
+$('#mn').onclick=()=>menuOpen(!mn.classList.contains('on'));
+$('#mbg').onclick=()=>menuOpen(false); /* tap anywhere outside closes it (the tap does not reach the lyrics, so it never toggles play) */
+$('#mE').onclick=()=>{menuOpen(false);setPlay(false);openEdit(cur)};
+$('#mR').onclick=()=>{menuOpen(false);setPlay(false);skip.clear();$('#lyr').scrollTop=0;waiting=!!startEl;if(waiting)toast('Ketuk layar atau tekan play untuk mulai')};
 /* laci */
 const dw=$('#drawer'),sc=$('#scrim');
-function drawer(on){dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
+function drawer(on){if(on)menuOpen(false);dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
 function dFill(){const e=$('#dcat');e.textContent='';const o=E('option','','All Songs');o.value='';e.append(o);[...cats].sort(byName).forEach(c=>{const o=E('option','',c.name);o.value=c.id;e.append(o)});e.value=lib.v==='cat'?lib.id:''}
 const drawerItems=()=>items($('#dItems'),$('#dq').value,(s,b)=>qPop(s,b),false,poolFor($('#dcat').value||null)); /* single tap -> Add to Queue / Open popup (never opens directly) */
 $('#dcat').onchange=drawerItems;
@@ -598,7 +610,7 @@ $('#dView').onclick=()=>sbView(!dw.classList.contains('cmp'),1);
 $('#dr').onclick=()=>drawer(!dw.classList.contains('open'));
 $('#dq').oninput=drawerItems;$('#dX').onclick=sc.onclick=()=>drawer(false);
 $('#dBack').onclick=()=>{drawer(false);leavePlay()};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#qpop').classList.contains('on'))qpClose();else drawer(false)}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(mn.classList.contains('on'))menuOpen(false);else if($('#qpop').classList.contains('on'))qpClose();else drawer(false)}});
 
 
 /* ---------- v22: compact Speed controller ---------- */
@@ -690,7 +702,7 @@ function qNext(){
   if(cur===s){const i=queue.indexOf(id);if(i>=0){queue.splice(i,1);qSave()}} /* removed only after the song really is active */
   qRender();setTimeout(()=>{nexting=0},700)}
 $('#nxt').onclick=qNext;
-function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});$('#ptitle').animate([{opacity:0,transform:'translateY(-5px)'},{opacity:1,transform:'none'}],{duration:340,easing:EASE})}catch(e){}}
+function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});}catch(e){}}
 /* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
 document.addEventListener('gesturestart',e=>e.preventDefault());
 /* Gestures on the lyric canvas (one Pointer Events system):
@@ -734,6 +746,7 @@ $('#cbox').onclick=e=>{if(e.target.id==='cbox')$('#cbox').classList.remove('on')
 ['','C','D','E','F','G','A','B','C#/Db','D#/Eb','F#/Gb','G#/Ab','A#/Bb'].forEach(k=>{const o=E('option','',k?'Key '+k:'Key: none');o.value=k;$('#ek').append(o)});
 const ta=$('#ta');let st;
 function openEdit(s,txt,title,base,pre){
+  exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
   const own=s||base;ed={s,base,h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
   $('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';

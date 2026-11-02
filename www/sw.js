@@ -1,4 +1,4 @@
-const V='evolyric-app-13',F='evolyric-fonts';
+const V='evolyric-app-14',F='evolyric-fonts';
 const SHELL=['./','index.html','manifest.webmanifest','config.js','vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!==F&&x.startsWith('evolyric-')).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
@@ -14,6 +14,9 @@ self.addEventListener('fetch',e=>{
         try{e.waitUntil(net.catch(()=>{}))}catch(_){}
         return Promise.race([net.catch(()=>cached),new Promise(res=>setTimeout(()=>res(cached),2500))]);
       })());return}
+    if(u.pathname.endsWith('/config.js')){
+      /* runtime config: network-first so a stale cached copy (e.g. the old empty one) can never keep sign-in disabled */
+      e.respondWith(fetch(r).then(x=>{if(x.ok&&x.type==='basic'){const y=x.clone();caches.open(V).then(c=>c.put(r,y))}return x}).catch(()=>caches.match(r)));return}
     e.respondWith(caches.match(r).then(m=>m||fetch(r)));return}
   if(u.hostname==='fonts.googleapis.com'||u.hostname==='fonts.gstatic.com'){
     e.respondWith(caches.open(F).then(c=>c.match(r).then(m=>m||fetch(r).then(x=>{c.put(r,x.clone());return x}).catch(()=>Response.error()))))}

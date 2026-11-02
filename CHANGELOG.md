@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v25 – Remove top fade
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-25`; UI only)
+- Removed the gradient fade at the top edge of the lyric area (the area under the header). Lyrics now stay fully opaque up to the header. The soft fade at the bottom edge is kept.
+
 ## v24 – Floating buttons fade while scrolling
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-24`; UI only, no database / cloud / auth changes)
 - Three-dots, Queue and Speed buttons fade to ~8% opacity while auto-scroll is running (nearly gone but still visible and tappable) and return to 100% as soon as scrolling pauses or stops (including at the end of a song).

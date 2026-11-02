@@ -1,0 +1,9 @@
+{
+  "appId": "id.evolyric.app",
+  "appName": "EvoLyric",
+  "webDir": "www",
+  "backgroundColor": "#15110e",
+  "ios": {
+    "contentInset": "never"
+  }
+}

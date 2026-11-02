@@ -27,12 +27,11 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .v{display:none;height:100%;flex-direction:column;position:relative}.v.on{display:flex}
 #play{--bg:#0d0a08;--fg:#f3ece3;--mut:#a89c8e;--card:#221c17;--ln:#33291f;--acc:#f0a04b;--m:#6ab0ff;--f:#ff6b6b;background:var(--bg);color:var(--fg)}
 .hd{display:flex;align-items:center;gap:6px;padding:10px 12px;min-height:52px}
-.hd h1{margin:0;flex:1;display:flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',system-ui,sans-serif}
+.hd h1{margin:0;flex:1;display:flex;align-items:center;gap:11px;font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .lg{width:34px;height:34px;flex:none;filter:drop-shadow(0 2px 8px rgba(240,160,75,.28))}
-.wm{display:flex;flex-direction:column;line-height:1}
-.wm span{font-size:27px;font-weight:800;letter-spacing:-.9px;color:var(--fg)}
+.wm{display:flex;flex-direction:column;justify-content:center;line-height:1}
+.wm span{font-size:31px;font-weight:800;letter-spacing:-1px;color:var(--fg);line-height:1;padding-bottom:2px}
 .wm span i{font-style:normal;font-weight:600;letter-spacing:-.6px;background:linear-gradient(100deg,#f0a04b 10%,#ffd9a0 90%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-.wm small{margin-top:4px;font:600 8.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:2.6px;text-transform:uppercase;color:var(--mut)}
 .ic{width:44px;height:44px;border-radius:12px;font-size:20px;background:var(--card)}
 .sb{display:flex;gap:8px;padding:0 12px 8px}
 .sb input,.fld{flex:1;min-width:0;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px}
@@ -279,7 +278,7 @@ html:has(#play.on){background:#0d0a08}
 <body>
 
 <section id="list" class="v on">
-  <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span><small>Lyric Teleprompter</small></span></h1><span id="svw" hidden>⚠ Not saved</span><div id="auth"></div></div>
+  <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span></span></h1><span id="svw" hidden>⚠ Not saved</span><div id="auth"></div></div>
   <div id="amenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">My Categories</button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>

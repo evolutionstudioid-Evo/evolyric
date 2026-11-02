@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#15110e">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -145,6 +145,72 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.end{height:2
   #edit #ta{height:100%;min-height:0;margin:0;padding:10px;font-size:16px}
   #edit .tb{padding-left:8px;padding-right:8px}
 }
+
+/* ===== v17: Song Queue, Next Song, touch lock, motion polish ===== */
+:root{--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.45,.5,1)}
+html,body{touch-action:pan-x pan-y} /* no double-tap zoom / pinch page zoom; scrolling stays; lyric canvas keeps its own pan-y */
+button,select,.it{touch-action:manipulation}
+/* queue toggle + panel (compact, right side) */
+#qtg{position:absolute;top:var(--qt,100px);right:8px;z-index:12;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mut);background:rgba(34,28,23,.72);border:1px solid var(--ln);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:.78;transition:transform .25s var(--spring),color .2s,border-color .2s,opacity .2s}
+#qtg svg{width:18px;height:18px}
+#qtg:active{transform:scale(.9)}
+#qtg.has{color:var(--acc);border-color:rgba(240,160,75,.45);opacity:1}
+#qtg b{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--acc);color:#15110e;font:800 10px/16px 'Atkinson Hyperlegible',system-ui,sans-serif;text-align:center;transform:scale(0);transition:transform .32s var(--spring)}
+#qtg.has b{transform:scale(1)}
+#qtg.bump{animation:qbump .5s var(--spring)}
+@keyframes qbump{35%{transform:scale(1.22)}}
+#qp{position:absolute;top:calc(var(--qt,100px) + 44px);right:8px;z-index:11;width:min(184px,46vw);max-height:min(42%,250px);display:flex;flex-direction:column;background:rgba(34,28,23,.95);border:1px solid var(--ln);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;opacity:0;transform:translateY(-8px) scale(.92);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .24s var(--ease),visibility 0s .24s}
+#qp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .2s var(--ease),transform .34s var(--spring),visibility 0s}
+.qh0{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 4px 11px;font:700 10.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut)}
+#qx{width:30px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--mut);border-radius:8px;transition:background .15s}#qx:active{background:var(--ln)}#qx svg{width:12px;height:12px;transition:transform .25s var(--ease)}
+#ql{overflow-y:auto;overscroll-behavior:contain;padding:0 4px 4px;position:relative}
+.qi{display:flex;align-items:center;height:36px;border-radius:9px;position:relative;overflow:hidden;transition:height .22s var(--ease),opacity .2s,transform .22s var(--ease),background .15s,box-shadow .15s}
+.qi.new{animation:qin .34s var(--ease)}
+@keyframes qin{from{opacity:0;transform:translateX(14px)}}
+.qi.out{height:0;opacity:0;transform:translateX(16px);pointer-events:none}
+.qi.shift{transition:transform .2s var(--ease)}
+.qi.drag{z-index:3;background:#2d251e;box-shadow:0 8px 18px rgba(0,0,0,.5);transition:box-shadow .15s,background .15s;overflow:visible}
+.qg{flex:none;width:26px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--mut);opacity:.65;cursor:grab;touch-action:none;border-radius:8px}
+.qg:active,.qi.drag .qg{opacity:1;color:var(--acc);cursor:grabbing}
+.qt{flex:1;min-width:0;display:flex;align-items:baseline;gap:5px;font-size:14px;line-height:1.2}
+.qt i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--acc);flex:none;opacity:.9}
+.qt span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.qd{flex:none;width:30px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--mut);opacity:.6;border-radius:8px;transition:opacity .15s,color .15s,background .15s}
+.qd:active{opacity:1;color:var(--f);background:rgba(255,107,107,.1)}
+.qe{padding:6px 11px 12px;font-size:12.5px;color:var(--mut)}
+/* Next Song: thin circle + thin chevron, no text */
+#nxt{position:absolute;top:var(--nt,50%);right:10px;z-index:14;width:42px;height:42px;border-radius:50%;border:.75px solid rgba(255,255,255,.8);background:transparent;color:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;opacity:0;transform:translateX(12px) scale(.86);visibility:hidden;pointer-events:none;transition:opacity .3s var(--ease),transform .4s var(--ease),visibility 0s .4s,background .2s}
+#nxt::before{content:"";position:absolute;inset:-7px;border-radius:50%}
+#nxt svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s var(--ease)}
+#nxt.on{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease),transform .5s var(--spring),visibility 0s,background .2s}
+#nxt.on::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:.75px solid rgba(255,255,255,.65);pointer-events:none;animation:nring 1.5s var(--ease) .4s 1 both}
+@keyframes nring{from{transform:scale(1);opacity:.7}to{transform:scale(1.6);opacity:0}}
+#nxt.on:active{transform:scale(.9);background:rgba(255,255,255,.1)}
+#nxt.on:active svg{transform:translateX(2px)}
+/* Add to Queue / Open popup */
+#qbg{position:fixed;inset:0;z-index:64;display:none;background:transparent}#qbg.on{display:block}
+#qpop{position:fixed;z-index:65;width:min(204px,64vw);padding:5px;background:var(--card);border:1px solid var(--ln);border-radius:14px;box-shadow:0 14px 36px rgba(0,0,0,.55);transform-origin:var(--ox,50%) var(--oy,0);opacity:0;transform:scale(.88);visibility:hidden;pointer-events:none;transition:opacity .14s,transform .2s var(--ease),visibility 0s .2s}
+#qpop.on{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .16s,transform .3s var(--spring),visibility 0s}
+#qpop h4{margin:0;padding:6px 10px 5px;font:400 12px/1.2 'Atkinson Hyperlegible',system-ui,sans-serif;color:var(--mut);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#qpop button{display:flex;align-items:center;gap:11px;width:100%;min-height:46px;padding:0 12px;border-radius:10px;text-align:left;font-weight:700;font-size:15px;transition:background .15s}
+#qpop button:active{background:var(--ln)}
+#qpop button svg{width:18px;height:18px;flex:none;color:var(--acc)}
+/* motion polish */
+.v.on{animation:vin .3s var(--ease)}@keyframes vin{from{opacity:0}}
+#ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on{animation:ofade .2s ease-out}
+#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet{animation:sheetin .32s var(--spring)}
+@keyframes ofade{from{opacity:0}}@keyframes sheetin{from{opacity:0;transform:translateY(16px) scale(.96)}}
+#drawer{transition:transform .38s var(--ease),visibility 0s .38s}#drawer.open{transition:transform .38s var(--ease),visibility 0s}
+#scrim{transition:opacity .38s var(--ease),visibility 0s .38s}#scrim.open{transition:opacity .38s var(--ease),visibility 0s}
+#dItems.stg>*{animation:itin .38s var(--ease) both}
+#dItems.stg>:nth-child(2){animation-delay:.03s}#dItems.stg>:nth-child(3){animation-delay:.06s}#dItems.stg>:nth-child(4){animation-delay:.09s}#dItems.stg>:nth-child(5){animation-delay:.12s}#dItems.stg>:nth-child(6){animation-delay:.15s}#dItems.stg>:nth-child(7){animation-delay:.18s}#dItems.stg>:nth-child(n+8){animation-delay:.21s}
+@keyframes itin{from{opacity:0;transform:translateX(-12px)}}
+.it{transition:background-color .18s}.it:active{background:rgba(240,160,75,.08)}
+.pill,.ic,.step,.tabs button,.chip,.sheet button,.nrow button{transition:transform .18s var(--ease),background-color .2s,border-color .2s,color .2s,opacity .2s}
+.pill:active,.ic:active,.step:active,.tabs button:active,.chip:active{transform:scale(.95)}
+#note{transform:translate(-50%,16px) scale(.96);transition:opacity .25s var(--ease),transform .42s var(--spring)}#note.on{transform:translate(-50%,0) scale(1)}
+#amenu{animation-duration:.22s;animation-timing-function:var(--ease)}
+@media(prefers-reduced-motion:reduce){#qtg,#qtg b,#qp,.qi,#nxt,#nxt svg,#qpop,#qx svg,.pill,.ic,.step,.chip,#note{transition:none!important;animation:none!important}.v.on,.qi.new,#nxt.on::after,#dItems.stg>*,#ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on,#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet{animation:none!important}}
 </style>
 </head>
 <body>
@@ -169,6 +235,11 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.end{height:2
   <div id="menu"><button id="mE">Edit song</button><button id="mR">Restart</button></div>
   <div id="secs"></div>
   <div id="lyr"><div id="txt"></div></div>
+  <button id="nxt" type="button" aria-label="Next song" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5"/></svg></button>
+  <button id="qtg" type="button" aria-label="Queue" aria-expanded="false" aria-controls="qp"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5h10M3 10h10M3 15h6"/><path d="M14.5 12.5l3 2.5-3 2.5z" fill="currentColor" stroke="none"/></svg><b id="qn"></b></button>
+  <div id="qp" role="region" aria-label="Song queue"><div class="qh0"><span>Queue</span><button id="qx" type="button" aria-label="Hide queue"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="ql"></div></div>
+  <div id="qbg"></div>
+  <div id="qpop" role="menu"><h4 id="qpt"></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
   <button id="fsx" aria-label="Exit fullscreen">✕</button>
   <div class="ctl">
     <div class="rangeCtl"><label>Speed <span id="spv"></span><input type="range" id="sp" min="1" max="20"></label><button class="step" id="spMinus" aria-label="Decrease speed">−</button><button class="step" id="spPlus" aria-label="Increase speed">+</button></div>
@@ -251,7 +322,7 @@ function items(box,q,pick,menu,pool,cat,empty){
       const b=E('button','it'),t=E('b');t.append(E('span','',s.title||'Untitled'));
       if(s.key)t.append(E('span','key',s.key));
       b.append(t,E('small','',s.artist||''));
-      if(menu)press(b,()=>pick(s),()=>ctxOpen(s,cat));else b.onclick=()=>pick(s);
+      if(menu)press(b,()=>pick(s),()=>ctxOpen(s,cat));else b.onclick=()=>pick(s,b);
       box.append(b)});
   if(!box.children.length)box.append(E('p','mut',empty||'No songs.'));
 }
@@ -348,6 +419,7 @@ document.addEventListener('paste',e=>{
 
 /* ---------- Play ---------- */
 function openSong(s,keep){
+  if(typeof songFx==='function')songFx();
   const was=playing;cur=s;$('#ptitle').textContent=s.title;$('#sp').value=s.speed;$('#fz').value=s.font;
   $('#spv').textContent=s.speed;$('#fzv').textContent=Math.round(s.font);show('play');render();$('#lyr').scrollTop=0;skip.clear();
   const f=secEls()[0];startEl=f&&/^intro/.test(f.dataset.k)?f:null;
@@ -366,8 +438,8 @@ function render(){
       const lc=lblColor(cur,lo),d=E('div','sec',n);d.style.color=lc;d.dataset.k=lo;t.append(d);
       const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)}
     else t.append(lineEl(ln,col))});
-  t.append(E('div','end'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=/^(intro|interlude)/.test(d.dataset.k));SO=null;fixPad()}
-function fixPad(){if(!cur)return;const L=$('#lyr'),h=$('#ttl'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop=Math.max(40,r-(h?h.offsetHeight+24:0))+'px';SO=null}
+  t.append(E('div','end'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=/^(intro|interlude)/.test(d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
+function fixPad(){placeQ();if(!cur)return;const L=$('#lyr'),h=$('#ttl'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop=Math.max(40,r-(h?h.offsetHeight+24:0))+'px';SO=null}
 window.addEventListener('resize',fixPad);
 try{document.fonts.addEventListener('loadingdone',()=>fixPad())}catch(e){}
 const secEls=()=>[...$('#txt').querySelectorAll('.sec')];
@@ -452,14 +524,98 @@ $('#mE').onclick=()=>{mn.style.display='none';setPlay(false);openEdit(cur)};
 $('#mR').onclick=()=>{mn.style.display='none';setPlay(false);skip.clear();$('#lyr').scrollTop=0;waiting=!!startEl;if(waiting)toast('Ketuk layar atau tekan play untuk mulai')};
 /* laci */
 const dw=$('#drawer'),sc=$('#scrim');
-function drawer(on){dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(on){$('#dq').value='';dFill();drawerItems()}}
+function drawer(on){dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
 function dFill(){const e=$('#dcat');e.textContent='';const o=E('option','','All Songs');o.value='';e.append(o);[...cats].sort(byName).forEach(c=>{const o=E('option','',c.name);o.value=c.id;e.append(o)});e.value=lib.v==='cat'?lib.id:''}
-const drawerItems=()=>items($('#dItems'),$('#dq').value,s=>{drawer(false);openSong(s,true)},false,poolFor($('#dcat').value||null));
+const drawerItems=()=>items($('#dItems'),$('#dq').value,(s,b)=>qPop(s,b),false,poolFor($('#dcat').value||null)); /* single tap -> Add to Queue / Open popup (never opens directly) */
 $('#dcat').onchange=drawerItems;
 $('#dr').onclick=()=>drawer(!dw.classList.contains('open'));
 $('#dq').oninput=drawerItems;$('#dX').onclick=sc.onclick=()=>drawer(false);
 $('#dBack').onclick=()=>{drawer(false);leavePlay()};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')drawer(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#qpop').classList.contains('on'))qpClose();else drawer(false)}});
+
+/* ---------- v17: Song Queue (device-local, separate from the library) ---------- */
+const QBASE='evolyric-queue-v1',RM=()=>matchMedia('(prefers-reduced-motion:reduce)').matches,EASE='cubic-bezier(.22,1,.36,1)';
+let queue=[],qKey='',qFresh=null,nexting=0,endIO=null,endVis=false,qpS=null;
+const qKeyNow=()=>QBASE+(LK===K?'':LK.slice(K.length)); /* guest and each account keep their own queue */
+function Qs(){const k=qKeyNow();if(k!==qKey){qKey=k;queue=[];try{const a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a))queue=[...new Set(a.filter(x=>typeof x==='string'))]}catch(e){}}return queue}
+const qSave=()=>{try{localStorage.setItem(qKey||qKeyNow(),JSON.stringify(queue))}catch(e){}};
+const qSongs=()=>Qs().map(id=>songs.find(o=>o.id===id)).filter(Boolean); /* ids of missing songs are ignored, never rewritten */
+function placeQ(){const L=$('#lyr'),P=$('#play');if(!P.classList.contains('on'))return;const t=L.offsetTop;P.style.setProperty('--qt',(t+8)+'px');P.style.setProperty('--nt',Math.round(t+L.clientHeight*.35-21)+'px')}
+const GRIP='<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><circle cx="5.5" cy="3.5" r="1.25"/><circle cx="10.5" cy="3.5" r="1.25"/><circle cx="5.5" cy="8" r="1.25"/><circle cx="10.5" cy="8" r="1.25"/><circle cx="5.5" cy="12.5" r="1.25"/><circle cx="10.5" cy="12.5" r="1.25"/></svg>';
+const XI='<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>';
+function qRender(){
+  const L=$('#ql'),list=qSongs(),n=list.length;L.textContent='';
+  $('#qtg').classList.toggle('has',n>0);$('#qn').textContent=n||'';$('#qtg').setAttribute('aria-label',n?'Queue, '+n+' songs':'Queue');
+  list.forEach((s,i)=>{
+    const r=E('div','qi'+(s.id===qFresh?' new':''));r.dataset.id=s.id;
+    const g=E('button','qg');g.type='button';g.innerHTML=GRIP;g.setAttribute('aria-label','Reorder '+(s.title||'song'));
+    g.addEventListener('pointerdown',e=>qDrag(e,r));g.addEventListener('keydown',e=>qKey_(e,s.id));
+    const t=E('div','qt'),num=E('i','',String(i+1)),nm=E('span','',s.title||'Untitled');t.append(num,nm);t.title=s.title||'';
+    const d=E('button','qd');d.type='button';d.innerHTML=XI;d.setAttribute('aria-label','Remove '+(s.title||'song'));d.onclick=()=>qRemove(s.id,r);
+    r.append(g,t,d);L.append(r)});
+  if(!n)L.append(E('div','qe','Queue is empty'));
+  qFresh=null;updNext()}
+function qBump(){const b=$('#qtg');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}
+function qAdd(s){const q=Qs();if(q.includes(s.id)){note('Already in queue');return}q.push(s.id);qFresh=s.id;qSave();qRender();if(!RM())qBump();note('Added to queue')}
+function qRemove(id,row){
+  if(row&&row.classList.contains('out'))return;
+  const go=()=>{const i=queue.indexOf(id);if(i>=0){queue.splice(i,1);qSave()}qRender()};
+  if(row&&!RM()){row.style.height=row.offsetHeight+'px';void row.offsetHeight;row.classList.add('out');row.style.height='';setTimeout(go,230)}else go()}
+function qMove(id,to){ /* move id so it sits where the visible song `to` sits */
+  const i=queue.indexOf(id),j=queue.indexOf(to);if(i<0||j<0||i===j)return;queue.splice(i,1);queue.splice(i<j?j:j,0,id);qSave()}
+function qKey_(e,id){
+  if(e.key!=='ArrowUp'&&e.key!=='ArrowDown')return;e.preventDefault();
+  const v=qSongs().map(o=>o.id),i=v.indexOf(id),j=i+(e.key==='ArrowUp'?-1:1);if(j<0||j>=v.length)return;
+  qMove(id,v[j]);qRender();const r=$('#ql').querySelector('[data-id="'+id+'"] .qg');if(r)r.focus()}
+function qDrag(e,row){
+  if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();
+  const L=$('#ql'),rows=[...L.querySelectorAll('.qi')],from=rows.indexOf(row);if(from<0||rows.length<2)return;
+  const H=row.offsetHeight,y0=e.clientY,s0=L.scrollTop,h=e.currentTarget;let to=from,cy=y0,raf=0;
+  try{h.setPointerCapture(e.pointerId)}catch(_){}
+  row.classList.add('drag');rows.forEach(r=>{if(r!==row)r.classList.add('shift')});
+  const apply=()=>{
+    const dy=clamp(cy-y0+L.scrollTop-s0,-from*H,(rows.length-1-from)*H);to=clamp(Math.round(from+dy/H),0,rows.length-1);
+    row.style.transform='translateY('+dy+'px) scale(1.02)';
+    rows.forEach((r,i)=>{if(r===row)return;let t=0;if(from<to&&i>from&&i<=to)t=-H;else if(from>to&&i>=to&&i<from)t=H;r.style.transform=t?'translateY('+t+'px)':''})};
+  const edge=()=>{const b=L.getBoundingClientRect();let d=0;if(cy<b.top+22)d=-6;else if(cy>b.bottom-22)d=6;
+    if(d&&((d<0&&L.scrollTop>0)||(d>0&&L.scrollTop<L.scrollHeight-L.clientHeight))){L.scrollTop+=d;apply()}raf=requestAnimationFrame(edge)};
+  raf=requestAnimationFrame(edge);
+  const mv=ev=>{if(ev.pointerId===e.pointerId){cy=ev.clientY;apply()}};
+  const end=ev=>{if(ev.pointerId!==e.pointerId)return;cancelAnimationFrame(raf);
+    h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',end);h.removeEventListener('pointercancel',end);
+    if(ev.type==='pointerup'&&to!==from)qMove(row.dataset.id,rows[to].dataset.id);
+    qRender()};
+  h.addEventListener('pointermove',mv);h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end)}
+function qOpen(on){const p=$('#qp');if(on==null)on=!p.classList.contains('open');p.classList.toggle('open',on);$('#qtg').setAttribute('aria-expanded',on?'true':'false')}
+$('#qtg').onclick=()=>qOpen();$('#qx').onclick=()=>qOpen(false);
+/* sidebar popup */
+function qPop(s,el){
+  qpS=s;const p=$('#qpop');$('#qpt').textContent=s.title||'Untitled';
+  const r=el.getBoundingClientRect(),w=p.offsetWidth,h=p.offsetHeight;
+  const x=clamp(r.left+r.width/2-w/2,8,innerWidth-w-8);let y=r.bottom+2,up=false;
+  if(y+h>innerHeight-8){y=r.top-h-2;up=true}y=Math.max(8,y);
+  p.style.left=x+'px';p.style.top=y+'px';p.style.setProperty('--ox',clamp(r.left+r.width/2-x,16,w-16)+'px');p.style.setProperty('--oy',up?'100%':'0');
+  $('#qbg').classList.add('on');p.classList.add('on')}
+function qpClose(){$('#qbg').classList.remove('on');$('#qpop').classList.remove('on')}
+$('#qbg').onclick=qpClose;
+$('#qpa').onclick=()=>{const s=qpS;qpClose();if(s)qAdd(s)};
+$('#qpo').onclick=()=>{const s=qpS;qpClose();if(s){drawer(false);openSong(s,true)}};
+/* Next Song: shown only while the existing .end line is visible AND the queue has a song */
+function watchEnd(){
+  if(endIO){endIO.disconnect();endIO=null}endVis=false;updNext();
+  const e=$('#txt .end');if(!e||!('IntersectionObserver' in window))return;
+  endIO=new IntersectionObserver(es=>{endVis=es[es.length-1].isIntersecting;updNext()},{root:$('#lyr'),rootMargin:'0px 0px -44px 0px',threshold:0});endIO.observe(e)}
+function updNext(){const b=$('#nxt'),on=endVis&&qSongs().length>0&&$('#play').classList.contains('on');b.classList.toggle('on',on);b.tabIndex=on?0:-1;b.setAttribute('aria-hidden',on?'false':'true')}
+function qNext(){
+  if(nexting)return;const id=Qs().find(x=>songs.some(o=>o.id===x));if(!id)return;const s=songs.find(o=>o.id===id);
+  nexting=1;
+  try{openSong(s)}catch(err){nexting=0;note('Could not open song',1);return}
+  if(cur===s){const i=queue.indexOf(id);if(i>=0){queue.splice(i,1);qSave()}} /* removed only after the song really is active */
+  qRender();setTimeout(()=>{nexting=0},700)}
+$('#nxt').onclick=qNext;
+function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});$('#ptitle').animate([{opacity:0,transform:'translateY(-5px)'},{opacity:1,transform:'none'}],{duration:340,easing:EASE})}catch(e){}}
+/* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
+document.addEventListener('gesturestart',e=>e.preventDefault());
 /* Gestures on the lyric canvas (one Pointer Events system):
    tap = play/pause, hold = speed 18, hold + drag right = speed 23 (back to normal on release), two fingers = text size. */
 const Ly=$('#lyr'),PT=new Map();let G=null;

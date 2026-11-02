@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v24 – Floating buttons fade while scrolling
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-24`; UI only, no database / cloud / auth changes)
+- Three-dots, Queue and Speed buttons fade to ~8% opacity while auto-scroll is running (nearly gone but still visible and tappable) and return to 100% as soon as scrolling pauses or stops (including at the end of a song).
+- They are fully opaque while pressed or focused, while their menu/panel is open (menu, queue panel, speed panel), then fade back.
+- The hamburger (song list) and the Next Song button are unchanged.
+
 ## v23 – Single fullscreen view, three-dots menu, side panel clearance
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-23`; no database / cloud / auth changes)
 - The old non-fullscreen "settings" play view is gone: no title bar, no fullscreen button, no separate three-dots there. Opening a song always shows the fullscreen view; the layout stays even if the browser leaves fullscreen with Esc.

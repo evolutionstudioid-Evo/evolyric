@@ -2,6 +2,6 @@
    (access is enforced by Row Level Security). NEVER put the service_role key here.
    Leave both empty to run without accounts (Guest Demo only). After editing, bump the cache version in sw.js. */
 window.EVO_CONFIG = {
-  SUPABASE_URL: "https://lbebaykxuucpiowrzezf.supabase.co"
-  SUPABASE_ANON_KEY: "lbebaykxuucpiowrzezf"
+  SUPABASE_URL: "https://lbebaykxuucpiowrzezf.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_YRoSRIHbRhXyLvDFBSZ0yg_DD58W4Xo"
 };

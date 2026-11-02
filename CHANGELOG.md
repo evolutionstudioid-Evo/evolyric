@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v23 – Single fullscreen view, three-dots menu, side panel clearance
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-23`; no database / cloud / auth changes)
+- The old non-fullscreen "settings" play view is gone: no title bar, no fullscreen button, no separate three-dots there. Opening a song always shows the fullscreen view; the layout stays even if the browser leaves fullscreen with Esc.
+- The top-right button that used to be the X is now the three-dots menu (Edit song, Restart). The top-left stays the song list.
+- Bug fixed: the three-dots menu can now be closed by tapping anywhere outside it (or Esc, or opening the side panel). The outside tap only closes the menu; it never toggles play/pause.
+- Bug fixed: the side panel now always clears the status bar / notch (top padding = max(safe-area, 28px) + 8px), so Home, the list-size toggle and the close button are no longer covered.
+- Layout/size pass: header buttons 40x40 with 10px side margins; menu, queue panel and Next Song share the same right edge/centre line; side-panel buttons 42px tall; Edit leaves the performance view first.
+
 ## v22 – Compact Speed controller, tap-only play/pause, screen always on
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-22`; no database / cloud / auth changes)
 - Speed controller made much smaller and moved into the bottom-right corner (4px from the right edge, ~3px from the bottom): closed = 40px button; open = a 196x71px translucent panel that replaces the button in the corner (value, -/slider/+, min/max, collapse chevron). It still collapses by itself after ~3 s idle.

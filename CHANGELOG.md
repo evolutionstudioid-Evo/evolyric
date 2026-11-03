@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v55 – Section selector fixes
+- The section strip can be swiped sideways again (v48 had accidentally disabled scrolling it by touch).
+- Every section chip now responds to a tap. Chips for sections near the top used to do nothing because they were already above the reading line; the reading line now sits near the top of the lyrics and the tapped chip always becomes the active one.
+- Auto-scroll pause points (Intro/Interlude) now trigger at the same reading line.
+
 ## v54 – Light flash on small buttons
 - Small buttons (menu, song list, queue, speed, compact view, close, step and clear buttons) now flash with a warm light when pressed. Large buttons such as Home, Find and Google are unchanged.
 

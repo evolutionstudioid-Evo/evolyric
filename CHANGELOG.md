@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v56 – Smoother section strip
+- Swiping the section strip is smoother: the edge-fade mask and the per-frame glow animation (both forced constant repainting) were removed, and the strip is scrolled on its own compositing layer. The active glow is now steady.
+- When the active section changes during auto-scroll, the strip glides to it with an eased animation instead of jumping, and it does not move while you are swiping it yourself.
+
 ## v55 – Section selector fixes
 - The section strip can be swiped sideways again (v48 had accidentally disabled scrolling it by touch).
 - Every section chip now responds to a tap. Chips for sections near the top used to do nothing because they were already above the reading line; the reading line now sits near the top of the lyrics and the tapped chip always becomes the active one.

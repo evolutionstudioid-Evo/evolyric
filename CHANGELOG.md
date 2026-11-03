@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v34 – Friends (step 2) + richer usernames
+Added `supabase/003_friends.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-34`). cloud.js / config.js untouched.
+- Usernames may now also contain `.` `_` `-` (3-20 chars, start with a letter/number, no two dots in a row, lowercase). Needs 003 to be run, because the server enforces the format.
+- New Friends screen (account menu > Friends): find a person by EXACT username, Add friend, Accept / Decline incoming requests, Cancel sent requests, Remove a friend. A red dot on the profile picture and a counter in the menu show pending requests; the list refreshes on sign-in, when the app is reopened, and after every action.
+- Privacy and safety are enforced in the database, not the app: no table is writable by clients, everything goes through functions (`find_user`, `send_friend_request`, `respond_friend_request`, `remove_friendship`, `list_friends`). There is no prefix search (nobody can list users) and emails are never returned. If the other person already asked you, sending a request accepts it.
+- Until 003 is run, the Friends screen shows a short "not enabled yet" note and nothing else changes.
+- Not included yet: sending a song to a friend (step 3).
+
 ## v33 – Username (step 1 of Friends)
 Added `supabase/002_username.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-33`). cloud.js / config.js untouched.
 - Account menu: the old disabled "Profile" row is now "Username". Tap it to set a unique username (3-20 chars: a-z, 0-9, _; stored lowercase; a few names are reserved). It shows as @username in the menu header.

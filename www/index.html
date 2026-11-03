@@ -301,6 +301,18 @@ html:has(#play.on){background:#0d0a08}
 .ltr.pn{display:flex;align-items:center;gap:6px}.ltr.pn svg{width:14px;height:14px}
 .pinic{display:inline-flex;color:var(--acc);margin-right:6px;vertical-align:-1px}.pinic svg{width:14px;height:14px}
 .sheet button.ck{display:flex;justify-content:space-between;gap:16px}.sheet button.ck i{font-style:normal;color:var(--acc)}
+/* v34: Friends */
+#frbody{flex:1;overflow-y:auto;padding:0 12px 28px;-webkit-overflow-scrolling:touch}
+.fcard{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:0 0 12px}
+.fcard p{margin:0 0 10px;color:var(--mut);font-size:14px;line-height:1.4}
+.fh{color:var(--acc);font-size:14px;margin:16px 4px 6px;font-family:'Bricolage Grotesque',system-ui,sans-serif;display:flex;gap:8px;align-items:center}.fh em{font-style:normal;background:var(--acc);color:#15110e;border-radius:10px;padding:0 7px;font-size:12px;font-weight:800}
+.fr{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--ln)}
+.fr .av{width:40px;height:40px;flex:none;font-size:15px}.fr .fn{flex:1;min-width:0}.fr .fn b{display:block;font-weight:600;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.fr .fn small{color:var(--mut)}
+.fr button{min-height:38px;padding:0 12px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid var(--ln);background:var(--card);flex:none}.fr button.pri{background:var(--acc);border-color:var(--acc);color:#15110e}
+.fr button:disabled{opacity:.5}
+.frs{display:flex;gap:8px;margin-bottom:10px}.frs input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:12px}
+#auth.bd::after{content:"";position:absolute;top:0;right:0;pointer-events:none;width:11px;height:11px;border-radius:50%;background:#ff453a;border:2px solid var(--bg)}
+#auth{position:relative}
 </style>
 </head>
 <body>
@@ -351,6 +363,11 @@ html:has(#play.on){background:#0d0a08}
   <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button class="sw" data-c="r" aria-label="Red"></button><button class="sw" data-c="y" aria-label="Yellow"></button><button class="sw" data-c="g" aria-label="Green"></button><button id="hx">Clear</button></div>
   <div class="tb" id="secbar" hidden><b id="sn"></b><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
   <div class="ed"><textarea id="ta" inputmode="none" spellcheck="false" aria-label="Lyrics"></textarea><div id="side"></div></div>
+</section>
+
+<section id="friends" class="v">
+  <div class="hd"><button class="ic" id="frX" aria-label="Back">‹</button><h1 style="font-size:24px">Friends</h1></div>
+  <div id="frbody"></div>
 </section>
 
 <div id="ctx"><div class="sheet" id="csheet"></div></div>
@@ -904,7 +921,7 @@ const CFG=window.EVO_CONFIG||{},AUTH_ON=!!(CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_K
 let sb=null,user=null,authPending=AUTH_ON,profSynced=null;
 /* v33: username (profiles.username, see supabase/002_username.sql). state: null = unknown, 'ok', 'nosql' = column not on the server yet */
 const UNK='evolyric-uname:',uname={v:'',state:null};
-const unameErr=n=>!n?'Enter a username':n.length<3?'At least 3 characters':n.length>20?'Maximum 20 characters':!/^[a-z0-9_]+$/.test(n)?'Use only letters, numbers and _':['admin','root','support','evolyric','evo','system'].includes(n)?'That username is reserved':'';
+const unameErr=n=>!n?'Enter a username':n.length<3?'At least 3 characters':n.length>20?'Maximum 20 characters':!/^[a-z0-9._-]+$/.test(n)?'Use only letters, numbers, . _ and -':!/^[a-z0-9]/.test(n)?'Start with a letter or a number':n.includes('..')?'No two dots in a row':['admin','root','support','evolyric','evo','system'].includes(n)?'That username is reserved':'';
 function unameLoad(id){try{uname.v=localStorage.getItem(UNK+id)||''}catch(e){uname.v=''}}
 function unameStore(id,v){uname.v=v||'';try{v?localStorage.setItem(UNK+id,v):localStorage.removeItem(UNK+id)}catch(e){}}
 async function unameFetch(n){try{const{data,error}=await sb.from('profiles').select('username').eq('id',n.id).maybeSingle();
@@ -918,8 +935,8 @@ function unameEdit(){if(!user)return;
     try{const{data,error}=await sb.from('profiles').update({username:n}).eq('id',user.id).select('username').maybeSingle();
       if(error){if(error.code==='23505')return 'That username is already taken';if(error.code==='23514')return 'That username is not allowed';if(error.code==='42703'||error.code==='PGRST204'){uname.state='nosql';return 'Usernames are not enabled on the server yet'}return navigator.onLine?'Could not save. Try again.':'You are offline'}
       if(!data)return 'Could not save. Try again.';
-      unameStore(user.id,data.username);note('Username saved');return ''}catch(e){return 'Could not save. Try again.'}},
-    {val:unameErr,save:1,max:20,ph:'username',hint:'3–20 characters: letters, numbers and _. Friends will find you by this name.'})}
+      unameStore(user.id,data.username);note('Username saved');if($('#friends').classList.contains('on'))frRender();return ''}catch(e){return 'Could not save. Try again.'}},
+    {val:unameErr,save:1,max:20,ph:'username',hint:'3–20 characters: letters, numbers, . _ and -. Friends find you by this name.'})}
 const getHint=()=>{try{return JSON.parse(localStorage.getItem(HK))}catch(e){return null}};
 const setHint=u=>{try{u?localStorage.setItem(HK,JSON.stringify(u)):localStorage.removeItem(HK)}catch(e){}};
 const mapUser=u=>{if(!u)return null;const m=u.user_metadata||{};return{id:u.id,name:m.full_name||m.name||(u.email||'').split('@')[0]||'User',email:u.email||m.email||'',avatar:m.avatar_url||m.picture||''}};
@@ -930,11 +947,12 @@ function renderAuth(){
   const box=$('#auth');box.textContent='';const u=user||(authPending?getHint():null);
   if(!u){const b=E('button','signin','Sign In');b.id='sib';b.onclick=()=>openAuth();box.append(b)}
   else{const b=E('button','avb');b.id='avb';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','Account menu: '+u.name);b.append(avatarEl(u));b.onclick=e=>{e.stopPropagation();toggleMenu()};box.append(b)}
-  if(!u)closeMenu()}
+  if(!u)closeMenu();frBadge()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
   const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
   const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&o.soon){b.disabled=true;b.append(E('em','','Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
   it('Username',unameEdit,{sub:uname.state==='nosql'?'Soon':uname.v?'@'+uname.v:'Set'});
+  it('Friends',frOpen,{sub:frIn().length?String(frIn().length):''});
   it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
   it('Account Settings',null,{soon:1});
   m.append(E('hr'));it('Sign Out',signOut,{out:1})}
@@ -969,12 +987,57 @@ function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
 function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);renderAuth();
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
   if(n&&was!==n.id)unameLoad(n.id);
-  if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n).then(()=>unameFetch(n)),0)}
+  if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n).then(()=>{unameFetch(n);frLoad(true)}),0)}
   if(window.Cloud){if(n)Cloud.signedIn(n);else Cloud.signedOut()}}
 async function syncProfile(n){ /* refresh display fields only; row + email are created/owned by the DB trigger, identity comes from the JWT via RLS */
   try{const{error}=await sb.from('profiles').update({display_name:n.name,avatar_url:n.avatar||null}).eq('id',n.id);if(error)console.warn('profile sync:',error.message)}catch(e){console.warn('profile sync failed',e)}}
-async function signOut(){closeMenu();uname.v='';uname.state=null;const had=user;setHint(null);user=null;profSynced=null;renderAuth();
+async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;renderAuth();
   try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
+/* ---------- v34: Friends (all rules enforced server-side by supabase/003_friends.sql; the app only calls its functions) ---------- */
+const fr={list:[],state:null,t:0,res:null,msg:''};
+const frIn=()=>fr.list.filter(f=>f.status==='pending'&&f.incoming);
+function frBadge(){const n=frIn().length,b=$('#auth');b&&b.classList.toggle('bd',n>0&&!!user);if(!$('#amenu').hidden&&user)buildMenu(user)}
+const frMissing=e=>e&&(e.code==='PGRST202'||e.code==='42883'||e.code==='42P01'||/could not find|does not exist/i.test(e.message||''));
+async function frLoad(force){if(!user||!sb)return;if(!force&&Date.now()-fr.t<30000)return;
+  try{const{data,error}=await sb.rpc('list_friends');
+    if(error){if(frMissing(error))fr.state='nosql';else if(!fr.state)fr.state='err';frRender();return}
+    fr.list=Array.isArray(data)?data:[];fr.state='ok';fr.t=Date.now()}catch(e){if(!fr.state)fr.state='err'}
+  frBadge();frRender()}
+async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(navigator.onLine?'Something went wrong. Try again.':'You are offline',true);return null}
+  if(okMsg)note(okMsg);await frLoad(true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
+function frAvatar(f){return avatarEl({name:f.display_name||f.username||'?',avatar:f.avatar_url||''})}
+function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(E('b','',f.display_name||f.username),E('small','','@'+f.username));r.append(frAvatar(f),n);
+  btns.forEach(([t,fn,pri])=>{const b=E('button',pri?'pri':'',t);b.type='button';b.onclick=()=>{b.disabled=true;fn()};r.append(b)});return r}
+async function frFind(){const box=$('#frres');const q=$('#frq').value.trim().toLowerCase().replace(/^@/,'');box.textContent='';fr.res=null;
+  const er=unameErr(q);if(er){box.append(E('p','err',er));return}
+  const b=$('#frgo');b.disabled=true;
+  try{const{data,error}=await sb.rpc('find_user',{p_username:q});b.disabled=false;
+    if(error){box.append(E('p','err',frMissing(error)?'Friends are not enabled on the server yet.':navigator.onLine?'Search failed. Try again.':'You are offline'));return}
+    const u=data&&data[0];if(!u){box.append(E('p','mut','No one found with that username. Check the spelling.'));return}
+    const ex=fr.list.find(f=>f.other_id===u.id),card=E('div','fcard');
+    const act=!ex?[['Add friend',async()=>{const r=await frCall('send_friend_request',{p_user:u.id},null);if(r!==null){note(r==='friends'?'You are now friends':'Request sent');frFind()}},1]]:null;
+    const row=frRow({display_name:u.display_name,username:u.username,avatar_url:u.avatar_url},act||[]);
+    if(ex){const t=E('small','mut',ex.status==='accepted'?'Already friends':ex.incoming?'Sent you a request (see Requests below)':'Request sent');t.style.flex='none';row.append(t)}
+    card.append(row);box.append(card)}catch(e){b.disabled=false;box.append(E('p','err','Search failed. Try again.'))}}
+function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains('on'))return;
+  const keep=$('#frq')?$('#frq').value:'',had=document.activeElement&&document.activeElement.id==='frq';body.textContent='';
+  if(!user){body.append(E('p','mut','Sign in to use Friends.'));return}
+  if(fr.state==='nosql'){const c=E('div','fcard');c.append(E('p','','Friends are not enabled on the server yet. Run supabase/003_friends.sql in the Supabase SQL Editor, then reopen the app.'));body.append(c);return}
+  if(!uname.v&&uname.state!=='nosql'){const c=E('div','fcard');c.append(E('p','','Choose a username first. Friends find you by it.'));const b=E('button','pill','Set username');b.type='button';b.onclick=unameEdit;c.append(b);body.append(c)}
+  const s=E('div','frs'),i=E('input');i.id='frq';i.placeholder='Find by exact username';i.value=keep;i.autocapitalize='none';i.setAttribute('autocorrect','off');i.spellcheck=false;i.setAttribute('aria-label','Find a friend by username');i.onkeydown=e=>{if(e.key==='Enter')frFind()};
+  const g=E('button','pill','Find');g.id='frgo';g.type='button';g.onclick=frFind;s.append(i,g);body.append(s);const res=E('div');res.id='frres';body.append(res);if(had)i.focus();
+  if(fr.state==='err'){body.append(E('p','mut','Could not load your friends. Pull down or reopen this screen to retry.'))}
+  const inc=frIn(),out=fr.list.filter(f=>f.status==='pending'&&!f.incoming),ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
+  const sec=(t,n)=>{const h=E('div','fh',t);if(n)h.append(E('em','',String(n)));body.append(h)};
+  if(inc.length){sec('Requests',inc.length);inc.forEach(f=>body.append(frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]])))}
+  if(out.length){sec('Sent');out.forEach(f=>body.append(frRow(f,[['Cancel',()=>frCall('remove_friendship',{p_id:f.id},'Request cancelled')]])))}
+  sec('Friends',ok.length);
+  if(!ok.length)body.append(E('p','mut','No friends yet. Search a username above to send a request.'));
+  ok.forEach(f=>body.append(frRow(f,[['Remove',()=>{ask('Remove '+(f.display_name||f.username)+'?','They will no longer be your friend. Songs already shared stay in each library.','Remove',()=>frCall('remove_friendship',{p_id:f.id},'Friend removed'));setTimeout(frRender,0)}]])))}
+function frOpen(){closeMenu();show('friends');frRender();frLoad(true)}
+$('#frX').onclick=()=>{show('list')};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user&&sb)frLoad()});
+
 /* ---------- Cloud sync hooks (logic lives in cloud.js) ---------- */
 function readLib(u){const a=u?K+':u:'+u:K,b=u?KC+':u:'+u:KC;let ex=false,s=[JSON.parse(SAMPLE_J)],c=[];
   try{const r=localStorage.getItem(a);if(r!=null){ex=true;const p=JSON.parse(r);if(Array.isArray(p))s=p.filter(x=>x&&x.id)}}catch(e){}

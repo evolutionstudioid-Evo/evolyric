@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v48 – Section glow fixed
+- The active section glow is now soft and round: the chip strip has enough room around the chips so the glow is no longer cut off into a box. The glow is also slightly smaller and smoother.
+
 ## v47 – Section chips redesigned
 - Section chips are now liquid-glass pills tinted with a soft gradient of each section's colour, with a light highlight on top.
 - The active section glows and gently breathes; the strip fades at its edges.

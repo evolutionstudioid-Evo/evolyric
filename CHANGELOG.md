@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v44 – Speed by dragging, triple tap to edit
+- Touch the lyrics and drag left or right to change the scroll speed; the speed panel opens and shows the value. The corner speed button still works.
+- This replaces the old hold-to-boost gesture.
+- Three quick taps on the lyrics open the song in the editor.
+
 ## v43 – Annotate page (pen, text, shapes, images)
 - The editor **Note** button now opens a full page showing the lyrics like play mode, where you can draw with a pen, add styled text, shapes (rectangle, ellipse, triangle, line) and images, then move, recolour, erase, undo and redo.
 - Annotations are anchored to lyric lines, saved with the song (synced), and shown over the lyrics in the player.

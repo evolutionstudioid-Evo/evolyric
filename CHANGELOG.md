@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v51 – Hold boost: 1 second, speed 30
+- Hold-to-fast-forward now starts after 1 second and runs at speed 30.
+
 ## v50 – Hold to fast-forward
 - While auto-scroll is running, pressing and holding still on the lyrics for 2 seconds scrolls at speed 25 until you let go, then the saved speed resumes. No popup. The boost eases in and out. Moving your finger (to change speed) cancels it.
 

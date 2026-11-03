@@ -905,7 +905,7 @@ function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}]
 document.addEventListener('gesturestart',e=>e.preventDefault());
 document.addEventListener('contextmenu',e=>{const t=e.target;if(!(t.closest&&t.closest('input,textarea,[contenteditable]')))e.preventDefault()}); /* no long-press menu except in editable fields */
 /* Gestures on the lyric canvas (one Pointer Events system):
-   tap = play/pause, hold still 2 s while playing = speed 25 until release, touch + drag left/right = scroll speed (the speed panel opens with the value), three quick taps = edit song, two fingers = text size. */
+   tap = play/pause, hold still 1 s while playing = speed 30 until release, touch + drag left/right = scroll speed (the speed panel opens with the value), three quick taps = edit song, two fingers = text size. */
 /* v45: floating speed HUD, top centre of the lyrics, visible only while the finger is dragging */
 let hudT=0;const HUD=$('#shud');
 function hudSet(){const v=cur.speed;HUD.querySelector('b').textContent=v;HUD.querySelector('i').style.width=((v-1)/24*100)+'%'}
@@ -925,7 +925,7 @@ function hudHide(){clearTimeout(hudT);hudT=setTimeout(()=>{HUD.classList.remove(
     const open=P.filter(x=>x[2]());if(!open.length)return;const t=e.target;if(!t||!t.closest)return;
     if(open.some(x=>t.closest(x[0])||(x[1]&&t.closest(x[1]))))return;
     open.forEach(x=>x[3]());e.stopPropagation()},true)})();
-const Ly=$('#lyr'),PT=new Map(),SPX=14,BOOSTV=25+SPEED_BONUS;let G=null,taps=[]; /* SPX: pixels of horizontal drag per speed step */
+const Ly=$('#lyr'),PT=new Map(),SPX=14,BOOSTV=30+SPEED_BONUS;let G=null,taps=[]; /* SPX: pixels of horizontal drag per speed step */
 const pdist=()=>{const [a,b]=[...PT.values()];return Math.hypot(a.x-b.x,a.y-b.y)};
 Ly.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -935,8 +935,8 @@ Ly.addEventListener('pointerdown',e=>{
   if(PT.size===2){G={pinch:1,d0:pdist()||1,f0:cur.font};return}
   if(PT.size>2)return;
   G={x:e.clientX,y:e.clientY,t:performance.now(),mv:0,sp:0,vert:0,boost:0,was:playing};
-  /* holding still for 2 s while auto-scroll runs = fast-forward at speed 25 until release */
-  if(playing)G.h=setTimeout(()=>{const g=G;if(g&&!g.mv&&!g.sp&&!g.pinch&&playing){g.boost=1;boostSp=BOOSTV}},2000)});
+  /* holding still for 1 s while auto-scroll runs = fast-forward at speed 30 until release */
+  if(playing)G.h=setTimeout(()=>{const g=G;if(g&&!g.mv&&!g.sp&&!g.pinch&&playing){g.boost=1;boostSp=BOOSTV}},1000)});
 Ly.addEventListener('pointermove',e=>{
   const p=PT.get(e.pointerId);if(!p||!G)return;p.x=e.clientX;p.y=e.clientY;
   if(G.pinch){if(PT.size===2)setFont(G.f0*Math.pow(pdist()/G.d0,1.35));return}

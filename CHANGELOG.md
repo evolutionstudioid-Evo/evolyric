@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v61 – Pro tag
+- A small "Pro" tag sits at the bottom right of the EvoLyric title. It is the full-version / subscriber label; a "Demo" variant exists for non-subscribers but is not used yet.
+
 ## v60 – Home redesign, Recent, sidebar back-to-top, colour swatches
 - Home: tabs are All Songs / Categories / Recent with the sort button at the right end; the search field is longer with a magnifier inside it; web search is a globe button.
 - New **Recent** tab: the last 15 songs you opened, newest first. Opening a 16th removes the oldest. Kept on this device.

@@ -33,7 +33,9 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .hd{display:flex;align-items:center;gap:6px;padding:10px 12px;min-height:52px}
 .hd h1{margin:0;flex:1;display:flex;align-items:center;gap:11px;font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .lg{width:34px;height:34px;flex:none;filter:drop-shadow(0 2px 8px rgba(240,160,75,.28))}
-.wm{display:flex;flex-direction:column;justify-content:center;line-height:1}
+.wm{display:flex;flex-direction:row;align-items:flex-end;gap:6px;line-height:1}
+.tier{font:800 10.5px/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;padding:3px 6px 3px 7px;margin-bottom:5px;border-radius:7px;color:#f0a04b;border:1px solid rgba(240,160,75,.55);background:linear-gradient(145deg,rgba(240,160,75,.20),rgba(240,160,75,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.tier[data-tier=demo]{color:var(--mut);border-color:var(--ln);background:var(--card);box-shadow:none}
 .wm span{font-size:31px;font-weight:800;letter-spacing:-1px;color:var(--fg);line-height:1;padding-bottom:2px}
 .wm span i{font-style:normal;font-weight:600;letter-spacing:-.6px;background:linear-gradient(100deg,#f0a04b 10%,#ffd9a0 90%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .ic{width:44px;height:44px;border-radius:12px;font-size:20px;background:var(--card)}
@@ -431,7 +433,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 <body>
 
 <section id="list" class="v on">
-  <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span></span></h1><span id="svw" hidden>⚠ Not saved</span><div id="auth"></div></div>
+  <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span><b class="tier" id="tier" data-tier="pro">Pro</b></span></h1><span id="svw" hidden>⚠ Not saved</span><div id="auth"></div></div>
   <div id="amenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
@@ -836,6 +838,9 @@ function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';refresh();sh
 document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.querySelector('input');
   b.addEventListener('pointerdown',e=>e.preventDefault()); /* keep focus (and the on-screen keyboard) on the box */
   b.addEventListener('click',()=>{i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));i.focus()})});
+/* v61: plan tag next to the wordmark. 'pro' = full version / subscribed, 'demo' = not subscribed (not used yet: everyone shows Pro for now) */
+function setTier(t){const e=$('#tier');if(!e)return;e.dataset.tier=t==='demo'?'demo':'pro';e.textContent=t==='demo'?'Demo':'Pro'}
+setTier('pro');
 /* v60: sidebar back-to-top */
 (function(){const L=$('#dItems'),b=$('#dTop');let q=0;
   L.addEventListener('scroll',()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;b.classList.toggle('on',L.scrollTop>260)})},{passive:true});

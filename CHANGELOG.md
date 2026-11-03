@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v63 – Send a song to several friends
+- In the Send a song sheet you can tick multiple friends and send to all of them at once. The result lists any friend who couldn't receive it.
+
 ## v62 – Simpler friend picker when sending a song
 - Choosing a friend to send a song to now shows only their photo (from their Google account) and @username in one clean row each. Long friend lists scroll.
 

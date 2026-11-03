@@ -303,6 +303,9 @@ html:has(#play.on){background:#0d0a08}
 .sheet button.ck{display:flex;justify-content:space-between;gap:16px}.sheet button.ck i{font-style:normal;color:var(--acc)}
 /* v36: dialogs and toasts must sit above the fullscreen player (z-index 1000), e.g. Send to friend from the player menu */
 #ctx,#note{z-index:1100}
+/* v38: notification banner */
+#ntf{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);opacity:0;z-index:1200;max-width:min(92vw,420px);background:var(--card);color:var(--fg);border:1px solid var(--acc);border-radius:16px;padding:12px 16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .25s var(--ease),opacity .25s;text-align:left}
+#ntf.on{transform:translate(-50%,0);opacity:1}
 /* v34: Friends */
 #frbody{flex:1;overflow-y:auto;padding:0 12px 28px;-webkit-overflow-scrolling:touch}
 .fcard{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:0 0 12px}
@@ -379,6 +382,7 @@ html:has(#play.on){background:#0d0a08}
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
 <div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><button class="lnk" id="atGuest" type="button">Not now, keep using the demo</button></div></div>
 <div id="note" role="status" aria-live="polite"></div>
+<button id="ntf" type="button" role="status" aria-live="polite" hidden></button>
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
 
 <script src="config.js"></script>
@@ -420,7 +424,7 @@ function press(b,tap,hold){let tm,lp=0;const en=()=>clearTimeout(tm);
   ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,en));
   b.addEventListener('contextmenu',e=>{e.preventDefault();en();hold()});
   b.onclick=()=>{if(lp){lp=0;return}tap()}}
-const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle()};
+const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350)};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185',all:'#e7e5e4',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
 const HC={r:'rgba(255,69,58,.45)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)'};
@@ -1002,16 +1006,38 @@ async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.s
 /* ---------- v34: Friends (all rules enforced server-side by supabase/003_friends.sql; the app only calls its functions) ---------- */
 const fr={list:[],inbox:[],state:null,t:0,res:null,msg:''};
 const frIn=()=>fr.list.filter(f=>f.status==='pending'&&f.incoming),frAlerts=()=>frIn().length+fr.inbox.length;
-function frBadge(){const n=frAlerts(),b=$('#auth');b&&b.classList.toggle('bd',n>0&&!!user);if(!$('#amenu').hidden&&user)buildMenu(user)}
+function frBadge(){const n=frAlerts(),b=$('#auth');b&&b.classList.toggle('bd',n>0&&!!user);try{if(navigator.setAppBadge){if(n>0&&user)navigator.setAppBadge(n).catch(()=>{});else navigator.clearAppBadge().catch(()=>{})}}catch(e){}if(!$('#amenu').hidden&&user)buildMenu(user)}
 const frMissing=e=>e&&(e.code==='PGRST202'||e.code==='42883'||e.code==='42P01'||/could not find|does not exist/i.test(e.message||''));
-async function frLoad(force){if(!user||!sb)return;if(!force&&Date.now()-fr.t<30000)return;
+const frSig=()=>JSON.stringify([fr.list.map(f=>f.id+f.status),fr.inbox.map(m=>m.id)]);
+async function frLoad(force,render){if(!user||!sb)return;if(!force&&Date.now()-fr.t<30000)return;
+  const before=frSig();
   try{const{data,error}=await sb.rpc('list_friends');
     if(error){if(frMissing(error))fr.state='nosql';else if(!fr.state)fr.state='err';frRender();return}
     fr.list=Array.isArray(data)?data:[];fr.state='ok';fr.t=Date.now();
     const ib=await sb.rpc('list_inbox');if(!ib.error)fr.inbox=Array.isArray(ib.data)?ib.data:[]}catch(e){if(!fr.state)fr.state='err'}
-  frBadge();frRender()}
+  frBadge();if(render||frSig()!==before)frRender();frNotify()}
+/* v38: in-app notifications. New friend requests / songs from friends show a banner (and the red dot + app badge).
+   Never while a song is playing (live safety): it waits until you are back on Home. Polled every 25 s while the app is open and visible. */
+const SEENK='evolyric-seen:';
+function seenLoad(){try{return new Set(JSON.parse(localStorage.getItem(SEENK+(user&&user.id))||'[]'))}catch(e){return new Set()}}
+function seenSave(set){try{localStorage.setItem(SEENK+user.id,JSON.stringify([...set].slice(-200)))}catch(e){}}
+function frNotify(){if(!user||fr.state!=='ok')return;
+  const items=[...frIn().map(f=>({k:'r:'+f.id,t:'r',u:f.username})),...fr.inbox.map(m=>({k:'s:'+m.id,t:'s',u:m.username,n:m.song_count||1}))];
+  const seen=seenLoad(),fresh=items.filter(x=>!seen.has(x.k));
+  if(!fresh.length){seenSave(new Set(items.map(x=>x.k)));return}
+  if($('#friends').classList.contains('on')){seenSave(new Set(items.map(x=>x.k)));return}
+  if($('#play').classList.contains('on'))return; /* wait until the performance view is closed */
+  seenSave(new Set(items.map(x=>x.k)));
+  const rq=fresh.filter(x=>x.t==='r'),sg=fresh.filter(x=>x.t==='s');let m;
+  if(fresh.length===1){const x=fresh[0];m=x.t==='r'?'@'+x.u+' sent you a friend request':x.n>1?'@'+x.u+' sent you '+x.n+' songs':'@'+x.u+' sent you a song'}
+  else m=[rq.length&&rq.length+(rq.length===1?' friend request':' friend requests'),sg.length&&sg.length+(sg.length===1?' song delivery':' song deliveries')].filter(Boolean).join(' · ');
+  ntfShow(m)}
+let ntfT;function ntfShow(m){const n=$('#ntf');n.textContent=m;n.hidden=false;requestAnimationFrame(()=>n.classList.add('on'));clearTimeout(ntfT);ntfT=setTimeout(ntfHide,7000)}
+function ntfHide(){const n=$('#ntf');n.classList.remove('on');setTimeout(()=>{if(!n.classList.contains('on'))n.hidden=true},260)}
+$('#ntf').onclick=()=>{ntfHide();if(document.querySelector('#play.on'))return;frOpen()};
+setInterval(()=>{if(!document.hidden&&user&&sb&&navigator.onLine)frLoad(true)},25000);
 async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(navigator.onLine?'Something went wrong. Try again.':'You are offline',true);return null}
-  if(okMsg)note(okMsg);await frLoad(true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
+  if(okMsg)note(okMsg);await frLoad(true,true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
 function frAvatar(f){return avatarEl({name:f.display_name||f.username||'?',avatar:f.avatar_url||''})}
 function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(E('b','',f.display_name||f.username),E('small','','@'+f.username));r.append(frAvatar(f),n);
   btns.forEach(([t,fn,pri])=>{const b=E('button',pri?'pri':'',t);b.type='button';b.onclick=()=>{b.disabled=true;fn()};r.append(b)});return r}
@@ -1076,7 +1102,7 @@ function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to fr
         note('Sent to @'+f.username)}catch(e){note('Could not send. Try again.',true)}};c.append(b)});
     const x=E('button','','Cancel');x.onclick=ctxClose;c.append(x);$('#ctx').classList.add('on')};
   if(fr.state==null||Date.now()-fr.t>60000)frLoad(true).then(go);else go()}
-function frOpen(){closeMenu();show('friends');frRender();frLoad(true)}
+function frOpen(){closeMenu();ntfHide();show('friends');frRender();frLoad(true,true)}
 $('#frX').onclick=()=>{show('list')};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user&&sb)frLoad()});
 

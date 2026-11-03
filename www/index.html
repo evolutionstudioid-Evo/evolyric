@@ -44,7 +44,7 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .ltr{color:var(--acc);font-size:15px;padding:14px 4px 4px}
 .it{display:block;width:100%;text-align:left;padding:12px 4px;border-bottom:1px solid var(--ln);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .it b{display:flex;justify-content:space-between;gap:8px;font-size:19px;font-weight:400}.key{color:var(--acc);font-size:15px;white-space:nowrap}.it small,.mut{color:var(--mut)}
-#secs{position:relative;display:flex;gap:10px;overflow-x:auto;padding:24px 24px 28px;margin:-24px 0 -28px;min-height:40px;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}#secs .chip{pointer-events:auto}
+#secs{position:relative;display:flex;gap:10px;overflow-x:auto;padding:24px 24px 28px;margin:-24px 0 -28px;min-height:40px;touch-action:pan-x;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
 /* v47: section chips - liquid glass tinted by the section colour, glowing when active */
 .chip{flex:none;position:relative;overflow:hidden;padding:7px 15px;border-radius:999px;font-weight:700;letter-spacing:.01em;opacity:.8;
   background:linear-gradient(150deg,rgba(255,255,255,.07),rgba(255,255,255,.015));
@@ -700,19 +700,23 @@ function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
   t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
   t.append(E('div','end'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=/^(intro|interlude)/.test(d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
-function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop='12px';SO=null;fitTitle()}
+function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr');$('#txt').style.paddingTop='12px';SO=null;fitTitle()}
 /* v52: the song title lives in the header above the section selector (fixed, centred) and shrinks to fit */
 function fitTitle(){const e=$('#ptit');if(!e||!e.textContent)return;let f=20;e.style.fontSize=f+'px';while(e.scrollWidth>e.clientWidth+1&&f>11){f-=.5;e.style.fontSize=f+'px'}}
 window.addEventListener('resize',fixPad);
 try{document.fonts.addEventListener('loadingdone',()=>fixPad())}catch(e){}
 const secEls=()=>[...$('#txt').querySelectorAll('.sec')];
 function hl(){
-  const L=$('#lyr'),T=tops(),rl=L.scrollTop+Math.min(L.clientHeight*.35,(T[0]||0)+L.scrollTop);let a=-1; /* at the top of the song the reading line sits at the first section, then eases down to 35% */
+  const L=$('#lyr'),T=tops(),rl=L.scrollTop+Math.min(RLP(L),(T[0]||0)+L.scrollTop);let a=-1; /* reading line: near the top of the lyrics; at scrollTop 0 it sits at the first section */
   for(let i=0;i<SE.length;i++){if(T[i]<=rl+2)a=i;else break}
-  const d=a>=0?SE[a]:null;if(d===lastA)return;
+  let d=a>=0?SE[a]:null;
+  if(jumpD){if(Math.abs(L.scrollTop-jumpTop)<3)d=jumpD;else jumpD=null} /* a tapped chip stays active even when the lyrics cannot scroll any further */
+  if(d===lastA)return;
   if(lastA&&lastA._c)lastA._c.classList.remove('on');
   lastA=d;if(d){d._c.classList.add('on');const b=$('#secs');b.scrollTo({left:d._c.offsetLeft-(b.clientWidth-d._c.offsetWidth)/2})}}
-function jump(d){const L=$('#lyr');L.scrollTop=Math.max(0,d.offsetTop-Math.round(L.clientHeight*.35));frac=0;waiting=!playing&&/^(intro|interlude)/.test(d.dataset.k);hl()}
+const RLP=L=>Math.round(Math.min(L.clientHeight*.2,120)); /* reading line: distance from the top of the lyrics */
+let jumpD=null,jumpTop=0;
+function jump(d){const L=$('#lyr');L.scrollTop=Math.max(0,d.offsetTop-RLP(L));jumpD=d;jumpTop=L.scrollTop;frac=0;waiting=!playing&&/^(intro|interlude)/.test(d.dataset.k);hl()}
 $('#lyr').addEventListener('scroll',()=>{
   if(playing){if(Math.abs($('#lyr').scrollTop-Math.floor(pos))>=1.5){pos=$('#lyr').scrollTop;txtEl.style.transform=''}}
   if(!hlq){hlq=1;requestAnimationFrame(()=>{hlq=0;hl()})}},{passive:true});
@@ -724,7 +728,7 @@ function setPlay(on){
   if(on===playing)return;
   playing=on;$('#play').classList.toggle('run',on);
   if(on){
-    const L=$('#lyr'),rl=L.scrollTop+L.clientHeight*.35+3;
+    const L=$('#lyr'),rl=L.scrollTop+RLP(L)+3;
     waiting=false;skip.clear();
     secEls().forEach(d=>{if(d.offsetTop<=rl&&/^(intro|interlude)/.test(d.dataset.k))skip.add(d)});
     last=0;frac=0;bst=0;pos=L.scrollTop;cancelAnimationFrame(playRaf);playRaf=requestAnimationFrame(tick);
@@ -764,7 +768,7 @@ function tick(t){
   pos+=sp*SPEED_SCALE*cur.font*.12*dt;
   /* sub-pixel smoothness: integer part via scrollTop, fractional part via GPU transform */
   const ip=Math.floor(pos);if(L.scrollTop!==ip)L.scrollTop=ip;txtEl.style.transform='translate3d(0,'+(ip-pos).toFixed(3)+'px,0)';
-  const rl=L.scrollTop+L.clientHeight*.35;
+  const rl=L.scrollTop+RLP(L);
   const T=tops();
   for(let k=0;k<SE.length;k++){const d=SE[k];
     if(T[k]<=rl&&d._stop&&!skip.has(d)&&d!==startEl){setPlay(false);waiting=true;return}}
@@ -777,7 +781,7 @@ $('#spMinus').onclick=()=>{$('#sp').value=Math.max(+$('#sp').min,+$('#sp').value
 $('#spPlus').onclick=()=>{$('#sp').value=Math.min(+$('#sp').max,+$('#sp').value+1);syncSpeed()};
 function setFont(v){
   const L=$('#lyr'),old=cur.font,nf=clamp(Math.round(v*10)/10,FMIN,FMAX);if(nf===old)return;
-  const f=$('#txt').firstElementChild,S=f?f.offsetTop:0,rl=L.clientHeight*.35,y=L.scrollTop+rl;
+  const f=$('#txt').firstElementChild,S=f?f.offsetTop:0,rl=RLP(L),y=L.scrollTop+rl;
   cur.font=nf;$('#txt').style.fontSize=nf+'px';SO=null;
   if(y>S)L.scrollTop=S+(y-S)*nf/old-rl}
 $('#sp').onchange=save;

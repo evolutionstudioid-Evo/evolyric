@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v60 – Home redesign, Recent, sidebar back-to-top, colour swatches
+- Home: tabs are All Songs / Categories / Recent with the sort button at the right end; the search field is longer with a magnifier inside it; web search is a globe button.
+- New **Recent** tab: the last 15 songs you opened, newest first. Opening a 16th removes the oldest. Kept on this device.
+- Sidebar: a back-to-top button appears when you scroll down, and the panel is more transparent.
+- Annotate and note colour pickers: the selected colour is shown by an orange ring only; the colour itself is no longer filled with orange.
+- The Image tool is hidden for now (the code is kept).
+
 ## v59 – Editor tweaks
 - Categories are a wide box again showing the category names; the key selector is narrower.
 - The section buttons are back in a permanent column at the right of the lyrics for quick editing (the popover from v58 is gone).

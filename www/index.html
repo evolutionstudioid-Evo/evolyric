@@ -221,10 +221,10 @@ button,select,.it{touch-action:manipulation}
 @media(prefers-reduced-motion:reduce){#qtg,#qtg b,#qp,.qi,#nxt,#nxt svg,#qpop,#qx svg,.pill,.ic,.step,.chip,#note{transition:none!important;animation:none!important}.v.on,.qi.new,#nxt.on::after,#dItems.stg>*,#ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on,#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet{animation:none!important}}
 
 /* ===== v18: sidebar compact view + liquid glass ===== */
-#drawer{background:linear-gradient(160deg,rgba(255,236,214,.13),rgba(34,28,23,.30) 38%,rgba(34,28,23,.22));-webkit-backdrop-filter:blur(22px) saturate(1.7) brightness(1.04);backdrop-filter:blur(22px) saturate(1.7) brightness(1.04);border:1px solid rgba(255,255,255,.13);border-left:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset -1px 0 0 rgba(255,255,255,.06),10px 0 40px rgba(0,0,0,.35)}
-#drawer .sb input,#drawer .fld{background:rgba(13,10,8,.38);border-color:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#drawer{background:linear-gradient(160deg,rgba(255,236,214,.07),rgba(34,28,23,.15) 38%,rgba(34,28,23,.10));-webkit-backdrop-filter:blur(26px) saturate(1.8) brightness(1.05);backdrop-filter:blur(26px) saturate(1.8) brightness(1.05);border:1px solid rgba(255,255,255,.13);border-left:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset -1px 0 0 rgba(255,255,255,.06),10px 0 40px rgba(0,0,0,.35)}
+#drawer .sb input,#drawer .fld{background:rgba(13,10,8,.26);border-color:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #drawer .ic,#drawer .pill{backdrop-filter:blur(6px)}
-#drawer .ic{background:rgba(13,10,8,.38)}
+#drawer .ic{background:rgba(13,10,8,.26)}
 #drawer .it{border-bottom-color:rgba(255,255,255,.09)}
 #drawer .ltr{text-shadow:0 1px 8px rgba(0,0,0,.35)}
 #drawer .it b,#drawer .it small{text-shadow:0 1px 6px rgba(0,0,0,.4)}
@@ -362,6 +362,18 @@ html:has(#play.on){background:#0d0a08}
 #etools button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #etools button:active{background:var(--card)}#etools button.on{color:#15110e}#etools button.on svg{stroke:#15110e}
 #etools .tsep{flex:none;width:1px;height:20px;background:var(--ln);margin:0 7px}
+/* v60: back-to-top in the sidebar */
+#dTop{position:absolute;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;z-index:3;
+  background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.06));-webkit-backdrop-filter:blur(12px) saturate(1.7);backdrop-filter:blur(12px) saturate(1.7);border:1px solid rgba(255,255,255,.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 6px 18px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(10px) scale(.9);transition:opacity .25s var(--ease),transform .3s var(--spring),visibility 0s .3s}
+#dTop.on{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--ease),transform .3s var(--spring),visibility 0s}
+#dTop svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* v60: Home - tabs row with sort at the right, longer search field with a magnifier, web search as a globe */
+#tabs button{padding:8px 6px;font-size:14px;white-space:nowrap}#tabs #sortb{flex:none;width:44px;padding:0;border-radius:10px}
+.sfield .mg{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--mut);background:none;border:0;padding:0;z-index:1}
+.sfield .mg svg,#goog svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sfield #q{padding-left:40px}
+#goog{width:46px;flex:none;border-radius:12px;background:var(--card);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--mut);padding:0}#goog[hidden]{display:none}
 /* v52: fixed song title in the header */
 #ptit{min-width:0;text-align:center;font:700 20px/1.2 'Bricolage Grotesque',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg);pointer-events:none;padding:0 4px}
 /* v43: annotations */
@@ -372,8 +384,8 @@ html:has(#play.on){background:#0d0a08}
 .ansvg g.sel{filter:drop-shadow(0 0 3px #fff)}.anx.sel,.ani.sel{outline:2px dashed var(--acc);outline-offset:4px}
 #ann{background:var(--bg)}#anl{flex:1;overflow-y:auto;position:relative;padding:0 18px;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}
 #antx{position:relative;max-width:960px;margin:0 auto;padding:16px 0 45vh}.ancap{position:absolute;inset:0;z-index:3;pointer-events:none;touch-action:none}
-#antools{flex:none;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln);background:var(--card)}#antools .tb{padding-top:4px;align-items:center}#antools .tb[hidden]{display:none!important}
-#antools .tb button.on{background:var(--acc);color:#15110e;border-color:var(--acc)}#antools .asw{width:26px;height:26px;border-radius:50%;padding:0;border:2px solid transparent}#antools .asw.on{border-color:var(--fg);background:inherit}
+#antools{flex:none;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln);background:var(--card)}#antools .tb{padding-top:4px;align-items:center}#antools .tb[hidden],#antools button[hidden]{display:none!important}
+#antools .tb button.on{background:var(--acc);color:#15110e;border-color:var(--acc)}#antools .asw{width:26px;height:26px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,.2);background:var(--c)!important}#antools .asw.on{border-color:transparent;box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--acc);background:var(--c)!important}
 /* v42: notes (editor) */
 .note{line-height:1.3;white-space:pre-wrap;max-width:100%}
 #notebox{position:fixed;inset:0;z-index:62;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);padding:12px}#notebox.on{display:flex}
@@ -381,7 +393,7 @@ html:has(#play.on){background:#0d0a08}
 #nbtx{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px;margin:0 4px 6px;width:calc(100% - 8px);resize:none;line-height:1.35}
 .nrow2{display:flex;align-items:center;gap:6px;margin:5px 4px}.nrow2>span{width:50px;flex:none;color:var(--mut);font-size:12.5px}
 .nseg{display:flex;gap:4px;flex:1;flex-wrap:wrap}.sheet .nseg button{flex:1;min-width:40px;padding:8px 4px;text-align:center;border:1px solid var(--ln);font-size:13px;border-radius:9px}.sheet .nseg button.on{background:var(--acc);color:#15110e;border-color:var(--acc)}
-.sheet .nseg button.nsw{flex:none;width:30px;min-width:30px;height:30px;padding:0;border-radius:50%;border:2px solid transparent}.sheet .nseg button.nsw.on{border-color:var(--fg);background:inherit}
+.sheet .nseg button.nsw{flex:none;width:30px;min-width:30px;height:30px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:var(--c)}.sheet .nseg button.nsw.on{border-color:transparent;background:var(--c);box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--acc)}
 #nbprev{background:#0d0a08;border:1px solid var(--ln);border-radius:12px;padding:12px;margin:8px 4px;font-size:30px;min-height:74px;line-height:1.3;overflow:hidden;color:#f3ece3;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;text-align:center}
 .nact{display:flex;gap:6px;margin:6px 4px 2px}.sheet .nact button{flex:1;text-align:center;padding:11px 8px;border:1px solid var(--ln);border-radius:10px}.sheet .nact button.pill{border-color:var(--acc)}
 #arr{position:fixed;inset:0;z-index:64;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}#arr.on{display:flex}
@@ -421,9 +433,9 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 <section id="list" class="v on">
   <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span></span></h1><span id="svw" hidden>⚠ Not saved</span><div id="auth"></div></div>
   <div id="amenu" role="menu" hidden></div>
-  <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">My Categories</button></div>
+  <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
-  <div class="sb"><span class="sfield"><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button><button class="pill" id="find">Find</button><button class="pill" id="goog">Google</button></div>
+  <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="goog" type="button" aria-label="Search the web for these lyrics" title="Search the web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg></button></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
   <div id="items"></div>
   <div id="fbg"></div>
@@ -454,7 +466,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
     <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
   </div>
   <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
-    <div class="sb"><span class="sfield"><input id="dq" placeholder="Search…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><select class="fld" id="dcat" aria-label="Category"></select></div><div id="dItems"></div></div>
+    <div class="sb"><span class="sfield"><input id="dq" placeholder="Search…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><select class="fld" id="dcat" aria-label="Category"></select></div><div id="dItems"></div><button id="dTop" type="button" aria-label="Back to top" title="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/><path d="M6 5h12"/></svg></button></div>
 </section>
 
 <section id="edit" class="v">
@@ -488,7 +500,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
     <div class="tb" id="anSel" hidden><b>Selected</b><button id="anEd">Edit text</button><button id="anDel">Delete</button></div>
     <div class="tb" id="anShape" hidden><button data-s="r" aria-label="Rectangle">▭</button><button data-s="o" aria-label="Ellipse">◯</button><button data-s="t" aria-label="Triangle">△</button><button data-s="n" aria-label="Line">╱</button></div>
     <div class="tb" id="anO"></div>
-    <div class="tb" id="anT"><button data-t="hand">Scroll</button><button data-t="pen">Pen</button><button data-t="text">Text</button><button data-t="shape">Shape</button><button id="anImg">Image</button><button data-t="sel">Move</button><button data-t="erase">Erase</button></div>
+    <div class="tb" id="anT"><button data-t="hand">Scroll</button><button data-t="pen">Pen</button><button data-t="text">Text</button><button data-t="shape">Shape</button><button id="anImg" hidden>Image</button><button data-t="sel">Move</button><button data-t="erase">Erase</button></div>
   </div>
   <input type="file" id="anFile" accept="image/*" hidden>
 </section>
@@ -542,6 +554,10 @@ function nameErr(n,except){if(!n)return'Enter a category name';if(n.length>30)re
 function applyCats(id,set){cats.forEach(c=>{const h=c.ids.includes(id);if(set.has(c.id)&&!h)c.ids.push(id);else if(!set.has(c.id)&&h)c.ids=c.ids.filter(x=>x!==id)})}
 function delSong(s){songs=songs.filter(x=>x!==s);cats.forEach(c=>c.ids=c.ids.filter(i=>i!==s.id));save()}
 const lib={v:'all',id:null},curCat=()=>cats.find(c=>c.id===lib.id);
+/* v60: Recent = the last 15 songs opened (device-local); opening a 16th drops the oldest */
+const RECK='evolyric-recent-v1',RECN=15;let recent=[];try{recent=JSON.parse(localStorage.getItem(RECK)||'[]').filter(x=>typeof x==='string').slice(0,RECN)}catch(e){}
+function recAdd(id){if(!id)return;recent=[id,...recent.filter(x=>x!==id&&songs.some(o=>o.id===x))].slice(0,RECN);try{localStorage.setItem(RECK,JSON.stringify(recent))}catch(e){}}
+const recSongs=()=>recent.map(id=>songs.find(s=>s.id===id)).filter(Boolean);
 function poolFor(id){const c=id&&cats.find(x=>x.id===id);if(!c)return songs;const S=new Set(c.ids);return songs.filter(x=>S.has(x.id))}
 function press(b,tap,hold){let tm,lp=0;const en=()=>clearTimeout(tm);
   b.addEventListener('pointerdown',()=>{lp=0;tm=setTimeout(()=>{lp=1;hold()},500)});
@@ -563,10 +579,10 @@ const idTime=s=>{const m=/^s(\d{12,})/.exec(s.id||'');return m?+m[1]:0};
 const crOf=s=>s.cr||idTime(s),mdOf=s=>s.md||crOf(s);
 const byTitle=(a,b)=>(a.title||'').localeCompare(b.title||'','id');
 function sorter(){return sortBy==='new'?(a,b)=>crOf(b)-crOf(a)||byTitle(a,b):sortBy==='old'?(a,b)=>crOf(a)-crOf(b)||byTitle(a,b):sortBy==='mod'?(a,b)=>mdOf(b)-mdOf(a)||byTitle(a,b):byTitle}
-function items(box,q,pick,menu,pool,cat,empty){
+function items(box,q,pick,menu,pool,cat,empty,keep){
   box.textContent='';q=(q||'').toLowerCase();const T=q.split(/\s+/).filter(Boolean);let L='';
   const cmp=sorter(),hit=(pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))});
-  const pins=hit.filter(s=>s.pin).sort(cmp),rest=hit.filter(s=>!s.pin).sort(cmp);
+  const pins=keep?[]:hit.filter(s=>s.pin).sort(cmp),rest=keep?hit:hit.filter(s=>!s.pin).sort(cmp); /* keep = keep the given order (Recent) */
   const row=s=>{
       const b=E('button','it'),t=E('b'),n=E('span','',s.title||'Untitled');
       if(s.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;n.prepend(pi)}
@@ -578,7 +594,7 @@ function items(box,q,pick,menu,pool,cat,empty){
   if(pins.length){const h=E('div','ltr pn');h.innerHTML=PIN_SVG;h.append(E('span','','Pinned'));box.append(h);pins.forEach(row);
     if(rest.length)box.append(E('div','ltr','All songs'))}
   rest.forEach(s=>{
-      if(sortBy==='az'){const l=((s.title||'')[0]||'#').toUpperCase();if(l!==L){L=l;box.append(E('div','ltr',l))}}
+      if(sortBy==='az'&&!keep){const l=((s.title||'')[0]||'#').toUpperCase();if(l!==L){L=l;box.append(E('div','ltr',l))}}
       row(s)});
   if(!box.children.length)box.append(E('p','mut',empty||'No songs.'));
 }
@@ -591,14 +607,15 @@ function catList(){
 function refresh(){
   if(lib.v==='cat'&&!curCat())lib.v='cats';
   const cat=lib.v==='cat'?curCat():null;
-  $('#tabs').querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.v==='all')===(lib.v==='all')));
+  const tabOn=lib.v==='cat'?'cats':lib.v;$('#tabs').querySelectorAll('button[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===tabOn));
   $('#crumb').hidden=!cat;$('#cName').textContent=cat?cat.name:'';
-  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='cats';
-  $('#q').placeholder=lib.v==='all'?'Search songs…':cat?'Search in '+cat.name+'…':'Search categories…';
-  $('#actrow').hidden=lib.v==='all';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
+  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='cats'||lib.v==='recent';
+  $('#q').placeholder=lib.v==='all'?'Search songs…':lib.v==='recent'?'Search recent songs…':cat?'Search in '+cat.name+'…':'Search categories…';
+  $('#actrow').hidden=lib.v==='all'||lib.v==='recent';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
   if(lib.v==='cats')catList();
+  else if(lib.v==='recent')items($('#items'),$('#q').value,s=>openSong(s),true,recSongs(),null,'Songs you open will show up here (the last 15 are kept).',true);
   else items($('#items'),$('#q').value,s=>openSong(s),true,cat?poolFor(cat.id):songs,cat,cat&&!$('#q').value.trim()?'No songs in this category yet. Tap “Add Songs to '+cat.name+'”.':'No songs.')}
-$('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh()};
+$('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh()};
 $('#cBack').onclick=()=>{lib.v='cats';lib.id=null;$('#q').value='';refresh()};
 const csh=()=>{const c=$('#csheet');c.textContent='';return c};
 function ctxOpen(s,cat){
@@ -648,7 +665,7 @@ $('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();const cat=curCat();i
   save();aSel=new Set();$('#addbox').classList.remove('on');refresh();
   saveBad?note('Could not save changes',1):note(n+(n===1?' song':' songs')+' added to '+cat.name)};
 $('#act').onclick=()=>{if(lib.v==='cat')addOpen();else nameBox('New category','',null,n=>{cats.push({id:cid(),name:n,ids:[]});save();refresh();note('Category created')})};
-$('#q').oninput=refresh;$('#find').onclick=refresh;
+$('#q').oninput=refresh;$('#find').onclick=()=>{refresh();$('#q').focus()};
 $('#sortb').onclick=()=>{const c=csh();c.append(E('h3','','Sort by'));
   SORTS.forEach(([k,t])=>{const b=E('button','ck',t);b.append(E('i','',sortBy===k?'✓':''));b.onclick=()=>{sortBy=k;try{localStorage.setItem(SORTK,k)}catch(e){}ctxClose();refresh()};c.append(b)});
   $('#ctx').classList.add('on')};
@@ -689,6 +706,7 @@ function resetTop(){ /* every opened song starts at the top: scroll, auto-scroll
   const L=$('#lyr');pos=0;frac=0;last=0;txtEl.style.transform='';L.scrollTop=0;
   requestAnimationFrame(()=>{if(!playing||pos<2){L.scrollTop=0;pos=0;txtEl.style.transform=''}})}
 function openSong(s,keep){
+  recAdd(s&&s.id);
   if(typeof songFx==='function')songFx();
   const was=playing;cur=s;menuOpen(false);$('#sp').value=s.speed;
   $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
@@ -818,6 +836,10 @@ function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';refresh();sh
 document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.querySelector('input');
   b.addEventListener('pointerdown',e=>e.preventDefault()); /* keep focus (and the on-screen keyboard) on the box */
   b.addEventListener('click',()=>{i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));i.focus()})});
+/* v60: sidebar back-to-top */
+(function(){const L=$('#dItems'),b=$('#dTop');let q=0;
+  L.addEventListener('scroll',()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;b.classList.toggle('on',L.scrollTop>260)})},{passive:true});
+  b.onclick=()=>{try{L.scrollTo({top:0,behavior:'smooth'})}catch(e){L.scrollTop=0}}})();
 /* menu */
 const mn=$('#menu');
 function menuOpen(on){if(on)$('#mS').hidden=!user;mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}
@@ -828,7 +850,7 @@ $('#mE').onclick=()=>{menuOpen(false);setPlay(false);openEdit(cur)};
 $('#mR').onclick=()=>{menuOpen(false);setPlay(false);skip.clear();$('#lyr').scrollTop=0;waiting=!!startEl;if(waiting)toast('Ketuk layar atau tekan play untuk mulai')};
 /* laci */
 const dw=$('#drawer'),sc=$('#scrim');
-function drawer(on){if(on)menuOpen(false);dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
+function drawer(on){if(on)menuOpen(false);if(!on||on)$('#dTop').classList.remove('on');dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
 function dFill(){const e=$('#dcat');e.textContent='';const o=E('option','','All Songs');o.value='';e.append(o);[...cats].sort(byName).forEach(c=>{const o=E('option','',c.name);o.value=c.id;e.append(o)});e.value=lib.v==='cat'?lib.id:''}
 const drawerItems=()=>items($('#dItems'),$('#dq').value,(s,b)=>qPop(s,b),false,poolFor($('#dcat').value||null)); /* single tap -> Add to Queue / Open popup (never opens directly) */
 $('#dcat').onchange=drawerItems;
@@ -936,7 +958,7 @@ $('#nxt').onclick=qNext;
 function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});}catch(e){}}
 /* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
 document.addEventListener('gesturestart',e=>e.preventDefault());
-const FLASH='.ic,.step,#qtg,#spb,#spx,#qx,#dView,#nxt,.clr';
+const FLASH='.ic,.step,#qtg,#spb,#spx,#qx,#dView,#nxt,.clr,#dTop,#sortb,#goog,#find';
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest(FLASH);if(!b||b.disabled)return;
   b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');
   b.addEventListener('animationend',function f(ev){if(ev.animationName==='btnFlash'){b.classList.remove('flash');b.removeEventListener('animationend',f)}})},{passive:true});
@@ -1143,7 +1165,7 @@ function openAnn(){const f=ed.s?ed.s.font:ed.base?ed.base.font:32,t=$('#antx'),s
 let anReady=false;
 function anInit(){if(anReady)return;anReady=true;
   const O=$('#anO');
-  Object.keys(ANC).forEach(k=>{const b=E('button','asw');b.type='button';b.dataset.c=k;b.style.background=ANC[k];b.setAttribute('aria-label','Colour '+k);O.append(b)});
+  Object.keys(ANC).forEach(k=>{const b=E('button','asw');b.type='button';b.dataset.c=k;b.style.setProperty('--c',ANC[k]);b.setAttribute('aria-label','Colour '+k);O.append(b)});
   [['1','Thin'],['2','Mid'],['3','Thick']].forEach(([w,tx])=>{const b=E('button','',tx);b.type='button';b.dataset.w=w;O.append(b)});
   [['anU','Undo'],['anR','Redo'],['anC','Clear']].forEach(([id,tx])=>{const b=E('button','',tx);b.type='button';b.id=id;O.append(b)});
   O.onclick=e=>{const b=e.target.closest('button');if(!b||!an)return;
@@ -1218,7 +1240,7 @@ function nbPrev(){const p=$('#nbprev');p.textContent='';const d=E('div','note',$
 function nbBuild(){const box=$('#nbseg');box.textContent='';const o=nbCur.o;
   const row=(label,fill)=>{const r=E('div','nrow2'),g=E('div','nseg');r.append(E('span','',label),g);fill(g);box.append(r)};
   NGROUPS.forEach(([k,label,opts])=>row(label,g=>opts.forEach(([v,t])=>{const b=E('button',o[k]===v?'on':'',t);b.type='button';b.onclick=()=>{o[k]=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)})));
-  row('Colour',g=>Object.keys(NC).forEach(v=>{const b=E('button','nsw'+(o.c===v?' on':''));b.type='button';b.style.background=NC[v];b.setAttribute('aria-label','Colour '+v);b.onclick=()=>{o.c=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)}));
+  row('Colour',g=>Object.keys(NC).forEach(v=>{const b=E('button','nsw'+(o.c===v?' on':''));b.type='button';b.style.setProperty('--c',NC[v]);b.setAttribute('aria-label','Colour '+v);b.onclick=()=>{o.c=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)}));
   row('Style',g=>[['i','Italic'],['x','Box']].forEach(([k,t])=>{const b=E('button',o[k]?'on':'',t);b.type='button';b.onclick=()=>{o[k]=o[k]?'':'1';b.classList.toggle('on',!!o[k]);nbPrev()};g.append(b)}));
   nbPrev()}
 function noteOpen(idx,cb,o0,del){const o=cb?o0:idx>=0?noteParse(ta.value.split('\n')[idx]):null;nbCur={idx,cb,del,o:o?{...NOTE_DEF,...o}:{...NOTE_DEF,t:''}};

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v32 – Pin songs, sort the list
+Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-32`; no changes to cloud.js / Supabase)
+- Pin: long-press a song on Home > "Pin to top" (or "Unpin"). Pinned songs sit in a "Pinned" group above the rest (All Songs, categories and the side panel) and show a small pin icon. The pin is a normal song field, so it syncs with the account.
+- Sort: new sort button next to the search box (song lists only). Options: A-Z (default, with letter headers), Newest added, Oldest added, Recently modified. The choice is remembered on the device. Pinned songs stay on top whatever the sort.
+- Songs now record `cr` (created) and `md` (modified, updated only when saved in the editor). Older songs have no dates, so "added" falls back to the time inside their id (very old ones sort as oldest) and "modified" falls back to "added".
+- Search placeholder shortened to "Search songs…" so the field stays readable next to the sort button.
+
 ## v31 – Search clear button, Home resets the search
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-31`; UI only)
 - A clear (x) button now sits inside the search boxes (Home, the song-list side panel and the Add Songs popup). It only shows while the box has text, clears it, refreshes the list and keeps the cursor/keyboard in the box.

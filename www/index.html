@@ -295,6 +295,12 @@ html:has(#play.on){background:#0d0a08}
 .sfield .clr svg{width:11px;height:11px}
 .sfield input:not(:placeholder-shown)~.clr{display:flex}
 .sfield .clr:active{background:var(--ln);color:var(--fg)}
+/* v32: sort button, pin marker, "Pinned" header */
+#sortb{width:44px;flex:none;border-radius:12px;background:var(--card);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--mut)}
+#sortb svg{width:20px;height:20px}#sortb.on{color:var(--acc);border-color:var(--acc)}
+.ltr.pn{display:flex;align-items:center;gap:6px}.ltr.pn svg{width:14px;height:14px}
+.pinic{display:inline-flex;color:var(--acc);margin-right:6px;vertical-align:-1px}.pinic svg{width:14px;height:14px}
+.sheet button.ck{display:flex;justify-content:space-between;gap:16px}.sheet button.ck i{font-style:normal;color:var(--acc)}
 </style>
 </head>
 <body>
@@ -304,7 +310,7 @@ html:has(#play.on){background:#0d0a08}
   <div id="amenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">My Categories</button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
-  <div class="sb"><span class="sfield"><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button class="pill" id="find">Find</button><button class="pill" id="goog">Google</button></div>
+  <div class="sb"><span class="sfield"><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button><button class="pill" id="find">Find</button><button class="pill" id="goog">Google</button></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
   <div id="items"></div>
   <div id="fbg"></div>
@@ -401,17 +407,31 @@ const HC={r:'rgba(255,69,58,.45)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)
 const lblColor=(s,lo)=>(s.colors&&s.colors[lo])||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e';
 
 /* ---------- Daftar ---------- */
+/* v32: pinned songs + sort. cr/md are plain song fields (synced through app_data); older songs fall back to the time inside their id. */
+const PIN_SVG='<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M7 2.5h6l-.8 5 2.6 3H5.2l2.6-3L7 2.5zM10 10.5V17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const SORTS=[['az','A–Z'],['new','Newest added'],['old','Oldest added'],['mod','Recently modified']];
+const SORTK='evolyric-sort-v1';let sortBy='az';try{const v=localStorage.getItem(SORTK);if(SORTS.some(x=>x[0]===v))sortBy=v}catch(e){}
+const idTime=s=>{const m=/^s(\d{12,})/.exec(s.id||'');return m?+m[1]:0};
+const crOf=s=>s.cr||idTime(s),mdOf=s=>s.md||crOf(s);
+const byTitle=(a,b)=>(a.title||'').localeCompare(b.title||'','id');
+function sorter(){return sortBy==='new'?(a,b)=>crOf(b)-crOf(a)||byTitle(a,b):sortBy==='old'?(a,b)=>crOf(a)-crOf(b)||byTitle(a,b):sortBy==='mod'?(a,b)=>mdOf(b)-mdOf(a)||byTitle(a,b):byTitle}
 function items(box,q,pick,menu,pool,cat,empty){
   box.textContent='';q=(q||'').toLowerCase();const T=q.split(/\s+/).filter(Boolean);let L='';
-  (pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))})
-    .sort((a,b)=>a.title.localeCompare(b.title,'id')).forEach(s=>{
-      const l=(s.title[0]||'#').toUpperCase();
-      if(l!==L){L=l;box.append(E('div','ltr',l))}
-      const b=E('button','it'),t=E('b');t.append(E('span','',s.title||'Untitled'));
+  const cmp=sorter(),hit=(pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))});
+  const pins=hit.filter(s=>s.pin).sort(cmp),rest=hit.filter(s=>!s.pin).sort(cmp);
+  const row=s=>{
+      const b=E('button','it'),t=E('b'),n=E('span','',s.title||'Untitled');
+      if(s.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;n.prepend(pi)}
+      t.append(n);
       if(s.key)t.append(E('span','key',s.key));
       b.append(t,E('small','',s.artist||''));
       if(menu)press(b,()=>pick(s),()=>ctxOpen(s,cat));else b.onclick=()=>pick(s,b);
-      box.append(b)});
+      box.append(b)};
+  if(pins.length){const h=E('div','ltr pn');h.innerHTML=PIN_SVG;h.append(E('span','','Pinned'));box.append(h);pins.forEach(row);
+    if(rest.length)box.append(E('div','ltr','All songs'))}
+  rest.forEach(s=>{
+      if(sortBy==='az'){const l=((s.title||'')[0]||'#').toUpperCase();if(l!==L){L=l;box.append(E('div','ltr',l))}}
+      row(s)});
   if(!box.children.length)box.append(E('p','mut',empty||'No songs.'));
 }
 function catList(){
@@ -425,8 +445,8 @@ function refresh(){
   const cat=lib.v==='cat'?curCat():null;
   $('#tabs').querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.v==='all')===(lib.v==='all')));
   $('#crumb').hidden=!cat;$('#cName').textContent=cat?cat.name:'';
-  $('#goog').hidden=lib.v!=='all';
-  $('#q').placeholder=lib.v==='all'?'Search title or artist…':cat?'Search in '+cat.name+'…':'Search categories…';
+  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='cats';
+  $('#q').placeholder=lib.v==='all'?'Search songs…':cat?'Search in '+cat.name+'…':'Search categories…';
   $('#actrow').hidden=lib.v==='all';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
   if(lib.v==='cats')catList();
   else items($('#items'),$('#q').value,s=>openSong(s),true,cat?poolFor(cat.id):songs,cat,cat&&!$('#q').value.trim()?'No songs in this category yet. Tap “Add Songs to '+cat.name+'”.':'No songs.')}
@@ -436,6 +456,7 @@ const csh=()=>{const c=$('#csheet');c.textContent='';return c};
 function ctxOpen(s,cat){
   const c=csh();c.append(E('h3','',s.title||'Untitled'));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;c.append(b);return b};
+  add(s.pin?'Unpin':'Pin to top',()=>{if(s.pin)delete s.pin;else s.pin=Date.now();save();ctxClose();refresh();note(s.pin?'Pinned to top':'Unpinned')});
   add('Make New Version',()=>{ctxClose();openEdit(null,s.lyrics,(s.title||'')+'_new',s)});
   if(cat)add('Remove from '+cat.name,()=>{cat.ids=cat.ids.filter(x=>x!==s.id);save();ctxClose();refresh();note('Removed from '+cat.name)});
   else add('Delete Song',()=>ask('Delete “'+(s.title||'Untitled')+'”?','This deletes the song from your Master Library and from all of its categories. This cannot be undone.','Delete Song',()=>{delSong(s);refresh();note('Song deleted')}),'del');
@@ -477,6 +498,9 @@ $('#aOK').onclick=()=>{const cat=curCat();if(!cat||!aSel.size)return;let n=0;
   saveBad?note('Could not save changes',1):note(n+(n===1?' song':' songs')+' added to '+cat.name)};
 $('#act').onclick=()=>{if(lib.v==='cat')addOpen();else nameBox('New category','',null,n=>{cats.push({id:cid(),name:n,ids:[]});save();refresh();note('Category created')})};
 $('#q').oninput=refresh;$('#find').onclick=refresh;
+$('#sortb').onclick=()=>{const c=csh();c.append(E('h3','','Sort by'));
+  SORTS.forEach(([k,t])=>{const b=E('button','ck',t);b.append(E('i','',sortBy===k?'✓':''));b.onclick=()=>{sortBy=k;try{localStorage.setItem(SORTK,k)}catch(e){}ctxClose();refresh()};c.append(b)});
+  $('#ctx').classList.add('on')};
 $('#goog').onclick=()=>{
   const q=$('#q').value.trim();if(!q)return toast('Ketik judul lagu dulu');
   window.open('https://www.google.com/search?q='+encodeURIComponent(q+' lirik'),'_blank');
@@ -488,7 +512,7 @@ $('#nw').onclick=()=>{fabOpen(false);openEdit(null,'','',null,lib.v==='cat'?[lib
 $('#imp').onclick=()=>{fabOpen(false);$('#file').click()};
 $('#file').onchange=async e=>{
   for(const f of e.target.files){const x=await f.text();
-    const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:32};songs.push(ns);const cc=lib.v==='cat'&&curCat();if(cc)cc.ids.push(ns.id)}
+    const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:32,cr:Date.now()};songs.push(ns);const cc=lib.v==='cat'&&curCat();if(cc)cc.ids.push(ns.id)}
   save();refresh();toast('Impor selesai');e.target.value=''};
 /* Not shown on Home any more; kept for a future Account > Backup & restore screen. */
 function copyBackup(){
@@ -866,8 +890,8 @@ $('#eS').onclick=()=>{
   const art=$('#ea').value.trim(),key=$('#ek').value;
   const used=new Set([...lyr.matchAll(/^\[(.+)\]$/gm)].map(m=>m[1].toLowerCase()));
   const colors={};Object.keys(ed.colors).forEach(k=>{if(used.has(k))colors[k]=ed.colors[k]});
-  if(ed.s){Object.assign(ed.s,{title,artist:art,lyrics:lyr,key,colors});cur=ed.s}
-  else{const b=ed.base;cur={id:'s'+Date.now(),title,artist:art,lyrics:lyr,key,colors,speed:b?b.speed:5,font:b?b.font:32,fav:false};songs.push(cur)}
+  if(ed.s){Object.assign(ed.s,{title,artist:art,lyrics:lyr,key,colors,md:Date.now()});if(!ed.s.cr)ed.s.cr=crOf(ed.s);cur=ed.s}
+  else{const b=ed.base;cur={id:'s'+Date.now(),title,artist:art,lyrics:lyr,key,colors,speed:b?b.speed:5,font:b?b.font:32,fav:false,cr:Date.now(),md:Date.now()};songs.push(cur)}
   applyCats(cur.id,ed.cats);save();ed.dirty=false;openSong(cur)};
 $('#eX').onclick=()=>{
   if(ed.dirty&&!ed.arm){ed.arm=1;$('#eX').classList.add('arm');return}

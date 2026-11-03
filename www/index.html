@@ -301,6 +301,8 @@ html:has(#play.on){background:#0d0a08}
 .ltr.pn{display:flex;align-items:center;gap:6px}.ltr.pn svg{width:14px;height:14px}
 .pinic{display:inline-flex;color:var(--acc);margin-right:6px;vertical-align:-1px}.pinic svg{width:14px;height:14px}
 .sheet button.ck{display:flex;justify-content:space-between;gap:16px}.sheet button.ck i{font-style:normal;color:var(--acc)}
+/* v36: dialogs and toasts must sit above the fullscreen player (z-index 1000), e.g. Send to friend from the player menu */
+#ctx,#note{z-index:1100}
 /* v34: Friends */
 #frbody{flex:1;overflow-y:auto;padding:0 12px 28px;-webkit-overflow-scrolling:touch}
 .fcard{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:0 0 12px}
@@ -339,7 +341,7 @@ html:has(#play.on){background:#0d0a08}
     <button class="ic" id="dr" type="button" aria-label="Song list">☰</button><span class="grow"></span><button class="ic" id="mn" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false">⋮</button>
   </div>
   <div id="mbg"></div>
-  <div id="menu" role="menu"><button id="mE" type="button" role="menuitem">Edit song</button><button id="mR" type="button" role="menuitem">Restart</button></div>
+  <div id="menu" role="menu"><button id="mE" type="button" role="menuitem">Edit song</button><button id="mR" type="button" role="menuitem">Restart</button><button id="mS" type="button" role="menuitem" hidden>Send to friend</button></div>
   <div id="secs"></div>
   <div id="lyr"><div id="txt"></div></div>
   <button id="nxt" type="button" aria-label="Next song" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5"/></svg></button>
@@ -473,6 +475,7 @@ const csh=()=>{const c=$('#csheet');c.textContent='';return c};
 function ctxOpen(s,cat){
   const c=csh();c.append(E('h3','',s.title||'Untitled'));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;c.append(b);return b};
+  if(user)add('Send to friend',()=>{ctxClose();sendPick(s)});
   add(s.pin?'Unpin':'Pin to top',()=>{if(s.pin)delete s.pin;else s.pin=Date.now();save();ctxClose();refresh();note(s.pin?'Pinned to top':'Unpinned')});
   add('Make New Version',()=>{ctxClose();openEdit(null,s.lyrics,(s.title||'')+'_new',s)});
   if(cat)add('Remove from '+cat.name,()=>{cat.ids=cat.ids.filter(x=>x!==s.id);save();ctxClose();refresh();note('Removed from '+cat.name)});
@@ -672,9 +675,10 @@ document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.query
   b.addEventListener('click',()=>{i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));i.focus()})});
 /* menu */
 const mn=$('#menu');
-function menuOpen(on){mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}
+function menuOpen(on){if(on)$('#mS').hidden=!user;mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}
 $('#mn').onclick=()=>menuOpen(!mn.classList.contains('on'));
 $('#mbg').onclick=()=>menuOpen(false); /* tap anywhere outside closes it (the tap does not reach the lyrics, so it never toggles play) */
+$('#mS').onclick=()=>{menuOpen(false);cur&&sendPick(cur)};
 $('#mE').onclick=()=>{menuOpen(false);setPlay(false);openEdit(cur)};
 $('#mR').onclick=()=>{menuOpen(false);setPlay(false);skip.clear();$('#lyr').scrollTop=0;waiting=!!startEl;if(waiting)toast('Ketuk layar atau tekan play untuk mulai')};
 /* laci */
@@ -953,7 +957,7 @@ function buildMenu(u){const m=$('#amenu');m.textContent='';
   const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
   const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&(o.soon||o.lock)){b.disabled=true;b.append(E('em','',o.lock||'Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
   it('Username',unameEdit,uname.v?{lock:'@'+uname.v}:{sub:uname.state==='nosql'?'Soon':'Set'});
-  it('Friends',frOpen,{sub:frIn().length?String(frIn().length):''});
+  it('Friends',frOpen,{sub:frAlerts()?String(frAlerts()):''});
   it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
   it('Account Settings',null,{soon:1});
   m.append(E('hr'));it('Sign Out',signOut,{out:1})}
@@ -995,14 +999,15 @@ async function syncProfile(n){ /* refresh display fields only; row + email are c
 async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;renderAuth();
   try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
 /* ---------- v34: Friends (all rules enforced server-side by supabase/003_friends.sql; the app only calls its functions) ---------- */
-const fr={list:[],state:null,t:0,res:null,msg:''};
-const frIn=()=>fr.list.filter(f=>f.status==='pending'&&f.incoming);
-function frBadge(){const n=frIn().length,b=$('#auth');b&&b.classList.toggle('bd',n>0&&!!user);if(!$('#amenu').hidden&&user)buildMenu(user)}
+const fr={list:[],inbox:[],state:null,t:0,res:null,msg:''};
+const frIn=()=>fr.list.filter(f=>f.status==='pending'&&f.incoming),frAlerts=()=>frIn().length+fr.inbox.length;
+function frBadge(){const n=frAlerts(),b=$('#auth');b&&b.classList.toggle('bd',n>0&&!!user);if(!$('#amenu').hidden&&user)buildMenu(user)}
 const frMissing=e=>e&&(e.code==='PGRST202'||e.code==='42883'||e.code==='42P01'||/could not find|does not exist/i.test(e.message||''));
 async function frLoad(force){if(!user||!sb)return;if(!force&&Date.now()-fr.t<30000)return;
   try{const{data,error}=await sb.rpc('list_friends');
     if(error){if(frMissing(error))fr.state='nosql';else if(!fr.state)fr.state='err';frRender();return}
-    fr.list=Array.isArray(data)?data:[];fr.state='ok';fr.t=Date.now()}catch(e){if(!fr.state)fr.state='err'}
+    fr.list=Array.isArray(data)?data:[];fr.state='ok';fr.t=Date.now();
+    const ib=await sb.rpc('list_inbox');if(!ib.error)fr.inbox=Array.isArray(ib.data)?ib.data:[]}catch(e){if(!fr.state)fr.state='err'}
   frBadge();frRender()}
 async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(navigator.onLine?'Something went wrong. Try again.':'You are offline',true);return null}
   if(okMsg)note(okMsg);await frLoad(true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
@@ -1030,11 +1035,29 @@ function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains
   if(fr.state==='err'){body.append(E('p','mut','Could not load your friends. Pull down or reopen this screen to retry.'))}
   const inc=frIn(),out=fr.list.filter(f=>f.status==='pending'&&!f.incoming),ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
   const sec=(t,n)=>{const h=E('div','fh',t);if(n)h.append(E('em','',String(n)));body.append(h)};
+  if(fr.inbox.length){sec('Songs from friends',fr.inbox.length);fr.inbox.forEach(m=>{const r=frRow({display_name:m.title||'Untitled',username:m.username,avatar_url:m.avatar_url},[['Save',()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
+    const sm=r.querySelector('small');sm.textContent='from @'+m.username+(m.artist?' · '+m.artist:'');body.append(r)})}
   if(inc.length){sec('Requests',inc.length);inc.forEach(f=>body.append(frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]])))}
   if(out.length){sec('Sent');out.forEach(f=>body.append(frRow(f,[['Cancel',()=>frCall('remove_friendship',{p_id:f.id},'Request cancelled')]])))}
   sec('Friends',ok.length);
   if(!ok.length)body.append(E('p','mut','No friends yet. Search a username above to send a request.'));
   ok.forEach(f=>body.append(frRow(f,[['Remove',()=>{ask('Remove '+(f.display_name||f.username)+'?','They will no longer be your friend. Songs already shared stay in each library.','Remove',()=>frCall('remove_friendship',{p_id:f.id},'Friend removed'));setTimeout(frRender,0)}]])))}
+function frSaveSong(m){const d=m.payload||{};
+  const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:String(d.title||m.title||'Untitled'),artist:String(d.artist||m.artist||''),lyrics:String(d.lyrics||''),speed:5,font:32,cr:Date.now(),md:Date.now()};
+  if(d.key)ns.key=String(d.key);if(d.colors&&typeof d.colors==='object')ns.colors=d.colors;
+  songs.push(ns);save();refresh();
+  frCall('clear_inbox_song',{p_id:m.id},'Saved to your library')}
+function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to friends',true);
+  const go=()=>{const c=csh();c.append(E('h3','','Send “'+(s.title||'Untitled')+'” to…'));
+    const ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
+    if(fr.state==='nosql'){const p=E('p','mut','Friends are not enabled on the server yet.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p)}
+    else if(!ok.length){const p=E('p','mut','You have no friends yet. Add one first, then send songs.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p);const b=E('button','','Open Friends');b.onclick=()=>{ctxClose();if(document.querySelector('#play.on'))leavePlay();frOpen()};c.append(b)}
+    else ok.forEach(f=>{const b=E('button','',(f.display_name||f.username)+'  @'+f.username);b.onclick=async()=>{ctxClose();
+      try{const{error}=await sb.rpc('send_song',{p_to:f.other_id,p_song:{title:s.title||'',artist:s.artist||'',lyrics:s.lyrics||'',key:s.key||'',colors:s.colors||{}}});
+        if(error)return void note(error.code==='54000'?'@'+f.username+' already has 20 songs waiting from you':error.code==='42501'?'You are no longer friends':navigator.onLine?'Could not send. Try again.':'You are offline',true);
+        note('Sent to @'+f.username)}catch(e){note('Could not send. Try again.',true)}};c.append(b)});
+    const x=E('button','','Cancel');x.onclick=ctxClose;c.append(x);$('#ctx').classList.add('on')};
+  if(fr.state==null||Date.now()-fr.t>60000)frLoad(true).then(go);else go()}
 function frOpen(){closeMenu();show('friends');frRender();frLoad(true)}
 $('#frX').onclick=()=>{show('list')};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user&&sb)frLoad()});

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v36 – Send songs to friends (step 3)
+Added `supabase/005_share_songs.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-36`). cloud.js / config.js untouched.
+- "Send to friend": in the long-press menu of a song on Home and in the player's ⋮ menu (signed-in users only). Pick a friend and the song is sent as a COPY: title, artist, lyrics (with your edits, section labels and highlights), key and section colours. Speed, font size, pin, categories and dates stay personal and are NOT sent.
+- Inbox: Friends screen > "Songs from friends". Save puts a copy in your own library (new song, default speed/font); Dismiss deletes it. The red dot / counter now covers friend requests and waiting songs. Later edits on either side never affect the other copy.
+- Safety is enforced in the database: only accepted friends can send, at most 20 waiting songs per pair, 200 KB size limit, whitelisted fields only, nobody can read anyone else's inbox, no emails exposed. Removing a friend also deletes songs still waiting between the two.
+- Fix: dialogs and toasts now sit above the fullscreen player (they could be hidden behind it).
+- Until 005 is run the send picker shows a short note; nothing else changes.
+
 ## v35 – Username is permanent
 Added `supabase/004_username_lock.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-35`).
 - Once a username is set it cannot be changed by the user. The menu row becomes a locked, read-only "@name"; the first-time dialog now warns that it is permanent.

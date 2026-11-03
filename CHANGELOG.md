@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v40 – Profile page with username and bio
+Added `supabase/008_bio.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-40`). cloud.js / config.js untouched.
+- The header of the account menu (profile picture, name, email) is now tappable (with a "›") and opens a new Profile page. The old "Username" menu row is gone.
+- Profile page: picture, name and email (only you see the email), an editable username and a new Bio box (up to 300 characters, with a counter) for anything you want to say about yourself, such as your work, band or instrument. One Save button; it is only enabled when something changed. A taken or invalid username is explained under the field.
+- Bio is visible to your friends (in the Friends list) and to someone who finds you by your exact username (in the search result). Emails are still never returned.
+- 008 adds `profiles.bio` (max 300) and returns it from `find_user` and `list_friends`. Until it is run, the bio box is disabled with a short note and the username still works.
+- The Friends screen's "Set username" prompt now opens the Profile page.
+
 ## v39 – Username can be changed again
 Added `supabase/007_username_unlock.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-39`).
 - The Username row in the account menu is editable again ("Change your username"). The permanent-name warning is gone.

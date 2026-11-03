@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v64 – Fader-style speed slider
+- The floating speed slider now looks like a mixing-console fader: a recessed slot with scale ticks, a glowing level and a ridged metal cap with an orange index line.
+
 ## v63 – Send a song to several friends
 - In the Send a song sheet you can tick multiple friends and send to all of them at once. The result lists any friend who couldn't receive it.
 

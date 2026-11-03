@@ -306,6 +306,24 @@ html:has(#play.on){background:#0d0a08}
 /* v38: notification banner */
 #ntf{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);opacity:0;z-index:1200;max-width:min(92vw,420px);background:var(--card);color:var(--fg);border:1px solid var(--acc);border-radius:16px;padding:12px 16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .25s var(--ease),opacity .25s;text-align:left}
 #ntf.on{transform:translate(-50%,0);opacity:1}
+/* v42: notes (editor) */
+.note{line-height:1.3;white-space:pre-wrap;max-width:100%}
+#notebox{position:fixed;inset:0;z-index:62;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);padding:12px}#notebox.on{display:flex}
+.nsheet{width:min(94vw,420px);max-height:94vh;max-height:94dvh;overflow-y:auto;gap:0}
+#nbtx{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px;margin:0 4px 6px;width:calc(100% - 8px);resize:none;line-height:1.35}
+.nrow2{display:flex;align-items:center;gap:6px;margin:5px 4px}.nrow2>span{width:50px;flex:none;color:var(--mut);font-size:12.5px}
+.nseg{display:flex;gap:4px;flex:1;flex-wrap:wrap}.sheet .nseg button{flex:1;min-width:40px;padding:8px 4px;text-align:center;border:1px solid var(--ln);font-size:13px;border-radius:9px}.sheet .nseg button.on{background:var(--acc);color:#15110e;border-color:var(--acc)}
+.sheet .nseg button.nsw{flex:none;width:30px;min-width:30px;height:30px;padding:0;border-radius:50%;border:2px solid transparent}.sheet .nseg button.nsw.on{border-color:var(--fg);background:inherit}
+#nbprev{background:#0d0a08;border:1px solid var(--ln);border-radius:12px;padding:12px;margin:8px 4px;font-size:30px;min-height:74px;line-height:1.3;overflow:hidden;color:#f3ece3;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;text-align:center}
+.nact{display:flex;gap:6px;margin:6px 4px 2px}.sheet .nact button{flex:1;text-align:center;padding:11px 8px;border:1px solid var(--ln);border-radius:10px}.sheet .nact button.pill{border-color:var(--acc)}
+#arr{position:fixed;inset:0;z-index:64;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}#arr.on{display:flex}
+#arl{flex:1;overflow-y:auto;position:relative;padding:0 12px 40px;overscroll-behavior:contain}
+.ar{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:14px;line-height:1.3;min-height:30px}.ar .art{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ar.lt{color:var(--mut)}.ar.lb{font-weight:700;font-size:12.5px;padding:10px 8px 4px}.ar.bl{min-height:10px;padding:0}
+.ar.nt{background:var(--card);border:1px solid var(--ln);margin:3px 0}.ar.nt.sel{border-color:var(--acc)}
+.arh{flex:none;width:34px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--mut);touch-action:none;cursor:grab;font-size:18px;letter-spacing:-3px;-webkit-user-select:none;user-select:none}
+.ar.drag{position:relative;z-index:5;opacity:.92;box-shadow:0 8px 24px rgba(0,0,0,.5);border-color:var(--acc)}
+.arind{height:0;border-top:3px solid var(--acc);margin:2px 0;border-radius:2px}
 /* v40: Profile page */
 button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh:hover,button.mh:focus-visible{background:var(--ln)}.mh .chev{margin-left:auto;color:var(--mut);font-size:22px;flex:none}
 #pfbody{flex:1;overflow-y:auto;padding:0 12px 28px;-webkit-overflow-scrolling:touch}
@@ -374,8 +392,9 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
   <div class="hd"><button class="ic" id="eX" aria-label="Exit">✕</button><input class="fld" id="et" placeholder="Title"><button class="pill" id="eS">Save</button></div>
   <div class="sb"><input class="fld" id="ea" placeholder="Artist"><select class="fld" id="ek" aria-label="Base key"></select></div>
   <div class="sb"><button type="button" class="fld catsel" id="ec" aria-label="Categories"></button></div>
-  <div class="tb"><button id="eP">Paste</button><button id="eU">Undo</button><button id="eR">Redo</button><button id="eK">Keyboard</button><button id="eH">Highlight</button></div>
+  <div class="tb"><button id="eP">Paste</button><button id="eU">Undo</button><button id="eR">Redo</button><button id="eK">Keyboard</button><button id="eH">Highlight</button><button id="eN">Note</button></div>
   <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button class="sw" data-c="r" aria-label="Red"></button><button class="sw" data-c="y" aria-label="Yellow"></button><button class="sw" data-c="g" aria-label="Green"></button><button id="hx">Clear</button></div>
+  <div class="tb" id="notebar" hidden><b id="nbn"></b><button id="nbEdit">Edit</button><button id="nbMove">Move</button><button id="nbRm">Delete</button></div>
   <div class="tb" id="secbar" hidden><b id="sn"></b><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
   <div class="ed"><textarea id="ta" inputmode="none" spellcheck="false" aria-label="Lyrics"></textarea><div id="side"></div></div>
 </section>
@@ -390,6 +409,14 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
   <div id="pfbody"></div>
 </section>
 
+<div id="notebox"><div class="sheet nsheet"><h3 id="nbt">New note</h3>
+  <textarea id="nbtx" rows="2" maxlength="160" placeholder="e.g. Drums stop here" aria-label="Note text"></textarea>
+  <div id="nbseg"></div>
+  <div id="nbprev" aria-label="Preview"></div>
+  <div class="nact"><button id="nbdel" type="button" class="del">Delete</button><button id="nbcancel" type="button">Cancel</button><button id="nbok" type="button" class="pill">Save</button></div></div></div>
+<div id="arr"><div class="hd"><button class="ic" id="arX" aria-label="Cancel">✕</button><h1 style="font-size:20px">Move notes</h1><button class="pill" id="arOK">Done</button></div>
+  <p class="mut" style="margin:0 14px 8px;font-size:13px">Hold a note by its handle (⋮⋮) and drag it to any line. Tap Done to apply.</p>
+  <div id="arl"></div></div>
 <div id="ctx"><div class="sheet" id="csheet"></div></div>
 <div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><p class="mut" id="nhint" style="margin:0 10px 8px;font-size:13px"></p><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
@@ -586,6 +613,15 @@ function openSong(s,keep){
   setPlay(false); /* a newly opened song is always paused, even if the previous one was auto-scrolling */
   waiting=!!startEl;
   if(waiting)toast('Ketuk layar atau tekan play untuk mulai');hl()}
+/* v42: notes. A note is one line of the lyrics text: {n:text} or {n|s=3|w=b|f=s|c=s|a=c|i=1|x=1:text}. Only non-default options are written.
+   s size 1-4 (x lyric font), w weight l/r/b, f font ''/s/m/h, c colour a/s/r/g/w/p, a align l/c/r, i italic, x box. */
+const NOTE_RE=/^\s*\{n((?:\|[a-z]=[^|:{}]*)*):(.*)\}\s*$/,NOTE_DEF={s:'2',w:'r',f:'',c:'w',a:'c',i:'',x:''};
+const NS={'1':.45,'2':.6,'3':.8,'4':1},NW={l:300,r:400,b:700},NF={'':'inherit',s:"Georgia,'Times New Roman',serif",m:"ui-monospace,Menlo,Consolas,monospace",h:"'Bradley Hand','Segoe Print','Marker Felt','Comic Sans MS',cursive"},NC={a:'#f0a04b',s:'#6ab0ff',r:'#ff7a7a',g:'#4ade80',w:'#f3ece3',p:'#c084fc'},NA={l:'left',c:'center',r:'right'};
+function noteParse(ln){const m=NOTE_RE.exec(ln||'');if(!m)return null;const o={...NOTE_DEF,t:m[2]};m[1].split('|').forEach(p=>{if(p.length>=3&&p[1]==='='&&p[0] in NOTE_DEF)o[p[0]]=p.slice(2)});return o}
+function noteStr(o){const a=[];Object.keys(NOTE_DEF).forEach(k=>{if(o[k]!=null&&o[k]!==NOTE_DEF[k])a.push('|'+k+'='+o[k])});return '{n'+a.join('')+':'+String(o.t).replace(/[\r\n]+/g,' ')+'}'}
+function noteStyle(el,o){const st=el.style;st.fontSize=(NS[o.s]||.6)+'em';st.fontWeight=NW[o.w]||400;st.fontFamily=NF[o.f]||'inherit';st.color=NC[o.c]||NC.w;st.textAlign=NA[o.a]||'center';st.fontStyle=o.i?'italic':'normal';
+  if(o.x){st.border='1.5px solid currentColor';st.borderRadius='.45em';st.padding='.12em .7em';st.display='table';st.margin=o.a==='l'?'.4em auto .4em 0':o.a==='r'?'.4em 0 .4em auto':'.4em auto'}
+  else{st.border='';st.borderRadius='';st.padding='';st.display='';st.margin='.35em 0'}}
 function lineEl(ln,col){
   const d=E('div','ln '+col),re=/\{([ryg]):([^{}]*)\}/g;let i=0,m;
   while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);k.style.background=HC[m[1]];d.append(k);i=m.index+m[0].length}
@@ -593,6 +629,7 @@ function lineEl(ln,col){
 function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';const h=E('h2','',cur.title||'Untitled');h.id='ttl';t.append(h);
   (cur.lyrics||'').split('\n').forEach(ln=>{
+    const no=noteParse(ln);if(no){const d=E('div','note',no.t);noteStyle(d,no);t.append(d);return}
     const m=ln.trim().match(/^\[(.+)\]$/);
     if(m){const n=m[1],lo=n.toLowerCase();col=lo.startsWith('male')?'m':lo.startsWith('female')?'f':'';
       const lc=lblColor(cur,lo),d=E('div','sec',n);d.style.color=lc;d.dataset.k=lo;t.append(d);
@@ -859,6 +896,7 @@ function openEdit(s,txt,title,base,pre){
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
 function secInfo(){
+  noteInfo();
   const L=ta.value.split('\n'),ci=ta.value.slice(0,ta.selectionStart).split('\n').length-1;let a=-1;
   for(let i=Math.min(ci,L.length-1);i>=0;i--)if(isLbl(L[i])){a=i;break}
   const bar=$('#secbar');dsArm=0;$('#ds').textContent='Delete section';$('#ds').classList.remove('warn');
@@ -926,9 +964,66 @@ function pasteFail(){setKb(true);ta.focus()}
 /* A real key press means the user is typing: leave "keyboard off" mode so the caret is never snapped to line start (that reversed typing and arrow keys) */
 ta.addEventListener('keydown',e=>{if(ta.inputMode!=='none'||e.ctrlKey||e.metaKey||e.altKey||['Shift','Control','Alt','Meta','CapsLock','Escape','Tab'].includes(e.key))return;setKb(true)});
 ta.addEventListener('beforeinput',()=>{if(ta.inputMode==='none')setKb(true)});
+/* v42: note editor, note bar, and the Move (arrange) tool */
+const lineIdx=()=>ta.value.slice(0,ta.selectionStart).split('\n').length-1;
+function setLines(L,ci){ta.value=L.join('\n');ci=Math.max(0,Math.min(ci,L.length-1));const pos=L.slice(0,ci).join('\n').length+(ci>0?1:0);ta.setSelectionRange(pos,pos);snap();ed.dirty=true;secInfo()}
+function noteInfo(){const bar=$('#notebar');if(!bar)return;const o=noteParse(ta.value.split('\n')[lineIdx()]);
+  if(!o){bar.hidden=true;return}bar.hidden=false;const n=$('#nbn');n.textContent='Note: '+(o.t.length>24?o.t.slice(0,24)+'…':o.t);n.style.color=NC[o.c]||NC.w}
+let nbCur=null;
+const NGROUPS=[['s','Size',[['1','S'],['2','M'],['3','L'],['4','XL']]],['w','Weight',[['l','Light'],['r','Regular'],['b','Bold']]],['f','Font',[['','Same'],['s','Serif'],['m','Mono'],['h','Hand']]],['a','Align',[['l','Left'],['c','Center'],['r','Right']]]];
+function nbPrev(){const p=$('#nbprev');p.textContent='';const d=E('div','note',$('#nbtx').value.trim()||'Your note');noteStyle(d,nbCur.o);p.append(d)}
+function nbBuild(){const box=$('#nbseg');box.textContent='';const o=nbCur.o;
+  const row=(label,fill)=>{const r=E('div','nrow2'),g=E('div','nseg');r.append(E('span','',label),g);fill(g);box.append(r)};
+  NGROUPS.forEach(([k,label,opts])=>row(label,g=>opts.forEach(([v,t])=>{const b=E('button',o[k]===v?'on':'',t);b.type='button';b.onclick=()=>{o[k]=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)})));
+  row('Colour',g=>Object.keys(NC).forEach(v=>{const b=E('button','nsw'+(o.c===v?' on':''));b.type='button';b.style.background=NC[v];b.setAttribute('aria-label','Colour '+v);b.onclick=()=>{o.c=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)}));
+  row('Style',g=>[['i','Italic'],['x','Box']].forEach(([k,t])=>{const b=E('button',o[k]?'on':'',t);b.type='button';b.onclick=()=>{o[k]=o[k]?'':'1';b.classList.toggle('on',!!o[k]);nbPrev()};g.append(b)}));
+  nbPrev()}
+function noteOpen(idx){const o=idx>=0?noteParse(ta.value.split('\n')[idx]):null;nbCur={idx,o:o||{...NOTE_DEF,t:''}};
+  $('#nbt').textContent=idx>=0?'Edit note':'New note';$('#nbtx').value=nbCur.o.t;$('#nbdel').hidden=idx<0;nbBuild();$('#notebox').classList.add('on');setTimeout(()=>$('#nbtx').focus(),40)}
+const closeNote=()=>{$('#notebox').classList.remove('on');nbCur=null};
+$('#nbtx').addEventListener('input',()=>{if(nbCur)nbPrev()});
+$('#nbcancel').onclick=closeNote;$('#notebox').onclick=e=>{if(e.target.id==='notebox')closeNote()};
+$('#nbok').onclick=()=>{if(!nbCur)return;const t=$('#nbtx').value.replace(/\s+/g,' ').trim();if(!t){$('#nbtx').focus();return}
+  const o={...nbCur.o,t},L=ta.value.split('\n');snap();let ci;
+  if(nbCur.idx>=0){L[nbCur.idx]=noteStr(o);ci=nbCur.idx}else{ci=lineIdx()+1;L.splice(ci,0,noteStr(o))}
+  closeNote();setLines(L,ci)};
+$('#nbdel').onclick=()=>{if(!nbCur||nbCur.idx<0)return;const L=ta.value.split('\n'),i=nbCur.idx;snap();L.splice(i,1);closeNote();setLines(L,i)};
+$('#eN').onclick=()=>noteOpen(-1);
+$('#nbEdit').onclick=()=>noteOpen(lineIdx());
+$('#nbRm').onclick=()=>{const L=ta.value.split('\n'),i=lineIdx();if(!noteParse(L[i]))return;snap();L.splice(i,1);setLines(L,i)};
+$('#nbMove').onclick=()=>arrOpen(lineIdx());
+/* Move tool: a list of every line; notes can be dragged by their handle to any position */
+let drag=null,arLast=null;
+function arrOpen(sel){const L=ta.value.split('\n'),box=$('#arl');box.textContent='';let selRow=null;arLast=null;
+  L.forEach((ln,i)=>{const row=E('div','ar'),o=noteParse(ln);row._raw=ln;
+    if(o){row.classList.add('nt');const h=E('span','arh','⋮⋮');h.setAttribute('role','button');h.setAttribute('aria-label','Drag to move this note');
+      const tx=E('span','art',o.t);tx.style.color=NC[o.c]||NC.w;tx.style.fontWeight=o.w==='b'?700:o.w==='l'?300:400;tx.style.fontStyle=o.i?'italic':'normal';row.append(h,tx);
+      h.addEventListener('pointerdown',e=>arStart(e,row));if(i===sel){row.classList.add('sel');selRow=row;arLast=row}}
+    else if(/^\[.+\]$/.test(ln.trim())){const nm=ln.trim().slice(1,-1),t=E('span','art',nm);row.classList.add('lb');row.style.color=lblColor({colors:ed&&ed.colors},nm.toLowerCase());row.append(t)}
+    else if(!ln.trim())row.classList.add('bl');
+    else{row.classList.add('lt');row.append(E('span','art',ln.replace(/\{[ryg]:([^{}]*)\}/g,'$1')))}
+    box.append(row)});
+  $('#arr').classList.add('on');if(selRow)setTimeout(()=>selRow.scrollIntoView({block:'center'}),30)}
+function arStart(e,row){e.preventDefault();if(drag)return;drag={row,y:e.clientY,pid:e.pointerId,ind:E('div','arind'),raf:0};row.classList.add('drag');arLast=row;
+  document.addEventListener('pointermove',arMove);document.addEventListener('pointerup',arEnd);document.addEventListener('pointercancel',arEnd);arTick()}
+function arMove(e){if(drag&&e.pointerId===drag.pid)drag.y=e.clientY}
+function arTick(){if(!drag)return;const box=$('#arl'),r=box.getBoundingClientRect(),y=drag.y,row=drag.row;
+  if(y<r.top+56)box.scrollTop-=12;else if(y>r.bottom-56)box.scrollTop+=12;
+  row.style.transform='';const nat=r.top-box.scrollTop+row.offsetTop+row.offsetHeight/2;row.style.transform='translateY('+(y-nat)+'px)';
+  let before=null;for(const c of box.children){if(c===row||c===drag.ind)continue;const b=c.getBoundingClientRect();if(y<b.top+b.height/2){before=c;break}}
+  if(drag.ind.nextSibling!==before||!drag.ind.parentNode)box.insertBefore(drag.ind,before);
+  drag.raf=requestAnimationFrame(arTick)}
+function arEnd(e){if(!drag||(e&&e.pointerId!=null&&e.pointerId!==drag.pid))return;cancelAnimationFrame(drag.raf);const{row,ind}=drag;row.style.transform='';row.classList.remove('drag');
+  if(ind.parentNode){ind.parentNode.insertBefore(row,ind);ind.remove()}drag=null;
+  document.removeEventListener('pointermove',arMove);document.removeEventListener('pointerup',arEnd);document.removeEventListener('pointercancel',arEnd)}
+const arClose=()=>{arEnd();$('#arr').classList.remove('on')};
+$('#arX').onclick=arClose;
+$('#arOK').onclick=()=>{arEnd();const rows=[...$('#arl').children],lines=rows.map(r=>r._raw);
+  if(lines.join('\n')!==ta.value){snap();setLines(lines,arLast?rows.indexOf(arLast):lineIdx())}
+  $('#arr').classList.remove('on')};
 $('#eS').onclick=()=>{
   snap();const lyr=ta.value;
-  const title=$('#et').value.trim()||lyr.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim()))||'Untitled';
+  const title=$('#et').value.trim()||lyr.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim())&&!noteParse(l)&&!/^\{n[|:]/.test(l.trim()))||'Untitled';
   const art=$('#ea').value.trim(),key=$('#ek').value;
   const used=new Set([...lyr.matchAll(/^\[(.+)\]$/gm)].map(m=>m[1].toLowerCase()));
   const colors={};Object.keys(ed.colors).forEach(k=>{if(used.has(k))colors[k]=ed.colors[k]});
@@ -1185,6 +1280,8 @@ async function initAuth(){
   const isOn=id=>$(id).classList.contains('on');
   function closeTop(){
     if(isOn('#ctx')){ctxClose();return true}
+    if(isOn('#notebox')){closeNote();return true}
+    if(isOn('#arr')){arClose();return true}
     if(isOn('#nbox')){$('#nbox').classList.remove('on');return true}
     if(isOn('#cbox')){$('#cbox').classList.remove('on');return true}
     if(isOn('#addbox')){$('#aX').onclick();return true}

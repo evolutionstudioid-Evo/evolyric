@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v38 – In-app notifications for friend requests and received songs
+Changed `www/index.html`, `www/sw.js` (cache `evolyric-app-38`). No SQL, cloud.js or config.js changes.
+- A banner slides in at the top when someone sends you a friend request or songs ("@budi.s sent you a friend request", "@budi.s sent you 3 songs", or a summary such as "2 friend requests · 1 song delivery"). Tap it to open Friends. It hides itself after 7 seconds and is never repeated for the same item.
+- Live safety: no banner appears while a song is open in the performance view. It waits and appears once you are back on Home.
+- The app checks every 25 seconds while it is open and visible (and when you return to the app). The Friends screen only redraws when something actually changed, so typing in the search box is never interrupted.
+- The red dot on the profile picture and the menu counter stay as before; the app icon badge (Badging API) is also set to the number of waiting items where the device supports it.
+- Limit: these work while the app is open. A notification that arrives while the app is fully closed needs Web Push, which requires a server-side function (not part of this version).
+
 ## v37 – Send a group of songs to a friend
 Added `supabase/006_song_groups.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-37`). cloud.js / config.js untouched.
 - Friends screen: tap a friend to open a small menu with **Send songs** and **Unfriend** (the old Remove button is replaced by this menu).

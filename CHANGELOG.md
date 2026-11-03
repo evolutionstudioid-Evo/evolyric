@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v53 – Lyrics start at the top
+- A song now opens with the lyrics right under the section selector instead of far down the screen, with a thin divider line above the first line that matches the one at the end of the lyrics.
+
 ## v52 – Song title pinned above the section selector
 - The song title moved out of the scrolling lyrics into the header, centred above the section selector. It stays in place while the lyrics scroll and shrinks to fit the available width.
 

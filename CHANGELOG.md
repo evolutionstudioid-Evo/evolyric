@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v62 – Simpler friend picker when sending a song
+- Choosing a friend to send a song to now shows only their photo (from their Google account) and @username in one clean row each. Long friend lists scroll.
+
 ## v61 – Pro tag
 - A small "Pro" tag sits at the bottom right of the EvoLyric title. It is the full-version / subscriber label; a "Demo" variant exists for non-subscribers but is not used yet.
 

@@ -428,6 +428,10 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 .frs{display:flex;gap:8px;margin-bottom:10px}.frs input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:12px}
 #auth.bd::after{content:"";position:absolute;top:0;right:0;pointer-events:none;width:11px;height:11px;border-radius:50%;background:#ff453a;border:2px solid var(--bg)}
 #auth{position:relative}
+/* v62: friend picker when sending a song = photo + @username only */
+.fplist{max-height:min(52vh,420px);overflow-y:auto;margin:0 -4px;padding:0 4px;overscroll-behavior:contain}
+.sheet button.fpick{display:flex;align-items:center;gap:14px;width:100%;padding:8px 12px;text-align:left;min-height:56px}
+.fpick .av{width:42px;height:42px;flex:none;font-size:15px}.fpick span:last-child{flex:1;min-width:0;font-weight:700;font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1503,10 +1507,10 @@ function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to fr
     const ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
     if(fr.state==='nosql'){const p=E('p','mut','Friends are not enabled on the server yet.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p)}
     else if(!ok.length){const p=E('p','mut','You have no friends yet. Add one first, then send songs.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p);const b=E('button','','Open Friends');b.onclick=()=>{ctxClose();if(document.querySelector('#play.on'))leavePlay();frOpen()};c.append(b)}
-    else ok.forEach(f=>{const b=E('button','',(f.display_name||f.username)+'  @'+f.username);b.onclick=async()=>{ctxClose();
+    else{const lst=E('div','fplist');c.append(lst);ok.forEach(f=>{const b=E('button','fpick');b.type='button';b.append(frAvatar(f),E('span','',f.username?'@'+f.username:(f.display_name||'Friend')));b.onclick=async()=>{ctxClose();
       try{const{error}=await sb.rpc('send_songs',{p_to:f.other_id,p_songs:[songPayload(s)]});
         if(error)return void note(error.code==='54000'?'@'+f.username+' already has 20 songs waiting from you':error.code==='42501'?'You are no longer friends':navigator.onLine?'Could not send. Try again.':'You are offline',true);
-        note('Sent to @'+f.username)}catch(e){note('Could not send. Try again.',true)}};c.append(b)});
+        note('Sent to @'+f.username)}catch(e){note('Could not send. Try again.',true)}};lst.append(b)})}
     const x=E('button','','Cancel');x.onclick=ctxClose;c.append(x);$('#ctx').classList.add('on')};
   if(fr.state==null||Date.now()-fr.t>60000)frLoad(true).then(go);else go()}
 function frOpen(){closeMenu();ntfHide();show('friends');frRender();frLoad(true,true)}

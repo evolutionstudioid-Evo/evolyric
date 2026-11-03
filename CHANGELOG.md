@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v58 – Tidier editor
+- Artist, key and categories now share one row; categories are a folder icon with a count.
+- The tools are one row of icons: undo, redo, paste, keyboard, insert section, highlighter, and a pen (notes and drawing).
+- The section picker moved from a permanent side column into a popover (the section button), so the lyrics use the full width.
+- The Highlight button stays lit while its colour bar is open; the pause toggle label is shorter.
+
 ## v57 – Choose whether auto-scroll pauses at a section
 - In the editor, put the cursor in an Intro, Interlude or custom section and a new button lets you choose per section: auto-scroll pauses there, or keeps going. Intro and Interlude pause by default, custom sections keep scrolling. A short intro can now be set to keep scrolling.
 

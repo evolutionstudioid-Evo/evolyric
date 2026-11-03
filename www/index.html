@@ -1175,6 +1175,39 @@ async function initAuth(){
   try{await ensureClient();const{data,error}=await sb.auth.getSession();if(error)throw error;applyUser(data.session?data.session.user:null)}
   catch(e){authPending=false;if(!navigator.onLine){renderAuth()}else{setHint(null);user=null;renderAuth();if(window.Cloud)Cloud.signedOut()}}
   if(er)openAuth(er)}
+/* v41: Android Back button. In the installed app a stray Back press used to close EvoLyric. Now Back closes the open panel or goes up one
+   screen, asks before leaving a song / discarding edits, and on Home asks "Exit EvoLyric?". Only active in the installed app or on Android. */
+(function(){
+  let on=false;try{on=matchMedia('(display-mode: standalone)').matches||!!navigator.standalone||/Android/i.test(navigator.userAgent)}catch(e){}
+  if(!on||!history.pushState)return;
+  let exiting=false;const arm=()=>{try{history.pushState({evo:1},'')}catch(e){}};
+  try{history.replaceState({evo:0},'');history.pushState({evo:1},'')}catch(e){return}
+  const isOn=id=>$(id).classList.contains('on');
+  function closeTop(){
+    if(isOn('#ctx')){ctxClose();return true}
+    if(isOn('#nbox')){$('#nbox').classList.remove('on');return true}
+    if(isOn('#cbox')){$('#cbox').classList.remove('on');return true}
+    if(isOn('#addbox')){$('#aX').onclick();return true}
+    if(isOn('#catbox')){$('#cdone').onclick();return true}
+    if(isOn('#authbox')){closeAuth();return true}
+    if(!$('#amenu').hidden){closeMenu();return true}
+    if(isOn('#fabm')){fabOpen(false);return true}
+    if(isOn('#qpop')){qpClose();return true}
+    if(mn.classList.contains('on')){menuOpen(false);return true}
+    if($('#qp').classList.contains('open')){qOpen(false);return true}
+    if($('#spp').classList.contains('open')){spOpen(false);return true}
+    if(dw.classList.contains('open')){drawer(false);return true}
+    return false}
+  function goBack(){
+    if(closeTop())return;
+    const v=(document.querySelector('.v.on')||{}).id;
+    if(v==='play')return void ask('Leave this song?','Playback will stop.','Leave',()=>leavePlay());
+    if(v==='edit'){if(ed&&ed.dirty)return void ask('Discard changes?','Your edits to this song have not been saved.','Discard',()=>{ed.dirty=false;$('#eX').onclick()});return void $('#eX').onclick()}
+    if(v==='friends'||v==='profile')return void show('list');
+    if(lib.v==='cat')return void $('#cBack').onclick();
+    ask('Exit EvoLyric?','Press Exit to close the app.','Exit',()=>{exiting=true;history.back()})}
+  addEventListener('popstate',()=>{if(exiting){history.back();return}arm();goBack()});
+})();
 initAuth();
 refresh();
 </script>

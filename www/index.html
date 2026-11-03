@@ -87,7 +87,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #cok{background:var(--acc);color:#15110e;text-align:center!important;font-weight:700}
 #eX.arm{background:var(--f);color:#fff}
 #favL.on,#favD.on{background:var(--acc);color:#15110e}#svw{color:var(--f);font-size:13px;font-weight:700}#svw[hidden]{display:none}
-select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.end{height:2px;margin:56px auto 0;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}mark{color:inherit;border-radius:.2em;padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}#hlbar{align-items:center}#hlbar[hidden]{display:none!important}#hlbar .sw{width:24px;height:24px;border-radius:50%;padding:0}#secbar{align-items:center}#secbar[hidden]{display:none!important}#secbar b{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;margin-right:4px}#secbar .warn{background:var(--f);color:#fff}
+select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height:2px;margin:6px auto 4px;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}.end{height:2px;margin:56px auto 0;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}mark{color:inherit;border-radius:.2em;padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}#hlbar{align-items:center}#hlbar[hidden]{display:none!important}#hlbar .sw{width:24px;height:24px;border-radius:50%;padding:0}#secbar{align-items:center}#secbar[hidden]{display:none!important}#secbar b{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;margin-right:4px}#secbar .warn{background:var(--f);color:#fff}
 
 [hidden]{display:none!important}
 .tabs{display:flex;gap:6px;padding:0 12px 8px}.tabs button{flex:1;padding:8px;border-radius:10px;background:var(--card);border:1px solid var(--ln);font-weight:700;color:var(--mut)}.tabs button.on{background:var(--acc);border-color:var(--acc);color:#15110e}
@@ -690,17 +690,17 @@ function lineEl(ln,col){
   while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);k.style.background=HC[m[1]];d.append(k);i=m.index+m[0].length}
   if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';return d}
 function render(){
-  const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').textContent=cur.title||'Untitled';fitTitle();
+  const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
   t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
   t.append(E('div','end'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=/^(intro|interlude)/.test(d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
-function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop=Math.max(40,r)+'px';SO=null;fitTitle()}
+function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop='12px';SO=null;fitTitle()}
 /* v52: the song title lives in the header above the section selector (fixed, centred) and shrinks to fit */
 function fitTitle(){const e=$('#ptit');if(!e||!e.textContent)return;let f=20;e.style.fontSize=f+'px';while(e.scrollWidth>e.clientWidth+1&&f>11){f-=.5;e.style.fontSize=f+'px'}}
 window.addEventListener('resize',fixPad);
 try{document.fonts.addEventListener('loadingdone',()=>fixPad())}catch(e){}
 const secEls=()=>[...$('#txt').querySelectorAll('.sec')];
 function hl(){
-  const L=$('#lyr'),rl=L.scrollTop+L.clientHeight*.35,T=tops();let a=-1;
+  const L=$('#lyr'),T=tops(),rl=L.scrollTop+Math.min(L.clientHeight*.35,(T[0]||0)+L.scrollTop);let a=-1; /* at the top of the song the reading line sits at the first section, then eases down to 35% */
   for(let i=0;i<SE.length;i++){if(T[i]<=rl+2)a=i;else break}
   const d=a>=0?SE[a]:null;if(d===lastA)return;
   if(lastA&&lastA._c)lastA._c.classList.remove('on');

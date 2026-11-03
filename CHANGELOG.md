@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v49 – No text selection except in editable fields
+- Buttons, icons, titles, numbers and labels can no longer be selected or highlighted by long-press. Text selection and the long-press menu now work only inside editable fields (lyrics editor, title/artist, search, rename, new category, bio).
+
 ## v48 – Section glow fixed
 - The active section glow is now soft and round: the chip strip has enough room around the chips so the glow is no longer cut off into a box. The glow is also slightly smaller and smoother.
 

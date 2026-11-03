@@ -20,6 +20,10 @@
 *,*::before,*::after{box-sizing:inherit}
 html,body{height:100%;margin:0;overscroll-behavior:none;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--fg);font:16px/1.4 'Atkinson Hyperlegible',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;overflow:hidden}
+/* v49: static text (buttons, titles, numbers, labels) can never be selected; only editable fields can */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img,svg{-webkit-user-drag:none}
 button,input,textarea{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer;padding:0}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
@@ -898,6 +902,7 @@ $('#nxt').onclick=qNext;
 function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});}catch(e){}}
 /* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
 document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('contextmenu',e=>{const t=e.target;if(!(t.closest&&t.closest('input,textarea,[contenteditable]')))e.preventDefault()}); /* no long-press menu except in editable fields */
 /* Gestures on the lyric canvas (one Pointer Events system):
    tap = play/pause, touch + drag left/right = scroll speed (the speed panel opens with the value), three quick taps = edit song, two fingers = text size. */
 /* v45: floating speed HUD, top centre of the lyrics, visible only while the finger is dragging */

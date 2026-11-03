@@ -863,8 +863,8 @@ function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}]
 /* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
 document.addEventListener('gesturestart',e=>e.preventDefault());
 /* Gestures on the lyric canvas (one Pointer Events system):
-   tap = play/pause, hold = speed 18, hold + drag right = speed 23 (back to normal on release), two fingers = text size. */
-const Ly=$('#lyr'),PT=new Map();let G=null;
+   tap = play/pause, touch + drag left/right = scroll speed (the speed panel opens with the value), three quick taps = edit song, two fingers = text size. */
+const Ly=$('#lyr'),PT=new Map(),SPX=14;let G=null,taps=[]; /* SPX: pixels of horizontal drag per speed step */
 const pdist=()=>{const [a,b]=[...PT.values()];return Math.hypot(a.x-b.x,a.y-b.y)};
 Ly.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -873,20 +873,24 @@ Ly.addEventListener('pointerdown',e=>{
   if(G)clearTimeout(G.h);
   if(PT.size===2){G={pinch:1,d0:pdist()||1,f0:cur.font};return}
   if(PT.size>2)return;
-  G={x:e.clientX,y:e.clientY,t:performance.now(),mv:0,held:0,was:playing};
-  G.h=setTimeout(()=>{const g=G;if(!g||g.mv||g.pinch)return;g.held=1;boostSp=BOOST1;if(!playing)setPlay(true)},350)});
+  G={x:e.clientX,y:e.clientY,t:performance.now(),mv:0,sp:0,vert:0,was:playing}});
 Ly.addEventListener('pointermove',e=>{
   const p=PT.get(e.pointerId);if(!p||!G)return;p.x=e.clientX;p.y=e.clientY;
   if(G.pinch){if(PT.size===2)setFont(G.f0*Math.pow(pdist()/G.d0,1.35));return}
-  const dx=e.clientX-G.x;
-  if(G.held)boostSp=dx>60?BOOST2:BOOST1;
-  else if(Math.hypot(dx,e.clientY-G.y)>12){G.mv=1;clearTimeout(G.h)}});
+  const dx=e.clientX-G.x,dy=e.clientY-G.y;
+  if(G.sp){const v=Math.max(1,Math.min(25,G.s0+Math.round((e.clientX-G.sx)/SPX)));if(v!==cur.speed){$('#sp').value=v;syncSpeed()}spBump();return}
+  if(Math.hypot(dx,dy)>12){G.mv=1;
+    if(!G.vert&&Math.abs(dx)>1.4*Math.abs(dy)){G.sp=1;G.sx=e.clientX;G.s0=cur.speed;spDown=1;$('#spp').classList.add('act');spOpen(true)}
+    else G.vert=1}});
 function gEnd(e,cancel){
   PT.delete(e.pointerId);if(!G)return;
   if(G.pinch){if(!PT.size){save();G=null}return}
-  clearTimeout(G.h);const g=G;G=null;
-  if(g.held){boostSp=0;if(!g.was)setPlay(false)}
-  else if(!cancel&&!g.mv&&performance.now()-g.t<600)setPlay(!playing)}
+  const g=G;G=null;
+  if(g.sp){spDown=0;$('#spp').classList.remove('act');spBump();return}
+  if(!cancel&&!g.mv&&performance.now()-g.t<600){
+    const now=performance.now();taps=taps.filter(t=>now-t<750);taps.push(now);
+    if(taps.length>=3){taps=[];menuOpen(false);setPlay(false);openEdit(cur);return} /* triple tap: edit this song (the first two taps cancelled each other) */
+    setPlay(!playing)}}
 Ly.addEventListener('pointerup',e=>gEnd(e,false));Ly.addEventListener('pointercancel',e=>gEnd(e,true));
 Ly.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
 Ly.addEventListener('contextmenu',e=>e.preventDefault());

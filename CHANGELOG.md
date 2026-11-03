@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v45 – Floating speed HUD, tap outside closes panels
+- Dragging to change speed now shows a floating glass-style slider at the top centre of the lyrics (white track, light-blue fill, value). It fades in and out and disappears when you lift your finger. The corner speed panel is unchanged.
+- Tapping anywhere outside an open menu, sidebar, queue, speed panel or popup closes them all, and that tap no longer starts or stops playback.
+
 ## v44 – Speed by dragging, triple tap to edit
 - Touch the lyrics and drag left or right to change the scroll speed; the speed panel opens and shows the value. The corner speed button still works.
 - This replaces the old hold-to-boost gesture.

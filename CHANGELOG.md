@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v39 – Username can be changed again
+Added `supabase/007_username_unlock.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-39`).
+- The Username row in the account menu is editable again ("Change your username"). The permanent-name warning is gone.
+- 007 removes the database lock from v35/004. Uniqueness and the format check stay: a name that is taken is still refused ("That username is already taken. Try another one."), so two people never share a username.
+- Friends and shared songs are linked by internal id, so renaming does not break friendships or waiting deliveries; friends simply see the new name.
+- If 007 has not been run yet, saving a change shows a short hint to run it.
+
 ## v38 – In-app notifications for friend requests and received songs
 Changed `www/index.html`, `www/sw.js` (cache `evolyric-app-38`). No SQL, cloud.js or config.js changes.
 - A banner slides in at the top when someone sends you a friend request or songs ("@budi.s sent you a friend request", "@budi.s sent you 3 songs", or a summary such as "2 friend requests · 1 song delivery"). Tap it to open Friends. It hides itself after 7 seconds and is never repeated for the same item.

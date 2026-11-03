@@ -1150,8 +1150,8 @@ function buildLines(t,lyr,colors,onSec){const le=[];let col='';
       else d=lineEl(ln,col)}
     t.append(d);le.push(d)});
   return le}
-function annPos(it,le,W,em){const e=le[Math.min(Math.max(it.l|0,0),le.length-1)];return{x:it.x*W,y:(e?e.offsetTop:0)+it.y*em}}
-function annAnchor(x,y,le,W,em){let i=0;for(let k=0;k<le.length;k++){if(le[k].offsetTop<=y)i=k;else break}const e=le[i];return{l:i,y:r2((y-(e?e.offsetTop:0))/em),x:Math.round(x/W*1000)/1000}}
+function annPos(it,le,W,em){const e=le[Math.min(Math.max(it.l|0,0),le.length-1)];return{x:it.xe!=null?W/2+it.xe*em:it.x*W,y:(e?e.offsetTop:0)+it.y*em}} /* v69: horizontal anchor = em offset from the centre line (lyrics are centred), so it scales with the text exactly like the lyrics do */
+function annAnchor(x,y,le,W,em){let i=0;for(let k=0;k<le.length;k++){if(le[k].offsetTop<=y)i=k;else break}const e=le[i];return{l:i,y:r2((y-(e?e.offsetTop:0))/em),xe:r2((x-W/2)/em)}}
 function shapeNode(k,x,y,a,b,at){let e;
   if(k==='r')e=svgEl('rect',{x:Math.min(x,x+a),y:Math.min(y,y+b),width:Math.abs(a),height:Math.abs(b),rx:3});
   else if(k==='o')e=svgEl('ellipse',{cx:x+a/2,cy:y+b/2,rx:Math.abs(a)/2,ry:Math.abs(b)/2});
@@ -1160,7 +1160,8 @@ function shapeNode(k,x,y,a,b,at){let e;
   for(const q in at)e.setAttribute(q,at[q]);return e}
 function annDraw(layer,items,t,em,sel){
   layer.textContent='';const le=t._le||[],W=t.clientWidth,svg=svgEl('svg',{class:'ansvg'});layer.append(svg);if(!le.length)return;
-  items.forEach((it,i)=>{const p=annPos(it,le,W,em),col=ANC[it.c]||ANC.o,sw=Math.max(1,(it.w||.12)*em);
+  items.forEach((it,i)=>{if(it.xe==null&&it.x!=null){it.xe=r2((it.x*W-W/2)/em);delete it.x} /* migrate old width-fraction anchors */
+    const p=annPos(it,le,W,em),col=ANC[it.c]||ANC.o,sw=Math.max(1,(it.w||.12)*em);
     if(it.k==='x'||it.k==='i'){let d;
       if(it.k==='x'){d=E('div','anx',it.o.t);noteStyle(d,it.o);d.style.margin='0'}
       else{d=E('img','ani');d.alt='';d.src=it.src;d.style.width=it.a*em+'px';d.style.height=it.b*em+'px';d.draggable=false}

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v35 – Username is permanent
+Added `supabase/004_username_lock.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-35`).
+- Once a username is set it cannot be changed by the user. The menu row becomes a locked, read-only "@name"; the first-time dialog now warns that it is permanent.
+- Enforced in the database (trigger `lock_username`), so it holds even if someone bypasses the app. The project owner can still fix a name by hand in the Supabase Table Editor / SQL Editor.
+- A name that is already used is refused with "That username is already taken. Try another one." (uniqueness comes from the unique index added in 002, so two people can never share a name).
+- A timed change (for example once every few months) can be added later by relaxing the trigger.
+
 ## v34 – Friends (step 2) + richer usernames
 Added `supabase/003_friends.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-34`). cloud.js / config.js untouched.
 - Usernames may now also contain `.` `_` `-` (3-20 chars, start with a letter/number, no two dots in a row, lowercase). Needs 003 to be run, because the server enforces the format.

@@ -929,14 +929,15 @@ async function unameFetch(n){try{const{data,error}=await sb.from('profiles').sel
   uname.state='ok';unameStore(n.id,data&&data.username||'')}catch(e){}
   if(!$('#amenu').hidden&&user)buildMenu(user)}
 function unameEdit(){if(!user)return;
+  if(uname.v)return void note('Your username is permanent and cannot be changed.');
   if(uname.state==='nosql')return void note('Usernames are not enabled on the server yet.',true);
   closeMenu();
-  nameBox('Your username',uname.v,user.id,async n=>{
+  nameBox('Choose your username',uname.v,user.id,async n=>{
     try{const{data,error}=await sb.from('profiles').update({username:n}).eq('id',user.id).select('username').maybeSingle();
-      if(error){if(error.code==='23505')return 'That username is already taken';if(error.code==='23514')return 'That username is not allowed';if(error.code==='42703'||error.code==='PGRST204'){uname.state='nosql';return 'Usernames are not enabled on the server yet'}return navigator.onLine?'Could not save. Try again.':'You are offline'}
+      if(error){if(error.code==='23505')return 'That username is already taken. Try another one.';if(error.code==='42501')return 'Your username is permanent and cannot be changed';if(error.code==='23514')return 'That username is not allowed';if(error.code==='42703'||error.code==='PGRST204'){uname.state='nosql';return 'Usernames are not enabled on the server yet'}return navigator.onLine?'Could not save. Try again.':'You are offline'}
       if(!data)return 'Could not save. Try again.';
       unameStore(user.id,data.username);note('Username saved');if($('#friends').classList.contains('on'))frRender();return ''}catch(e){return 'Could not save. Try again.'}},
-    {val:unameErr,save:1,max:20,ph:'username',hint:'3–20 characters: letters, numbers, . _ and -. Friends find you by this name.'})}
+    {val:unameErr,save:1,max:20,ph:'username',hint:'3–20 characters: letters, numbers, . _ and -. Friends find you by this name. Choose carefully: it cannot be changed later.'})}
 const getHint=()=>{try{return JSON.parse(localStorage.getItem(HK))}catch(e){return null}};
 const setHint=u=>{try{u?localStorage.setItem(HK,JSON.stringify(u)):localStorage.removeItem(HK)}catch(e){}};
 const mapUser=u=>{if(!u)return null;const m=u.user_metadata||{};return{id:u.id,name:m.full_name||m.name||(u.email||'').split('@')[0]||'User',email:u.email||m.email||'',avatar:m.avatar_url||m.picture||''}};
@@ -950,8 +951,8 @@ function renderAuth(){
   if(!u)closeMenu();frBadge()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
   const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
-  const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&o.soon){b.disabled=true;b.append(E('em','','Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
-  it('Username',unameEdit,{sub:uname.state==='nosql'?'Soon':uname.v?'@'+uname.v:'Set'});
+  const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&(o.soon||o.lock)){b.disabled=true;b.append(E('em','',o.lock||'Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
+  it('Username',unameEdit,uname.v?{lock:'@'+uname.v}:{sub:uname.state==='nosql'?'Soon':'Set'});
   it('Friends',frOpen,{sub:frIn().length?String(frIn().length):''});
   it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
   it('Account Settings',null,{soon:1});

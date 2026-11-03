@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v50 – Hold to fast-forward
+- While auto-scroll is running, pressing and holding still on the lyrics for 2 seconds scrolls at speed 25 until you let go, then the saved speed resumes. No popup. The boost eases in and out. Moving your finger (to change speed) cancels it.
+
 ## v49 – No text selection except in editable fields
 - Buttons, icons, titles, numbers and labels can no longer be selected or highlighted by long-press. Text selection and the long-press menu now work only inside editable fields (lyrics editor, title/artist, search, rename, new category, bio).
 

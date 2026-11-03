@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v68 – Annotations follow lyric zoom
+- Pen strokes, shapes and note text now stay anchored to their lyric line and scale with the text when you pinch to zoom the lyrics (they used to stay frozen in place).
+
 ## v67 – No Back-guard on iPhone/iPad
 - The Android Back-button handling is now Android/desktop only. On iPhone and iPad, swiping from the left edge no longer reveals an extra page; the app behaves like any other iOS app (swipe up to leave).
 

@@ -431,7 +431,12 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 /* v62: friend picker when sending a song = photo + @username only */
 .fplist{max-height:min(52vh,420px);overflow-y:auto;margin:0 -4px;padding:0 4px;overscroll-behavior:contain}
 .sheet button.fpick{display:flex;align-items:center;gap:14px;width:100%;padding:8px 12px;text-align:left;min-height:56px}
-.fpick .av{width:42px;height:42px;flex:none;font-size:15px}.fpick span:last-child{flex:1;min-width:0;font-weight:700;font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpick .av{width:42px;height:42px;flex:none;font-size:15px}.fpick span{flex:1;min-width:0;font-weight:700;font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* v63: multi-select friends */
+.fpick .fck{width:24px;height:24px;flex:none;border-radius:50%;border:2px solid rgba(255,255,255,.28);position:relative;transition:.15s}
+.fpick.on{background:rgba(255,160,60,.14)}.fpick.on .fck{background:var(--acc);border-color:var(--acc)}
+.fpick.on .fck::after{content:'';position:absolute;left:7px;top:3px;width:5px;height:10px;border:solid #1a1208;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.sheet button.fgo{background:var(--acc);color:#1a1208;font-weight:800;margin-top:8px;justify-content:center;text-align:center}.sheet button.fgo:disabled{opacity:.4}
 </style>
 </head>
 <body>
@@ -1507,10 +1512,17 @@ function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to fr
     const ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
     if(fr.state==='nosql'){const p=E('p','mut','Friends are not enabled on the server yet.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p)}
     else if(!ok.length){const p=E('p','mut','You have no friends yet. Add one first, then send songs.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p);const b=E('button','','Open Friends');b.onclick=()=>{ctxClose();if(document.querySelector('#play.on'))leavePlay();frOpen()};c.append(b)}
-    else{const lst=E('div','fplist');c.append(lst);ok.forEach(f=>{const b=E('button','fpick');b.type='button';b.append(frAvatar(f),E('span','',f.username?'@'+f.username:(f.display_name||'Friend')));b.onclick=async()=>{ctxClose();
-      try{const{error}=await sb.rpc('send_songs',{p_to:f.other_id,p_songs:[songPayload(s)]});
-        if(error)return void note(error.code==='54000'?'@'+f.username+' already has 20 songs waiting from you':error.code==='42501'?'You are no longer friends':navigator.onLine?'Could not send. Try again.':'You are offline',true);
-        note('Sent to @'+f.username)}catch(e){note('Could not send. Try again.',true)}};lst.append(b)})}
+    else{const lst=E('div','fplist'),sel=new Set(),go2=E('button','fgo');go2.type='button';
+      const upd=()=>{go2.disabled=!sel.size;go2.textContent=sel.size?'Send to '+sel.size+(sel.size>1?' friends':' friend'):'Select friends'};upd();
+      ok.forEach(f=>{const b=E('button','fpick');b.type='button';b.append(frAvatar(f),E('span','',f.username?'@'+f.username:(f.display_name||'Friend')),E('i','fck'));
+        b.onclick=()=>{sel.has(f.other_id)?sel.delete(f.other_id):sel.add(f.other_id);b.classList.toggle('on',sel.has(f.other_id));upd()};lst.append(b)});
+      go2.onclick=async()=>{const to=ok.filter(f=>sel.has(f.other_id));if(!to.length)return;ctxClose();let n=0,full=[],gone=0,bad=0;
+        for(const f of to){try{const{error}=await sb.rpc('send_songs',{p_to:f.other_id,p_songs:[songPayload(s)]});
+          if(!error)n++;else if(error.code==='54000')full.push('@'+f.username);else if(error.code==='42501')gone++;else bad++}catch(e){bad++}}
+        if(!n&&bad&&!navigator.onLine)return void note('You are offline',true);
+        const w=[];if(full.length)w.push(full.join(', ')+' already has 20 songs waiting');if(gone)w.push(gone+' no longer a friend');if(bad)w.push(bad+' failed');
+        note(n?('Sent to '+n+(n>1?' friends':' friend'))+(w.length?' · '+w.join(' · '):''):w.join(' · ')||'Could not send. Try again.',!n)};
+      c.append(lst,go2)}
     const x=E('button','','Cancel');x.onclick=ctxClose;c.append(x);$('#ctx').classList.add('on')};
   if(fr.state==null||Date.now()-fr.t>60000)frLoad(true).then(go);else go()}
 function frOpen(){closeMenu();ntfHide();show('friends');frRender();frLoad(true,true)}

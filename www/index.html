@@ -836,7 +836,7 @@ $('#spPlus').onclick=()=>{$('#sp').value=Math.min(+$('#sp').max,+$('#sp').value+
 function setFont(v){
   const L=$('#lyr'),old=cur.font,nf=clamp(Math.round(v*10)/10,FMIN,FMAX);if(nf===old)return;
   const f=$('#txt').firstElementChild,S=f?f.offsetTop:0,rl=RLP(L),y=L.scrollTop+rl;
-  cur.font=nf;$('#txt').style.fontSize=nf+'px';SO=null;
+  cur.font=nf;$('#txt').style.fontSize=nf+'px';SO=null;annPlay(); /* v68: annotations re-anchor and rescale with the lyrics */
   if(y>S)L.scrollTop=S+(y-S)*nf/old-rl}
 $('#sp').onchange=save;
 function enterFs(){ /* the play view IS the fullscreen view: layout class stays for as long as a song is open; browser fullscreen is best-effort */

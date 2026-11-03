@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v41 – Android Back button asks before closing
+Changed `www/index.html`, `www/sw.js` (cache `evolyric-app-41`); no SQL, cloud.js or config.js changes.
+- A stray Back press no longer closes the app. Back now works like this: it first closes whatever is open (dialog, popup, "+" menu, ⋮ menu, queue, speed panel, side panel); then it goes up one screen (Friends / Profile / category -> Home).
+- On Home it shows "Exit EvoLyric?" with Cancel / Exit. Exit really closes the app.
+- Open song: Back asks "Leave this song?" (so an accidental press never drops the lyrics during a performance). Editor with unsaved changes: Back asks "Discard changes?".
+- Only active in the installed app (Home Screen / standalone) or on Android, so desktop browsers keep their normal Back button.
+- Implementation: a history entry is kept under the app and re-armed after each Back press. Known limit: when signing in with Google the browser history contains Google pages behind the app, so the very last Back after confirming Exit may land on one of them instead of closing.
+
 ## v40 – Profile page with username and bio
 Added `supabase/008_bio.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-40`). cloud.js / config.js untouched.
 - The header of the account menu (profile picture, name, email) is now tappable (with a "›") and opens a new Profile page. The old "Username" menu row is gone.

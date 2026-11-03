@@ -306,6 +306,16 @@ html:has(#play.on){background:#0d0a08}
 /* v38: notification banner */
 #ntf{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);opacity:0;z-index:1200;max-width:min(92vw,420px);background:var(--card);color:var(--fg);border:1px solid var(--acc);border-radius:16px;padding:12px 16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .25s var(--ease),opacity .25s;text-align:left}
 #ntf.on{transform:translate(-50%,0);opacity:1}
+/* v43: annotations */
+#txt{position:relative}
+.annl{position:absolute;inset:0;pointer-events:none;z-index:2}.ansvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.anx,.ani{position:absolute;transform:translate(-50%,-50%);width:max-content;max-width:90%;pointer-events:none;margin:0;-webkit-user-select:none;user-select:none}.ani{max-width:none}
+.annl.ed.t-sel [data-i],.annl.ed.t-erase [data-i]{pointer-events:auto;touch-action:none}.annl.ed .anhit{pointer-events:none}.annl.ed.t-sel .anhit,.annl.ed.t-erase .anhit{pointer-events:stroke}
+.ansvg g.sel{filter:drop-shadow(0 0 3px #fff)}.anx.sel,.ani.sel{outline:2px dashed var(--acc);outline-offset:4px}
+#ann{background:var(--bg)}#anl{flex:1;overflow-y:auto;position:relative;padding:0 18px;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}
+#antx{position:relative;max-width:960px;margin:0 auto;padding:16px 0 45vh}.ancap{position:absolute;inset:0;z-index:3;pointer-events:none;touch-action:none}
+#antools{flex:none;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln);background:var(--card)}#antools .tb{padding-top:4px;align-items:center}#antools .tb[hidden]{display:none!important}
+#antools .tb button.on{background:var(--acc);color:#15110e;border-color:var(--acc)}#antools .asw{width:26px;height:26px;border-radius:50%;padding:0;border:2px solid transparent}#antools .asw.on{border-color:var(--fg);background:inherit}
 /* v42: notes (editor) */
 .note{line-height:1.3;white-space:pre-wrap;max-width:100%}
 #notebox{position:fixed;inset:0;z-index:62;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);padding:12px}#notebox.on{display:flex}
@@ -409,6 +419,17 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
   <div id="pfbody"></div>
 </section>
 
+<section id="ann" class="v">
+  <div class="hd"><button class="ic" id="anX" aria-label="Cancel">✕</button><h1 style="font-size:20px">Annotate</h1><button class="pill" id="anOK">Done</button></div>
+  <div id="anl"><div id="antx"></div></div>
+  <div id="antools">
+    <div class="tb" id="anSel" hidden><b>Selected</b><button id="anEd">Edit text</button><button id="anDel">Delete</button></div>
+    <div class="tb" id="anShape" hidden><button data-s="r" aria-label="Rectangle">▭</button><button data-s="o" aria-label="Ellipse">◯</button><button data-s="t" aria-label="Triangle">△</button><button data-s="n" aria-label="Line">╱</button></div>
+    <div class="tb" id="anO"></div>
+    <div class="tb" id="anT"><button data-t="hand">Scroll</button><button data-t="pen">Pen</button><button data-t="text">Text</button><button data-t="shape">Shape</button><button id="anImg">Image</button><button data-t="sel">Move</button><button data-t="erase">Erase</button></div>
+  </div>
+  <input type="file" id="anFile" accept="image/*" hidden>
+</section>
 <div id="notebox"><div class="sheet nsheet"><h3 id="nbt">New note</h3>
   <textarea id="nbtx" rows="2" maxlength="160" placeholder="e.g. Drums stop here" aria-label="Note text"></textarea>
   <div id="nbseg"></div>
@@ -628,15 +649,9 @@ function lineEl(ln,col){
   if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';return d}
 function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';const h=E('h2','',cur.title||'Untitled');h.id='ttl';t.append(h);
-  (cur.lyrics||'').split('\n').forEach(ln=>{
-    const no=noteParse(ln);if(no){const d=E('div','note',no.t);noteStyle(d,no);t.append(d);return}
-    const m=ln.trim().match(/^\[(.+)\]$/);
-    if(m){const n=m[1],lo=n.toLowerCase();col=lo.startsWith('male')?'m':lo.startsWith('female')?'f':'';
-      const lc=lblColor(cur,lo),d=E('div','sec',n);d.style.color=lc;d.dataset.k=lo;t.append(d);
-      const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)}
-    else t.append(lineEl(ln,col))});
+  t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
   t.append(E('div','end'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=/^(intro|interlude)/.test(d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
-function fixPad(){placeQ();if(!cur)return;const L=$('#lyr'),h=$('#ttl'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop=Math.max(40,r-(h?h.offsetHeight+24:0))+'px';SO=null}
+function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr'),h=$('#ttl'),r=Math.round(L.clientHeight*.35);$('#txt').style.paddingTop=Math.max(40,r-(h?h.offsetHeight+24:0))+'px';SO=null}
 window.addEventListener('resize',fixPad);
 try{document.fonts.addEventListener('loadingdone',()=>fixPad())}catch(e){}
 const secEls=()=>[...$('#txt').querySelectorAll('.sec')];
@@ -890,7 +905,7 @@ const ta=$('#ta');let st;
 function openEdit(s,txt,title,base,pre){
   exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
-  const own=s||base;ed={s,base,h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
+  const own=s||base;ed={s,base,ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
   $('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';
   $('#eX').classList.remove('arm');$('#hlbar').hidden=true;lastSel=null;ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
@@ -964,6 +979,120 @@ function pasteFail(){setKb(true);ta.focus()}
 /* A real key press means the user is typing: leave "keyboard off" mode so the caret is never snapped to line start (that reversed typing and arrow keys) */
 ta.addEventListener('keydown',e=>{if(ta.inputMode!=='none'||e.ctrlKey||e.metaKey||e.altKey||['Shift','Control','Alt','Meta','CapsLock','Escape','Tab'].includes(e.key))return;setKb(true)});
 ta.addEventListener('beforeinput',()=>{if(ta.inputMode==='none')setKb(true)});
+/* ---------- v43: annotations (pen, text, shapes, images) drawn over the lyrics ----------
+   An item is anchored to a lyric line (l) with an offset (y, in em of the lyric font) and a horizontal fraction (x), so it follows the line when the
+   layout changes. Sizes are in em too. Stored as song.ann (synced with the song, not sent to friends).
+   k: p pen {q:[[dx,dy]..]}, r/o/t/n rect/ellipse/triangle/line {a,b: vector}, x text {o: note style}, i image {a,b,src}. c colour key, w stroke. */
+const ANC={o:'#f0a04b',r:'#ff5a5a',y:'#ffd23f',g:'#4ade80',b:'#6ab0ff',w:'#f3ece3'},ANW={1:.06,2:.12,3:.25},SVGNS='http://www.w3.org/2000/svg';
+const svgEl=(n,a)=>{const e=document.createElementNS(SVGNS,n);for(const k in a)e.setAttribute(k,a[k]);return e},r2=n=>Math.round(n*100)/100;
+function buildLines(t,lyr,colors,onSec){const le=[];let col='';
+  (lyr||'').split('\n').forEach(ln=>{let d;const no=noteParse(ln);
+    if(no){d=E('div','note',no.t);noteStyle(d,no)}
+    else{const m=ln.trim().match(/^\[(.+)\]$/);
+      if(m){const n=m[1],lo=n.toLowerCase();col=lo.startsWith('male')?'m':lo.startsWith('female')?'f':'';const lc=lblColor({colors},lo);d=E('div','sec',n);d.style.color=lc;d.dataset.k=lo;if(onSec)onSec(d,n,lc)}
+      else d=lineEl(ln,col)}
+    t.append(d);le.push(d)});
+  return le}
+function annPos(it,le,W,em){const e=le[Math.min(Math.max(it.l|0,0),le.length-1)];return{x:it.x*W,y:(e?e.offsetTop:0)+it.y*em}}
+function annAnchor(x,y,le,W,em){let i=0;for(let k=0;k<le.length;k++){if(le[k].offsetTop<=y)i=k;else break}const e=le[i];return{l:i,y:r2((y-(e?e.offsetTop:0))/em),x:Math.round(x/W*1000)/1000}}
+function shapeNode(k,x,y,a,b,at){let e;
+  if(k==='r')e=svgEl('rect',{x:Math.min(x,x+a),y:Math.min(y,y+b),width:Math.abs(a),height:Math.abs(b),rx:3});
+  else if(k==='o')e=svgEl('ellipse',{cx:x+a/2,cy:y+b/2,rx:Math.abs(a)/2,ry:Math.abs(b)/2});
+  else if(k==='t')e=svgEl('polygon',{points:(x+a/2)+','+y+' '+(x+a)+','+(y+b)+' '+x+','+(y+b)});
+  else e=svgEl('line',{x1:x,y1:y,x2:x+a,y2:y+b});
+  for(const q in at)e.setAttribute(q,at[q]);return e}
+function annDraw(layer,items,t,em,sel){
+  layer.textContent='';const le=t._le||[],W=t.clientWidth,svg=svgEl('svg',{class:'ansvg'});layer.append(svg);if(!le.length)return;
+  items.forEach((it,i)=>{const p=annPos(it,le,W,em),col=ANC[it.c]||ANC.o,sw=Math.max(1,(it.w||.12)*em);
+    if(it.k==='x'||it.k==='i'){let d;
+      if(it.k==='x'){d=E('div','anx',it.o.t);noteStyle(d,it.o);d.style.margin='0'}
+      else{d=E('img','ani');d.alt='';d.src=it.src;d.style.width=it.a*em+'px';d.style.height=it.b*em+'px';d.draggable=false}
+      d.style.left=p.x+'px';d.style.top=p.y+'px';d.setAttribute('data-i',i);if(i===sel)d.classList.add('sel');layer.append(d);return}
+    const g=svgEl('g',{'data-i':i}),at={fill:'none',stroke:col,'stroke-width':sw,'stroke-linecap':'round','stroke-linejoin':'round'};let s;
+    if(it.k==='p')s=svgEl('path',{d:'M'+r2(p.x)+' '+r2(p.y)+it.q.map(q=>' L'+r2(p.x+q[0]*em)+' '+r2(p.y+q[1]*em)).join('')});
+    else s=shapeNode(it.k,p.x,p.y,it.a*em,it.b*em,{});
+    for(const q in at)s.setAttribute(q,at[q]);
+    const h=s.cloneNode();h.setAttribute('stroke','transparent');h.setAttribute('stroke-width',Math.max(sw,22));h.setAttribute('class','anhit');
+    g.append(s,h);if(i===sel)g.classList.add('sel');svg.append(g)})}
+function annPlay(){const t=$('#txt');let l=t.querySelector(':scope>.annl');
+  if(!cur||!cur.ann||!cur.ann.length||!t._le){if(l)l.remove();return}
+  if(!l){l=E('div','annl');t.append(l)}annDraw(l,cur.ann,t,cur.font,-1)}
+let an=null;
+const anRedraw=()=>{if(an)annDraw($('#anlay'),an.items,$('#antx'),an.em,an.sel)};
+function anSnap(){const j=JSON.stringify(an.items);if(an.h[an.hi]===j)return;an.h=an.h.slice(0,an.hi+1);an.h.push(j);an.hi=an.h.length-1;if(an.h.length>60){an.h.shift();an.hi--}}
+function anGo(d){const n=an.hi+d;if(n<0||n>=an.h.length)return;an.hi=n;an.items=JSON.parse(an.h[n]);an.sel=-1;anRedraw();anUi()}
+function openAnn(){const f=ed.s?ed.s.font:ed.base?ed.base.font:32,t=$('#antx'),start=JSON.stringify(ed.ann||[]);
+  an={items:JSON.parse(start),sel:-1,tool:'pen',shape:'r',c:'o',w:2,em:f,h:[start],hi:0,start,dr:null};
+  t.textContent='';t.style.fontSize=f+'px';t._le=buildLines(t,ta.value,ed.colors);
+  const lay=E('div','annl ed');lay.id='anlay';const cap=E('div','ancap');cap.id='ancap';t.append(lay,cap);
+  anInit();show('ann');$('#anl').scrollTop=0;anTool('pen');requestAnimationFrame(anRedraw)}
+let anReady=false;
+function anInit(){if(anReady)return;anReady=true;
+  const O=$('#anO');
+  Object.keys(ANC).forEach(k=>{const b=E('button','asw');b.type='button';b.dataset.c=k;b.style.background=ANC[k];b.setAttribute('aria-label','Colour '+k);O.append(b)});
+  [['1','Thin'],['2','Mid'],['3','Thick']].forEach(([w,tx])=>{const b=E('button','',tx);b.type='button';b.dataset.w=w;O.append(b)});
+  [['anU','Undo'],['anR','Redo'],['anC','Clear']].forEach(([id,tx])=>{const b=E('button','',tx);b.type='button';b.id=id;O.append(b)});
+  O.onclick=e=>{const b=e.target.closest('button');if(!b||!an)return;
+    if(b.dataset.c){an.c=b.dataset.c;const it=an.items[an.sel];if(it&&it.k!=='x'&&it.k!=='i'){it.c=an.c;anSnap();anRedraw()}}
+    else if(b.dataset.w){an.w=+b.dataset.w;const it=an.items[an.sel];if(it&&it.k!=='x'&&it.k!=='i'){it.w=ANW[an.w];anSnap();anRedraw()}}
+    else if(b.id==='anU')anGo(-1);else if(b.id==='anR')anGo(1);
+    else if(b.id==='anC'){if(an.items.length)ask('Clear all annotations?','Everything drawn on this song will be removed.','Clear',()=>{an.items=[];an.sel=-1;anSnap();anRedraw();anUi()})}
+    anUi()};
+  $('#anT').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='anImg'){$('#anFile').click();return}if(b.dataset.t)anTool(b.dataset.t)};
+  $('#anShape').onclick=e=>{const b=e.target.closest('button');if(b&&an){an.shape=b.dataset.s;anUi()}};
+  $('#anDel').onclick=()=>{if(!an||an.sel<0)return;an.items.splice(an.sel,1);an.sel=-1;anSnap();anRedraw();anUi()};
+  $('#anEd').onclick=()=>{const it=an&&an.items[an.sel];if(!it||it.k!=='x')return;noteOpen(-1,o=>{it.o=o;anSnap();anRedraw()},it.o,()=>{an.items.splice(an.sel,1);an.sel=-1;anSnap();anRedraw();anUi()})};
+  $('#anFile').onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(f)anImage(f)};
+  $('#anOK').onclick=anDone;$('#anX').onclick=anBack;
+  const lay=()=>$('#anlay'),cap=$('#ancap');
+  /* Move / Erase: pointer events land on the items themselves */
+  $('#antx').addEventListener('pointerdown',e=>{if(!an||(an.tool!=='sel'&&an.tool!=='erase'))return;const n=e.target.closest&&e.target.closest('[data-i]');if(!n){if(an.sel>=0){an.sel=-1;anRedraw();anUi()}return}
+    const i=+n.getAttribute('data-i'),it=an.items[i];if(!it)return;
+    if(an.tool==='erase'){an.items.splice(i,1);anSnap();anRedraw();return}
+    e.preventDefault();an.sel=i;anRedraw();anUi();
+    const node=$('#antx').querySelector('[data-i="'+i+'"]'),t=$('#antx'),W=t.clientWidth,x0=e.clientX,y0=e.clientY,pid=e.pointerId;let moved=false;
+    const mv=ev=>{if(ev.pointerId!==pid)return;const dx=ev.clientX-x0,dy=ev.clientY-y0;if(!moved&&Math.hypot(dx,dy)<4)return;moved=true;
+      if(node.tagName==='g')node.setAttribute('transform','translate('+dx+','+dy+')');else node.style.translate=dx+'px '+dy+'px'};
+    const up=ev=>{if(ev.pointerId!==pid)return;document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);
+      if(moved&&ev.type==='pointerup'){const p=annPos(it,t._le,W,an.em),a=annAnchor(p.x+ev.clientX-x0,p.y+ev.clientY-y0,t._le,W,an.em);Object.assign(it,a);anSnap()}anRedraw()};
+    document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});
+  /* Pen / Shape / Text: the capture layer takes the touch */
+  cap.addEventListener('pointerdown',e=>{if(!an||!['pen','shape','text'].includes(an.tool)||an.dr)return;e.preventDefault();try{cap.setPointerCapture(e.pointerId)}catch(_){}
+    const r=cap.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;an.dr={x0:x,y0:y,pts:[[x,y]],pid:e.pointerId,el:null,mv:0}});
+  cap.addEventListener('pointermove',e=>{const d=an&&an.dr;if(!d||e.pointerId!==d.pid)return;const r=cap.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    if(Math.hypot(x-d.x0,y-d.y0)>5)d.mv=1;const svg=$('#anlay .ansvg'),col=ANC[an.c],sw=Math.max(1,ANW[an.w]*an.em);
+    if(an.tool==='pen'){const l=d.pts[d.pts.length-1];if(Math.hypot(x-l[0],y-l[1])<1.5)return;d.pts.push([x,y]);
+      if(!d.el){d.el=svgEl('path',{fill:'none',stroke:col,'stroke-width':sw,'stroke-linecap':'round','stroke-linejoin':'round'});svg.append(d.el)}
+      d.el.setAttribute('d','M'+d.pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L'))}
+    else if(an.tool==='shape'){if(d.el)d.el.remove();d.el=shapeNode(an.shape,d.x0,d.y0,x-d.x0,y-d.y0,{fill:'none',stroke:col,'stroke-width':sw,'stroke-linecap':'round','stroke-linejoin':'round'});svg.append(d.el);d.x1=x;d.y1=y}});
+  const end=e=>{const d=an&&an.dr;if(!d||e.pointerId!==d.pid)return;an.dr=null;if(d.el)d.el.remove();if(e.type==='pointercancel')return;
+    const t=$('#antx'),W=t.clientWidth,em=an.em,A=annAnchor(d.x0,d.y0,t._le,W,em);
+    if(an.tool==='pen'){const pts=d.pts.length>1?d.pts:[[d.x0,d.y0],[d.x0+.1,d.y0]];an.items.push({k:'p',...A,c:an.c,w:ANW[an.w],q:pts.map(q=>[r2((q[0]-d.x0)/em),r2((q[1]-d.y0)/em)])})}
+    else if(an.tool==='shape'){if(d.x1==null||Math.hypot(d.x1-d.x0,d.y1-d.y0)<6)return;an.items.push({k:an.shape,...A,c:an.c,w:ANW[an.w],a:r2((d.x1-d.x0)/em),b:r2((d.y1-d.y0)/em)})}
+    else if(an.tool==='text'){if(d.mv)return;noteOpen(-1,o=>{an.items.push({k:'x',...A,o});an.sel=an.items.length-1;anSnap();anRedraw();anTool('sel')},{...NOTE_DEF,t:''});return}
+    anSnap();anRedraw();anUi()};
+  cap.addEventListener('pointerup',end);cap.addEventListener('pointercancel',end);
+  addEventListener('resize',()=>{if($('#ann').classList.contains('on'))anRedraw()})}
+function anTool(k){if(!an)return;an.tool=k;if(k!=='sel')an.sel=-1;const cap=$('#ancap'),lay=$('#anlay');
+  cap.style.pointerEvents=['pen','shape','text'].includes(k)?'auto':'none';lay.className='annl ed t-'+k;anRedraw();anUi()}
+function anUi(){if(!an)return;
+  document.querySelectorAll('#anT [data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===an.tool));
+  document.querySelectorAll('#anO .asw').forEach(b=>b.classList.toggle('on',b.dataset.c===an.c));
+  document.querySelectorAll('#anO [data-w]').forEach(b=>b.classList.toggle('on',+b.dataset.w===an.w));
+  document.querySelectorAll('#anShape [data-s]').forEach(b=>b.classList.toggle('on',b.dataset.s===an.shape));
+  $('#anShape').hidden=an.tool!=='shape';
+  const it=an.items[an.sel];$('#anSel').hidden=!it;$('#anEd').hidden=!it||it.k!=='x';
+  $('#anU').disabled=an.hi<=0;$('#anR').disabled=an.hi>=an.h.length-1;$('#anC').disabled=!an.items.length}
+function anImage(f){if(an.items.filter(i=>i.k==='i').length>=8){toast('Maximum 8 images per song');return}
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{URL.revokeObjectURL(url);const m=Math.min(1,380/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*m)),h=Math.max(1,Math.round(im.height*m)),c=document.createElement('canvas');c.width=w;c.height=h;
+    const x=c.getContext('2d');x.drawImage(im,0,0,w,h);const png=/png|gif|webp/i.test(f.type),src=c.toDataURL(png?'image/png':'image/jpeg',.75);
+    if(src.length>200000){toast('Image is too large');return}
+    const t=$('#antx'),W=t.clientWidth,em=an.em,L=$('#anl'),dw=Math.min(w,W*.5),A=annAnchor(W/2,L.scrollTop+L.clientHeight/2,t._le,W,em);
+    an.items.push({k:'i',...A,a:r2(dw/em),b:r2(dw*h/w/em),src});an.sel=an.items.length-1;anSnap();anTool('sel')};
+  im.onerror=()=>{URL.revokeObjectURL(url);toast('Image could not be read')};im.src=url}
+function anDone(){if(!an)return;const j=JSON.stringify(an.items);if(j!==an.start){ed.ann=an.items;ed.dirty=true}an=null;show('edit')}
+function anBack(){if(!an){show('edit');return}if(JSON.stringify(an.items)===an.start){an=null;show('edit');return}ask('Discard annotations?','Your drawing changes on this page will be lost.','Discard',()=>{an=null;show('edit')})}
 /* v42: note editor, note bar, and the Move (arrange) tool */
 const lineIdx=()=>ta.value.slice(0,ta.selectionStart).split('\n').length-1;
 function setLines(L,ci){ta.value=L.join('\n');ci=Math.max(0,Math.min(ci,L.length-1));const pos=L.slice(0,ci).join('\n').length+(ci>0?1:0);ta.setSelectionRange(pos,pos);snap();ed.dirty=true;secInfo()}
@@ -978,17 +1107,18 @@ function nbBuild(){const box=$('#nbseg');box.textContent='';const o=nbCur.o;
   row('Colour',g=>Object.keys(NC).forEach(v=>{const b=E('button','nsw'+(o.c===v?' on':''));b.type='button';b.style.background=NC[v];b.setAttribute('aria-label','Colour '+v);b.onclick=()=>{o.c=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)}));
   row('Style',g=>[['i','Italic'],['x','Box']].forEach(([k,t])=>{const b=E('button',o[k]?'on':'',t);b.type='button';b.onclick=()=>{o[k]=o[k]?'':'1';b.classList.toggle('on',!!o[k]);nbPrev()};g.append(b)}));
   nbPrev()}
-function noteOpen(idx){const o=idx>=0?noteParse(ta.value.split('\n')[idx]):null;nbCur={idx,o:o||{...NOTE_DEF,t:''}};
-  $('#nbt').textContent=idx>=0?'Edit note':'New note';$('#nbtx').value=nbCur.o.t;$('#nbdel').hidden=idx<0;nbBuild();$('#notebox').classList.add('on');setTimeout(()=>$('#nbtx').focus(),40)}
+function noteOpen(idx,cb,o0,del){const o=cb?o0:idx>=0?noteParse(ta.value.split('\n')[idx]):null;nbCur={idx,cb,del,o:o?{...NOTE_DEF,...o}:{...NOTE_DEF,t:''}};
+  $('#nbt').textContent=(cb?o0&&o0.t:idx>=0)?'Edit note':'New note';$('#nbtx').value=nbCur.o.t;$('#nbdel').hidden=cb?!del:idx<0;nbBuild();$('#notebox').classList.add('on');setTimeout(()=>$('#nbtx').focus(),40)}
 const closeNote=()=>{$('#notebox').classList.remove('on');nbCur=null};
 $('#nbtx').addEventListener('input',()=>{if(nbCur)nbPrev()});
 $('#nbcancel').onclick=closeNote;$('#notebox').onclick=e=>{if(e.target.id==='notebox')closeNote()};
 $('#nbok').onclick=()=>{if(!nbCur)return;const t=$('#nbtx').value.replace(/\s+/g,' ').trim();if(!t){$('#nbtx').focus();return}
-  const o={...nbCur.o,t},L=ta.value.split('\n');snap();let ci;
+  const o={...nbCur.o,t};if(nbCur.cb){const cb=nbCur.cb;closeNote();cb(o);return}
+  const L=ta.value.split('\n');snap();let ci;
   if(nbCur.idx>=0){L[nbCur.idx]=noteStr(o);ci=nbCur.idx}else{ci=lineIdx()+1;L.splice(ci,0,noteStr(o))}
   closeNote();setLines(L,ci)};
-$('#nbdel').onclick=()=>{if(!nbCur||nbCur.idx<0)return;const L=ta.value.split('\n'),i=nbCur.idx;snap();L.splice(i,1);closeNote();setLines(L,i)};
-$('#eN').onclick=()=>noteOpen(-1);
+$('#nbdel').onclick=()=>{if(nbCur&&nbCur.cb){const d=nbCur.del;closeNote();d&&d();return}if(!nbCur||nbCur.idx<0)return;const L=ta.value.split('\n'),i=nbCur.idx;snap();L.splice(i,1);closeNote();setLines(L,i)};
+$('#eN').onclick=()=>openAnn();
 $('#nbEdit').onclick=()=>noteOpen(lineIdx());
 $('#nbRm').onclick=()=>{const L=ta.value.split('\n'),i=lineIdx();if(!noteParse(L[i]))return;snap();L.splice(i,1);setLines(L,i)};
 $('#nbMove').onclick=()=>arrOpen(lineIdx());
@@ -1029,6 +1159,7 @@ $('#eS').onclick=()=>{
   const colors={};Object.keys(ed.colors).forEach(k=>{if(used.has(k))colors[k]=ed.colors[k]});
   if(ed.s){Object.assign(ed.s,{title,artist:art,lyrics:lyr,key,colors,md:Date.now()});if(!ed.s.cr)ed.s.cr=crOf(ed.s);cur=ed.s}
   else{const b=ed.base;cur={id:'s'+Date.now(),title,artist:art,lyrics:lyr,key,colors,speed:b?b.speed:5,font:b?b.font:32,fav:false,cr:Date.now(),md:Date.now()};songs.push(cur)}
+  if(ed.ann&&ed.ann.length)cur.ann=ed.ann;else delete cur.ann;
   applyCats(cur.id,ed.cats);save();ed.dirty=false;openSong(cur)};
 $('#eX').onclick=()=>{
   if(ed.dirty&&!ed.arm){ed.arm=1;$('#eX').classList.add('arm');return}
@@ -1298,7 +1429,8 @@ async function initAuth(){
   function goBack(){
     if(closeTop())return;
     const v=(document.querySelector('.v.on')||{}).id;
-    if(v==='play')return void ask('Leave this song?','Playback will stop.','Leave',()=>leavePlay());
+    if(v==='play')return void leavePlay();
+    if(v==='ann')return void anBack();
     if(v==='edit'){if(ed&&ed.dirty)return void ask('Discard changes?','Your edits to this song have not been saved.','Discard',()=>{ed.dirty=false;$('#eX').onclick()});return void $('#eX').onclick()}
     if(v==='friends'||v==='profile')return void show('list');
     if(lib.v==='cat')return void $('#cBack').onclick();

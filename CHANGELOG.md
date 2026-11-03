@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v43 – Annotate page (pen, text, shapes, images)
+- The editor **Note** button now opens a full page showing the lyrics like play mode, where you can draw with a pen, add styled text, shapes (rectangle, ellipse, triangle, line) and images, then move, recolour, erase, undo and redo.
+- Annotations are anchored to lyric lines, saved with the song (synced), and shown over the lyrics in the player.
+- Android Back from a song to Home no longer asks for confirmation; the confirmation remains only for exiting the app.
+
 ## v42 – Notes in the editor
 - New **Note** button in the editor: add a personal cue (e.g. "Drums stop") with its own size, weight, font, colour, alignment, italic and box.
 - Notes are lines inside the lyrics, so they show in the player, sync and are included when sending songs.

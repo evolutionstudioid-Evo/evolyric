@@ -44,7 +44,7 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .ltr{color:var(--acc);font-size:15px;padding:14px 4px 4px}
 .it{display:block;width:100%;text-align:left;padding:12px 4px;border-bottom:1px solid var(--ln);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .it b{display:flex;justify-content:space-between;gap:8px;font-size:19px;font-weight:400}.key{color:var(--acc);font-size:15px;white-space:nowrap}.it small,.mut{color:var(--mut)}
-#secs{position:relative;display:flex;gap:10px;overflow-x:auto;padding:24px 24px 28px;margin:-24px 0 -28px;min-height:40px;touch-action:pan-x;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
+#secs{position:relative;display:flex;gap:10px;overflow-x:auto;padding:24px 24px 28px;margin:-24px 0 -28px;min-height:40px;touch-action:pan-x;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;will-change:scroll-position;scrollbar-width:none}#secs::-webkit-scrollbar{display:none}
 /* v47: section chips - liquid glass tinted by the section colour, glowing when active */
 .chip{flex:none;position:relative;overflow:hidden;padding:7px 15px;border-radius:999px;font-weight:700;letter-spacing:.01em;opacity:.8;
   background:linear-gradient(150deg,rgba(255,255,255,.07),rgba(255,255,255,.015));
@@ -58,8 +58,7 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
   border-color:currentColor;border-color:color-mix(in srgb,currentColor 75%,#fff 10%);
   text-shadow:0 0 10px currentColor;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 14px color-mix(in srgb,currentColor 25%,transparent),0 0 10px color-mix(in srgb,currentColor 45%,transparent),0 0 22px color-mix(in srgb,currentColor 22%,transparent);
-  animation:chipGlow 3.2s ease-in-out infinite}
-@keyframes chipGlow{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 14px color-mix(in srgb,currentColor 25%,transparent),0 0 8px color-mix(in srgb,currentColor 38%,transparent),0 0 18px color-mix(in srgb,currentColor 16%,transparent)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 16px color-mix(in srgb,currentColor 32%,transparent),0 0 12px color-mix(in srgb,currentColor 55%,transparent),0 0 24px color-mix(in srgb,currentColor 28%,transparent)}}
+}
 #lyr{flex:1;overflow-y:auto;position:relative;padding:0 18px;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 36px,#000 calc(100% - 44px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 36px,#000 calc(100% - 44px),transparent 100%)}
 .ln{line-height:1.45;white-space:pre-wrap;text-align:center;font-weight:700}.sec{color:var(--acc);font-size:.6em;font-weight:700;margin:1.1em 0 .2em;text-align:center}#ttl+.sec{margin-top:0}#ttl{font:800 60px/1.1 'Bricolage Grotesque',system-ui,sans-serif;text-align:center;margin:0 0 24px;color:var(--fg);overflow-wrap:anywhere}
 .m{color:var(--m)}.f{color:var(--f)}
@@ -713,10 +712,15 @@ function hl(){
   if(jumpD){if(Math.abs(L.scrollTop-jumpTop)<3)d=jumpD;else jumpD=null} /* a tapped chip stays active even when the lyrics cannot scroll any further */
   if(d===lastA)return;
   if(lastA&&lastA._c)lastA._c.classList.remove('on');
-  lastA=d;if(d){d._c.classList.add('on');const b=$('#secs');b.scrollTo({left:d._c.offsetLeft-(b.clientWidth-d._c.offsetWidth)/2})}}
+  lastA=d;if(d){d._c.classList.add('on');const b=$('#secs');if(performance.now()-secsUser>2500)secsGlide(b,d._c.offsetLeft-(b.clientWidth-d._c.offsetWidth)/2)}}
+/* v56: the section strip glides (eased, sub-pixel) to the active chip instead of jumping, and stays put while the user is browsing it */
+let sgRaf=0,secsUser=-1e9;
+function secsGlide(b,target){cancelAnimationFrame(sgRaf);const max=b.scrollWidth-b.clientWidth;target=Math.max(0,Math.min(max,target));const from=b.scrollLeft,d=target-from;if(Math.abs(d)<1)return;
+  const t0=performance.now(),dur=Math.min(650,280+Math.abs(d)*.9),step=t=>{const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);b.scrollLeft=from+d*e;if(k<1)sgRaf=requestAnimationFrame(step)};sgRaf=requestAnimationFrame(step)}
+['pointerdown','touchstart','wheel'].forEach(v=>$('#secs').addEventListener(v,()=>{secsUser=performance.now();cancelAnimationFrame(sgRaf)},{passive:true}));
 const RLP=L=>Math.round(Math.min(L.clientHeight*.2,120)); /* reading line: distance from the top of the lyrics */
 let jumpD=null,jumpTop=0;
-function jump(d){const L=$('#lyr');L.scrollTop=Math.max(0,d.offsetTop-RLP(L));jumpD=d;jumpTop=L.scrollTop;frac=0;waiting=!playing&&/^(intro|interlude)/.test(d.dataset.k);hl()}
+function jump(d){secsUser=-1e9;const L=$('#lyr');L.scrollTop=Math.max(0,d.offsetTop-RLP(L));jumpD=d;jumpTop=L.scrollTop;frac=0;waiting=!playing&&/^(intro|interlude)/.test(d.dataset.k);hl()}
 $('#lyr').addEventListener('scroll',()=>{
   if(playing){if(Math.abs($('#lyr').scrollTop-Math.floor(pos))>=1.5){pos=$('#lyr').scrollTop;txtEl.style.transform=''}}
   if(!hlq){hlq=1;requestAnimationFrame(()=>{hlq=0;hl()})}},{passive:true});

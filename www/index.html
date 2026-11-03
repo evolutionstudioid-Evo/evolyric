@@ -354,7 +354,7 @@ html:has(#play.on){background:#0d0a08}
 </section>
 
 <div id="ctx"><div class="sheet" id="csheet"></div></div>
-<div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
+<div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><p class="mut" id="nhint" style="margin:0 10px 8px;font-size:13px"></p><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
 <div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><button class="lnk" id="atGuest" type="button">Not now, keep using the demo</button></div></div>
@@ -472,9 +472,11 @@ function ask(t,m,ok,fn){const c=csh();c.append(E('h3','',t));const p=E('p','mut'
 const ctxClose=()=>$('#ctx').classList.remove('on');
 $('#ctx').onclick=e=>{if(e.target.id==='ctx')ctxClose()};
 /* create / rename category dialog */
-let nCb=null,nId=null;
-function nameBox(title,init,id,cb){$('#nt').textContent=title;$('#nn').value=init||'';$('#ne').textContent='';nCb=cb;nId=id;$('#nbox').classList.add('on');setTimeout(()=>$('#nn').focus(),30)}
-function nameOk(){const n=cname($('#nn').value),e=nameErr(n,nId);if(e){$('#ne').textContent=e;return}$('#nbox').classList.remove('on');nCb&&nCb(n)}
+let nCb=null,nId=null,nOpt=null;
+function nameBox(title,init,id,cb,opt){nOpt=opt||null;$('#nt').textContent=title;const i=$('#nn');i.value=init||'';i.placeholder=opt&&opt.ph||'Category name';i.maxLength=opt&&opt.max||30;i.setAttribute('autocapitalize',opt?'none':'sentences');$('#ne').textContent='';$('#nhint').textContent=opt&&opt.hint||'';$('#nok').disabled=false;nCb=cb;nId=id;$('#nbox').classList.add('on');setTimeout(()=>i.focus(),30)}
+function nameOk(){const o=nOpt,n=o?$('#nn').value.trim().toLowerCase():cname($('#nn').value),e=o?o.val(n):nameErr(n,nId);if(e){$('#ne').textContent=e;return}
+  if(o&&o.save){const b=$('#nok');if(b.disabled)return;b.disabled=true;$('#ne').textContent='';Promise.resolve(nCb(n)).then(er=>{b.disabled=false;if(er)$('#ne').textContent=er;else $('#nbox').classList.remove('on')})}
+  else{$('#nbox').classList.remove('on');nCb&&nCb(n)}}
 $('#nok').onclick=nameOk;$('#ncx').onclick=()=>$('#nbox').classList.remove('on');$('#nn').onkeydown=e=>{if(e.key==='Enter')nameOk()};
 $('#nbox').onclick=e=>{if(e.target.id==='nbox')$('#nbox').classList.remove('on')};
 /* Add Songs popup: multi-select from the Master Library; songs already in the category are locked */
@@ -900,6 +902,24 @@ $('#eX').onclick=()=>{
 /* ---------- Google sign-in / profile (Supabase Auth). Guest Demo never requires this. ---------- */
 const CFG=window.EVO_CONFIG||{},AUTH_ON=!!(CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY),HK='evolyric-auth-hint';
 let sb=null,user=null,authPending=AUTH_ON,profSynced=null;
+/* v33: username (profiles.username, see supabase/002_username.sql). state: null = unknown, 'ok', 'nosql' = column not on the server yet */
+const UNK='evolyric-uname:',uname={v:'',state:null};
+const unameErr=n=>!n?'Enter a username':n.length<3?'At least 3 characters':n.length>20?'Maximum 20 characters':!/^[a-z0-9_]+$/.test(n)?'Use only letters, numbers and _':['admin','root','support','evolyric','evo','system'].includes(n)?'That username is reserved':'';
+function unameLoad(id){try{uname.v=localStorage.getItem(UNK+id)||''}catch(e){uname.v=''}}
+function unameStore(id,v){uname.v=v||'';try{v?localStorage.setItem(UNK+id,v):localStorage.removeItem(UNK+id)}catch(e){}}
+async function unameFetch(n){try{const{data,error}=await sb.from('profiles').select('username').eq('id',n.id).maybeSingle();
+  if(error){if(navigator.onLine&&!/fetch|network/i.test(error.message||''))uname.state='nosql';return}
+  uname.state='ok';unameStore(n.id,data&&data.username||'')}catch(e){}
+  if(!$('#amenu').hidden&&user)buildMenu(user)}
+function unameEdit(){if(!user)return;
+  if(uname.state==='nosql')return void note('Usernames are not enabled on the server yet.',true);
+  closeMenu();
+  nameBox('Your username',uname.v,user.id,async n=>{
+    try{const{data,error}=await sb.from('profiles').update({username:n}).eq('id',user.id).select('username').maybeSingle();
+      if(error){if(error.code==='23505')return 'That username is already taken';if(error.code==='23514')return 'That username is not allowed';if(error.code==='42703'||error.code==='PGRST204'){uname.state='nosql';return 'Usernames are not enabled on the server yet'}return navigator.onLine?'Could not save. Try again.':'You are offline'}
+      if(!data)return 'Could not save. Try again.';
+      unameStore(user.id,data.username);note('Username saved');return ''}catch(e){return 'Could not save. Try again.'}},
+    {val:unameErr,save:1,max:20,ph:'username',hint:'3–20 characters: letters, numbers and _. Friends will find you by this name.'})}
 const getHint=()=>{try{return JSON.parse(localStorage.getItem(HK))}catch(e){return null}};
 const setHint=u=>{try{u?localStorage.setItem(HK,JSON.stringify(u)):localStorage.removeItem(HK)}catch(e){}};
 const mapUser=u=>{if(!u)return null;const m=u.user_metadata||{};return{id:u.id,name:m.full_name||m.name||(u.email||'').split('@')[0]||'User',email:u.email||m.email||'',avatar:m.avatar_url||m.picture||''}};
@@ -912,9 +932,9 @@ function renderAuth(){
   else{const b=E('button','avb');b.id='avb';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','Account menu: '+u.name);b.append(avatarEl(u));b.onclick=e=>{e.stopPropagation();toggleMenu()};box.append(b)}
   if(!u)closeMenu()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
-  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
-  const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&o.soon){b.disabled=true;b.append(E('em','','Soon'))}else b.onclick=f;m.append(b)};
-  it('Profile',null,{soon:1});
+  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
+  const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&o.soon){b.disabled=true;b.append(E('em','','Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
+  it('Username',unameEdit,{sub:uname.state==='nosql'?'Soon':uname.v?'@'+uname.v:'Set'});
   it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
   it('Account Settings',null,{soon:1});
   m.append(E('hr'));it('Sign Out',signOut,{out:1})}
@@ -948,11 +968,12 @@ function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
   return sb}).catch(e=>{clientP=null;throw e}))}
 function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);renderAuth();
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
-  if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n),0)}
+  if(n&&was!==n.id)unameLoad(n.id);
+  if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n).then(()=>unameFetch(n)),0)}
   if(window.Cloud){if(n)Cloud.signedIn(n);else Cloud.signedOut()}}
 async function syncProfile(n){ /* refresh display fields only; row + email are created/owned by the DB trigger, identity comes from the JWT via RLS */
   try{const{error}=await sb.from('profiles').update({display_name:n.name,avatar_url:n.avatar||null}).eq('id',n.id);if(error)console.warn('profile sync:',error.message)}catch(e){console.warn('profile sync failed',e)}}
-async function signOut(){closeMenu();const had=user;setHint(null);user=null;profSynced=null;renderAuth();
+async function signOut(){closeMenu();uname.v='';uname.state=null;const had=user;setHint(null);user=null;profSynced=null;renderAuth();
   try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
 /* ---------- Cloud sync hooks (logic lives in cloud.js) ---------- */
 function readLib(u){const a=u?K+':u:'+u:K,b=u?KC+':u:'+u:KC;let ex=false,s=[JSON.parse(SAMPLE_J)],c=[];

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v33 – Username (step 1 of Friends)
+Added `supabase/002_username.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-33`). cloud.js / config.js untouched.
+- Account menu: the old disabled "Profile" row is now "Username". Tap it to set a unique username (3-20 chars: a-z, 0-9, _; stored lowercase; a few names are reserved). It shows as @username in the menu header.
+- Needs a one-time SQL run: paste `supabase/002_username.sql` into Supabase > SQL Editor. Until then the row shows "Soon" and the rest of the app is unaffected.
+- Server side: new nullable `profiles.username` column with a format check and a unique index; clients may update only their own row (existing RLS) and only display_name / avatar_url / username.
+- Category name dialog was generalised (validator / async save / hint) and still behaves the same for categories.
+
 ## v32 – Pin songs, sort the list
 Changed (`www/index.html`, `www/sw.js` cache `evolyric-app-32`; no changes to cloud.js / Supabase)
 - Pin: long-press a song on Home > "Pin to top" (or "Unpin"). Pinned songs sit in a "Pinned" group above the rest (All Songs, categories and the side panel) and show a small pin icon. The pin is a normal song field, so it syncs with the account.

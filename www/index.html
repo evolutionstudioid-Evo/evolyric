@@ -306,6 +306,21 @@ html:has(#play.on){background:#0d0a08}
 /* v38: notification banner */
 #ntf{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);opacity:0;z-index:1200;max-width:min(92vw,420px);background:var(--card);color:var(--fg);border:1px solid var(--acc);border-radius:16px;padding:12px 16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .25s var(--ease),opacity .25s;text-align:left}
 #ntf.on{transform:translate(-50%,0);opacity:1}
+/* v45: floating speed HUD (drag gesture) - liquid-glass style */
+#shud{position:absolute;left:50%;top:84px;z-index:45;width:min(80vw,360px);display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:26px;pointer-events:none;color:#fff;
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.04) 55%,rgba(255,255,255,.09));
+  -webkit-backdrop-filter:blur(16px) saturate(1.9) brightness(1.08);backdrop-filter:blur(16px) saturate(1.9) brightness(1.08);
+  border:1px solid rgba(255,255,255,.26);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(255,255,255,.12),inset 0 0 22px rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.28);
+  opacity:0;visibility:hidden;transform:translate(-50%,-14px) scale(.94);filter:blur(7px);
+  transition:opacity .38s var(--ease),transform .5s var(--spring),filter .38s var(--ease),visibility 0s .5s}
+#shud::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(120% 90% at 18% -10%,rgba(255,255,255,.34),transparent 55%)}
+#shud.on{opacity:1;visibility:visible;transform:translate(-50%,0) scale(1);filter:blur(0);transition:opacity .22s var(--ease),transform .45s var(--spring),filter .22s var(--ease),visibility 0s}
+#shud span{font-size:12px;letter-spacing:.04em;text-transform:uppercase;opacity:.75;flex:none;position:relative}
+#shud .trk{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.92);overflow:hidden;position:relative}
+#shud .trk i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#8fd0ff,#5bb4ff)}
+#shud b{font:700 17px/1 'Bricolage Grotesque',system-ui,sans-serif;min-width:1.6em;text-align:right;position:relative;font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){#shud,#shud.on{transition:opacity .2s!important;transform:translate(-50%,0)!important;filter:none!important}}
 /* v43: annotations */
 #txt{position:relative}
 .annl{position:absolute;inset:0;pointer-events:none;z-index:2}.ansvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
@@ -390,6 +405,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
   <div id="qp" role="region" aria-label="Song queue"><div class="qh0"><span>Queue</span><button id="qx" type="button" aria-label="Hide queue"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="ql"></div></div>
   <div id="qbg"></div>
   <div id="qpop" role="menu"><h4 id="qpt"></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
+  <div id="shud" aria-hidden="true"><span>Speed</span><div class="trk"><i></i></div><b></b></div>
   <div id="spc">
     <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
     <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
@@ -864,6 +880,23 @@ function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}]
 document.addEventListener('gesturestart',e=>e.preventDefault());
 /* Gestures on the lyric canvas (one Pointer Events system):
    tap = play/pause, touch + drag left/right = scroll speed (the speed panel opens with the value), three quick taps = edit song, two fingers = text size. */
+/* v45: floating speed HUD, top centre of the lyrics, visible only while the finger is dragging */
+let hudT=0;const HUD=$('#shud');
+function hudSet(){const v=cur.speed;HUD.querySelector('b').textContent=v;HUD.querySelector('i').style.width=((v-1)/24*100)+'%'}
+function hudShow(){clearTimeout(hudT);hudSet();HUD.style.top=($('#lyr').offsetTop+14)+'px';HUD.classList.add('on')}
+function hudHide(){clearTimeout(hudT);hudT=setTimeout(()=>HUD.classList.remove('on'),260)}
+/* v45: a tap outside any open panel / menu / sidebar closes them all (and does not reach the lyrics, so it will not toggle play) */
+(function(){
+  const P=[['#menu','#mn',()=>mn.classList.contains('on'),()=>menuOpen(false)],['#drawer','#dr',()=>dw.classList.contains('open'),()=>drawer(false)],
+    ['#qp','#qtg',()=>$('#qp').classList.contains('open'),()=>qOpen(false)],['#qpop',null,()=>$('#qpop').classList.contains('on'),()=>qpClose()],
+    ['#spp','#spb',()=>$('#spp').classList.contains('open'),()=>spOpen(false)],['#fabm','#fab',()=>$('#fabm').classList.contains('on'),()=>fabOpen(false)],
+    ['#amenu','#avb',()=>!$('#amenu').hidden,()=>closeMenu()]],
+    MOD=['#ctx','#nbox','#cbox','#addbox','#catbox','#authbox','#notebox','#arr'];
+  document.addEventListener('pointerdown',e=>{
+    if(MOD.some(m=>{const x=$(m);return x&&x.classList.contains('on')}))return;
+    const open=P.filter(x=>x[2]());if(!open.length)return;const t=e.target;if(!t||!t.closest)return;
+    if(open.some(x=>t.closest(x[0])||(x[1]&&t.closest(x[1]))))return;
+    open.forEach(x=>x[3]());e.stopPropagation()},true)})();
 const Ly=$('#lyr'),PT=new Map(),SPX=14;let G=null,taps=[]; /* SPX: pixels of horizontal drag per speed step */
 const pdist=()=>{const [a,b]=[...PT.values()];return Math.hypot(a.x-b.x,a.y-b.y)};
 Ly.addEventListener('pointerdown',e=>{
@@ -878,15 +911,15 @@ Ly.addEventListener('pointermove',e=>{
   const p=PT.get(e.pointerId);if(!p||!G)return;p.x=e.clientX;p.y=e.clientY;
   if(G.pinch){if(PT.size===2)setFont(G.f0*Math.pow(pdist()/G.d0,1.35));return}
   const dx=e.clientX-G.x,dy=e.clientY-G.y;
-  if(G.sp){const v=Math.max(1,Math.min(25,G.s0+Math.round((e.clientX-G.sx)/SPX)));if(v!==cur.speed){$('#sp').value=v;syncSpeed()}spBump();return}
+  if(G.sp){const v=Math.max(1,Math.min(25,G.s0+Math.round((e.clientX-G.sx)/SPX)));if(v!==cur.speed){$('#sp').value=v;syncSpeed()}hudSet();return}
   if(Math.hypot(dx,dy)>12){G.mv=1;
-    if(!G.vert&&Math.abs(dx)>1.4*Math.abs(dy)){G.sp=1;G.sx=e.clientX;G.s0=cur.speed;spDown=1;$('#spp').classList.add('act');spOpen(true)}
+    if(!G.vert&&Math.abs(dx)>1.4*Math.abs(dy)){G.sp=1;G.sx=e.clientX;G.s0=cur.speed;hudShow()}
     else G.vert=1}});
 function gEnd(e,cancel){
   PT.delete(e.pointerId);if(!G)return;
   if(G.pinch){if(!PT.size){save();G=null}return}
   const g=G;G=null;
-  if(g.sp){spDown=0;$('#spp').classList.remove('act');spBump();return}
+  if(g.sp){hudHide();return}
   if(!cancel&&!g.mv&&performance.now()-g.t<600){
     const now=performance.now();taps=taps.filter(t=>now-t<750);taps.push(now);
     if(taps.length>=3){taps=[];menuOpen(false);setPlay(false);openEdit(cur);return} /* triple tap: edit this song (the first two taps cancelled each other) */

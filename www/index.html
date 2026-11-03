@@ -271,6 +271,7 @@ html:has(#play.on){background:#0d0a08}
 #play.fs .hd .ic{width:40px;height:40px;border-radius:12px;font-size:19px;background:rgba(34,28,23,.72);border:1px solid var(--ln)}
 #play.fs #dr,#play.fs #mn{display:flex!important;align-items:center;justify-content:center;width:40px;height:40px}
 #mbg{position:absolute;inset:0;z-index:19;display:none}#mbg.on{display:block}
+#play.fs>.hd{z-index:21} /* v66: the header sits above the tap-away layer so the ⋮ button itself toggles the menu (tap elsewhere still closes it) */
 #menu{display:flex;flex-direction:column;position:absolute;z-index:20;right:10px;top:calc(max(env(safe-area-inset-top,0px),8px) + 54px);min-width:176px;padding:5px;background:rgba(34,28,23,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.5);transform-origin:top right;opacity:0;transform:translateY(-6px) scale(.94);visibility:hidden;pointer-events:none;transition:opacity .15s var(--ease),transform .24s var(--ease),visibility 0s .24s}
 #menu.on{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .18s var(--ease),transform .3s var(--spring),visibility 0s}
 #menu button{width:100%;min-height:46px;padding:0 14px;border-radius:10px;font-weight:700;font-size:15px;text-align:left;transition:background .15s}

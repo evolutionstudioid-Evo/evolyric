@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v67 – No Back-guard on iPhone/iPad
+- The Android Back-button handling is now Android/desktop only. On iPhone and iPad, swiping from the left edge no longer reveals an extra page; the app behaves like any other iOS app (swipe up to leave).
+
 ## v66 – ⋮ menu toggles
 - Tapping the ⋮ button again now closes its menu (tapping outside still closes it too).
 

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v46 – Smoother speed HUD animation
+- The speed slider now eases in with a soft overshoot and fades out in stages: a small glass swell, a light sweep across the glass, then it rises, shrinks and dissolves with blur.
+
 ## v45 – Floating speed HUD, tap outside closes panels
 - Dragging to change speed now shows a floating glass-style slider at the top centre of the lyrics (white track, light-blue fill, value). It fades in and out and disappears when you lift your finger. The corner speed panel is unchanged.
 - Tapping anywhere outside an open menu, sidebar, queue, speed panel or popup closes them all, and that tap no longer starts or stops playback.

@@ -306,6 +306,15 @@ html:has(#play.on){background:#0d0a08}
 /* v38: notification banner */
 #ntf{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);opacity:0;z-index:1200;max-width:min(92vw,420px);background:var(--card);color:var(--fg);border:1px solid var(--acc);border-radius:16px;padding:12px 16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .25s var(--ease),opacity .25s;text-align:left}
 #ntf.on{transform:translate(-50%,0);opacity:1}
+/* v40: Profile page */
+button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh:hover,button.mh:focus-visible{background:var(--ln)}.mh .chev{margin-left:auto;color:var(--mut);font-size:22px;flex:none}
+#pfbody{flex:1;overflow-y:auto;padding:0 12px 28px;-webkit-overflow-scrolling:touch}
+.pfh{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 16px;text-align:center}.pfh .av{width:84px;height:84px;font-size:30px;flex:none}.pfh b{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:20px;margin-top:8px}
+.pfl{display:block;font-size:13px;color:var(--mut);margin:0 2px 6px}
+.pfu{display:flex;align-items:center;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:0 12px}.pfu .at{color:var(--mut)}.pfu input{flex:1;min-width:0;background:none;border:0;padding:12px 6px;outline:0}
+#pfb{display:block;width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:12px;resize:vertical;min-height:110px;line-height:1.4}
+.pfc{text-align:right;font-size:12px;color:var(--mut);margin:4px 2px 0}
+.fr .fn small.fb{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.fcard .fr .fn small.fb{white-space:normal}
 /* v34: Friends */
 #frbody{flex:1;overflow-y:auto;padding:0 12px 28px;-webkit-overflow-scrolling:touch}
 .fcard{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:0 0 12px}
@@ -374,6 +383,11 @@ html:has(#play.on){background:#0d0a08}
 <section id="friends" class="v">
   <div class="hd"><button class="ic" id="frX" aria-label="Back">‹</button><h1 style="font-size:24px">Friends</h1></div>
   <div id="frbody"></div>
+</section>
+
+<section id="profile" class="v">
+  <div class="hd"><button class="ic" id="pfX" aria-label="Back">‹</button><h1 style="font-size:24px">Profile</h1></div>
+  <div id="pfbody"></div>
 </section>
 
 <div id="ctx"><div class="sheet" id="csheet"></div></div>
@@ -929,23 +943,51 @@ $('#eX').onclick=()=>{
 const CFG=window.EVO_CONFIG||{},AUTH_ON=!!(CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY),HK='evolyric-auth-hint';
 let sb=null,user=null,authPending=AUTH_ON,profSynced=null;
 /* v33: username (profiles.username, see supabase/002_username.sql). state: null = unknown, 'ok', 'nosql' = column not on the server yet */
-const UNK='evolyric-uname:',uname={v:'',state:null};
+const UNK='evolyric-uname:',BIOK='evolyric-bio:',uname={v:'',state:null,bio:'',bioState:null};
 const unameErr=n=>!n?'Enter a username':n.length<3?'At least 3 characters':n.length>20?'Maximum 20 characters':!/^[a-z0-9._-]+$/.test(n)?'Use only letters, numbers, . _ and -':!/^[a-z0-9]/.test(n)?'Start with a letter or a number':n.includes('..')?'No two dots in a row':['admin','root','support','evolyric','evo','system'].includes(n)?'That username is reserved':'';
-function unameLoad(id){try{uname.v=localStorage.getItem(UNK+id)||''}catch(e){uname.v=''}}
+function unameLoad(id){try{uname.v=localStorage.getItem(UNK+id)||'';uname.bio=localStorage.getItem(BIOK+id)||''}catch(e){uname.v='';uname.bio=''}}
+function bioStore(id,v){uname.bio=v||'';try{v?localStorage.setItem(BIOK+id,v):localStorage.removeItem(BIOK+id)}catch(e){}}
 function unameStore(id,v){uname.v=v||'';try{v?localStorage.setItem(UNK+id,v):localStorage.removeItem(UNK+id)}catch(e){}}
-async function unameFetch(n){try{const{data,error}=await sb.from('profiles').select('username').eq('id',n.id).maybeSingle();
+async function unameFetch(n){try{
+  let r=await sb.from('profiles').select('username,bio').eq('id',n.id).maybeSingle();
+  if(r.error&&(r.error.code==='42703'||/bio/i.test(r.error.message||''))){uname.bioState='nosql';r=await sb.from('profiles').select('username').eq('id',n.id).maybeSingle()}
+  else if(!r.error)uname.bioState='ok';
+  const{data,error}=r;
   if(error){if(navigator.onLine&&!/fetch|network/i.test(error.message||''))uname.state='nosql';return}
-  uname.state='ok';unameStore(n.id,data&&data.username||'')}catch(e){}
-  if(!$('#amenu').hidden&&user)buildMenu(user)}
-function unameEdit(){if(!user)return;
-  if(uname.state==='nosql')return void note('Usernames are not enabled on the server yet.',true);
-  closeMenu();
-  nameBox(uname.v?'Change your username':'Choose your username',uname.v,user.id,async n=>{
-    try{const{data,error}=await sb.from('profiles').update({username:n}).eq('id',user.id).select('username').maybeSingle();
-      if(error){if(error.code==='23505')return 'That username is already taken. Try another one.';if(error.code==='42501')return 'Your username is locked on the server. Run supabase/007_username_unlock.sql';if(error.code==='23514')return 'That username is not allowed';if(error.code==='42703'||error.code==='PGRST204'){uname.state='nosql';return 'Usernames are not enabled on the server yet'}return navigator.onLine?'Could not save. Try again.':'You are offline'}
-      if(!data)return 'Could not save. Try again.';
-      if(data.username===uname.v){return ''}unameStore(user.id,data.username);note('Username saved');if($('#friends').classList.contains('on'))frRender();return ''}catch(e){return 'Could not save. Try again.'}},
-    {val:unameErr,save:1,max:20,ph:'username',hint:'3–20 characters: letters, numbers, . _ and -. Friends find you by this name. Friends keep seeing you under your new name.'})}
+  uname.state='ok';unameStore(n.id,data&&data.username||'');if(uname.bioState==='ok')bioStore(n.id,data&&data.bio||'')}catch(e){}
+  if(!$('#amenu').hidden&&user)buildMenu(user);if($('#profile').classList.contains('on'))profRender()}
+/* v40: Profile page (username + bio). Opened from the header of the account menu. */
+const BIO_MAX=300;
+function profOpen(){if(!user)return;closeMenu();show('profile');profRender()}
+function profRender(){const body=$('#pfbody');if(!body)return;body.textContent='';
+  if(!user){body.append(E('p','mut','Sign in to edit your profile.'));return}
+  const top=E('div','pfh'),av=avatarEl(user);top.append(av,E('b','',user.name),E('small','mut',user.email));body.append(top);
+  const card=E('div','fcard'),nsql=uname.state==='nosql',bsql=uname.bioState==='nosql';
+  const l1=E('label','pfl','Username');l1.htmlFor='pfu';const w=E('div','pfu');w.append(E('span','at','@'));
+  const iu=E('input');iu.id='pfu';iu.value=uname.v;iu.maxLength=20;iu.placeholder='username';iu.autocapitalize='none';iu.setAttribute('autocorrect','off');iu.spellcheck=false;iu.disabled=nsql;w.append(iu);
+  const h1=E('p','mut',nsql?'Usernames are not enabled on the server yet.':'3–20 characters: letters, numbers, . _ and -. Friends find you by this name.');h1.style.cssText='margin:6px 2px 14px;font-size:13px';
+  const l2=E('label','pfl','Bio');l2.htmlFor='pfb';const tb=E('textarea');tb.id='pfb';tb.value=uname.bio;tb.maxLength=BIO_MAX;tb.rows=4;tb.disabled=bsql;tb.placeholder='Tell friends about yourself: what you do, your band, your instrument…';
+  const cnt=E('div','pfc');const upd=()=>{cnt.textContent=tb.value.length+'/'+BIO_MAX};upd();
+  const h2=E('p','mut','Friends and people who find you by your username can read your bio. Your email is never shown.');h2.style.cssText='margin:6px 2px 14px;font-size:13px';
+  if(bsql)h2.textContent='Bio is not enabled on the server yet. Run supabase/008_bio.sql in the Supabase SQL Editor.';
+  const er=E('p','err');er.id='pfe';const sv=E('button','pill','Save');sv.id='pfs';sv.type='button';sv.style.width='100%';sv.disabled=true;
+  const dirty=()=>{const u=iu.value.trim().toLowerCase().replace(/^@/,''),b=tb.value.trim();sv.disabled=!((u!==uname.v&&!nsql)||(b!==uname.bio&&!bsql))};
+  iu.oninput=()=>{er.textContent='';dirty()};tb.oninput=()=>{upd();er.textContent='';dirty()};
+  sv.onclick=profSave;card.append(l1,w,h1,l2,tb,cnt,h2,er,sv);body.append(card)}
+async function profSave(){const sv=$('#pfs');if(!user||!sb||sv.disabled)return;const er=$('#pfe');er.textContent='';
+  const u=$('#pfu').value.trim().toLowerCase().replace(/^@/,''),b=$('#pfb').value.trim().slice(0,BIO_MAX),patch={};
+  if(u!==uname.v&&uname.state!=='nosql'){const e=uname.v&&!u?'Your username cannot be empty':unameErr(u);if(e)return void(er.textContent=e);patch.username=u}
+  if(b!==uname.bio&&uname.bioState!=='nosql')patch.bio=b||null;
+  if(!Object.keys(patch).length)return;
+  sv.disabled=true;
+  try{const{data,error}=await sb.from('profiles').update(patch).eq('id',user.id).select(uname.bioState==='ok'?'username,bio':'username').maybeSingle();
+    if(error){const c=error.code;
+      er.textContent=c==='23505'?'That username is already taken. Try another one.':c==='42501'?'Your username is locked on the server. Run supabase/007_username_unlock.sql':c==='23514'?'Please check your username and bio.':c==='42703'||c==='PGRST204'?'This is not enabled on the server yet.':navigator.onLine?'Could not save. Try again.':'You are offline';
+      sv.disabled=false;return}
+    if(!data){er.textContent='Could not save. Try again.';sv.disabled=false;return}
+    unameStore(user.id,data.username);if(uname.bioState==='ok')bioStore(user.id,data.bio||'');
+    note('Profile saved');profRender()}catch(e){er.textContent='Could not save. Try again.';sv.disabled=false}}
+$('#pfX').onclick=()=>show('list');
 const getHint=()=>{try{return JSON.parse(localStorage.getItem(HK))}catch(e){return null}};
 const setHint=u=>{try{u?localStorage.setItem(HK,JSON.stringify(u)):localStorage.removeItem(HK)}catch(e){}};
 const mapUser=u=>{if(!u)return null;const m=u.user_metadata||{};return{id:u.id,name:m.full_name||m.name||(u.email||'').split('@')[0]||'User',email:u.email||m.email||'',avatar:m.avatar_url||m.picture||''}};
@@ -958,9 +1000,8 @@ function renderAuth(){
   else{const b=E('button','avb');b.id='avb';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','Account menu: '+u.name);b.append(avatarEl(u));b.onclick=e=>{e.stopPropagation();toggleMenu()};box.append(b)}
   if(!u)closeMenu();frBadge()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
-  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
+  const h=E('button','mh'),t=E('div');h.type='button';h.onclick=profOpen;h.setAttribute('aria-label','Open your profile');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t,E('span','chev','›'));m.append(h);
   const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&(o.soon||o.lock)){b.disabled=true;b.append(E('em','',o.lock||'Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
-  it('Username',unameEdit,{sub:uname.state==='nosql'?'Soon':uname.v?'@'+uname.v:'Set'});
   it('Friends',frOpen,{sub:frAlerts()?String(frAlerts()):''});
   it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
   it('Account Settings',null,{soon:1});
@@ -1038,7 +1079,7 @@ setInterval(()=>{if(!document.hidden&&user&&sb&&navigator.onLine)frLoad(true)},2
 async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(navigator.onLine?'Something went wrong. Try again.':'You are offline',true);return null}
   if(okMsg)note(okMsg);await frLoad(true,true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
 function frAvatar(f){return avatarEl({name:f.display_name||f.username||'?',avatar:f.avatar_url||''})}
-function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(E('b','',f.display_name||f.username),E('small','','@'+f.username));r.append(frAvatar(f),n);
+function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(E('b','',f.display_name||f.username),E('small','','@'+f.username));if(f.bio)n.append(E('small','fb',f.bio));r.append(frAvatar(f),n);
   btns.forEach(([t,fn,pri])=>{const b=E('button',pri?'pri':'',t);b.type='button';b.onclick=()=>{b.disabled=true;fn()};r.append(b)});return r}
 async function frFind(){const box=$('#frres');const q=$('#frq').value.trim().toLowerCase().replace(/^@/,'');box.textContent='';fr.res=null;
   const er=unameErr(q);if(er){box.append(E('p','err',er));return}
@@ -1048,14 +1089,14 @@ async function frFind(){const box=$('#frres');const q=$('#frq').value.trim().toL
     const u=data&&data[0];if(!u){box.append(E('p','mut','No one found with that username. Check the spelling.'));return}
     const ex=fr.list.find(f=>f.other_id===u.id),card=E('div','fcard');
     const act=!ex?[['Add friend',async()=>{const r=await frCall('send_friend_request',{p_user:u.id},null);if(r!==null){note(r==='friends'?'You are now friends':'Request sent');frFind()}},1]]:null;
-    const row=frRow({display_name:u.display_name,username:u.username,avatar_url:u.avatar_url},act||[]);
+    const row=frRow({display_name:u.display_name,username:u.username,avatar_url:u.avatar_url,bio:u.bio},act||[]);
     if(ex){const t=E('small','mut',ex.status==='accepted'?'Already friends':ex.incoming?'Sent you a request (see Requests below)':'Request sent');t.style.flex='none';row.append(t)}
     card.append(row);box.append(card)}catch(e){b.disabled=false;box.append(E('p','err','Search failed. Try again.'))}}
 function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains('on'))return;
   const keep=$('#frq')?$('#frq').value:'',had=document.activeElement&&document.activeElement.id==='frq';body.textContent='';
   if(!user){body.append(E('p','mut','Sign in to use Friends.'));return}
   if(fr.state==='nosql'){const c=E('div','fcard');c.append(E('p','','Friends are not enabled on the server yet. Run supabase/003_friends.sql in the Supabase SQL Editor, then reopen the app.'));body.append(c);return}
-  if(!uname.v&&uname.state!=='nosql'){const c=E('div','fcard');c.append(E('p','','Choose a username first. Friends find you by it.'));const b=E('button','pill','Set username');b.type='button';b.onclick=unameEdit;c.append(b);body.append(c)}
+  if(!uname.v&&uname.state!=='nosql'){const c=E('div','fcard');c.append(E('p','','Choose a username in your profile first. Friends find you by it.'));const b=E('button','pill','Open profile');b.type='button';b.onclick=profOpen;c.append(b);body.append(c)}
   const s=E('div','frs'),i=E('input');i.id='frq';i.placeholder='Find by exact username';i.value=keep;i.autocapitalize='none';i.setAttribute('autocorrect','off');i.spellcheck=false;i.setAttribute('aria-label','Find a friend by username');i.onkeydown=e=>{if(e.key==='Enter')frFind()};
   const g=E('button','pill','Find');g.id='frgo';g.type='button';g.onclick=frFind;s.append(i,g);body.append(s);const res=E('div');res.id='frres';body.append(res);if(had)i.focus();
   if(fr.state==='err'){body.append(E('p','mut','Could not load your friends. Pull down or reopen this screen to retry.'))}

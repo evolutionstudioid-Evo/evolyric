@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v65 – Modern speed fader
+- The speed slider cap is now a clean, modern white pill with a small orange mark; the gain bar is orange to match the app.
+- The pop-up box is far more transparent with a stronger blur behind it.
+
 ## v64 – Fader-style speed slider
 - The floating speed slider now looks like a mixing-console fader: a recessed slot with scale ticks, a glowing level and a ridged metal cap with an orange index line.
 

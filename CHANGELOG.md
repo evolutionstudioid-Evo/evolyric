@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v47 – Section chips redesigned
+- Section chips are now liquid-glass pills tinted with a soft gradient of each section's colour, with a light highlight on top.
+- The active section glows and gently breathes; the strip fades at its edges.
+
 ## v46 – Smoother speed HUD animation
 - The speed slider now eases in with a soft overshoot and fades out in stages: a small glass swell, a light sweep across the glass, then it rises, shrinks and dissolves with blur.
 

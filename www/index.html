@@ -1568,7 +1568,8 @@ async function initAuth(){
 /* v41: Android Back button. In the installed app a stray Back press used to close EvoLyric. Now Back closes the open panel or goes up one
    screen, asks before leaving a song / discarding edits, and on Home asks "Exit EvoLyric?". Only active in the installed app or on Android. */
 (function(){
-  let on=false;try{on=matchMedia('(display-mode: standalone)').matches||!!navigator.standalone||/Android/i.test(navigator.userAgent)}catch(e){}
+  let on=false;try{const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); /* v67: never on iPhone/iPad — there the edge swipe would reveal the guard page; iOS has no Back button to protect */
+    on=!ios&&(matchMedia('(display-mode: standalone)').matches||/Android/i.test(navigator.userAgent))}catch(e){}
   if(!on||!history.pushState)return;
   let exiting=false;const arm=()=>{try{history.pushState({evo:1},'')}catch(e){}};
   try{history.replaceState({evo:0},'');history.pushState({evo:1},'')}catch(e){return}

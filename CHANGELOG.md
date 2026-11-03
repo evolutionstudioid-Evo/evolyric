@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v57 – Choose whether auto-scroll pauses at a section
+- In the editor, put the cursor in an Intro, Interlude or custom section and a new button lets you choose per section: auto-scroll pauses there, or keeps going. Intro and Interlude pause by default, custom sections keep scrolling. A short intro can now be set to keep scrolling.
+
 ## v56 – Smoother section strip
 - Swiping the section strip is smoother: the edge-fade mask and the per-frame glow animation (both forced constant repainting) were removed, and the strip is scrolled on its own compositing layer. The active glow is now steady.
 - When the active section changes during auto-scroll, the strip glides to it with an eased animation instead of jumping, and it does not move while you are swiping it yourself.

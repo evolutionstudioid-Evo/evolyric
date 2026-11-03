@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v59 – Editor tweaks
+- Categories are a wide box again showing the category names; the key selector is narrower.
+- The section buttons are back in a permanent column at the right of the lyrics for quick editing (the popover from v58 is gone).
+
 ## v58 – Tidier editor
 - Artist, key and categories now share one row; categories are a folder icon with a count.
 - The tools are one row of icons: undo, redo, paste, keyboard, insert section, highlighter, and a pen (notes and drawing).

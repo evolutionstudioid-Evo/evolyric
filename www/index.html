@@ -148,6 +148,8 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height
 
 @media(max-width:600px){
   #edit .ed{flex-direction:row;gap:6px;padding:0 8px 8px;min-height:0}
+  #edit #side{width:76px;flex:0 0 76px;max-height:none;overflow-y:auto;overflow-x:hidden}
+  #edit #side button{font-size:12px;padding:8px 4px;min-height:36px}
   #edit #ta{height:100%;min-height:0;margin:0;padding:10px;font-size:16px}
   #edit .tb{padding-left:8px;padding-right:8px}
 }
@@ -351,20 +353,15 @@ html:has(#play.on){background:#0d0a08}
 @media(prefers-reduced-motion:reduce){.flash{animation:none}}
 #sstop[hidden]{display:none!important}#sstop.on{border-color:var(--acc)}
 /* v58: tidier editor - one meta row, icon toolbar, sections in a popover so the lyrics get the whole width */
-#emeta{padding-bottom:6px}#emeta #ea{flex:1;min-width:0}#emeta #ek{flex:none;width:112px}
-#emeta #ec{flex:none;width:auto;min-width:52px;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:5px 11px;font-weight:700}
-#emeta #ec svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#emeta{padding-bottom:6px}#emeta #ea{flex:1 1 0;min-width:0}#emeta #ek{flex:none;width:76px;padding-left:9px;padding-right:4px;text-overflow:ellipsis}
+#emeta #ec{flex:1.35 1 0;min-width:0;width:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;text-align:left}
+#emeta #ec svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+#emeta #ec span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#emeta #ec span.mut{color:var(--mut)}
 #etools{align-items:center;flex-wrap:nowrap;gap:2px;padding:0 10px 6px;overflow-x:auto;scrollbar-width:none}#etools::-webkit-scrollbar{display:none}
 #etools button{flex:none;width:42px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:transparent;border:1px solid transparent;color:var(--fg)}
 #etools button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #etools button:active{background:var(--card)}#etools button.on{color:#15110e}#etools button.on svg{stroke:#15110e}
 #etools .tsep{flex:none;width:1px;height:20px;background:var(--ln);margin:0 7px}
-#edit .ed{position:relative}
-#edit #side{position:absolute;z-index:6;right:10px;top:2px;order:initial;width:min(340px,calc(100% - 20px));flex:none;max-height:72%;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:row;flex-wrap:wrap;gap:7px;padding:12px;
-  background:rgba(34,28,23,.84);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 14px 38px rgba(0,0,0,.55)}
-#edit #side.on{display:flex;animation:sideIn .24s var(--ease)}
-#edit #side button{padding:8px 13px;font-size:13.5px;border-radius:999px;min-height:0;line-height:1.2}
-@keyframes sideIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:none}}
 /* v52: fixed song title in the header */
 #ptit{min-width:0;text-align:center;font:700 20px/1.2 'Bricolage Grotesque',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg);pointer-events:none;padding:0 4px}
 /* v43: annotations */
@@ -462,11 +459,11 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 
 <section id="edit" class="v">
   <div class="hd"><button class="ic" id="eX" aria-label="Exit">✕</button><input class="fld" id="et" placeholder="Title"><button class="pill" id="eS">Save</button></div>
-  <div class="sb" id="emeta"><input class="fld" id="ea" placeholder="Artist"><select class="fld" id="ek" aria-label="Base key"></select><button type="button" class="fld catsel" id="ec" aria-label="Categories"></button></div>
+  <div class="sb" id="emeta"><input class="fld" id="ea" placeholder="Artist"><button type="button" class="fld catsel" id="ec" aria-label="Categories"></button><select class="fld" id="ek" aria-label="Base key"></select></div>
   <div class="tb" id="etools" role="toolbar" aria-label="Editor tools">
     <button id="eU" type="button" aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button><button id="eR" type="button" aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20v-7a4 4 0 0 1 4-4h16"/></svg></button><i class="tsep"></i>
     <button id="eP" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></button><button id="eK" type="button" aria-label="Keyboard" title="Keyboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/></svg></button><i class="tsep"></i>
-    <button id="eSec" type="button" aria-label="Insert section" title="Insert section" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H5v16h3M16 4h3v16h-3"/><path d="M12 9v6M9 12h6"/></svg></button><button id="eH" type="button" aria-label="Highlight" title="Highlight"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg></button><button id="eN" type="button" aria-label="Notes and drawing" title="Notes and drawing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 2.8a2.1 2.1 0 0 1 3 3L9 17.3 4.8 18.4l1.1-4.2Z"/><path d="M2.5 21.4c1.2-1.6 2.4-1.6 3.6 0s2.4 1.6 3.6 0 2.4-1.6 3.6 0 2.4 1.6 3.6 0 2.4-1.6 3.6 0"/></svg></button>
+    <button id="eH" type="button" aria-label="Highlight" title="Highlight"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg></button><button id="eN" type="button" aria-label="Notes and drawing" title="Notes and drawing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 2.8a2.1 2.1 0 0 1 3 3L9 17.3 4.8 18.4l1.1-4.2Z"/><path d="M2.5 21.4c1.2-1.6 2.4-1.6 3.6 0s2.4 1.6 3.6 0 2.4-1.6 3.6 0 2.4 1.6 3.6 0 2.4-1.6 3.6 0"/></svg></button>
   </div>
   <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button class="sw" data-c="r" aria-label="Red"></button><button class="sw" data-c="y" aria-label="Yellow"></button><button class="sw" data-c="g" aria-label="Green"></button><button id="hx">Clear</button></div>
   <div class="tb" id="notebar" hidden><b id="nbn"></b><button id="nbEdit">Edit</button><button id="nbMove">Move</button><button id="nbRm">Delete</button></div>
@@ -958,7 +955,7 @@ function hudHide(){clearTimeout(hudT);hudT=setTimeout(()=>{HUD.classList.remove(
   const P=[['#menu','#mn',()=>mn.classList.contains('on'),()=>menuOpen(false)],['#drawer','#dr',()=>dw.classList.contains('open'),()=>drawer(false)],
     ['#qp','#qtg',()=>$('#qp').classList.contains('open'),()=>qOpen(false)],['#qpop',null,()=>$('#qpop').classList.contains('on'),()=>qpClose()],
     ['#spp','#spb',()=>$('#spp').classList.contains('open'),()=>spOpen(false)],['#fabm','#fab',()=>$('#fabm').classList.contains('on'),()=>fabOpen(false)],
-    ['#amenu','#avb',()=>!$('#amenu').hidden,()=>closeMenu()],['#side','#eSec',()=>$('#side').classList.contains('on'),()=>sideOpen(false)]],
+    ['#amenu','#avb',()=>!$('#amenu').hidden,()=>closeMenu()]],
     MOD=['#ctx','#nbox','#cbox','#addbox','#catbox','#authbox','#notebox','#arr'];
   document.addEventListener('pointerdown',e=>{
     if(MOD.some(m=>{const x=$(m);return x&&x.classList.contains('on')}))return;
@@ -1008,14 +1005,14 @@ SW.forEach(c=>{const b=E('button');b.style.background=c;b.dataset.c=c;b.setAttri
 const cb=E('button','','Custom…');cb.onclick=()=>{$('#cn').value='';pickSw(SW[0]);$('#cbox').classList.add('on')};$('#side').append(cb);
 $('#cok').onclick=()=>{const n=$('#cn').value.replace(/[\[\]]/g,'').trim();if(!n)return;$('#cbox').classList.remove('on');ins(n,swc)};
 $('#cbox').onclick=e=>{if(e.target.id==='cbox')$('#cbox').classList.remove('on')};
-['','C','D','E','F','G','A','B','C#/Db','D#/Eb','F#/Gb','G#/Ab','A#/Bb'].forEach(k=>{const o=E('option','',k?'Key '+k:'Key: none');o.value=k;$('#ek').append(o)});
+['','C','D','E','F','G','A','B','C#/Db','D#/Eb','F#/Gb','G#/Ab','A#/Bb'].forEach(k=>{const o=E('option','',k||'Key');o.value=k;$('#ek').append(o)});
 const ta=$('#ta');let st;
 function openEdit(s,txt,title,base,pre){
   exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
   const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
   $('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';
-  $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');sideOpen(false);lastSel=null;ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
+  $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
 function secInfo(){
@@ -1046,9 +1043,7 @@ function hlApply(c){
   ta.value=v.slice(0,a)+out+v.slice(b);ta.setSelectionRange(a,a+out.length);
   snap();ed.dirty=true;$('#hlbar').hidden=true;secInfo()}
 $('#eH').onclick=()=>{$('#hlbar').hidden=!$('#hlbar').hidden;$('#eH').classList.toggle('on',!$('#hlbar').hidden)};
-function sideOpen(on){$('#side').classList.toggle('on',!!on);$('#eSec').classList.toggle('on',!!on);$('#eSec').setAttribute('aria-expanded',on?'true':'false')}
-$('#eSec').onclick=()=>sideOpen(!$('#side').classList.contains('on'));
-$('#side').addEventListener('click',e=>{if(e.target.closest('button'))sideOpen(false)});
+
 document.querySelectorAll('#hlbar .sw').forEach(b=>{b.style.background=HC[b.dataset.c];b.onclick=()=>hlApply(b.dataset.c)});
 $('#hx').onclick=()=>hlApply('');
 ['pointerup','keyup','click','focus','select'].forEach(v=>ta.addEventListener(v,()=>setTimeout(snapCaret,0)));
@@ -1076,7 +1071,7 @@ $('#eK').onclick=()=>{
   const on=ta.inputMode==='none',a=ta.selectionStart,z=ta.selectionEnd;setKb(on);
   ta.blur();ta.focus({preventScroll:true});try{ta.setSelectionRange(a,z)}catch(_){}
   if(on)setTimeout(()=>{if(document.activeElement!==ta)ta.focus({preventScroll:true})},80)};
-function catSummary(){const n=[...ed.cats].map(id=>(cats.find(c=>c.id===id)||{}).name).filter(Boolean),b=$('#ec');b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>'+(n.length?'<span>'+n.length+'</span>':'');b.setAttribute('aria-label','Categories: '+(n.length?n.join(', '):'none'));b.title=n.length?n.join(', '):'Categories'}
+function catSummary(){const n=[...ed.cats].map(id=>(cats.find(c=>c.id===id)||{}).name).filter(Boolean),b=$('#ec'),t=n.join(', ');b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>';const sp=E('span',n.length?'':'mut',n.length?t:'Category');b.append(sp);b.setAttribute('aria-label','Categories: '+(n.length?t:'none'));b.title=n.length?t:'Choose categories'}
 function catPick(){const L=$('#catl');L.textContent='';
   [...cats].sort(byName).forEach(c=>{const on=ed.cats.has(c.id),b=E('button','arow'+(on?' sel':''));b.append(E('span','chk',on?'✓':''),E('span','',c.name));
     b.onclick=()=>{if(ed.cats.has(c.id))ed.cats.delete(c.id);else ed.cats.add(c.id);const o=ed.cats.has(c.id);b.classList.toggle('sel',o);b.firstChild.textContent=o?'✓':'';ed.dirty=true;catSummary()};L.append(b)});
@@ -1531,7 +1526,6 @@ async function initAuth(){
   function closeTop(){
     if(isOn('#ctx')){ctxClose();return true}
     if(isOn('#notebox')){closeNote();return true}
-    if(isOn('#side')){sideOpen(false);return true}
     if(isOn('#arr')){arClose();return true}
     if(isOn('#nbox')){$('#nbox').classList.remove('on');return true}
     if(isOn('#cbox')){$('#cbox').classList.remove('on');return true}

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v54 – Light flash on small buttons
+- Small buttons (menu, song list, queue, speed, compact view, close, step and clear buttons) now flash with a warm light when pressed. Large buttons such as Home, Find and Google are unchanged.
+
 ## v53 – Lyrics start at the top
 - A song now opens with the lyrics right under the section selector instead of far down the screen, with a thin divider line above the first line that matches the one at the end of the lyrics.
 

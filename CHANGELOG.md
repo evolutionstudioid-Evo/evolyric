@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v42 – Notes in the editor
+- New **Note** button in the editor: add a personal cue (e.g. "Drums stop") with its own size, weight, font, colour, alignment, italic and box.
+- Notes are lines inside the lyrics, so they show in the player, sync and are included when sending songs.
+- **Move** tool: drag a note by its handle to any position among the lines.
+
 ## v41 – Android Back button asks before closing
 Changed `www/index.html`, `www/sw.js` (cache `evolyric-app-41`); no SQL, cloud.js or config.js changes.
 - A stray Back press no longer closes the app. Back now works like this: it first closes whatever is open (dialog, popup, "+" menu, ⋮ menu, queue, speed panel, side panel); then it goes up one screen (Friends / Profile / category -> Home).

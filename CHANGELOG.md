@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v66 – ⋮ menu toggles
+- Tapping the ⋮ button again now closes its menu (tapping outside still closes it too).
+
 ## v65 – Modern speed fader
 - The speed slider cap is now a clean, modern white pill with a small orange mark; the gain bar is orange to match the app.
 - The pop-up box is far more transparent with a stronger blur behind it.

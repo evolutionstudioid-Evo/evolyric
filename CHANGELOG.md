@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v52 – Song title pinned above the section selector
+- The song title moved out of the scrolling lyrics into the header, centred above the section selector. It stays in place while the lyrics scroll and shrinks to fit the available width.
+
 ## v51 – Hold boost: 1 second, speed 30
 - Hold-to-fast-forward now starts after 1 second and runs at speed 30.
 

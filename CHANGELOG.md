@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v37 – Send a group of songs to a friend
+Added `supabase/006_song_groups.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-37`). cloud.js / config.js untouched.
+- Friends screen: tap a friend to open a small menu with **Send songs** and **Unfriend** (the old Remove button is replaced by this menu).
+- Send songs opens the multi-select song picker (search, tick as many as you like, up to 50) and sends them as ONE delivery.
+- The friend sees a single item in "Songs from friends" ("10 songs", with the first titles as a preview). **Save all** puts every song into their own library in one tap (default speed/font, their own dates); Dismiss deletes the whole delivery. Single-song sends from the song menu still work and are stored the same way; older v36 deliveries can still be saved.
+- Database: new `send_songs` (friends only, 1-50 songs, max 20 waiting deliveries per pair, whitelisted fields, 1 MB cap), a lightweight `list_inbox` (no lyrics) and `get_inbox_item` (lyrics are fetched only on Save).
+- Until 006 is run, sending shows an error toast and everything else keeps working.
+
 ## v36 – Send songs to friends (step 3)
 Added `supabase/005_share_songs.sql`; changed `www/index.html`, `www/sw.js` (cache `evolyric-app-36`). cloud.js / config.js untouched.
 - "Send to friend": in the long-press menu of a song on Home and in the player's ⋮ menu (signed-in users only). Pick a friend and the song is sent as a COPY: title, artist, lyrics (with your edits, section labels and highlights), key and section colours. Speed, font size, pin, categories and dates stay personal and are NOT sent.

@@ -310,7 +310,8 @@ html:has(#play.on){background:#0d0a08}
 .fh{color:var(--acc);font-size:14px;margin:16px 4px 6px;font-family:'Bricolage Grotesque',system-ui,sans-serif;display:flex;gap:8px;align-items:center}.fh em{font-style:normal;background:var(--acc);color:#15110e;border-radius:10px;padding:0 7px;font-size:12px;font-weight:800}
 .fr{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--ln)}
 .fr .av{width:40px;height:40px;flex:none;font-size:15px}.fr .fn{flex:1;min-width:0}.fr .fn b{display:block;font-weight:600;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.fr .fn small{color:var(--mut)}
-.fr button{min-height:38px;padding:0 12px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid var(--ln);background:var(--card);flex:none}.fr button.pri{background:var(--acc);border-color:var(--acc);color:#15110e}
+.fr button{min-height:38px;padding:0 12px;border-radius:10px;font-weight:700;font-size:14px;border:1px solid var(--ln);background:var(--card);flex:none}.fr.tap{cursor:pointer}.fr.tap:active{background:rgba(240,160,75,.08)}.fr .chev{color:var(--mut);font-size:24px;padding:0 4px;flex:none}
+.fr button.pri{background:var(--acc);border-color:var(--acc);color:#15110e}
 .fr button:disabled{opacity:.5}
 .frs{display:flex;gap:8px;margin-bottom:10px}.frs input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:12px}
 #auth.bd::after{content:"";position:absolute;top:0;right:0;pointer-events:none;width:11px;height:11px;border-radius:50%;background:#ff453a;border:2px solid var(--bg)}
@@ -500,21 +501,21 @@ function nameOk(){const o=nOpt,n=o?$('#nn').value.trim().toLowerCase():cname($('
 $('#nok').onclick=nameOk;$('#ncx').onclick=()=>$('#nbox').classList.remove('on');$('#nn').onkeydown=e=>{if(e.key==='Enter')nameOk()};
 $('#nbox').onclick=e=>{if(e.target.id==='nbox')$('#nbox').classList.remove('on')};
 /* Add Songs popup: multi-select from the Master Library; songs already in the category are locked */
-let aSel=new Set();
+let aSel=new Set(),aMode='cat',aTo=null;
 function addItems(){
-  const cat=curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
+  const cat=aMode==='send'?null:curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
   songs.filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))}).sort((a,b)=>a.title.localeCompare(b.title,'id')).forEach(s=>{
-    const has=cat.ids.includes(s.id),b=E('button','arow'+(aSel.has(s.id)?' sel':''));b.disabled=has;
+    const has=!!cat&&cat.ids.includes(s.id),b=E('button','arow'+(aSel.has(s.id)?' sel':''));b.disabled=has;
     const m=E('span');m.append(E('div','',s.title||'Untitled'),E('small','mut',s.artist||''));
     b.append(E('span','chk',has?'✓':aSel.has(s.id)?'✓':''),m);if(has)b.append(E('em','','Already added'));
-    b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else aSel.add(s.id);b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
+    b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else{if(aMode==='send'&&aSel.size>=SEND_MAX)return void note('Maximum '+SEND_MAX+' songs per group',true);aSel.add(s.id)}b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
     box.append(b)});
   if(!box.children.length)box.append(E('p','mut','No songs.'))}
-function aCount(){const n=aSel.size;$('#aC').textContent=n+' selected';$('#aOK').disabled=!n;$('#aOK').textContent=n?'Add ('+n+')':'Add'}
-function addOpen(){const cat=curCat();if(!cat)return;aSel=new Set();$('#aT').textContent='Add Songs';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
+function aCount(){const n=aSel.size;$('#aC').textContent=n+' selected';$('#aOK').disabled=!n;const v=aMode==='send'?'Send':'Add';$('#aOK').textContent=n?v+' ('+n+')':v}
+function addOpen(){const cat=curCat();if(!cat)return;aMode='cat';aTo=null;aSel=new Set();$('#aT').textContent='Add Songs';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
 $('#aq').oninput=addItems;$('#aX').onclick=()=>{aSel=new Set();$('#addbox').classList.remove('on')};
 $('#addbox').onclick=e=>{if(e.target.id==='addbox')$('#aX').onclick()};
-$('#aOK').onclick=()=>{const cat=curCat();if(!cat||!aSel.size)return;let n=0;
+$('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();const cat=curCat();if(!cat||!aSel.size)return;let n=0;
   aSel.forEach(id=>{if(songs.some(s=>s.id===id)&&!cat.ids.includes(id)){cat.ids.push(id);n++}});
   save();aSel=new Set();$('#addbox').classList.remove('on');refresh();
   saveBad?note('Could not save changes',1):note(n+(n===1?' song':' songs')+' added to '+cat.name)};
@@ -1035,25 +1036,42 @@ function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains
   if(fr.state==='err'){body.append(E('p','mut','Could not load your friends. Pull down or reopen this screen to retry.'))}
   const inc=frIn(),out=fr.list.filter(f=>f.status==='pending'&&!f.incoming),ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
   const sec=(t,n)=>{const h=E('div','fh',t);if(n)h.append(E('em','',String(n)));body.append(h)};
-  if(fr.inbox.length){sec('Songs from friends',fr.inbox.length);fr.inbox.forEach(m=>{const r=frRow({display_name:m.title||'Untitled',username:m.username,avatar_url:m.avatar_url},[['Save',()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
-    const sm=r.querySelector('small');sm.textContent='from @'+m.username+(m.artist?' · '+m.artist:'');body.append(r)})}
+  if(fr.inbox.length){sec('Songs from friends',fr.inbox.length);fr.inbox.forEach(m=>{const n=m.song_count||1;
+    const r=frRow({display_name:n>1?n+' songs':(m.title||'Untitled'),username:m.username,avatar_url:m.avatar_url},[['Save'+(n>1?' all':''),()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
+    const sm=r.querySelector('small');sm.textContent='from @'+m.username+(n>1?(m.preview?' · '+m.preview+(n>3?'…':''):''):(m.artist?' · '+m.artist:''));body.append(r)})}
   if(inc.length){sec('Requests',inc.length);inc.forEach(f=>body.append(frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]])))}
   if(out.length){sec('Sent');out.forEach(f=>body.append(frRow(f,[['Cancel',()=>frCall('remove_friendship',{p_id:f.id},'Request cancelled')]])))}
   sec('Friends',ok.length);
   if(!ok.length)body.append(E('p','mut','No friends yet. Search a username above to send a request.'));
-  ok.forEach(f=>body.append(frRow(f,[['Remove',()=>{ask('Remove '+(f.display_name||f.username)+'?','They will no longer be your friend. Songs already shared stay in each library.','Remove',()=>frCall('remove_friendship',{p_id:f.id},'Friend removed'));setTimeout(frRender,0)}]])))}
-function frSaveSong(m){const d=m.payload||{};
-  const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:String(d.title||m.title||'Untitled'),artist:String(d.artist||m.artist||''),lyrics:String(d.lyrics||''),speed:5,font:32,cr:Date.now(),md:Date.now()};
-  if(d.key)ns.key=String(d.key);if(d.colors&&typeof d.colors==='object')ns.colors=d.colors;
-  songs.push(ns);save();refresh();
-  frCall('clear_inbox_song',{p_id:m.id},'Saved to your library')}
+  ok.forEach(f=>{const r=frRow(f,[]);r.classList.add('tap');r.setAttribute('role','button');r.tabIndex=0;r.append(E('span','chev','›'));r.onclick=()=>frFriendMenu(f);r.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();frFriendMenu(f)}};body.append(r)})}
+async function frSaveSong(m){let d=null;
+  try{const{data,error}=await sb.rpc('get_inbox_item',{p_id:m.id});if(error||!data)throw 0;d=data}catch(e){note(navigator.onLine?'Could not open this delivery. Try again.':'You are offline',true);frRender();return}
+  const arr=Array.isArray(d.songs)?d.songs:[d],t=Date.now();let n=0;
+  arr.forEach((x,i)=>{if(!x||typeof x!=='object')return;const ns={id:'s'+(t+i)+Math.random().toString(36).slice(2,5),title:String(x.title||'Untitled'),artist:String(x.artist||''),lyrics:String(x.lyrics||''),speed:5,font:32,cr:t+i,md:t+i};
+    if(x.key)ns.key=String(x.key);if(x.colors&&typeof x.colors==='object')ns.colors=x.colors;songs.push(ns);n++});
+  if(!n){frRender();return}
+  save();refresh();
+  frCall('clear_inbox_song',{p_id:m.id},n===1?'Saved to your library':n+' songs saved to your library')}
+const SEND_MAX=50,songPayload=s=>({title:s.title||'',artist:s.artist||'',lyrics:s.lyrics||'',key:s.key||'',colors:s.colors||{}});
+const sendErr=(e,f)=>e.code==='54000'?'@'+f.username+' already has 20 deliveries waiting from you':e.code==='42501'?'You are no longer friends':e.code==='23514'?'Too much text to send at once. Send fewer songs.':navigator.onLine?'Could not send. Try again.':'You are offline';
+function sendOpen(f){if(!songs.length)return void note('Your library is empty',true);aMode='send';aTo=f;aSel=new Set();$('#aT').textContent='Send to @'+f.username;$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
+async function sendBatch(){const f=aTo;if(!f||!aSel.size||!sb)return;const b=$('#aOK');if(b.disabled)return;b.disabled=true;
+  const pick=songs.filter(x=>aSel.has(x.id)).sort((x,y)=>(x.title||'').localeCompare(y.title||'','id')).map(songPayload);
+  try{const{error}=await sb.rpc('send_songs',{p_to:f.other_id,p_songs:pick});
+    if(error){aCount();return void note(sendErr(error,f),true)}
+    aSel=new Set();$('#addbox').classList.remove('on');note(pick.length===1?'Sent to @'+f.username:'Sent '+pick.length+' songs to @'+f.username)}
+  catch(e){aCount();note('Could not send. Try again.',true)}}
+function frFriendMenu(f){const c=csh();c.append(E('h3','',(f.display_name||f.username)+'  @'+f.username));
+  const a=E('button','','Send songs');a.onclick=()=>{ctxClose();sendOpen(f)};
+  const d=E('button','del','Unfriend');d.onclick=()=>ask('Unfriend '+(f.display_name||f.username)+'?','They will no longer be your friend. Songs already saved stay in each library, and songs still waiting are deleted.','Unfriend',()=>frCall('remove_friendship',{p_id:f.id},'Friend removed'));
+  const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,d,x);$('#ctx').classList.add('on')}
 function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to friends',true);
   const go=()=>{const c=csh();c.append(E('h3','','Send “'+(s.title||'Untitled')+'” to…'));
     const ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
     if(fr.state==='nosql'){const p=E('p','mut','Friends are not enabled on the server yet.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p)}
     else if(!ok.length){const p=E('p','mut','You have no friends yet. Add one first, then send songs.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p);const b=E('button','','Open Friends');b.onclick=()=>{ctxClose();if(document.querySelector('#play.on'))leavePlay();frOpen()};c.append(b)}
     else ok.forEach(f=>{const b=E('button','',(f.display_name||f.username)+'  @'+f.username);b.onclick=async()=>{ctxClose();
-      try{const{error}=await sb.rpc('send_song',{p_to:f.other_id,p_song:{title:s.title||'',artist:s.artist||'',lyrics:s.lyrics||'',key:s.key||'',colors:s.colors||{}}});
+      try{const{error}=await sb.rpc('send_songs',{p_to:f.other_id,p_songs:[songPayload(s)]});
         if(error)return void note(error.code==='54000'?'@'+f.username+' already has 20 songs waiting from you':error.code==='42501'?'You are no longer friends':navigator.onLine?'Could not send. Try again.':'You are offline',true);
         note('Sent to @'+f.username)}catch(e){note('Could not send. Try again.',true)}};c.append(b)});
     const x=E('button','','Cancel');x.onclick=ctxClose;c.append(x);$('#ctx').classList.add('on')};

@@ -797,7 +797,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='81';
+const APP_VER='82';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -952,7 +952,8 @@ function docTutorial(b){b.className='sbody doc';
   S(L('Install and offline','Pasang dan offline'),L(['iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.','After the first open, your songs work without internet.','After an update, close the app completely and open it again.'],['iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.','Setelah dibuka sekali, lagu tetap bisa dipakai tanpa internet.','Setelah ada pembaruan, tutup app sepenuhnya lalu buka lagi.']))}
 function docAbout(b){b.className='sbody doc roll';b.append(E('div','spc'));
   const w=E('div','lgw');w.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg2)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg>';
-  const t=E('div');t.append(E('div','big','EvoLyric'),E('div','mut',L('Version ','Versi ')+APP_VER));w.append(t);b.append(w);
+  const vEl=E('div','mut',L('Version ','Versi ')+APP_VER);let vt=0;vEl.onclick=()=>{if(++vt<5)return;vt=0;let lg=[];try{lg=JSON.parse(localStorage.getItem('evo.bklog')||'[]')}catch(e){}const c=csh();c.append(E('h3','','Back log'));const pre=E('pre','',lg.join('\n')||'(empty)');pre.style.cssText='margin:0 6px 10px;max-width:320px;max-height:46vh;overflow:auto;font-size:11px;text-align:left;white-space:pre-wrap';pre.setAttribute('data-nt','');const x=E('button','','Close');x.onclick=ctxClose;const cl=E('button','','Clear');cl.onclick=()=>{try{localStorage.removeItem('evo.bklog')}catch(e){}ctxClose()};c.append(pre,cl,x);$('#ctx').classList.add('on')};
+  const t=E('div');t.append(E('div','big','EvoLyric'),vEl);w.append(t);b.append(w);
   b.append(dP(L('A lyric teleprompter for live performers. Works offline once opened.','Teleprompter lirik untuk musisi panggung. Bisa dipakai offline setelah dibuka.')));
   const H=t=>b.append(dH(t)),P=(en,id)=>b.append(dP(L(en,id))),S=t=>{const d=dP(t);d.style.fontWeight='700';b.append(d)};
   H('About Us');S('Evolution Digital Studio');S('Building Digital Solutions for the Music Industry.');
@@ -1938,11 +1939,16 @@ async function initAuth(){
   /* v80: Chrome skips history entries that were added without a tap (an edge swipe-back then leaves the app at once). So the guard entry
      is also (re)added on the next real touch after every Back, and Exit walks back over however many guard entries exist. */
   let exiting=false,L0=history.length,needTouch=false;
+  /* v82 diagnostics: a small log that survives the app closing; shown by tapping the version in About five times */
+  const ua0=()=>{const u=navigator.userActivation;return u?(u.isActive?'A':u.hasBeenActive?'a':'-'):'?'};
+  const blog=m=>{try{const a=JSON.parse(localStorage.getItem('evo.bklog')||'[]');a.push(new Date().toTimeString().slice(0,8)+' '+m+' len='+history.length+' ua='+ua0());localStorage.setItem('evo.bklog',JSON.stringify(a.slice(-40)))}catch(e){}};
+  window.__bklog=blog;blog('load v'+APP_VER+' sa='+(matchMedia('(display-mode: standalone)').matches?1:0));
+  document.addEventListener('visibilitychange',()=>blog('vis='+document.visibilityState));addEventListener('pagehide',()=>blog('pagehide'));
   const arm=()=>{try{history.pushState({evo:1},'')}catch(e){}};
   try{history.replaceState({evo:0},'');history.pushState({evo:1},'')}catch(e){return}
-  needTouch=true;
+  blog('init push');needTouch=true;
   /* a touch only counts as a "user activation" when the finger is lifted (touchend / pointerup / click), not on touchstart */
-  const touchArm=()=>{if(exiting)return;const ua=navigator.userActivation;if(ua&&!ua.isActive)return;if(!needTouch)return;needTouch=false;arm()};
+  const touchArm=ev=>{if(exiting)return;const ua=navigator.userActivation;if(ua&&!ua.isActive)return;if(!needTouch)return;needTouch=false;arm();blog('tap-push '+(ev&&ev.type))};
   ['pointerup','touchend','click','keydown'].forEach(ev=>addEventListener(ev,touchArm,{capture:true,passive:true}));
   const isOn=id=>$(id).classList.contains('on');
   function closeTop(){
@@ -1972,7 +1978,7 @@ async function initAuth(){
     if(v==='doc')return void $('#dcX').onclick();
     if(lib.v==='cat')return void $('#cBack').onclick();
     ask('Exit EvoLyric?','Press Exit to close the app.','Exit',()=>{exiting=true;history.go(-Math.max(2,history.length-L0+1))})}
-  addEventListener('popstate',()=>{if(exiting)return;arm();needTouch=true;goBack()});
+  addEventListener('popstate',ev=>{blog('pop st='+JSON.stringify(ev.state));if(exiting)return;arm();needTouch=true;goBack()});
 })();
 initAuth();
 refresh();

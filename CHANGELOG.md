@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v70 – GetSongBPM credit
+- Added a small "Tempo data by GetSongBPM.com" link (required by their free API terms) in the account menu and the sign-in card.
+
 ## v69 – Annotations truly anchored to the lyrics
 - Annotations are now anchored to their lyric line vertically and to the centre of the lyrics horizontally, measured in text units. They keep their exact place on the words and scale with the lyric size. Older annotations are converted automatically.
 

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v80 – Safer Back / edge swipe on Android
+- The Back guard is re-armed on the next real touch after every Back press (Chrome ignores history entries added without a touch, which let a second edge swipe leave the app).
+- Exit EvoLyric now leaves the app reliably even when extra guard entries exist.
+
 ## v79 – Credits names, fixed header
 - Fixed: the About scroll area was taller than the screen, so the bottom of the credits could be cut off.
 - About credits now list who came up with the idea, who designed and built it, and the testers.

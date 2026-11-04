@@ -615,11 +615,11 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
 <section id="welcome" class="v"><div class="wc"><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg3)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2>Evo<i>Lyric</i></h2>
-  <div id="wstep1"><p class="sub">A lyric teleprompter for live performers.</p><button class="gbtn" id="wgbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="werr" role="alert"></div><button class="lnk" id="wguest" type="button">Continue as guest (Demo)</button><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p></div>
+  <div id="wstep1"><p class="sub">A lyric teleprompter for live performers.</p><button class="gbtn" id="wgbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="werr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p></div>
   <div id="wstep3" hidden><p class="sub">Signing you in…</p></div>
   <div id="wstep2" hidden><h3>Choose a username</h3><p class="sub">Friends find you by this name. You can change it later in your profile.</p><div class="wu"><span>@</span><input id="wun" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="username" aria-label="Username"></div><div class="err" id="wuerr" role="alert"></div><button class="pill wgo" id="wusave" type="button" disabled>Continue</button><button class="lnk" id="wout" type="button">Use a different account</button></div>
 </div></section>
-<div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><button class="lnk" id="atGuest" type="button">Not now, keep using the demo</button><p class="priv credit">Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p></div></div>
+<div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><p class="priv credit">Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p></div></div>
 <div id="note" role="status" aria-live="polite"></div>
 <button id="ntf" type="button" role="status" aria-live="polite" hidden></button>
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
@@ -807,7 +807,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='83';
+const APP_VER='84';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -847,7 +847,7 @@ const ID={
 'Edit':'Ubah','Edit note':'Ubah catatan','Edit song':'Ubah lagu','Edit text':'Ubah teks','Editor':'Editor','Editor tools':'Alat editor','Ellipse':'Elips','Email':'Email','English':'English','Enter':'Enter','Enter a category name':'Isi nama kategori','Enter a username':'Isi username','Erase':'Hapus coretan','Escape':'Escape','Everything drawn on this song will be removed.':'Semua gambar di lagu ini akan dihapus.','Exit':'Keluar','Exit EvoLyric?':'Keluar dari EvoLyric?',
 'Fade buttons while scrolling':'Redupkan tombol saat menggulir','Female 1':'Wanita 1','Female 2':'Wanita 2','Find':'Cari','Find a friend by username':'Cari teman lewat username','Find by exact username':'Cari dengan username persis','Find tempo online':'Cari tempo online','Floating buttons nearly disappear during auto-scroll':'Tombol melayang hampir hilang saat auto-scroll','Font':'Font','Fonts':'Font','Free Style':'Free Style','Friend':'Teman','Friend added':'Teman ditambahkan','Friend removed':'Teman dihapus','Friends':'Teman',
 'Friends and people who find you by your username can read your bio. Your email is never shown.':'Teman dan orang yang menemukanmu lewat username bisa membaca bio-mu. Emailmu tidak pernah ditampilkan.','Friends and sending songs':'Teman dan kirim lagu','Friends are not enabled on the server yet.':'Fitur teman belum aktif di server.','Friends are not enabled on the server yet. Run supabase/003_friends.sql in the Supabase SQL Editor, then reopen the app.':'Fitur teman belum aktif di server. Jalankan supabase/003_friends.sql di Supabase SQL Editor, lalu buka ulang aplikasi.',
-'Google sign-in is not configured yet. Guest Demo keeps working in the meantime.':'Masuk dengan Google belum dikonfigurasi. Demo tamu tetap bisa dipakai.','Green':'Hijau','Hand':'Tangan','Help':'Bantuan','Hide queue':'Sembunyikan antrean','Highlight':'Sorot','Highlight colours mark important lines. Section buttons on the right insert labels.':'Warna sorot menandai baris penting. Tombol bagian di kanan menyisipkan label.',
+'Google sign-in is not configured yet.':'Masuk dengan Google belum dikonfigurasi.','Green':'Hijau','Hand':'Tangan','Help':'Bantuan','Hide queue':'Sembunyikan antrean','Highlight':'Sorot','Highlight colours mark important lines. Section buttons on the right insert labels.':'Warna sorot menandai baris penting. Tombol bagian di kanan menyisipkan label.',
 'Hold a note by its handle (⋮⋮) and drag it to any line. Tap Done to apply.':'Tahan catatan pada pegangannya (⋮⋮) lalu seret ke baris mana pun. Ketuk Selesai untuk menerapkan.','Hold still for 1 second while playing: fast-forward (speed 30) until you let go.':'Tahan diam 1 detik saat berjalan: maju cepat (kecepatan 30) sampai dilepas.','Home':'Home','Hosting: Cloudflare':'Hosting: Cloudflare',
 'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
 'iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.':'iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.',
@@ -1774,11 +1774,11 @@ let authFrom=null;
 function openAuth(err){authFrom=document.activeElement;setBusy(false);$('#aerr').textContent=err||'';const a=$('#authbox');a.classList.add('on');a.setAttribute('aria-hidden','false');setTimeout(()=>$('#gbtn').focus({preventScroll:true}),30)}
 function closeAuth(){const a=$('#authbox');a.classList.remove('on');a.setAttribute('aria-hidden','true');authFrom&&authFrom.focus&&authFrom.focus({preventScroll:true})}
 function setBusy(on,btn){const g=btn||$('#gbtn');g.disabled=on;g.classList.toggle('ld',on);g.querySelector('span').textContent=on?'Connecting to Google…':'Continue with Google'}
-$('#atX').onclick=$('#atGuest').onclick=closeAuth;$('#authbox').onclick=e=>{if(e.target.id==='authbox')closeAuth()};
+$('#atX').onclick=closeAuth;$('#authbox').onclick=e=>{if(e.target.id==='authbox')closeAuth()};
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#authbox').classList.contains('on'))closeAuth();else if(!$('#amenu').hidden){closeMenu();const b=$('#avb');b&&b.focus()}});
 async function googleGo(btn,errEl,gone){
   errEl.textContent='';
-  if(!AUTH_ON)return void(errEl.textContent='Google sign-in is not configured yet. Guest Demo keeps working in the meantime.');
+  if(!AUTH_ON)return void(errEl.textContent='Google sign-in is not configured yet.');
   if(!navigator.onLine)return void(errEl.textContent='You appear to be offline. Connect to the internet and try again.');
   setBusy(true,btn);
   try{await ensureClient();
@@ -1797,7 +1797,7 @@ function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
     else if(ev==='SIGNED_OUT')applyUser(null)});
   return sb}).catch(e=>{clientP=null;throw e}))}
 function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);renderAuth();
-  if(n){setGuest(false);if($('#welcome').classList.contains('on')&&$('#wstep2').hidden)wStep(3)}
+  if(n){if($('#welcome').classList.contains('on')&&$('#wstep2').hidden)wStep(3)}
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
   if(n&&was!==n.id)unameLoad(n.id);
   if(n||was)gateCheck();
@@ -1805,7 +1805,7 @@ function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;use
   if(window.Cloud){if(n)Cloud.signedIn(n);else Cloud.signedOut()}}
 async function syncProfile(n){ /* refresh display fields only; row + email are created/owned by the DB trigger, identity comes from the JWT via RLS */
   try{const{error}=await sb.from('profiles').update({display_name:n.name,avatar_url:n.avatar||null}).eq('id',n.id);if(error)console.warn('profile sync:',error.message)}catch(e){console.warn('profile sync failed',e)}}
-async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;setGuest(false);renderAuth();gateCheck();
+async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;renderAuth();gateCheck();
   try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
 /* ---------- v34: Friends (all rules enforced server-side by supabase/003_friends.sql; the app only calls its functions) ---------- */
 const fr={list:[],inbox:[],state:null,t:0,res:null,msg:''};
@@ -1939,8 +1939,7 @@ if(window.Cloud)Cloud.init({
 });
 /* ---------- v83: welcome / first sign-in, username step, and staying signed in ---------- */
 const GK='evolyric-guest';
-const isGuest=()=>{try{return localStorage.getItem(GK)==='1'}catch(e){return false}};
-const setGuest=v=>{try{v?localStorage.setItem(GK,'1'):localStorage.removeItem(GK)}catch(e){}};
+try{localStorage.removeItem(GK)}catch(e){} /* v84: guest mode removed – sign-in is required */
 const hasStoredSession=()=>{try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^sb-.+-auth-token$/.test(k)&&localStorage.getItem(k))return true}}catch(e){}return false};
 function wStep(n){$('#wstep1').hidden=n!==1;$('#wstep2').hidden=n!==2;$('#wstep3').hidden=n!==3;if(n===2)setTimeout(()=>$('#wun').focus({preventScroll:true}),60)}
 function showWelcome(n){wStep(n);closeMenu();show('welcome')}
@@ -1952,8 +1951,7 @@ function gateCheck(fetched){
     if(on&&(uname.v||uname.state==='nosql'||fetched||!navigator.onLine))show('list');
     return}
   if(authPending||getHint())return;
-  if(!isGuest()&&!on)showWelcome(1)}
-$('#wguest').onclick=()=>{setGuest(true);show('list')};
+  if(!on)showWelcome(1)}
 $('#wout').onclick=()=>signOut();
 const wuIn=$('#wun'),wuSave=$('#wusave'),wuErr=$('#wuerr');
 const wuNorm=()=>wuIn.value.trim().toLowerCase().replace(/^@/,'');
@@ -1971,7 +1969,7 @@ async function initAuth(){
   if(er){try{history.replaceState(null,'',location.pathname)}catch(e){}}
   const back=!!(qs.get('code')||hs.get('access_token'));
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){} /* ask the browser not to evict the saved login */
-  if(AUTH_ON&&!getHint()&&!isGuest()){showWelcome(back&&!er?3:1);if(er)$('#werr').textContent=er}
+  if(AUTH_ON&&!getHint()){showWelcome(back&&!er?3:1);if(er)$('#werr').textContent=er}
   renderAuth();
   if(!AUTH_ON){setHint(null);if(window.Cloud)Cloud.signedOut();if(er)openAuth(er);return}
   try{await ensureClient();const{data,error}=await sb.auth.getSession();if(error)throw error;applyUser(data.session?data.session.user:null)}

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v81 – Back guard re-arms on finger lift
+- v80 re-armed the Back guard on touch start, but Chrome only counts a touch as user activation when the finger lifts. It now re-arms on touch end / click, so the guard entry is not skipped by an edge swipe.
+
 ## v80 – Safer Back / edge swipe on Android
 - The Back guard is re-armed on the next real touch after every Back press (Chrome ignores history entries added without a touch, which let a second edge swipe leave the app).
 - Exit EvoLyric now leaves the app reliably even when extra guard entries exist.

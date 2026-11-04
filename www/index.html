@@ -797,7 +797,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='80';
+const APP_VER='81';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1941,8 +1941,9 @@ async function initAuth(){
   const arm=()=>{try{history.pushState({evo:1},'')}catch(e){}};
   try{history.replaceState({evo:0},'');history.pushState({evo:1},'')}catch(e){return}
   needTouch=true;
-  const touchArm=()=>{if(!needTouch||exiting)return;needTouch=false;arm()};
-  addEventListener('pointerdown',touchArm,{capture:true,passive:true});addEventListener('touchstart',touchArm,{capture:true,passive:true});addEventListener('keydown',touchArm,{capture:true});
+  /* a touch only counts as a "user activation" when the finger is lifted (touchend / pointerup / click), not on touchstart */
+  const touchArm=()=>{if(exiting)return;const ua=navigator.userActivation;if(ua&&!ua.isActive)return;if(!needTouch)return;needTouch=false;arm()};
+  ['pointerup','touchend','click','keydown'].forEach(ev=>addEventListener(ev,touchArm,{capture:true,passive:true}));
   const isOn=id=>$(id).classList.contains('on');
   function closeTop(){
     if(isOn('#ctx')){ctxClose();return true}

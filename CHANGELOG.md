@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v77 – About page
+- Fixed the missing logo on the About page.
+- About now shows the Evolution Digital Studio text (About Us, Vision, Mission, Ecosystem, Philosophy), in Indonesian and English.
+
 ## v76 – Language: English / Indonesia
 - Preferences → Language now switches the whole app (menus, dialogs, messages, help pages) instantly, with no restart. Song titles, lyrics, names and musical terms (Intro, Verse, Chorus…) stay as written.
 - Translation is automatic for anything added later: new text only needs an entry in the dictionary. `tools/i18n-audit.js` lists any untranslated text; see CONTRIBUTING.md.

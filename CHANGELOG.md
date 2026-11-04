@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v74 – Annotations anchored to the lyric characters
+- Every annotation is now tied to a specific character of the lyrics (line + character, with an offset in text units). Its position is read from the real text layout, so when you zoom and a line re-wraps, a circle around a word stays on that word. Older annotations are converted automatically the first time they are shown.
+
 ## v73 – Annotations survive lyric edits
 - Annotations are tied to lyric lines by index, so inserting, deleting or changing lines in the editor made every annotation jump to the wrong line. Saving (and re-opening the annotate view) now re-aligns them with the edited lyrics.
 

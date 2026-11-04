@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v79 – Credits names, fixed header
+- Fixed: the About scroll area was taller than the screen, so the bottom of the credits could be cut off.
+- About credits now list who came up with the idea, who designed and built it, and the testers.
+- The EvoLyric logo and title still rise from the bottom, but once they reach the top they stay pinned while the text keeps scrolling under them.
+
 ## v78 – About as rolling credits
 - The About page is centred and scrolls by itself like game end credits. Touching or scrolling pauses it for a moment, then it carries on; it stops at the end. Not animated if the device asks for reduced motion.
 

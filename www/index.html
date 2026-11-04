@@ -497,7 +497,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 :root[data-theme="light"] .lg{filter:drop-shadow(0 2px 8px rgba(156,74,6,.25))}
 :root[data-theme="light"] .fh{color:var(--acct)}
 :root[data-theme="light"] .sec,:root[data-theme="light"] #ttl{text-shadow:none}
-.doc.roll{text-align:center;padding-top:72vh;padding-bottom:72vh;max-width:520px;-webkit-mask-image:linear-gradient(transparent 0,#000 12%,#000 88%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 12%,#000 88%,transparent 100%)}.doc.roll h2{margin:34px 0 10px}.doc.roll .lgw{justify-content:center;flex-direction:column;gap:8px}.doc.roll ul{list-style:none;padding:0}.doc.roll li{margin:0 0 10px}.doc.roll p{line-height:1.7}
+.doc.roll{text-align:center;padding-top:0;padding-bottom:0;max-width:520px;-webkit-mask-image:linear-gradient(#000 0,#000 88%,transparent 100%);mask-image:linear-gradient(#000 0,#000 88%,transparent 100%)}.doc.roll .lgw{position:sticky;top:0;z-index:3;background:var(--bg);margin:0;padding:6px 0 4px}.doc.roll .lgw::after{content:'';position:absolute;left:0;right:0;top:100%;height:34px;background:linear-gradient(var(--bg),transparent);pointer-events:none}.doc.roll .lgw svg{width:48px;height:48px}.doc.roll .spc{height:calc(100vh - 250px)}.doc.roll .cn{font-weight:700;font-size:18px;margin:0 0 4px}.doc.roll .cr{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acct);font-weight:800;margin:30px 0 10px}.doc.roll h2{margin:34px 0 10px}.doc.roll .lgw{justify-content:center;flex-direction:column;gap:8px}.doc.roll ul{list-style:none;padding:0}.doc.roll li{margin:0 0 10px}.doc.roll p{line-height:1.7}
 </style>
 </head>
 <body>
@@ -797,7 +797,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='78';
+const APP_VER='79';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -950,7 +950,7 @@ function docTutorial(b){b.className='sbody doc';
   S(L('Notes and annotations','Catatan dan anotasi'),L(['Open the pen button in the editor to draw, add shapes, text notes and images over the lyrics.','Each mark is attached to the letters it sits on, so it stays with its word when you zoom or the lyrics are edited.','Use Move to adjust, Erase to remove, and Undo or Redo for mistakes.'],['Buka tombol pena di editor untuk menggambar, menambah bentuk, catatan teks, dan gambar di atas lirik.','Setiap tanda menempel pada huruf di bawahnya, jadi tetap bersama katanya saat zoom atau lirik diedit.','Gunakan Move untuk menggeser, Erase untuk menghapus, dan Undo atau Redo untuk salah gambar.']));
   S(L('Friends and sending songs','Teman dan kirim lagu'),L(['Sign in, pick a username, then add friends by username.','Send one or many songs to one or many friends. They receive a copy; annotations are not sent.'],['Masuk, pilih username, lalu tambah teman lewat username.','Kirim satu atau banyak lagu ke satu atau banyak teman. Mereka menerima salinan; anotasi tidak ikut terkirim.']));
   S(L('Install and offline','Pasang dan offline'),L(['iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.','After the first open, your songs work without internet.','After an update, close the app completely and open it again.'],['iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.','Setelah dibuka sekali, lagu tetap bisa dipakai tanpa internet.','Setelah ada pembaruan, tutup app sepenuhnya lalu buka lagi.']))}
-function docAbout(b){b.className='sbody doc roll';
+function docAbout(b){b.className='sbody doc roll';b.append(E('div','spc'));
   const w=E('div','lgw');w.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg2)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg>';
   const t=E('div');t.append(E('div','big','EvoLyric'),E('div','mut',L('Version ','Versi ')+APP_VER));w.append(t);b.append(w);
   b.append(dP(L('A lyric teleprompter for live performers. Works offline once opened.','Teleprompter lirik untuk musisi panggung. Bisa dipakai offline setelah dibuka.')));
@@ -966,7 +966,12 @@ function docAbout(b){b.className='sbody doc roll';
   P('Each product has its own function and focus, yet shares the same vision: making a musician\u2019s work easier, more organised and integrated.','Setiap produk memiliki fungsi dan fokus tersendiri, namun tetap membawa visi yang sama: membuat pekerjaan musisi menjadi lebih mudah, terorganisir, dan terintegrasi.');
   H('Our Philosophy');S('Technology Should Empower Creativity.');
   P('We do not want technology to get in the way of creativity. Instead, it should be a tool that helps musicians focus on their music, their performance and their work.','Kami tidak ingin teknologi menjadi penghalang kreativitas. Sebaliknya, teknologi harus menjadi alat yang membantu musisi lebih fokus pada musik, performa, dan karya mereka.');
-  b.append(dP(L('Developed by Evolution Digital Studio.','Developed by Evolution Digital Studio.')));S('Innovation for Musicians. Technology for Creativity.');creditRoll(b)}
+  const CR=(role,names)=>{b.append(E('div','cr',role));names.forEach(n=>{const d=E('div','cn',n);d.setAttribute('data-nt','');b.append(d)})};
+  CR(L('Concept & Idea','Ide & Konsep'),['Jeffry Ferdian','Windhy Setiawan']);
+  CR(L('Design, Programming & Development','Desain, Pemrograman & Pengembangan'),['Jeffry Ferdian']);
+  CR(L('Testers','Tester'),['Jeffry Ferdian','Windhy Setiawan','Gandhi Satya','Anya Margaretha','Edo Lasyah','Mytha Ayu','Ozzy Kusuma','Franssella Bella','Win Yovina','Harun Alra']);
+  b.append(E('div','cr',''));
+  b.append(dP(L('Developed by Evolution Digital Studio.','Developed by Evolution Digital Studio.')));S('Innovation for Musicians. Technology for Creativity.');b.append(E('div','spc'));creditRoll(b)}
 /* credits-style auto-scroll for the About page: starts by itself, pauses while you touch/scroll, resumes after a moment, stops at the end */
 let crTok=0;
 function creditRoll(b){const tok=++crTok;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;

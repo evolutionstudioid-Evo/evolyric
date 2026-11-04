@@ -362,7 +362,7 @@ html:has(#play.on){background:#0d0a08}
 @media(prefers-reduced-motion:reduce){.flash{animation:none}}
 #sstop[hidden]{display:none!important}#sstop.on{border-color:var(--acc)}
 /* v58: tidier editor - one meta row, icon toolbar, sections in a popover so the lyrics get the whole width */
-#emeta{padding-bottom:6px}#emeta #ea{flex:1 1 0;min-width:0}#emeta #ek{flex:none;width:76px;padding-left:9px;padding-right:4px;text-overflow:ellipsis}
+#emeta{padding-bottom:6px}#etm{padding-bottom:6px}#etm #eb{flex:0 0 78px;width:78px}#etm #ebl{flex:1 1 0;min-width:0}#etm button{flex:none;cursor:pointer}#etm #ebf:disabled{opacity:.55}#ebn{margin:0 12px 6px;font-size:12px}#ebn a{color:inherit;text-decoration:underline}#emeta #ea{flex:1 1 0;min-width:0}#emeta #ek{flex:none;width:76px;padding-left:9px;padding-right:4px;text-overflow:ellipsis}
 #emeta #ec{flex:1.35 1 0;min-width:0;width:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;text-align:left}
 #emeta #ec svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 #emeta #ec span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#emeta #ec span.mut{color:var(--mut)}
@@ -480,7 +480,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
   <div id="qpop" role="menu"><h4 id="qpt"></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
   <div id="shud" aria-hidden="true"><span>Speed</span><div class="trk"><i></i><u></u></div><b></b></div>
   <div id="spc">
-    <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
+    <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" step="any" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
     <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
   </div>
   <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
@@ -490,6 +490,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 <section id="edit" class="v">
   <div class="hd"><button class="ic" id="eX" aria-label="Exit">✕</button><input class="fld" id="et" placeholder="Title"><button class="pill" id="eS">Save</button></div>
   <div class="sb" id="emeta"><input class="fld" id="ea" placeholder="Artist"><button type="button" class="fld catsel" id="ec" aria-label="Categories"></button><select class="fld" id="ek" aria-label="Base key"></select></div>
+  <div class="sb" id="etm"><input class="fld" id="eb" type="number" inputmode="numeric" min="30" max="300" placeholder="BPM" aria-label="Tempo in BPM"><select class="fld" id="ebl" aria-label="Beats per lyric line"><option value="2">2 beats/line</option><option value="4">4 beats/line</option><option value="8">8 beats/line</option></select><button type="button" class="fld" id="ebt" aria-label="Tap tempo">Tap</button><button type="button" class="fld" id="ebf" aria-label="Find tempo online">Find</button></div><div class="mut" id="ebn" hidden></div>
   <div class="tb" id="etools" role="toolbar" aria-label="Editor tools">
     <button id="eU" type="button" aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button><button id="eR" type="button" aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20v-7a4 4 0 0 1 4-4h16"/></svg></button><i class="tsep"></i>
     <button id="eP" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></button><button id="eK" type="button" aria-label="Keyboard" title="Keyboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/></svg></button><i class="tsep"></i>
@@ -1050,11 +1051,36 @@ $('#cok').onclick=()=>{const n=$('#cn').value.replace(/[\[\]]/g,'').trim();if(!n
 $('#cbox').onclick=e=>{if(e.target.id==='cbox')$('#cbox').classList.remove('on')};
 ['','C','D','E','F','G','A','B','C#/Db','D#/Eb','F#/Gb','G#/Ab','A#/Bb'].forEach(k=>{const o=E('option','',k||'Key');o.value=k;$('#ek').append(o)});
 const ta=$('#ta');let st;
+/* v71: tempo. speed px/s = (speed+3) x .8 x font x .12 and a lyric line is 1.45 x font high, so
+   speed = BPM / (60 x beatsPerLine) x 1.45 / .096 - 3. Tap tempo and a server lookup (/api/tempo) fill the BPM. */
+const tmSpeed=(bpm,n)=>Math.max(1,Math.min(25,Math.round((bpm*1.45/.096/60/n-SPEED_BONUS)*10)/10));
+function tmLoad(src){$('#eb').value=src&&src.bpm?src.bpm:'';$('#ebl').value=String(src&&src.bpl||4);$('#ebn').hidden=true;tmTaps=[]}
+function tmRead(){const b=Math.round(+$('#eb').value);return{bpm:b>=30&&b<=300?b:0,bpl:+$('#ebl').value||4}}
+function tmApply(s,t){if(!t.bpm){delete s.bpm;delete s.bpl;return}
+  const ch=s.bpm!==t.bpm||s.bpl!==t.bpl;s.bpm=t.bpm;s.bpl=t.bpl;if(ch)s.speed=tmSpeed(t.bpm,t.bpl)}
+let tmTaps=[];
+$('#ebt').onclick=()=>{const n=performance.now();if(tmTaps.length&&n-tmTaps[tmTaps.length-1]>2000)tmTaps=[];tmTaps.push(n);if(tmTaps.length>9)tmTaps.shift();
+  if(tmTaps.length<3){$('#ebn').hidden=false;$('#ebn').textContent='Keep tapping to the beat…';return}
+  const bpm=Math.round(60000*(tmTaps.length-1)/(tmTaps[tmTaps.length-1]-tmTaps[0]));
+  $('#eb').value=Math.max(30,Math.min(300,bpm));$('#ebn').hidden=false;$('#ebn').textContent=bpm+' BPM (from taps). Save to apply it to the scroll speed.';ed.dirty=true};
+$('#ebf').onclick=async()=>{
+  const title=$('#et').value.trim()||ta.value.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim()))||'',art=$('#ea').value.trim(),n=$('#ebn'),b=$('#ebf');
+  if(!title)return note('Add a song title first',1);
+  if(!user)return note('Sign in to look up tempo online. You can still tap or type it.',1);
+  if(!navigator.onLine)return note('You are offline. Tap or type the tempo instead.',1);
+  b.disabled=true;n.hidden=false;n.textContent='Looking up tempo… (up to 20 s)';
+  const fail=m=>{n.textContent=m};
+  try{await ensureClient();const{data}=await sb.auth.getSession();const tk=data&&data.session&&data.session.access_token;if(!tk)return fail('Please sign in again.');
+    const r=await fetch('/api/tempo?'+new URLSearchParams({title,artist:art}),{headers:{authorization:'Bearer '+tk}});let j={};try{j=await r.json()}catch(e){}
+    if(r.ok&&j.bpm){$('#eb').value=j.bpm;ed.dirty=true;n.textContent='';n.append(j.bpm+' BPM'+(j.alt&&j.alt!==j.bpm?' (could also be '+j.alt+')':'')+'. Check it against the song, then save. Tempo by ');const a=E('a','','FreqBlog');a.href='https://freqblog.com';a.target='_blank';a.rel='noopener';n.append(a)}
+    else fail(j.error==='not_found'?'Tempo not found for this song. Use Tap or type it.':j.error==='pending'?'Still analysing this song. Try again in a minute.':j.error==='busy'?'Too many lookups right now. Try again shortly.':j.error==='not_configured'?'Tempo lookup is not set up yet. Use Tap or type it.':j.error==='auth'?'Please sign in again.':'Tempo lookup failed. Use Tap or type it.')}
+  catch(e){fail('Tempo lookup failed. Use Tap or type it.')}
+  finally{b.disabled=false}};
 function openEdit(s,txt,title,base,pre){
   exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
   const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
-  $('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';
+  $('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';tmLoad(src);
   $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
@@ -1312,11 +1338,12 @@ $('#arOK').onclick=()=>{arEnd();const rows=[...$('#arl').children],lines=rows.ma
 $('#eS').onclick=()=>{
   snap();const lyr=ta.value;
   const title=$('#et').value.trim()||lyr.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim())&&!noteParse(l)&&!/^\{n[|:]/.test(l.trim()))||'Untitled';
-  const art=$('#ea').value.trim(),key=$('#ek').value;
+  const art=$('#ea').value.trim(),key=$('#ek').value,tm=tmRead();
   const used=new Set([...lyr.matchAll(/^\[(.+)\]$/gm)].map(m=>m[1].toLowerCase()));
   const colors={},stops={};Object.keys(ed.colors).forEach(k=>{if(used.has(k))colors[k]=ed.colors[k]});Object.keys(ed.stops||{}).forEach(k=>{if(used.has(k))stops[k]=ed.stops[k]});
   if(ed.s){Object.assign(ed.s,{title,artist:art,lyrics:lyr,key,colors,md:Date.now()});if(Object.keys(stops).length)ed.s.stops=stops;else delete ed.s.stops;if(!ed.s.cr)ed.s.cr=crOf(ed.s);cur=ed.s}
   else{const b=ed.base;cur={id:'s'+Date.now(),title,artist:art,lyrics:lyr,key,colors,speed:b?b.speed:5,font:b?b.font:32,fav:false,cr:Date.now(),md:Date.now()};songs.push(cur)}
+  tmApply(cur,tm);
   if(ed.ann&&ed.ann.length)cur.ann=ed.ann;else delete cur.ann;if(!ed.s&&Object.keys(stops).length)cur.stops=stops;
   applyCats(cur.id,ed.cats);save();ed.dirty=false;openSong(cur)};
 $('#eX').onclick=()=>{

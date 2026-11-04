@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v71 – Tempo (BPM) drives scroll speed
+- Editor has a BPM field with beats-per-line, Tap tempo and an online Find (FreqBlog, via a Cloudflare Worker at /api/tempo; signed-in users only). Saving a song with a BPM sets the scroll speed from it; manual speed still works.
+- Adds wrangler.jsonc + worker.js (static files still served from www). Needs the Cloudflare secret FREQBLOG_KEY.
+
 ## v70 – GetSongBPM credit
 - Added a small "Tempo data by GetSongBPM.com" link (required by their free API terms) in the account menu and the sign-in card.
 

@@ -12,6 +12,8 @@ const found=new Map(),scan=async n=>{(await p.evaluate(()=>window.i18nMissing())
 const step=async(n,fn)=>{try{await fn();await p.waitForTimeout(300);await scan(n)}catch(e){console.log('! skipped',n,e.message.split('\n')[0])}};
 const back=async()=>{await p.keyboard.press('Escape');await p.mouse.click(5,840).catch(()=>{})};
 await step('home',async()=>{});
+for(const n of [1,2,3])await step('welcome '+n,async()=>{await p.evaluate(n=>{showWelcome(n);if(n===2)document.querySelector('#wuerr').textContent='At least 3 characters'},n)});
+await p.evaluate(()=>show('list'));
 await step('avatar menu',()=>p.click('#avb'));await back();
 await step('gear menu',()=>p.click('#gear'));
 await step('preferences',()=>p.click('#gmenu .mi:nth-child(1)'));await p.click('#prX');

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v83 – Welcome screen, username step, stay signed in
+- First launch (not signed in) now opens a Welcome page: Continue with Google, or a small "Continue as guest (Demo)" link. No password – Google sign-in only.
+- After the first Google sign-in, a Choose-a-username step is required (same rules as the profile; taken names are reported).
+- The login is kept after the app is force-closed. If the server cannot be reached at start, the saved login is kept instead of signing you out, and the browser is asked to keep the saved data. Only Sign Out returns to the Welcome page.
+
 ## v82 – Back diagnostics
 - A small log of Back-guard events (kept even if the app closes). Open About and tap the version number five times to read it.
 

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v75 – Settings, Help and light theme
+- New gear menu on Home: **Preferences** (theme Auto/Light/Dark, language selector, keep-screen-awake, fade buttons, default text size for new songs) and **Help** (Tutorial, About, Credit).
+- Account Settings now opens a page with Email, Subscription (info only, nothing charged) and Data backup & restore (copy, download, restore from file or text).
+- Light theme applied to every screen; label, note and annotation colours are darkened automatically on light backgrounds for readable contrast.
+
 ## v74 – Annotations anchored to the lyric characters
 - Every annotation is now tied to a specific character of the lyrics (line + character, with an offset in text units). Its position is read from the real text layout, so when you zoom and a line re-wraps, a circle around a word stays on that word. Older annotations are converted automatically the first time they are shown.
 

@@ -362,7 +362,7 @@ html:has(#play.on){background:#0d0a08}
 @media(prefers-reduced-motion:reduce){.flash{animation:none}}
 #sstop[hidden]{display:none!important}#sstop.on{border-color:var(--acc)}
 /* v58: tidier editor - one meta row, icon toolbar, sections in a popover so the lyrics get the whole width */
-#emeta{padding-bottom:6px}#etm{padding-bottom:6px}#etm #eb{flex:0 0 78px;width:78px}#etm #ebl{flex:1 1 0;min-width:0}#etm button{flex:none;cursor:pointer}#etm #ebf:disabled{opacity:.55}#ebn{margin:0 12px 6px;font-size:12px}#ebn a{color:inherit;text-decoration:underline}#emeta #ea{flex:1 1 0;min-width:0}#emeta #ek{flex:none;width:76px;padding-left:9px;padding-right:4px;text-overflow:ellipsis}
+#emeta{padding-bottom:6px}#etm[hidden],#ebn[hidden]{display:none!important}#etm{padding-bottom:6px}#etm #eb{flex:0 0 78px;width:78px}#etm #ebl{flex:1 1 0;min-width:0}#etm button{flex:none;cursor:pointer}#etm #ebf:disabled{opacity:.55}#ebn{margin:0 12px 6px;font-size:12px}#ebn a{color:inherit;text-decoration:underline}#emeta #ea{flex:1 1 0;min-width:0}#emeta #ek{flex:none;width:76px;padding-left:9px;padding-right:4px;text-overflow:ellipsis}
 #emeta #ec{flex:1.35 1 0;min-width:0;width:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;text-align:left}
 #emeta #ec svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 #emeta #ec span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#emeta #ec span.mut{color:var(--mut)}
@@ -1053,10 +1053,11 @@ $('#cbox').onclick=e=>{if(e.target.id==='cbox')$('#cbox').classList.remove('on')
 const ta=$('#ta');let st;
 /* v71: tempo. speed px/s = (speed+3) x .8 x font x .12 and a lyric line is 1.45 x font high, so
    speed = BPM / (60 x beatsPerLine) x 1.45 / .096 - 3. Tap tempo and a server lookup (/api/tempo) fill the BPM. */
+const TEMPO_UI=false; /* v72: tempo UI hidden for now; flip to true to bring it back */
 const tmSpeed=(bpm,n)=>Math.max(1,Math.min(25,Math.round((bpm*1.45/.096/60/n-SPEED_BONUS)*10)/10));
-function tmLoad(src){$('#eb').value=src&&src.bpm?src.bpm:'';$('#ebl').value=String(src&&src.bpl||4);$('#ebn').hidden=true;tmTaps=[]}
+function tmLoad(src){$('#etm').hidden=!TEMPO_UI;if(!TEMPO_UI)return;$('#eb').value=src&&src.bpm?src.bpm:'';$('#ebl').value=String(src&&src.bpl||4);$('#ebn').hidden=true;tmTaps=[]}
 function tmRead(){const b=Math.round(+$('#eb').value);return{bpm:b>=30&&b<=300?b:0,bpl:+$('#ebl').value||4}}
-function tmApply(s,t){if(!t.bpm){delete s.bpm;delete s.bpl;return}
+function tmApply(s,t){if(!TEMPO_UI)return;if(!t.bpm){delete s.bpm;delete s.bpl;return}
   const ch=s.bpm!==t.bpm||s.bpl!==t.bpl;s.bpm=t.bpm;s.bpl=t.bpl;if(ch)s.speed=tmSpeed(t.bpm,t.bpl)}
 let tmTaps=[];
 $('#ebt').onclick=()=>{const n=performance.now();if(tmTaps.length&&n-tmTaps[tmTaps.length-1]>2000)tmTaps=[];tmTaps.push(n);if(tmTaps.length>9)tmTaps.shift();

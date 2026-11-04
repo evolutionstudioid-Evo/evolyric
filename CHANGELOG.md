@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v78 – About as rolling credits
+- The About page is centred and scrolls by itself like game end credits. Touching or scrolling pauses it for a moment, then it carries on; it stops at the end. Not animated if the device asks for reduced motion.
+
 ## v77 – About page
 - Fixed the missing logo on the About page.
 - About now shows the Evolution Digital Studio text (About Us, Vision, Mission, Ecosystem, Philosophy), in Indonesian and English.

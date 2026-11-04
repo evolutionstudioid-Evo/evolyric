@@ -498,6 +498,11 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 :root[data-theme="light"] .fh{color:var(--acct)}
 :root[data-theme="light"] .sec,:root[data-theme="light"] #ttl{text-shadow:none}
 .doc.roll{text-align:center;padding-top:0;padding-bottom:0;max-width:520px;-webkit-mask-image:linear-gradient(#000 0,#000 88%,transparent 100%);mask-image:linear-gradient(#000 0,#000 88%,transparent 100%)}.doc.roll .lgw{position:sticky;top:0;z-index:3;background:var(--bg);margin:0;padding:6px 0 4px}.doc.roll .lgw::after{content:'';position:absolute;left:0;right:0;top:100%;height:34px;background:linear-gradient(var(--bg),transparent);pointer-events:none}.doc.roll .lgw svg{width:48px;height:48px}.doc.roll .spc{height:calc(100vh - 250px)}.doc.roll .cn{font-weight:700;font-size:18px;margin:0 0 4px}.doc.roll .cr{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acct);font-weight:800;margin:30px 0 10px}.doc.roll h2{margin:34px 0 10px}.doc.roll .lgw{justify-content:center;flex-direction:column;gap:8px}.doc.roll ul{list-style:none;padding:0}.doc.roll li{margin:0 0 10px}.doc.roll p{line-height:1.7}
+#welcome{align-items:center;justify-content:center;padding:24px;text-align:center;background:radial-gradient(120% 60% at 50% -8%,rgba(240,160,75,.2),transparent 62%),var(--bg)}
+.wc{width:min(100%,360px);margin:auto}.wc .lg{width:76px;height:76px;margin:0 auto 14px;display:block}.wc h2{margin:0 0 6px;font:800 34px/1.1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.6px}.wc h2 i{font-style:normal;color:var(--acct)}.wc h3{margin:0 0 6px;font:800 22px/1.2 'Bricolage Grotesque',system-ui,sans-serif}
+.wc .sub{margin:0 0 26px;color:var(--mut);font-size:15px;line-height:1.5}.wc .err{margin:12px 0 0;font-size:14px;min-height:1px}.wc .lnk{display:block;margin:10px auto 0}.wc .priv{margin:18px 4px 0}
+.wu{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:0 14px;margin:0 0 4px}.wu:focus-within{border-color:var(--acc)}.wu span{color:var(--mut);font-weight:700}.wu input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--fg);font:600 17px/1 'Atkinson Hyperlegible',system-ui,sans-serif;padding:15px 0}
+.wgo{width:100%;min-height:48px;margin-top:12px;font-size:16px}.wgo:disabled{opacity:.45}
 </style>
 </head>
 <body>
@@ -609,6 +614,11 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 <div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><p class="mut" id="nhint" style="margin:0 10px 8px;font-size:13px"></p><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
+<section id="welcome" class="v"><div class="wc"><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg3)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2>Evo<i>Lyric</i></h2>
+  <div id="wstep1"><p class="sub">A lyric teleprompter for live performers.</p><button class="gbtn" id="wgbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="werr" role="alert"></div><button class="lnk" id="wguest" type="button">Continue as guest (Demo)</button><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p></div>
+  <div id="wstep3" hidden><p class="sub">Signing you in…</p></div>
+  <div id="wstep2" hidden><h3>Choose a username</h3><p class="sub">Friends find you by this name. You can change it later in your profile.</p><div class="wu"><span>@</span><input id="wun" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="username" aria-label="Username"></div><div class="err" id="wuerr" role="alert"></div><button class="pill wgo" id="wusave" type="button" disabled>Continue</button><button class="lnk" id="wout" type="button">Use a different account</button></div>
+</div></section>
 <div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><button class="lnk" id="atGuest" type="button">Not now, keep using the demo</button><p class="priv credit">Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p></div></div>
 <div id="note" role="status" aria-live="polite"></div>
 <button id="ntf" type="button" role="status" aria-live="polite" hidden></button>
@@ -797,7 +807,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='82';
+const APP_VER='83';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -818,6 +828,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
 const ID={
+'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
 '0 selected':'0 dipilih','2 beats/line':'2 ketukan/baris','4 beats/line':'4 ketukan/baris','8 beats/line':'8 ketukan/baris',
 'About':'Tentang','About EvoLyric':'Tentang EvoLyric','Accept':'Terima','Account':'Akun','Account Settings':'Pengaturan Akun','Add':'Tambah','Add Songs':'Tambah Lagu','Add song':'Tambah lagu','Add to Queue':'Masukkan ke Antrean','Add friend':'Tambah teman','Added to queue':'Ditambahkan ke antrean','Already added':'Sudah ditambahkan','Already friends':'Sudah berteman','Already in queue':'Sudah ada di antrean','Add a song title first':'Isi judul lagu dulu',
@@ -1695,7 +1706,7 @@ const unameErr=n=>!n?'Enter a username':n.length<3?'At least 3 characters':n.len
 function unameLoad(id){try{uname.v=localStorage.getItem(UNK+id)||'';uname.bio=localStorage.getItem(BIOK+id)||''}catch(e){uname.v='';uname.bio=''}}
 function bioStore(id,v){uname.bio=v||'';try{v?localStorage.setItem(BIOK+id,v):localStorage.removeItem(BIOK+id)}catch(e){}}
 function unameStore(id,v){uname.v=v||'';try{v?localStorage.setItem(UNK+id,v):localStorage.removeItem(UNK+id)}catch(e){}}
-async function unameFetch(n){try{
+async function unameFetch0(n){try{
   let r=await sb.from('profiles').select('username,bio').eq('id',n.id).maybeSingle();
   if(r.error&&(r.error.code==='42703'||/bio/i.test(r.error.message||''))){uname.bioState='nosql';r=await sb.from('profiles').select('username').eq('id',n.id).maybeSingle()}
   else if(!r.error)uname.bioState='ok';
@@ -1703,6 +1714,7 @@ async function unameFetch(n){try{
   if(error){if(navigator.onLine&&!/fetch|network/i.test(error.message||''))uname.state='nosql';return}
   uname.state='ok';unameStore(n.id,data&&data.username||'');if(uname.bioState==='ok')bioStore(n.id,data&&data.bio||'')}catch(e){}
   if(!$('#amenu').hidden&&user)buildMenu(user);if($('#profile').classList.contains('on'))profRender()}
+async function unameFetch(n){await unameFetch0(n);gateCheck(true)}
 /* v40: Profile page (username + bio). Opened from the header of the account menu. */
 const BIO_MAX=300;
 function profOpen(){if(!user)return;closeMenu();show('profile');profRender()}
@@ -1761,35 +1773,39 @@ document.addEventListener('click',e=>{if(!$('#amenu').hidden&&!e.target.closest(
 let authFrom=null;
 function openAuth(err){authFrom=document.activeElement;setBusy(false);$('#aerr').textContent=err||'';const a=$('#authbox');a.classList.add('on');a.setAttribute('aria-hidden','false');setTimeout(()=>$('#gbtn').focus({preventScroll:true}),30)}
 function closeAuth(){const a=$('#authbox');a.classList.remove('on');a.setAttribute('aria-hidden','true');authFrom&&authFrom.focus&&authFrom.focus({preventScroll:true})}
-function setBusy(on){const g=$('#gbtn');g.disabled=on;g.classList.toggle('ld',on);g.querySelector('span').textContent=on?'Connecting to Google…':'Continue with Google'}
+function setBusy(on,btn){const g=btn||$('#gbtn');g.disabled=on;g.classList.toggle('ld',on);g.querySelector('span').textContent=on?'Connecting to Google…':'Continue with Google'}
 $('#atX').onclick=$('#atGuest').onclick=closeAuth;$('#authbox').onclick=e=>{if(e.target.id==='authbox')closeAuth()};
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#authbox').classList.contains('on'))closeAuth();else if(!$('#amenu').hidden){closeMenu();const b=$('#avb');b&&b.focus()}});
-$('#gbtn').onclick=async()=>{
-  $('#aerr').textContent='';
-  if(!AUTH_ON)return void($('#aerr').textContent='Google sign-in is not configured yet. Guest Demo keeps working in the meantime.');
-  if(!navigator.onLine)return void($('#aerr').textContent='You appear to be offline. Connect to the internet and try again.');
-  setBusy(true);
+async function googleGo(btn,errEl,gone){
+  errEl.textContent='';
+  if(!AUTH_ON)return void(errEl.textContent='Google sign-in is not configured yet. Guest Demo keeps working in the meantime.');
+  if(!navigator.onLine)return void(errEl.textContent='You appear to be offline. Connect to the internet and try again.');
+  setBusy(true,btn);
   try{await ensureClient();
     const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:'select_account'}}});
     if(error)throw error;
-    setTimeout(()=>{if($('#authbox').classList.contains('on'))setBusy(false)},8000) /* if the redirect never happens */
-  }catch(e){setBusy(false);$('#aerr').textContent='Sign-in could not start. '+(e&&e.message?e.message:'Please try again.')}};
+    setTimeout(()=>{if(gone())setBusy(false,btn)},8000) /* if the redirect never happens */
+  }catch(e){setBusy(false,btn);errEl.textContent='Sign-in could not start. '+(e&&e.message?e.message:'Please try again.')}}
+$('#gbtn').onclick=()=>googleGo($('#gbtn'),$('#aerr'),()=>$('#authbox').classList.contains('on'));
+$('#wgbtn').onclick=()=>googleGo($('#wgbtn'),$('#werr'),()=>$('#welcome').classList.contains('on'));
 function loadSDK(){return new Promise((ok,no)=>{if(window.supabase)return ok();const s=document.createElement('script');s.src='vendor/supabase.js';s.onload=ok;s.onerror=()=>no(new Error('Could not load the sign-in module.'));document.head.append(s)})}
 let clientP=null;
 function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
   sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'pkce'}});
   sb.auth.onAuthStateChange((ev,ses)=>{ /* single listener; never call supabase APIs synchronously in here */
-    if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='USER_UPDATED'||ev==='TOKEN_REFRESHED'){if(ses&&ses.user)applyUser(ses.user);else if(ev==='INITIAL_SESSION')applyUser(null)}
+    if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='USER_UPDATED'||ev==='TOKEN_REFRESHED'){if(ses&&ses.user)applyUser(ses.user);else if(ev==='INITIAL_SESSION'){if(hasStoredSession())return;applyUser(null)}}
     else if(ev==='SIGNED_OUT')applyUser(null)});
   return sb}).catch(e=>{clientP=null;throw e}))}
 function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);renderAuth();
+  if(n){setGuest(false);if($('#welcome').classList.contains('on')&&$('#wstep2').hidden)wStep(3)}
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
   if(n&&was!==n.id)unameLoad(n.id);
+  if(n||was)gateCheck();
   if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n).then(()=>{unameFetch(n);frLoad(true)}),0)}
   if(window.Cloud){if(n)Cloud.signedIn(n);else Cloud.signedOut()}}
 async function syncProfile(n){ /* refresh display fields only; row + email are created/owned by the DB trigger, identity comes from the JWT via RLS */
   try{const{error}=await sb.from('profiles').update({display_name:n.name,avatar_url:n.avatar||null}).eq('id',n.id);if(error)console.warn('profile sync:',error.message)}catch(e){console.warn('profile sync failed',e)}}
-async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;renderAuth();
+async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;setGuest(false);renderAuth();gateCheck();
   try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
 /* ---------- v34: Friends (all rules enforced server-side by supabase/003_friends.sql; the app only calls its functions) ---------- */
 const fr={list:[],inbox:[],state:null,t:0,res:null,msg:''};
@@ -1921,15 +1937,48 @@ if(window.Cloud)Cloud.init({
   dropUser:u=>{try{localStorage.removeItem(K+':u:'+u);localStorage.removeItem(KC+':u:'+u)}catch(e){}},
   onStatus:()=>{const b=document.querySelector('#amenu .cst');if(b)b.textContent=Cloud.statusText()}
 });
+/* ---------- v83: welcome / first sign-in, username step, and staying signed in ---------- */
+const GK='evolyric-guest';
+const isGuest=()=>{try{return localStorage.getItem(GK)==='1'}catch(e){return false}};
+const setGuest=v=>{try{v?localStorage.setItem(GK,'1'):localStorage.removeItem(GK)}catch(e){}};
+const hasStoredSession=()=>{try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^sb-.+-auth-token$/.test(k)&&localStorage.getItem(k))return true}}catch(e){}return false};
+function wStep(n){$('#wstep1').hidden=n!==1;$('#wstep2').hidden=n!==2;$('#wstep3').hidden=n!==3;if(n===2)setTimeout(()=>$('#wun').focus({preventScroll:true}),60)}
+function showWelcome(n){wStep(n);closeMenu();show('welcome')}
+function gateCheck(fetched){
+  if(!AUTH_ON)return;
+  const on=$('#welcome').classList.contains('on');
+  if(user){
+    if(uname.state==='ok'&&!uname.v){if(!on||$('#wstep2').hidden)showWelcome(2);return}
+    if(on&&(uname.v||uname.state==='nosql'||fetched||!navigator.onLine))show('list');
+    return}
+  if(authPending||getHint())return;
+  if(!isGuest()&&!on)showWelcome(1)}
+$('#wguest').onclick=()=>{setGuest(true);show('list')};
+$('#wout').onclick=()=>signOut();
+const wuIn=$('#wun'),wuSave=$('#wusave'),wuErr=$('#wuerr');
+const wuNorm=()=>wuIn.value.trim().toLowerCase().replace(/^@/,'');
+wuIn.oninput=()=>{const u=wuNorm(),e=u?unameErr(u):'';wuErr.textContent=e;wuSave.disabled=!u||!!e};
+wuIn.onkeydown=e=>{if(e.key==='Enter'&&!wuSave.disabled)wuSave.click()};
+wuSave.onclick=async()=>{const u=wuNorm(),e=unameErr(u);if(e)return void(wuErr.textContent=e);if(!user||!sb)return void(wuErr.textContent='Please sign in again.');
+  wuSave.disabled=true;wuErr.textContent='';
+  try{const{data,error}=await sb.from('profiles').update({username:u}).eq('id',user.id).select('username').maybeSingle();
+    if(error||!data){const c=error&&error.code;wuErr.textContent=c==='23505'?'That username is already taken. Try another one.':c==='42501'?'Your username is locked on the server. Run supabase/007_username_unlock.sql':c==='23514'?'Please check your username and bio.':navigator.onLine?'Something went wrong. Try again.':'You appear to be offline. Connect to the internet and try again.';wuSave.disabled=false;return}
+    unameStore(user.id,data.username);gateCheck(true)}
+  catch(x){wuErr.textContent='Something went wrong. Try again.';wuSave.disabled=false}};
 async function initAuth(){
   /* surface OAuth errors returned in the URL */
   const qs=new URLSearchParams(location.search),hs=new URLSearchParams(location.hash.replace(/^#/,'')),er=qs.get('error_description')||hs.get('error_description');
   if(er){try{history.replaceState(null,'',location.pathname)}catch(e){}}
+  const back=!!(qs.get('code')||hs.get('access_token'));
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){} /* ask the browser not to evict the saved login */
+  if(AUTH_ON&&!getHint()&&!isGuest()){showWelcome(back&&!er?3:1);if(er)$('#werr').textContent=er}
   renderAuth();
   if(!AUTH_ON){setHint(null);if(window.Cloud)Cloud.signedOut();if(er)openAuth(er);return}
   try{await ensureClient();const{data,error}=await sb.auth.getSession();if(error)throw error;applyUser(data.session?data.session.user:null)}
-  catch(e){authPending=false;if(!navigator.onLine){renderAuth()}else{setHint(null);user=null;renderAuth();if(window.Cloud)Cloud.signedOut()}}
-  if(er)openAuth(er)}
+  catch(e){authPending=false;const h=getHint();
+    if(h){user=h;unameLoad(h.id);renderAuth()} /* could not reach the server: stay signed in with the saved login */
+    else{user=null;renderAuth();if(window.Cloud)Cloud.signedOut();gateCheck()}}
+  if(er&&!$('#welcome').classList.contains('on'))openAuth(er)}
 /* v41: Android Back button. In the installed app a stray Back press used to close EvoLyric. Now Back closes the open panel or goes up one
    screen, asks before leaving a song / discarding edits, and on Home asks "Exit EvoLyric?". Only active in the installed app or on Android. */
 (function(){
@@ -1976,6 +2025,7 @@ async function initAuth(){
     if(v==='edit'){if(ed&&ed.dirty)return void ask('Discard changes?','Your edits to this song have not been saved.','Discard',()=>{ed.dirty=false;$('#eX').onclick()});return void $('#eX').onclick()}
     if(v==='friends'||v==='profile'||v==='prefs'||v==='help'||v==='acct')return void show('list');
     if(v==='doc')return void $('#dcX').onclick();
+    if(v==='welcome')return void ask('Exit EvoLyric?','Press Exit to close the app.','Exit',()=>{exiting=true;history.go(-Math.max(2,history.length-L0+1))});
     if(lib.v==='cat')return void $('#cBack').onclick();
     ask('Exit EvoLyric?','Press Exit to close the app.','Exit',()=>{exiting=true;history.go(-Math.max(2,history.length-L0+1))})}
   addEventListener('popstate',ev=>{blog('pop st='+JSON.stringify(ev.state));if(exiting)return;arm();needTouch=true;goBack()});

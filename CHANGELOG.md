@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v73 – Annotations survive lyric edits
+- Annotations are tied to lyric lines by index, so inserting, deleting or changing lines in the editor made every annotation jump to the wrong line. Saving (and re-opening the annotate view) now re-aligns them with the edited lyrics.
+
 ## v72 – Tempo UI hidden
 - The BPM / Tap / Find row in the editor is hidden for now (code and the /api/tempo worker are kept; set TEMPO_UI=true in index.html to bring it back). Saving a song no longer touches speed because of tempo.
 

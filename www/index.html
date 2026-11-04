@@ -1081,7 +1081,7 @@ function openEdit(s,txt,title,base,pre){
   exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
   const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
-  $('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';tmLoad(src);
+  ed.annLyr=v;$('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';tmLoad(src);
   $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
@@ -1179,6 +1179,18 @@ function buildLines(t,lyr,colors,onSec){const le=[];let col='';
   return le}
 function annPos(it,le,W,em){const e=le[Math.min(Math.max(it.l|0,0),le.length-1)];return{x:it.xe!=null?W/2+it.xe*em:it.x*W,y:(e?e.offsetTop:0)+it.y*em}} /* v69: horizontal anchor = em offset from the centre line (lyrics are centred), so it scales with the text exactly like the lyrics do */
 function annAnchor(x,y,le,W,em){let i=0;for(let k=0;k<le.length;k++){if(le[k].offsetTop<=y)i=k;else break}const e=le[i];return{l:i,y:r2((y-(e?e.offsetTop:0))/em),xe:r2((x-W/2)/em)}}
+/* v73: annotations point at a lyric line by index. When the lyrics are edited (lines inserted, deleted or changed) the indices are re-mapped by
+   aligning the old and new text (longest common subsequence), so every annotation stays on the line it was drawn on. */
+function annRemap(items,A,B){const n=A.length,m=B.length;if(!items||!items.length||!n||!m||n*m>4e6)return;
+  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const map=new Array(n).fill(-1);let i=0,j=0;
+  while(i<n&&j<m){if(A[i]===B[j]){map[i]=j;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}
+  for(let k=0;k<n;k++){if(map[k]>=0)continue;
+    let p=k-1;while(p>=0&&map[p]<0)p--;let q=k+1;while(q<n&&map[q]<0)q++;
+    const pn=p>=0?map[p]:-1,qn=q<n?map[q]:m,lo=pn+1,hi=qn-1;
+    map[k]=hi>=lo?Math.min(lo+(k-(p+1)),hi):Math.max(0,Math.min(m-1,pn>=0?pn:qn))}
+  items.forEach(it=>{const l=it.l|0;if(l>=0&&l<n)it.l=map[l]})}
 function shapeNode(k,x,y,a,b,at){let e;
   if(k==='r')e=svgEl('rect',{x:Math.min(x,x+a),y:Math.min(y,y+b),width:Math.abs(a),height:Math.abs(b),rx:3});
   else if(k==='o')e=svgEl('ellipse',{cx:x+a/2,cy:y+b/2,rx:Math.abs(a)/2,ry:Math.abs(b)/2});
@@ -1206,7 +1218,7 @@ let an=null;
 const anRedraw=()=>{if(an)annDraw($('#anlay'),an.items,$('#antx'),an.em,an.sel)};
 function anSnap(){const j=JSON.stringify(an.items);if(an.h[an.hi]===j)return;an.h=an.h.slice(0,an.hi+1);an.h.push(j);an.hi=an.h.length-1;if(an.h.length>60){an.h.shift();an.hi--}}
 function anGo(d){const n=an.hi+d;if(n<0||n>=an.h.length)return;an.hi=n;an.items=JSON.parse(an.h[n]);an.sel=-1;anRedraw();anUi()}
-function openAnn(){const f=ed.s?ed.s.font:ed.base?ed.base.font:32,t=$('#antx'),start=JSON.stringify(ed.ann||[]);
+function openAnn(){if(ed.ann&&ed.ann.length&&ed.annLyr!=null&&ed.annLyr!==ta.value)annRemap(ed.ann,ed.annLyr.split('\n'),ta.value.split('\n'));ed.annLyr=ta.value;const f=ed.s?ed.s.font:ed.base?ed.base.font:32,t=$('#antx'),start=JSON.stringify(ed.ann||[]);
   an={items:JSON.parse(start),sel:-1,tool:'pen',shape:'r',c:'o',w:2,em:f,h:[start],hi:0,start,dr:null};
   t.textContent='';t.style.fontSize=f+'px';t._le=buildLines(t,ta.value,ed.colors);
   const lay=E('div','annl ed');lay.id='anlay';const cap=E('div','ancap');cap.id='ancap';t.append(lay,cap);
@@ -1338,6 +1350,7 @@ $('#arOK').onclick=()=>{arEnd();const rows=[...$('#arl').children],lines=rows.ma
   $('#arr').classList.remove('on')};
 $('#eS').onclick=()=>{
   snap();const lyr=ta.value;
+  if(ed.ann&&ed.ann.length&&ed.annLyr!=null&&ed.annLyr!==lyr)annRemap(ed.ann,ed.annLyr.split('\n'),lyr.split('\n'));ed.annLyr=lyr;
   const title=$('#et').value.trim()||lyr.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim())&&!noteParse(l)&&!/^\{n[|:]/.test(l.trim()))||'Untitled';
   const art=$('#ea').value.trim(),key=$('#ek').value,tm=tmRead();
   const used=new Set([...lyr.matchAll(/^\[(.+)\]$/gm)].map(m=>m[1].toLowerCase()));

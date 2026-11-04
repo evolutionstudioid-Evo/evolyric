@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v82 – Back diagnostics
+- A small log of Back-guard events (kept even if the app closes). Open About and tap the version number five times to read it.
+
 ## v81 – Back guard re-arms on finger lift
 - v80 re-armed the Back guard on touch start, but Chrome only counts a touch as user activation when the finger lifts. It now re-arms on touch end / click, so the guard entry is not skipped by an edge swipe.
 

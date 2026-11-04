@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v84 – Sign-in required
+- Guest mode is gone: without a signed-in Google account the app stays on the Welcome page. Anyone who had chosen guest earlier is asked to sign in.
+
 ## v83 – Welcome screen, username step, stay signed in
 - First launch (not signed in) now opens a Welcome page: Continue with Google, or a small "Continue as guest (Demo)" link. No password – Google sign-in only.
 - After the first Google sign-in, a Choose-a-username step is required (same rules as the profile; taken names are reported).

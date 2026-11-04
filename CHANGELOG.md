@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v76 – Language: English / Indonesia
+- Preferences → Language now switches the whole app (menus, dialogs, messages, help pages) instantly, with no restart. Song titles, lyrics, names and musical terms (Intro, Verse, Chorus…) stay as written.
+- Translation is automatic for anything added later: new text only needs an entry in the dictionary. `tools/i18n-audit.js` lists any untranslated text; see CONTRIBUTING.md.
+
 ## v75 – Settings, Help and light theme
 - New gear menu on Home: **Preferences** (theme Auto/Light/Dark, language selector, keep-screen-awake, fade buttons, default text size for new songs) and **Help** (Tutorial, About, Credit).
 - Account Settings now opens a page with Email, Subscription (info only, nothing charged) and Data backup & restore (copy, download, restore from file or text).

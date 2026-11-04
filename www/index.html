@@ -1177,8 +1177,28 @@ function buildLines(t,lyr,colors,onSec){const le=[];let col='';
       else d=lineEl(ln,col)}
     t.append(d);le.push(d)});
   return le}
-function annPos(it,le,W,em){const e=le[Math.min(Math.max(it.l|0,0),le.length-1)];return{x:it.xe!=null?W/2+it.xe*em:it.x*W,y:(e?e.offsetTop:0)+it.y*em}} /* v69: horizontal anchor = em offset from the centre line (lyrics are centred), so it scales with the text exactly like the lyrics do */
-function annAnchor(x,y,le,W,em){let i=0;for(let k=0;k<le.length;k++){if(le[k].offsetTop<=y)i=k;else break}const e=le[i];return{l:i,y:r2((y-(e?e.offsetTop:0))/em),xe:r2((x-W/2)/em)}}
+/* v74: annotations are anchored to a CHARACTER of the lyrics (line l, character index ch); ox/oy are the offset (in em of the lyric font) from the centre of that
+   character to the item's start point. The position is read from the real text layout every time, so when the lyrics are zoomed or re-wrap, the mark
+   moves with its word/letter instead of staying at a place in the container. Older items (line + em offsets) are converted the first time they are drawn. */
+const chOrigin=t=>{const r=t.getBoundingClientRect();return{x:r.left,y:r.top}};
+function chNodes(el){const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n,o=0;while(n=w.nextNode()){a.push([n,o]);o+=n.data.length}return a}
+function chRect(el,c,nodes){nodes=nodes||chNodes(el);for(const[nd,o]of nodes){if(c>=o&&c<o+nd.data.length){const r=document.createRange();r.setStart(nd,c-o);r.setEnd(nd,c-o+1);const q=r.getClientRects();return q.length?q[0]:null}}return null}
+function annCentre(el,c,O){const len=(el.textContent||'').length,r=c>=0&&len?chRect(el,Math.min(c,len-1)):null,b=r||el.getBoundingClientRect();return{x:b.left+b.width/2-O.x,y:b.top+b.height/2-O.y}}
+function annNearest(t,le,em,qx,qy){const O=chOrigin(t),px=O.x+qx,py=O.y+qy;let best=null,bd=1e18;
+  le.forEach((el,l)=>{const b=el.getBoundingClientRect();if(b.bottom<py-4*em||b.top>py+4*em)return;const nodes=chNodes(el),txt=el.textContent;
+    for(let c=0;c<txt.length;c++){if(/\s/.test(txt[c]))continue;const r=chRect(el,c,nodes);if(!r)continue;
+      const dx=px<r.left?r.left-px:px>r.right?px-r.right:0,dy=py<r.top?r.top-py:py>r.bottom?py-r.bottom:0,d=dx*dx+dy*dy;if(d<bd){bd=d;best={l,c}}}});
+  if(!best){let i=0,bdist=1e18;le.forEach((el,l)=>{const b=el.getBoundingClientRect(),d=Math.abs((b.top+b.bottom)/2-py);if(d<bdist){bdist=d;i=l}});best={l:i,c:-1}}
+  return best}
+function annAnchor(t,le,em,sx,sy,qx,qy){const n=annNearest(t,le,em,qx==null?sx:qx,qy==null?sy:qy),c=annCentre(le[n.l],n.c,chOrigin(t));return{l:n.l,ch:n.c,ox:r2((sx-c.x)/em),oy:r2((sy-c.y)/em)}}
+function annPos(it,t,le,em){const el=le[Math.min(Math.max(it.l|0,0),le.length-1)];
+  if(it.ch==null){const W=t.clientWidth;return{x:it.xe!=null?W/2+it.xe*em:it.x*W,y:(el?el.offsetTop:0)+it.y*em}} /* legacy */
+  const c=annCentre(el,it.ch,chOrigin(t));return{x:c.x+it.ox*em,y:c.y+it.oy*em}}
+let annMig=false;
+function annMigrate(it,t,le,em){annMig=true;const p=annPos(it,t,le,em);let qx=p.x,qy=p.y;
+  if(it.k==='p'&&it.q&&it.q.length){let sx=0,sy=0;it.q.forEach(q=>{sx+=q[0];sy+=q[1]});qx+=sx/it.q.length*em;qy+=sy/it.q.length*em}
+  else if(it.a!=null&&it.k!=='x'){qx+=it.a*em/2;qy+=(it.b||0)*em/2}
+  const a=annAnchor(t,le,em,p.x,p.y,qx,qy);delete it.xe;delete it.x;delete it.y;Object.assign(it,a)}
 /* v73: annotations point at a lyric line by index. When the lyrics are edited (lines inserted, deleted or changed) the indices are re-mapped by
    aligning the old and new text (longest common subsequence), so every annotation stays on the line it was drawn on. */
 function annRemap(items,A,B){const n=A.length,m=B.length;if(!items||!items.length||!n||!m||n*m>4e6)return;
@@ -1199,8 +1219,8 @@ function shapeNode(k,x,y,a,b,at){let e;
   for(const q in at)e.setAttribute(q,at[q]);return e}
 function annDraw(layer,items,t,em,sel){
   layer.textContent='';const le=t._le||[],W=t.clientWidth,svg=svgEl('svg',{class:'ansvg'});layer.append(svg);if(!le.length)return;
-  items.forEach((it,i)=>{if(it.xe==null&&it.x!=null){it.xe=r2((it.x*W-W/2)/em);delete it.x} /* migrate old width-fraction anchors */
-    const p=annPos(it,le,W,em),col=ANC[it.c]||ANC.o,sw=Math.max(1,(it.w||.12)*em);
+  items.forEach((it,i)=>{if(it.ch==null)annMigrate(it,t,le,em);
+    const p=annPos(it,t,le,em),col=ANC[it.c]||ANC.o,sw=Math.max(1,(it.w||.12)*em);
     if(it.k==='x'||it.k==='i'){let d;
       if(it.k==='x'){d=E('div','anx',it.o.t);noteStyle(d,it.o);d.style.margin='0'}
       else{d=E('img','ani');d.alt='';d.src=it.src;d.style.width=it.a*em+'px';d.style.height=it.b*em+'px';d.draggable=false}
@@ -1213,7 +1233,7 @@ function annDraw(layer,items,t,em,sel){
     g.append(s,h);if(i===sel)g.classList.add('sel');svg.append(g)})}
 function annPlay(){const t=$('#txt');let l=t.querySelector(':scope>.annl');
   if(!cur||!cur.ann||!cur.ann.length||!t._le){if(l)l.remove();return}
-  if(!l){l=E('div','annl');t.append(l)}annDraw(l,cur.ann,t,cur.font,-1)}
+  if(!l){l=E('div','annl');t.append(l)}annDraw(l,cur.ann,t,cur.font,-1);if(annMig){annMig=false;save()}}
 let an=null;
 const anRedraw=()=>{if(an)annDraw($('#anlay'),an.items,$('#antx'),an.em,an.sel)};
 function anSnap(){const j=JSON.stringify(an.items);if(an.h[an.hi]===j)return;an.h=an.h.slice(0,an.hi+1);an.h.push(j);an.hi=an.h.length-1;if(an.h.length>60){an.h.shift();an.hi--}}
@@ -1251,7 +1271,7 @@ function anInit(){if(anReady)return;anReady=true;
     const mv=ev=>{if(ev.pointerId!==pid)return;const dx=ev.clientX-x0,dy=ev.clientY-y0;if(!moved&&Math.hypot(dx,dy)<4)return;moved=true;
       if(node.tagName==='g')node.setAttribute('transform','translate('+dx+','+dy+')');else node.style.translate=dx+'px '+dy+'px'};
     const up=ev=>{if(ev.pointerId!==pid)return;document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);
-      if(moved&&ev.type==='pointerup'){const p=annPos(it,t._le,W,an.em),a=annAnchor(p.x+ev.clientX-x0,p.y+ev.clientY-y0,t._le,W,an.em);Object.assign(it,a);anSnap()}anRedraw()};
+      if(moved&&ev.type==='pointerup'){const O=chOrigin(t),p=annPos(it,t,t._le,an.em),r=node.getBoundingClientRect(),a=annAnchor(t,t._le,an.em,p.x+ev.clientX-x0,p.y+ev.clientY-y0,r.left+r.width/2-O.x,r.top+r.height/2-O.y);Object.assign(it,a);anSnap()}anRedraw()};
     document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});
   /* Pen / Shape / Text: the capture layer takes the touch */
   cap.addEventListener('pointerdown',e=>{if(!an||!['pen','shape','text'].includes(an.tool)||an.dr)return;e.preventDefault();try{cap.setPointerCapture(e.pointerId)}catch(_){}
@@ -1263,7 +1283,10 @@ function anInit(){if(anReady)return;anReady=true;
       d.el.setAttribute('d','M'+d.pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L'))}
     else if(an.tool==='shape'){if(d.el)d.el.remove();d.el=shapeNode(an.shape,d.x0,d.y0,x-d.x0,y-d.y0,{fill:'none',stroke:col,'stroke-width':sw,'stroke-linecap':'round','stroke-linejoin':'round'});svg.append(d.el);d.x1=x;d.y1=y}});
   const end=e=>{const d=an&&an.dr;if(!d||e.pointerId!==d.pid)return;an.dr=null;if(d.el)d.el.remove();if(e.type==='pointercancel')return;
-    const t=$('#antx'),W=t.clientWidth,em=an.em,A=annAnchor(d.x0,d.y0,t._le,W,em);
+    const t=$('#antx'),em=an.em;let qx=d.x0,qy=d.y0;
+    if(an.tool==='pen'&&d.pts.length>1){let a=1e9,b=-1e9,c=1e9,e2=-1e9;d.pts.forEach(q=>{a=Math.min(a,q[0]);b=Math.max(b,q[0]);c=Math.min(c,q[1]);e2=Math.max(e2,q[1])});qx=(a+b)/2;qy=(c+e2)/2}
+    else if(an.tool==='shape'&&d.x1!=null){qx=(d.x0+d.x1)/2;qy=(d.y0+d.y1)/2}
+    const A=annAnchor(t,t._le,em,d.x0,d.y0,qx,qy);
     if(an.tool==='pen'){const pts=d.pts.length>1?d.pts:[[d.x0,d.y0],[d.x0+.1,d.y0]];an.items.push({k:'p',...A,c:an.c,w:ANW[an.w],q:pts.map(q=>[r2((q[0]-d.x0)/em),r2((q[1]-d.y0)/em)])})}
     else if(an.tool==='shape'){if(d.x1==null||Math.hypot(d.x1-d.x0,d.y1-d.y0)<6)return;an.items.push({k:an.shape,...A,c:an.c,w:ANW[an.w],a:r2((d.x1-d.x0)/em),b:r2((d.y1-d.y0)/em)})}
     else if(an.tool==='text'){if(d.mv)return;noteOpen(-1,o=>{an.items.push({k:'x',...A,o});an.sel=an.items.length-1;anSnap();anRedraw();anTool('sel')},{...NOTE_DEF,t:''});return}
@@ -1285,7 +1308,7 @@ function anImage(f){if(an.items.filter(i=>i.k==='i').length>=8){toast('Maximum 8
   im.onload=()=>{URL.revokeObjectURL(url);const m=Math.min(1,380/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*m)),h=Math.max(1,Math.round(im.height*m)),c=document.createElement('canvas');c.width=w;c.height=h;
     const x=c.getContext('2d');x.drawImage(im,0,0,w,h);const png=/png|gif|webp/i.test(f.type),src=c.toDataURL(png?'image/png':'image/jpeg',.75);
     if(src.length>200000){toast('Image is too large');return}
-    const t=$('#antx'),W=t.clientWidth,em=an.em,L=$('#anl'),dw=Math.min(w,W*.5),A=annAnchor(W/2,L.scrollTop+L.clientHeight/2,t._le,W,em);
+    const t=$('#antx'),W=t.clientWidth,em=an.em,L=$('#anl'),dw=Math.min(w,W*.5),yy=L.scrollTop+L.clientHeight/2,A=annAnchor(t,t._le,em,W/2,yy,W/2,yy);
     an.items.push({k:'i',...A,a:r2(dw/em),b:r2(dw*h/w/em),src});an.sel=an.items.length-1;anSnap();anTool('sel')};
   im.onerror=()=>{URL.revokeObjectURL(url);toast('Image could not be read')};im.src=url}
 function anDone(){if(!an)return;const j=JSON.stringify(an.items);if(j!==an.start){ed.ann=an.items;ed.dirty=true}an=null;show('edit')}

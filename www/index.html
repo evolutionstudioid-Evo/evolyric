@@ -849,7 +849,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='108';
+const APP_VER='109';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1621,6 +1621,13 @@ function ins(name,color){
   ta.value=b+tag+v.slice(ls);ta.selectionStart=ta.selectionEnd=b.length+tag.length;
   ta.focus({preventScroll:true});ta.scrollTop=sy;snap();ed.dirty=true;snapCaret()}
 function setKb(on){ta.inputMode=on?'text':'none';if(on&&cs&&cs.v===ta.value){const q=cs;cs=null;csRender();setTimeout(()=>{try{ta.setSelectionRange(q.a,q.b)}catch(e){}},0)}else if(!on)csRender();ta.setAttribute('enterkeyhint',on?'enter':'done');const b=$('#eK');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')}
+/* v109: when the phone hides the keyboard itself (iPhone ✓ button, Android back / hide key, tapping away), switch the Keyboard button off too */
+ta.addEventListener('blur',()=>{if(ta.inputMode==='none')return;setTimeout(()=>{if(ta.inputMode!=='none'&&document.activeElement!==ta&&$('#edit').classList.contains('on'))setKb(false)},180)});
+(()=>{const vv=window.visualViewport;if(!vv)return;let base=0,shrunk=false,k=ta.inputMode;
+  const chk=()=>{if(ta.inputMode==='none'){base=Math.max(base,vv.height);shrunk=false;return}
+    if(!base)return;if(vv.height<base-120){shrunk=true;return}
+    if(shrunk&&vv.height>base-80){shrunk=false;setKb(false)}};
+  vv.addEventListener('resize',chk);vv.addEventListener('scroll',chk);chk()})();
 /* toolbar buttons must not steal focus from the textarea (keeps keyboard / selection alive) */
 document.querySelectorAll('#edit .tb button').forEach(b=>b.addEventListener('mousedown',e=>e.preventDefault()));
 $('#eK').onclick=()=>{

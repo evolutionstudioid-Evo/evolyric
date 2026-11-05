@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## v101 – Slide tutorial
-- New portrait slide tutorial (13 slides with real app screenshots) under Settings → Help → Slide tutorial. Opens in the app's language, swipe or tap to move, works offline, and Android Back or the X closes it.
+## v102 – New Tutorial
+- The Tutorial (Settings → Help → Tutorial) is now a portrait slide deck with real app screenshots, replacing the old text page. 24 slides in this order: account, first song, Google search, tabs, play and gestures, Next song, the editor tools, section labels, auto pause, Vocal 1–5, custom labels, highlight, annotations, categories, friends, sending songs, backup, theme and language.
+- Follows the app language, works offline, Back or × closes it. Fixes the blank white page of v101 (a redirected .html file inside the iframe); the deck is now a cached script.
 
 ## v100 – Testers removed from About
 - The Testers names are hidden from the About credits for now (kept in the code as a comment so they can be restored).

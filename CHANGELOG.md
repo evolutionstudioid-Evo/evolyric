@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v107 – No cut/copy/paste pop-up while the keyboard is off
+- In the editor, with the keyboard off, selecting text (for highlighting) no longer opens the phone's cut / copy / paste pop-up. Turn the keyboard on and the normal pop-up is back.
+
 ## v106 – Section button, no version in About
 - The Section panel drawer button is now a text button "Section": orange when the panel is shown, dark when hidden.
 - About no longer shows the version number (the app is still in development). The hidden 5-tap diagnostics now sits on the "EvoLyric" title.

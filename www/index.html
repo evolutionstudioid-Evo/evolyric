@@ -88,7 +88,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #cok{background:var(--acc);color:#15110e;text-align:center!important;font-weight:700}
 #eX.arm{background:var(--f);color:#fff}
 #favL.on,#favD.on{background:var(--acc);color:#15110e}#svw{color:var(--f);font-size:13px;font-weight:700}#svw[hidden]{display:none}
-select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height:2px;margin:6px auto 4px;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}.end{height:2px;margin:56px auto 0;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}mark{color:inherit;border-radius:.2em;padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}#hlbar{align-items:center}#hlbar[hidden]{display:none!important}#hlbar .sw{width:24px;height:24px;border-radius:50%;padding:0;flex:none}#hlbar .sw.on{outline:2px solid var(--fg);outline-offset:2px}#hlbar{flex-wrap:wrap;gap:8px}#secbar{align-items:center}#secbar[hidden]{display:none!important}#secbar b{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;margin-right:4px}#secbar .warn{background:var(--f);color:#fff}
+select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height:2px;margin:6px auto 4px;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}.end{height:2px;margin:56px auto 0;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}mark{color:inherit;border-radius:.2em;padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}#hlbar{align-items:center}#hlbar[hidden]{display:none!important}#hlbar .sw{width:24px;height:24px;border-radius:50%;padding:0;flex:none}#hlbar .sw{border:2px solid rgba(255,255,255,.2)}#hlbar .sw.on{border-color:transparent!important;background:var(--c)!important;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc)}:root[data-theme="light"] #hlbar .sw{border-color:rgba(0,0,0,.25)}#hlbar{flex-wrap:wrap;gap:8px}#secbar{align-items:center}#secbar[hidden]{display:none!important}#secbar b{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;margin-right:4px}#secbar .warn{background:var(--f);color:#fff}
 
 [hidden]{display:none!important}
 .tabs{display:flex;gap:6px;padding:0 12px 8px}.tabs button{flex:1;padding:8px;border-radius:10px;background:var(--card);border:1px solid var(--ln);font-weight:700;color:var(--mut)}.tabs button.on{background:var(--acc);border-color:var(--acc);color:#15110e}
@@ -808,7 +808,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='88';
+const APP_VER='89';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1453,7 +1453,7 @@ function hlSync(){const bar=$('#hlbar');if(!bar||!$('#edit').classList.contains(
   else if(!c&&hlAuto&&!bar.hidden){bar.hidden=true;hlAuto=false;$('#eH').classList.remove('on')}}
 $('#eH').onclick=()=>{hlAuto=false;$('#hlbar').hidden=!$('#hlbar').hidden;$('#eH').classList.toggle('on',!$('#hlbar').hidden)};
 
-Object.keys(HC).forEach(k=>{const b=E('button','sw');b.type='button';b.dataset.c=k;b.setAttribute('aria-label',HLN[k]);b.style.background=HC[k];b.onclick=()=>hlApply(b.dataset.c);$('#hlbar').insertBefore(b,$('#hx'))});
+Object.keys(HC).forEach(k=>{const b=E('button','sw');b.type='button';b.dataset.c=k;b.setAttribute('aria-label',HLN[k]);b.style.background=HC[k];b.style.setProperty('--c',HC[k]);b.onclick=()=>hlApply(b.dataset.c);$('#hlbar').insertBefore(b,$('#hx'))});
 $('#hx').onclick=()=>{const c=hlCtx();hlApply('')};
 ['pointerup','keyup','click','focus','select'].forEach(v=>ta.addEventListener(v,()=>setTimeout(snapCaret,0)));
 let lastSel=null;document.addEventListener('selectionchange',()=>{if(document.activeElement===ta){if(ta.selectionStart!==ta.selectionEnd)lastSel={a:ta.selectionStart,b:ta.selectionEnd,v:ta.value};snapCaret()}});

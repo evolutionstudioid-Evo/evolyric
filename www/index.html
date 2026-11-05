@@ -705,10 +705,14 @@ const RECK='evolyric-recent-v1',RECN=15;let recent=[];try{recent=JSON.parse(loca
 function recAdd(id){if(!id)return;recent=[id,...recent.filter(x=>x!==id&&songs.some(o=>o.id===x))].slice(0,RECN);try{localStorage.setItem(RECK,JSON.stringify(recent))}catch(e){}}
 const recSongs=()=>recent.map(id=>songs.find(s=>s.id===id)).filter(Boolean);
 function poolFor(id){const c=id&&cats.find(x=>x.id===id);if(!c)return songs;const S=new Set(c.ids);return songs.filter(x=>S.has(x.id))}
-function press(b,tap,hold){let tm,lp=0;const en=()=>clearTimeout(tm);
-  b.addEventListener('pointerdown',()=>{lp=0;tm=setTimeout(()=>{lp=1;hold()},500)});
+/* v116: a long press only counts when the finger stays put; any swipe/scroll cancels it (and the OS context menu that follows a scroll) */
+let scrollAt=0;addEventListener('scroll',()=>{scrollAt=Date.now()},true);
+function press(b,tap,hold){let tm,lp=0,x0=0,y0=0,mv=0;const en=()=>clearTimeout(tm);
+  b.addEventListener('pointerdown',e=>{lp=0;mv=0;x0=e.clientX;y0=e.clientY;en();tm=setTimeout(()=>{if(mv||Date.now()-scrollAt<350)return;lp=1;hold()},500)});
+  b.addEventListener('pointermove',e=>{if(!mv&&Math.hypot(e.clientX-x0,e.clientY-y0)>8){mv=1;en()}});
   ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,en));
-  b.addEventListener('contextmenu',e=>{e.preventDefault();en();hold()});
+  addEventListener('scroll',()=>{mv=1;en()},{capture:true,passive:true});
+  b.addEventListener('contextmenu',e=>{e.preventDefault();en();if(mv||Date.now()-scrollAt<350)return;if(!lp){lp=1;hold()}});
   b.onclick=()=>{if(lp){lp=0;return}tap()}}
 const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350)};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -906,7 +910,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='115';
+const APP_VER='116';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

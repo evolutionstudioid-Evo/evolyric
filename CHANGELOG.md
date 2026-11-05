@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v94 – Orange song title
+- The song title in the lyrics header now uses the theme's orange accent (a darker orange in the light theme).
+
 ## v93 – Page turn & queue fly
 - Next Song: the finished page now turns away like a book page while the next song appears beneath it.
 - Add to Queue: the song title flies from the list to the queue button, which then bumps.

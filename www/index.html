@@ -23,6 +23,7 @@ body{background:var(--bg);color:var(--fg);font:16px/1.4 'Atkinson Hyperlegible',
 /* v49: static text (buttons, titles, numbers, labels) can never be selected; only editable fields can */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+#ta[inputmode=none]{-webkit-touch-callout:none}
 img,svg{-webkit-user-drag:none}
 button,input,textarea{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer;padding:0}
@@ -842,7 +843,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='106';
+const APP_VER='107';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1606,6 +1607,8 @@ function pasteFail(){setKb(true);ta.focus()}
 /* A real key press means the user is typing: leave "keyboard off" mode so the caret is never snapped to line start (that reversed typing and arrow keys) */
 ta.addEventListener('keydown',e=>{if(ta.inputMode!=='none'||e.ctrlKey||e.metaKey||e.altKey||['Shift','Control','Alt','Meta','CapsLock','Escape','Tab'].includes(e.key))return;setKb(true)});
 ta.addEventListener('beforeinput',()=>{if(ta.inputMode==='none')setKb(true)});
+/* keyboard off = selecting text is only for highlighting: no cut/copy/paste pop-up. Keyboard on: the normal pop-up is back. */
+ta.addEventListener('contextmenu',e=>{if(ta.inputMode==='none')e.preventDefault()});
 /* ---------- v43: annotations (pen, text, shapes, images) drawn over the lyrics ----------
    An item is anchored to a lyric line (l) with an offset (y, in em of the lyric font) and a horizontal fraction (x), so it follows the line when the
    layout changes. Sizes are in em too. Stored as song.ann (synced with the song, not sent to friends).

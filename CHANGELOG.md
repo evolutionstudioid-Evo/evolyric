@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v117 – L button restyled
+- The L button on Home now sits above the + button: a transparent orange ring with an orange italic serif L.
+
 ## v116 – Long press ignores swipes
 - On Home, swiping or scrolling the list no longer selects a song or opens its menu. The menu (send, delete, new version…) only opens when you hold still for a moment.
 

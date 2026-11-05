@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v92 – Vocal (English)
+- Voice labels renamed from Vokal 1–5 to Vocal 1–5.
+- Lyrics already containing [Vokal N] (and their custom colours) are converted to [Vocal N] automatically on load, after cloud sync and on every save. Old Vokal labels still display correctly until converted.
+
 ## v91 – Vokal 1–5
 - The voice labels are now Vokal 1 to Vokal 5 (blue, pink, light purple, light orange-brown, yellow) instead of Male/Female/All. They behave the same: beside the section name, colour the lyrics until the next label. Songs that already use [Male 1], [Female 1], [All] and so on keep working with their old colours.
 

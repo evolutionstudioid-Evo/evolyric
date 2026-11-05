@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v113 – Send categories, setlists, 300-song limit
+- Send a whole category: press and hold a category → Send category → pick friends. It arrives as one card in Songs from friends. Opening it lists every song as "New" or "You already have this song"; per song you choose Save a copy / Use mine / Skip, and name the new category. Nothing in your library is ever overwritten, and nothing is duplicated unless you choose to.
+- Create setlist (in the + menu): pick songs in the order you want (numbered); they go into the queue / Next song in that order. If the queue already has songs you can replace it or add to the end.
+- Limit per delivery raised from 50 to 300 songs (send and receive). **Needs `supabase/009_category_send.sql` run once in the Supabase SQL Editor** (also raises the size cap to 5 MB). Until then sending still works with the old 50-song limit but categories arrive as a plain group.
+
 ## v112 – Pin and sort categories
 - Categories: press and hold a category and choose Pin to top / Unpin. Pinned categories stay at the top with a pin icon (and sync with your account).
 - The sort button now also appears in the Categories tab: A–Z, Newest added, Oldest added (remembered separately from the song sort).

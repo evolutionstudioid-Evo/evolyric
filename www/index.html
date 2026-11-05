@@ -105,8 +105,10 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height
 .crumb{display:flex;align-items:center;gap:10px;padding:0 12px 8px}.crumb button{color:var(--acct);font-weight:700;padding:6px 0;white-space:nowrap}.crumb b{flex:1;min-width:0;font:800 20px/1.2 'Bricolage Grotesque',system-ui,sans-serif;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 #dcat{max-width:118px}
 .catsel{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-#nbox,#catbox,#addbox{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
-#nbox.on,#catbox.on,#addbox.on{display:flex}
+#nbox,#catbox,#addbox,#imbox{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
+#nbox.on,#catbox.on,#addbox.on,#imbox.on{display:flex}
+#imItems{flex:1;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain}.imn{padding:0 12px 8px;display:flex;flex-direction:column;gap:4px}.imn input{width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:9px 11px}#imErr{min-height:1em;color:#ff7a7a}
+.imr{display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--ln)}.imr>div{flex:1;min-width:0;line-height:1.25}.imr small{display:block;color:var(--mut)}.imr .tag{color:var(--acct)}.imr .cyc{flex:none;min-width:84px;padding:7px 8px;border-radius:9px;border:1px solid var(--ln);background:var(--card);font-size:13px;font-weight:700}.imr .cyc.s0{border-color:var(--acc);color:var(--acct)}.imr .cyc.s2{opacity:.55}
 #nbox .sheet,#catbox .sheet{width:min(92vw,360px)}
 #nbox .sheet input,#catbox .sheet input{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px;margin:0 4px 6px;flex:1;min-width:0}
 .err{color:var(--f);font-size:13px;margin:0 8px 6px;min-height:0}.err:empty{display:none}
@@ -226,7 +228,7 @@ button,select,.it{touch-action:manipulation}
 /* motion polish */
 .v.on{animation:vin .3s var(--ease)}@keyframes vin{from{opacity:0}}
 #ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on{animation:ofade .2s ease-out}
-#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet{animation:sheetin .32s var(--spring)}
+#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet,#imbox.on .asheet{animation:sheetin .32s var(--spring)}
 @keyframes ofade{from{opacity:0}}@keyframes sheetin{from{opacity:0;transform:translateY(16px) scale(.96)}}
 #drawer{transition:transform .38s var(--ease),visibility 0s .38s}#drawer.open{transition:transform .38s var(--ease),visibility 0s}
 #scrim{transition:opacity .38s var(--ease),visibility 0s .38s}#scrim.open{transition:opacity .38s var(--ease),visibility 0s}
@@ -543,6 +545,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
   <div id="fbg"></div>
   <div id="fabm" role="menu">
     <button id="nw" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>New song</button>
+    <button id="slb" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 5.5H16M7.5 10H16M7.5 14.5H16"/><path d="M3.5 5.5h.01M3.5 10h.01M3.5 14.5h.01" stroke-width="2.4"/></svg>Create setlist</button>
     <button id="imp" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5v9M6.5 9.5 10 13l3.5-3.5M4 16h12"/></svg>Import .txt</button>
   </div>
   <button id="fab" type="button" aria-label="Add song" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><path d="M10 3.5v13M3.5 10h13"/></svg></button>
@@ -639,6 +642,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 <div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><p class="mut" id="nhint" style="margin:0 10px 8px;font-size:13px"></p><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
+<div id="imbox"><div class="asheet"><div class="ah"><button id="imX">Cancel</button><div><b id="imT">Category</b><small id="imC"></small></div><button class="pill" id="imOK">Save</button></div><div class="imn"><input id="imName" maxlength="30" aria-label="Category name" placeholder="Category name"><small id="imErr" class="mut"></small></div><div id="imItems"></div></div></div>
 <section id="welcome" class="v"><div class="wc"><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg3)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2>Evo<i>Lyric</i></h2>
   <div id="wstep1"><p class="sub">A lyric teleprompter for live performers.</p><button class="gbtn" id="wgbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="werr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p></div>
   <div id="wstep3" hidden><p class="sub">Signing you in…</p></div>
@@ -781,6 +785,7 @@ function ctxOpen(s,cat){
 function ctxCat(c){
   const k=csh();k.append(E('h3','',c.name));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;k.append(b)};
+  if(user&&sb)add('Send category',()=>{ctxClose();sendCat(c)});
   add(c.pin?'Unpin':'Pin to top',()=>{if(c.pin)delete c.pin;else c.pin=Date.now();save();ctxClose();refresh()});
   add('Rename',()=>{ctxClose();nameBox('Rename category',c.name,c.id,n=>{c.name=n;save();refresh()})});
   add('Delete category',()=>ask('Delete “'+c.name+'”?','Only the category is deleted. The songs stay in All Songs and in their other categories.','Delete category',()=>{cats=cats.filter(x=>x!==c);save();if(lib.id===c.id){lib.v='cats';lib.id=null}refresh();note('Category deleted')}),'del');
@@ -800,19 +805,25 @@ $('#nbox').onclick=e=>{if(e.target.id==='nbox')$('#nbox').classList.remove('on')
 /* Add Songs popup: multi-select from the Master Library; songs already in the category are locked */
 let aSel=new Set(),aMode='cat',aTo=null;
 function addItems(){
-  const cat=aMode==='send'?null:curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
+  const cat=aMode==='send'||aMode==='setlist'?null:curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
   songs.filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))}).sort((a,b)=>a.title.localeCompare(b.title,'id')).forEach(s=>{
     const has=!!cat&&cat.ids.includes(s.id),b=E('button','arow'+(aSel.has(s.id)?' sel':''));b.disabled=has;
     const m=E('span');m.append(E('div','',s.title||'Untitled'),E('small','mut',s.artist||''));
-    b.append(E('span','chk',has?'✓':aSel.has(s.id)?'✓':''),m);if(has)b.append(E('em','','Already added'));
-    b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else{if(aMode==='send'&&aSel.size>=SEND_MAX)return void note('Maximum '+SEND_MAX+' songs per group',true);aSel.add(s.id)}b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
+    b.append(E('span','chk',has?'✓':aSel.has(s.id)?(aMode==='setlist'?String([...aSel].indexOf(s.id)+1):'✓'):''),m);if(has)b.append(E('em','','Already added'));
+    b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else{if(aMode==='send'&&aSel.size>=SEND_MAX)return void note('Maximum '+SEND_MAX+' songs per group',true);aSel.add(s.id)}if(aMode==='setlist'){addItems();aCount();return}b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
     box.append(b)});
   if(!box.children.length)box.append(E('p','mut','No songs.'))}
-function aCount(){const n=aSel.size;$('#aC').textContent=n+' selected';$('#aOK').disabled=!n;const v=aMode==='send'?'Send':'Add';$('#aOK').textContent=n?v+' ('+n+')':v}
+function aCount(){const n=aSel.size;$('#aC').textContent=n+' selected';$('#aOK').disabled=!n;const v=aMode==='send'?'Send':aMode==='setlist'?'Create':'Add';$('#aOK').textContent=n?v+' ('+n+')':v}
+/* v113: Create setlist = pick songs in the order you want; they go into the queue (Next song) in that order. The numbers show the order. */
+function slOpen(){if(!songs.length)return void note('Your library is empty',true);aMode='setlist';aTo=null;aSel=new Set();$('#aT').textContent='Create setlist';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
+function slDone(){const ids=[...aSel].filter(id=>songs.some(x=>x.id===id));if(!ids.length)return;$('#addbox').classList.remove('on');aSel=new Set();
+  const fill=add=>{const q=Qs();if(!add)q.length=0;ids.forEach(id=>{if(!q.includes(id))q.push(id)});qFresh=null;qSave();qRender();note('Setlist ready: '+ids.length+(ids.length===1?' song':' songs')+' in the queue')};
+  if(!Qs().length)return fill(false);
+  const c=csh();c.append(E('h3','','Your queue is not empty'));const a=E('button','','Replace the queue');a.onclick=()=>{ctxClose();fill(false)};const b=E('button','','Add to the end');b.onclick=()=>{ctxClose();fill(true)};const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,b,x);$('#ctx').classList.add('on')}
 function addOpen(){const cat=curCat();if(!cat)return;aMode='cat';aTo=null;aSel=new Set();$('#aT').textContent='Add Songs';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
 $('#aq').oninput=addItems;$('#aX').onclick=()=>{aSel=new Set();$('#addbox').classList.remove('on')};
 $('#addbox').onclick=e=>{if(e.target.id==='addbox')$('#aX').onclick()};
-$('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();const cat=curCat();if(!cat||!aSel.size)return;let n=0;
+$('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();if(aMode==='setlist')return slDone();const cat=curCat();if(!cat||!aSel.size)return;let n=0;
   aSel.forEach(id=>{if(songs.some(s=>s.id===id)&&!cat.ids.includes(id)){cat.ids.push(id);n++}});
   save();aSel=new Set();$('#addbox').classList.remove('on');refresh();
   saveBad?note('Could not save changes',1):note(n+(n===1?' song':' songs')+' added to '+cat.name)};
@@ -837,6 +848,7 @@ $('#fab').onclick=()=>fabOpen(!$('#fabm').classList.contains('on'));
 $('#fbg').onclick=()=>fabOpen(false); /* tap outside closes the popup */
 $('#nw').onclick=()=>{fabOpen(false);openEdit(null,'','',null,lib.v==='cat'?[lib.id]:[])};
 $('#imp').onclick=()=>{fabOpen(false);$('#file').click()};
+$('#slb').onclick=()=>{fabOpen(false);slOpen()};
 $('#file').onchange=async e=>{
   for(const f of e.target.files){const x=await f.text();
     const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:defFont(),cr:Date.now()};songs.push(ns);const cc=lib.v==='cat'&&curCat();if(cc)cc.ids.push(ns.id)}
@@ -854,7 +866,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='112';
+const APP_VER='113';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -874,7 +886,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Section':'Section','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -915,6 +927,9 @@ const ID={'Section':'Section','Section panel':'Panel section','Hide section pane
 '3–20 characters: letters, numbers, . _ and -. Friends find you by this name.':'3–20 karakter: huruf, angka, . _ dan -. Teman mencarimu lewat nama ini.','At least 3 characters':'Minimal 3 karakter','Sing Along':'Sing Along','speed':'kecepatan','e.g. Drums stop here':'mis. Drum berhenti di sini','Intro and Interlude pause the scroll automatically. In the editor you can set Pause here or Keep scrolling for any section.':'Intro dan Interlude menjeda scroll otomatis. Di editor kamu bisa memilih Pause here atau Keep scrolling untuk tiap bagian.'
 };
 const IDP=[
+[/^Create \((\d+)\)$/,'Buat ($1)'],
+[/^Setlist ready: (\d+) songs? in the queue$/,'Setlist siap: $1 lagu di antrean'],[/^A category can send up to (\d+) songs$/,'Satu kategori bisa mengirim maksimal $1 lagu'],[/^Send category “(.+)” to…$/,'Kirim kategori “$1” ke…'],
+[/^(\d+) of (\d+) songs will be added$/,'$1 dari $2 lagu akan ditambahkan'],[/^Category “(.+)” saved$/,'Kategori “$1” disimpan'],[/^from @(\S+) · category · (\d+) songs?$/,'dari @$1 · kategori · $2 lagu'],
 [/^Search in (.+)…$/,'Cari di $1…'],[/^Add Songs to (.+)$/,'Tambah Lagu ke $1'],[/^No songs in this category yet\. Tap “Add Songs to (.+)”\.$/,'Belum ada lagu di kategori ini. Ketuk “Tambah Lagu ke $1”.'],
 [/^Remove from (.+)$/,'Hapus dari $1'],[/^Removed from (.+)$/,'Dihapus dari $1'],[/^Maximum (\d+) songs per group$/,'Maksimal $1 lagu per kelompok'],[/^(\d+) songs? added to (.+)$/,'$1 lagu ditambahkan ke $2'],
 [/^Send to @(.+)$/,'Kirim ke @$1'],[/^Sent to @(.+)$/,'Terkirim ke @$1'],[/^Sent (\d+) songs to @(.+)$/,'$1 lagu terkirim ke @$2'],[/^Send to (\d+) friends?$/,'Kirim ke $1 teman'],[/^Sent to (\d+) friends?(.*)$/,'Terkirim ke $1 teman$2'],
@@ -2066,8 +2081,8 @@ function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains
   const inc=frIn(),out=fr.list.filter(f=>f.status==='pending'&&!f.incoming),ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
   const sec=(t,n)=>{const h=E('div','fh',t);if(n)h.append(E('em','',String(n)));body.append(h)};
   if(fr.inbox.length){sec('Songs from friends',fr.inbox.length);fr.inbox.forEach(m=>{const n=m.song_count||1;
-    const r=frRow({display_name:n>1?n+' songs':(m.title||'Untitled'),username:m.username,avatar_url:m.avatar_url},[['Save'+(n>1?' all':''),()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
-    const sm=r.querySelector('small');sm.textContent='from @'+m.username+(n>1?(m.preview?' · '+m.preview+(n>3?'…':''):''):(m.artist?' · '+m.artist:''));body.append(r)})}
+    const isC=!!m.cat,r=frRow({display_name:isC?m.cat:n>1?n+' songs':(m.title||'Untitled'),username:m.username,avatar_url:m.avatar_url},[[isC?'Open':'Save'+(n>1?' all':''),isC?()=>catImport(m):()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
+    const sm=r.querySelector('small');sm.textContent='from @'+m.username+(isC?' · category · '+n+(n===1?' song':' songs'):n>1?(m.preview?' · '+m.preview+(n>3?'…':''):''):(m.artist?' · '+m.artist:''));body.append(r)})}
   if(inc.length){sec('Requests',inc.length);inc.forEach(f=>body.append(frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]])))}
   if(out.length){sec('Sent');out.forEach(f=>body.append(frRow(f,[['Cancel',()=>frCall('remove_friendship',{p_id:f.id},'Request cancelled')]])))}
   sec('Friends',ok.length);
@@ -2081,7 +2096,29 @@ async function frSaveSong(m){let d=null;
   if(!n){frRender();return}
   save();refresh();
   frCall('clear_inbox_song',{p_id:m.id},n===1?'Saved to your library':n+' songs saved to your library')}
-const SEND_MAX=50,songPayload=s=>({title:s.title||'',artist:s.artist||'',lyrics:s.lyrics||'',key:s.key||'',colors:s.colors||{}});
+/* v113: open a received category: every song shows whether it is new or already in your library; you choose per song (Save a copy / Use mine / Skip). Nothing is ever overwritten. */
+const normT=t=>String(t||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'');
+async function catImport(m){let d=null;
+  try{const{data,error}=await sb.rpc('get_inbox_item',{p_id:m.id});if(error||!data)throw 0;d=data}catch(e){note(navigator.onLine?'Could not open this delivery. Try again.':'You are offline',true);return}
+  const arr=(Array.isArray(d.songs)?d.songs:[]).filter(x=>x&&typeof x==='object');if(!arr.length)return;
+  const idx={};songs.forEach(x=>{const k=normT(x.title)+'|'+normT(x.artist);if(!idx[k])idx[k]=x});
+  const rows=arr.map(x=>{const mine=idx[normT(x.title)+'|'+normT(x.artist)]||null;return{x,mine,ch:mine?'use':'save'}});
+  const box=$('#imItems'),nm=$('#imName');nm.value=cname(d.cat||m.cat||'Category').slice(0,30);$('#imErr').textContent='';$('#imT').textContent='Received category';
+  const lab={save:'Save a copy',use:'Use mine',skip:'Skip'};
+  nm.oninput=()=>{$('#imErr').textContent=''};const upd=()=>{const n=rows.filter(r=>r.ch!=='skip').length;$('#imC').textContent=n+' of '+rows.length+' songs will be added';$('#imOK').disabled=!n;$('#imOK').textContent='Save'};
+  const draw=()=>{box.textContent='';rows.forEach(r=>{const row=E('div','imr'),t=E('div'),b=E('button','cyc s'+(r.ch==='skip'?2:r.ch==='use'?1:0),lab[r.ch]);b.type='button';
+      t.append(E('b','',r.x.title||'Untitled'),E('small','',r.x.artist||''));if(r.mine)t.append(E('small','tag','You already have this song'));else t.append(E('small','tag','New'));
+      b.onclick=()=>{const o=r.mine?['use','save','skip']:['save','skip'];r.ch=o[(o.indexOf(r.ch)+1)%o.length];draw();upd()};row.append(t,b);box.append(row)})};
+  draw();upd();$('#imbox').classList.add('on');
+  $('#imX').onclick=()=>$('#imbox').classList.remove('on');$('#imbox').onclick=e=>{if(e.target.id==='imbox')$('#imX').onclick()};
+  $('#imOK').onclick=()=>{const n=cname(nm.value),e=nameErr(n,null);if(e){$('#imErr').textContent=e;return}
+    const t=Date.now(),ids=[];let made=0;
+    rows.forEach((r,i)=>{if(r.ch==='skip')return;if(r.ch==='use'&&r.mine){ids.push(r.mine.id);return}
+      const ns={id:'s'+(t+i)+Math.random().toString(36).slice(2,5),title:String(r.x.title||'Untitled'),artist:String(r.x.artist||''),lyrics:String(r.x.lyrics||''),speed:5,font:defFont(),cr:t+i,md:t+i};
+      if(r.x.key)ns.key=String(r.x.key);if(r.x.colors&&typeof r.x.colors==='object')ns.colors=r.x.colors;songs.push(ns);ids.push(ns.id);made++});
+    if(!ids.length)return;cats.push({id:cid(),name:n,ids:[...new Set(ids)]});save();refresh();$('#imbox').classList.remove('on');
+    frCall('clear_inbox_song',{p_id:m.id},'Category “'+n+'” saved')}}
+const SEND_MAX=300,songPayload=s=>({title:s.title||'',artist:s.artist||'',lyrics:s.lyrics||'',key:s.key||'',colors:s.colors||{}});
 const sendErr=(e,f)=>e.code==='54000'?'@'+f.username+' already has 20 deliveries waiting from you':e.code==='42501'?'You are no longer friends':e.code==='23514'?'Too much text to send at once. Send fewer songs.':navigator.onLine?'Could not send. Try again.':'You are offline';
 function sendOpen(f){if(!songs.length)return void note('Your library is empty',true);aMode='send';aTo=f;aSel=new Set();$('#aT').textContent='Send to @'+f.username;$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
 async function sendBatch(){const f=aTo;if(!f||!aSel.size||!sb)return;const b=$('#aOK');if(b.disabled)return;b.disabled=true;
@@ -2094,8 +2131,10 @@ function frFriendMenu(f){const c=csh();c.append(E('h3','',(f.display_name||f.use
   const a=E('button','','Send songs');a.onclick=()=>{ctxClose();sendOpen(f)};
   const d=E('button','del','Unfriend');d.onclick=()=>ask('Unfriend '+(f.display_name||f.username)+'?','They will no longer be your friend. Songs already saved stay in each library, and songs still waiting are deleted.','Unfriend',()=>frCall('remove_friendship',{p_id:f.id},'Friend removed'));
   const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,d,x);$('#ctx').classList.add('on')}
-function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to friends',true);
-  const go=()=>{const c=csh();c.append(E('h3','','Send “'+(s.title||'Untitled')+'” to…'));
+const catPayload=c=>c.ids.map(id=>songs.find(x=>x.id===id)).filter(Boolean).map(songPayload);
+function sendCat(c){const pl=catPayload(c);if(!pl.length)return void note('This category has no songs yet',true);if(pl.length>SEND_MAX)return void note('A category can send up to '+SEND_MAX+' songs',true);sendPick(null,c)}
+function sendPick(s,cat){if(!user||!sb)return void note('Sign in to send songs to friends',true);const pl=cat?catPayload(cat):[songPayload(s)];
+  const go=()=>{const c=csh();c.append(E('h3','',cat?'Send category “'+cat.name+'” to…':'Send “'+(s.title||'Untitled')+'” to…'));
     const ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
     if(fr.state==='nosql'){const p=E('p','mut','Friends are not enabled on the server yet.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p)}
     else if(!ok.length){const p=E('p','mut','You have no friends yet. Add one first, then send songs.');p.style.cssText='margin:0 10px 10px;max-width:280px;font-size:14px';c.append(p);const b=E('button','','Open Friends');b.onclick=()=>{ctxClose();if(document.querySelector('#play.on'))leavePlay();frOpen()};c.append(b)}
@@ -2104,7 +2143,7 @@ function sendPick(s){if(!user||!sb)return void note('Sign in to send songs to fr
       ok.forEach(f=>{const b=E('button','fpick');b.type='button';b.append(frAvatar(f),E('span','',f.username?'@'+f.username:(f.display_name||'Friend')),E('i','fck'));
         b.onclick=()=>{sel.has(f.other_id)?sel.delete(f.other_id):sel.add(f.other_id);b.classList.toggle('on',sel.has(f.other_id));upd()};lst.append(b)});
       go2.onclick=async()=>{const to=ok.filter(f=>sel.has(f.other_id));if(!to.length)return;ctxClose();let n=0,full=[],gone=0,bad=0;
-        for(const f of to){try{const{error}=await sb.rpc('send_songs',{p_to:f.other_id,p_songs:[songPayload(s)]});
+        for(const f of to){try{const{error}=await sb.rpc('send_songs',cat?{p_to:f.other_id,p_songs:pl,p_cat:cat.name}:{p_to:f.other_id,p_songs:pl});
           if(!error)n++;else if(error.code==='54000')full.push('@'+f.username);else if(error.code==='42501')gone++;else bad++}catch(e){bad++}}
         if(!n&&bad&&!navigator.onLine)return void note('You are offline',true);
         const w=[];if(full.length)w.push(full.join(', ')+' already has 20 songs waiting');if(gone)w.push(gone+' no longer a friend');if(bad)w.push(bad+' failed');

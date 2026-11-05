@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v98 – Web search in the side panel
+- The globe button (search the web for these lyrics) is now also in the side song list, next to the search box: it opens a Google search for the typed title + "lirik" and a new song with that title ready to paste into.
+
 ## v97 – "Next song" under the lyrics
 - Below the line at the very end of the lyrics, a small orange "Next song: <title>" shows the first song in the queue, so the singer can prepare without opening the queue panel. Fixed small size: lyric zoom does not change it. Hidden when the queue is empty.
 

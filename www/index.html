@@ -88,7 +88,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #cok{background:var(--acc);color:#15110e;text-align:center!important;font-weight:700}
 #eX.arm{background:var(--f);color:#fff}
 #favL.on,#favD.on{background:var(--acc);color:#15110e}#svw{color:var(--f);font-size:13px;font-weight:700}#svw[hidden]{display:none}
-select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height:2px;margin:6px auto 4px;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}.end{height:2px;margin:56px auto 0;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}mark{color:inherit;border-radius:.2em;padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}#hlbar{align-items:center}#hlbar[hidden]{display:none!important}#hlbar .sw{width:24px;height:24px;border-radius:50%;padding:0}#secbar{align-items:center}#secbar[hidden]{display:none!important}#secbar b{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;margin-right:4px}#secbar .warn{background:var(--f);color:#fff}
+select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height:2px;margin:6px auto 4px;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}.end{height:2px;margin:56px auto 0;width:78%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--mut),transparent)}mark{color:inherit;border-radius:.2em;padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}#hlbar{align-items:center}#hlbar[hidden]{display:none!important}#hlbar .sw{width:24px;height:24px;border-radius:50%;padding:0;flex:none}#hlbar .sw.on{outline:2px solid var(--fg);outline-offset:2px}#hlbar{flex-wrap:wrap;gap:8px}#secbar{align-items:center}#secbar[hidden]{display:none!important}#secbar b{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;margin-right:4px}#secbar .warn{background:var(--f);color:#fff}
 
 [hidden]{display:none!important}
 .tabs{display:flex;gap:6px;padding:0 12px 8px}.tabs button{flex:1;padding:8px;border-radius:10px;background:var(--card);border:1px solid var(--ln);font-weight:700;color:var(--mut)}.tabs button.on{background:var(--acc);border-color:var(--acc);color:#15110e}
@@ -556,7 +556,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
     <button id="eP" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></button><button id="eK" type="button" aria-label="Keyboard" title="Keyboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/></svg></button><i class="tsep"></i>
     <button id="eH" type="button" aria-label="Highlight" title="Highlight"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg></button><button id="eN" type="button" aria-label="Notes and drawing" title="Notes and drawing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 2.8a2.1 2.1 0 0 1 3 3L9 17.3 4.8 18.4l1.1-4.2Z"/><path d="M2.5 21.4c1.2-1.6 2.4-1.6 3.6 0s2.4 1.6 3.6 0 2.4-1.6 3.6 0 2.4 1.6 3.6 0 2.4-1.6 3.6 0"/></svg></button>
   </div>
-  <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button class="sw" data-c="r" aria-label="Red"></button><button class="sw" data-c="y" aria-label="Yellow"></button><button class="sw" data-c="g" aria-label="Green"></button><button id="hx">Clear</button></div>
+  <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button id="hx" type="button">Remove</button></div>
   <div class="tb" id="notebar" hidden><b id="nbn"></b><button id="nbEdit">Edit</button><button id="nbMove">Move</button><button id="nbRm">Delete</button></div>
   <div class="tb" id="secbar" hidden><b id="sn"></b><button id="sstop" type="button" hidden></button><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
   <div class="ed"><textarea id="ta" inputmode="none" spellcheck="false" aria-label="Lyrics"></textarea><div id="side"></div></div>
@@ -680,7 +680,7 @@ function adapt(c){if(document.documentElement.dataset.theme!=='light'||typeof c!
   if(l>.3||s<.2){l=Math.min(l,.42);if(s<.2)s=Math.min(s,.1);for(;l>.12;l-=.02){const r=f(0),g=f(8),b=f(4),L=lum(r,g,b);if((0.93+.05)/(L+.05)>=4.7){out='#'+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');break}}}
   return _adc[c]=out}
 const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185',all:'#e7e5e4',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
-const HC={r:'rgba(255,69,58,.45)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)'};
+const HC={r:'rgba(255,69,58,.45)',o:'rgba(255,149,0,.5)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)',b:'rgba(10,132,255,.45)',i:'rgba(94,92,230,.5)',v:'rgba(191,90,242,.5)'},HLN={r:'Red',o:'Orange',y:'Yellow',g:'Green',b:'Blue',i:'Indigo',v:'Violet'};
 const lblColor=(s,lo)=>adapt((s.colors&&s.colors[lo])||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e');
 
 /* ---------- Daftar ---------- */
@@ -808,7 +808,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='87';
+const APP_VER='88';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -829,6 +829,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
 const ID={
+'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
 '0 selected':'0 dipilih','2 beats/line':'2 ketukan/baris','4 beats/line':'4 ketukan/baris','8 beats/line':'8 ketukan/baris',
@@ -1054,7 +1055,7 @@ function noteStyle(el,o){const st=el.style;st.fontSize=(NS[o.s]||.6)+'em';st.fon
   if(o.x){st.border='1.5px solid currentColor';st.borderRadius='.45em';st.padding='.12em .7em';st.display='table';st.margin=o.a==='l'?'.4em auto .4em 0':o.a==='r'?'.4em 0 .4em auto':'.4em auto'}
   else{st.border='';st.borderRadius='';st.padding='';st.display='';st.margin='.35em 0'}}
 function lineEl(ln,col){
-  const d=E('div','ln '+col),re=/\{([ryg]):([^{}]*)\}/g;let i=0,m;
+  const d=E('div','ln '+col),re=/\{([roygbiv]):([^{}]*)\}/g;let i=0,m;
   while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);k.style.background=HC[m[1]];d.append(k);i=m.index+m[0].length}
   if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';return d}
 function render(){
@@ -1397,7 +1398,7 @@ function openEdit(s,txt,title,base,pre){
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
 function secInfo(){
-  noteInfo();
+  noteInfo();hlSync();
   const L=ta.value.split('\n'),ci=ta.value.slice(0,ta.selectionStart).split('\n').length-1;let a=-1;
   for(let i=Math.min(ci,L.length-1);i>=0;i--)if(isLbl(L[i])){a=i;break}
   const bar=$('#secbar');dsArm=0;$('#ds').textContent='Delete section';$('#ds').classList.remove('warn');
@@ -1415,18 +1416,45 @@ function editSec(all){
 $('#rl').onclick=()=>editSec(false);
 $('#ds').onclick=()=>{if(!dsArm){dsArm=1;$('#ds').textContent='Confirm delete';$('#ds').classList.add('warn');return}editSec(true)};
 ta.addEventListener('input',()=>secInfo());
+/* v88: highlights are {c:text} markers in the lyrics (c = r o y g b i v). Tap inside one to change its colour or remove it; no selection needed. */
+const HLR=/\{([roygbiv]):([^{}]*)\}/g;
+function hlList(v){const out=[];let m;HLR.lastIndex=0;while((m=HLR.exec(v)))out.push({s:m.index,e:m.index+m[0].length,c:m[1],t:m[2]});return out}
+function hlCtx(){const v=ta.value,p=ta.selectionStart,q=ta.selectionEnd,L=hlList(v);
+  if(p!==q){const o=L.filter(h=>h.s<q&&h.e>p);return o.length&&o.every(h=>h.c===o[0].c)?o[0]:null}
+  const at=L.find(h=>p>=h.s&&p<h.e);if(at)return at;
+  const ls=p?v.lastIndexOf('\n',p-1)+1:0;let le=v.indexOf('\n',p);if(le<0)le=v.length;
+  const ln=L.filter(h=>h.s>=ls&&h.e<=le);return ln.length===1?ln[0]:null}
+const hlWrap=(c,t)=>{const x=t.match(/^(\s*)([\s\S]*?)(\s*)$/);return !c||!x[2]?t:x[1]+'{'+c+':'+x[2]+'}'+x[3]};
 function hlApply(c){
-  let a=ta.selectionStart,b=ta.selectionEnd;if(a===b&&lastSel&&lastSel.v===ta.value){a=lastSel.a;b=lastSel.b}if(a===b)return;
-  snap();const v=ta.value,re=/\{[ryg]:[^{}]*\}/g;let m;
-  while((m=re.exec(v))){const s0=m.index,e0=s0+m[0].length;if(a>s0&&a<e0)a=s0;if(b>s0&&b<e0)b=e0}
-  const seg=v.slice(a,b).replace(/\{[ryg]:([^{}]*)\}/g,'$1');
-  const out=c?seg.split('\n').map(l=>{if(!l.trim()||isLbl(l))return l;const x=l.match(/^(\s*)(.*?)(\s*)$/);return x[1]+'{'+c+':'+x[2]+'}'+x[3]}).join('\n'):seg;
+  hlAuto=false; /* once you use the bar it stays open until you close it with the highlighter button */
+  const v0=ta.value;let a=ta.selectionStart,b=ta.selectionEnd;
+  if(a===b&&lastSel&&lastSel.v===v0&&(a===lastSel.a||a===lastSel.b)){a=lastSel.a;b=lastSel.b} /* some phones collapse the selection when a button is tapped */
+  const L=hlList(v0);let ctx=null;
+  ctx=a===b?hlCtx():(L.find(h=>h.s===a&&h.e===b)||null); /* caret in a highlight, or the highlight itself is selected */
+  if(ctx){snap();const out=(c&&c!==ctx.c)?hlWrap(c,ctx.t):ctx.t; /* tapping the colour it already has removes it */
+      ta.value=v0.slice(0,ctx.s)+out+v0.slice(ctx.e);ta.setSelectionRange(ctx.s,ctx.s+out.length);snap();ed.dirty=true;secInfo();return}
+  if(a===b){const ls=a?v0.lastIndexOf('\n',a-1)+1:0;let le=v0.indexOf('\n',a);if(le<0)le=v0.length;if(ls===le||isLbl(v0.slice(ls,le)))return;a=ls;b=le} /* no selection: use the whole line */
+  /* a selection inside one highlight: only that part changes, the rest keeps its colour */
+  const host=L.find(h=>a>=h.s+3&&b<=h.e-1);
+  if(host&&a<b){snap();const i0=a-(host.s+3),i1=b-(host.s+3),pre=host.t.slice(0,i0),mid=host.t.slice(i0,i1),post=host.t.slice(i1);
+    const out=hlWrap(host.c,pre)+hlWrap(c,mid)+hlWrap(host.c,post),pos=host.s+hlWrap(host.c,pre).length;
+    ta.value=v0.slice(0,host.s)+out+v0.slice(host.e);ta.setSelectionRange(pos,pos+hlWrap(c,mid).length);snap();ed.dirty=true;secInfo();return}
+  snap();const v=v0;
+  for(const h of L){if(a>h.s&&a<h.e)a=h.s;if(b>h.s&&b<h.e)b=h.e}
+  const seg=v.slice(a,b).replace(/\{[roygbiv]:([^{}]*)\}/g,'$1');
+  const out=c?seg.split('\n').map(l=>{if(!l.trim()||isLbl(l))return l;return hlWrap(c,l)}).join('\n'):seg;
   ta.value=v.slice(0,a)+out+v.slice(b);ta.setSelectionRange(a,a+out.length);
-  snap();ed.dirty=true;$('#hlbar').hidden=true;secInfo()}
-$('#eH').onclick=()=>{$('#hlbar').hidden=!$('#hlbar').hidden;$('#eH').classList.toggle('on',!$('#hlbar').hidden)};
+  snap();ed.dirty=true;secInfo()}
+let hlAuto=false;
+/* the colour bar opens by itself when the caret is in a highlight, and shows which colour it has */
+function hlSync(){const bar=$('#hlbar');if(!bar||!$('#edit').classList.contains('on'))return;const c=hlCtx();
+  bar.querySelectorAll('.sw').forEach(x=>{const on=!!c&&x.dataset.c===c.c;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false')});
+  if(c&&bar.hidden){bar.hidden=false;hlAuto=true;$('#eH').classList.add('on')}
+  else if(!c&&hlAuto&&!bar.hidden){bar.hidden=true;hlAuto=false;$('#eH').classList.remove('on')}}
+$('#eH').onclick=()=>{hlAuto=false;$('#hlbar').hidden=!$('#hlbar').hidden;$('#eH').classList.toggle('on',!$('#hlbar').hidden)};
 
-document.querySelectorAll('#hlbar .sw').forEach(b=>{b.style.background=HC[b.dataset.c];b.onclick=()=>hlApply(b.dataset.c)});
-$('#hx').onclick=()=>hlApply('');
+Object.keys(HC).forEach(k=>{const b=E('button','sw');b.type='button';b.dataset.c=k;b.setAttribute('aria-label',HLN[k]);b.style.background=HC[k];b.onclick=()=>hlApply(b.dataset.c);$('#hlbar').insertBefore(b,$('#hx'))});
+$('#hx').onclick=()=>{const c=hlCtx();hlApply('')};
 ['pointerup','keyup','click','focus','select'].forEach(v=>ta.addEventListener(v,()=>setTimeout(snapCaret,0)));
 let lastSel=null;document.addEventListener('selectionchange',()=>{if(document.activeElement===ta){if(ta.selectionStart!==ta.selectionEnd)lastSel={a:ta.selectionStart,b:ta.selectionEnd,v:ta.value};snapCaret()}});
 function snap(){clearTimeout(st);if(ta.value!==ed.h[ed.i]){ed.h.length=ed.i+1;ed.h.push(ta.value);ed.i++}}
@@ -1666,7 +1694,7 @@ function arrOpen(sel){const L=ta.value.split('\n'),box=$('#arl');box.textContent
       h.addEventListener('pointerdown',e=>arStart(e,row));if(i===sel){row.classList.add('sel');selRow=row;arLast=row}}
     else if(/^\[.+\]$/.test(ln.trim())){const nm=ln.trim().slice(1,-1),t=E('span','art',nm);row.classList.add('lb');row.style.color=lblColor({colors:ed&&ed.colors},nm.toLowerCase());row.append(t)}
     else if(!ln.trim())row.classList.add('bl');
-    else{row.classList.add('lt');row.append(E('span','art',ln.replace(/\{[ryg]:([^{}]*)\}/g,'$1')))}
+    else{row.classList.add('lt');row.append(E('span','art',ln.replace(/\{[roygbiv]:([^{}]*)\}/g,'$1')))}
     box.append(row)});
   $('#arr').classList.add('on');if(selRow)setTimeout(()=>selRow.scrollIntoView({block:'center'}),30)}
 function arStart(e,row){e.preventDefault();if(drag)return;drag={row,y:e.clientY,pid:e.pointerId,ind:E('div','arind'),raf:0};row.classList.add('drag');arLast=row;

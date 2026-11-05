@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v103 – Tutorial is now a full manual
+- The Tutorial now uses an iPad-style page (3:4) with a screenshot on the left and every button numbered and explained on the right. About 70 pages cover each screen: sign-in and username, adding a song, Google search, Home (tabs, sort, Recent, menus), the lyrics screen and gestures, speed, the queue and Next song, the whole editor (tools, keyboard, paste, section buttons, removing labels, pause/keep going, Vocal 1–5, custom labels, highlight, annotations), categories, friends (find, add, requests), sending songs, inbox, profile, account, backup and restore, preferences, help and light theme.
+- Includes a clickable table of contents, a language switch (ID/EN) and a closing page. All names in the screenshots are fictional (John, Mary, David, Lucy, Alex).
+
 ## v102 – New Tutorial
 - The Tutorial (Settings → Help → Tutorial) is now a portrait slide deck with real app screenshots, replacing the old text page. 24 slides in this order: account, first song, Google search, tabs, play and gestures, Next song, the editor tools, section labels, auto pause, Vocal 1–5, custom labels, highlight, annotations, categories, friends, sending songs, backup, theme and language.
 - Follows the app language, works offline, Back or × closes it. Fixes the blank white page of v101 (a redirected .html file inside the iframe); the deck is now a cached script.

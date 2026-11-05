@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v93 – Page turn & queue fly
+- Next Song: the finished page now turns away like a book page while the next song appears beneath it.
+- Add to Queue: the song title flies from the list to the queue button, which then bumps.
+- Both are skipped when the device has "reduce motion" on.
+
 ## v92 – Vocal (English)
 - Voice labels renamed from Vokal 1–5 to Vocal 1–5.
 - Lyrics already containing [Vokal N] (and their custom colours) are converted to [Vocal N] automatically on load, after cloud sync and on every save. Old Vokal labels still display correctly until converted.

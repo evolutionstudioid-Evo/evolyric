@@ -168,6 +168,9 @@ button,select,.it{touch-action:manipulation}
 #qtg b{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--acc);color:#15110e;font:800 10px/16px 'Atkinson Hyperlegible',system-ui,sans-serif;text-align:center;transform:scale(0);transition:transform .32s var(--spring)}
 #qtg.has b{transform:scale(1)}
 #qtg.bump{animation:qbump .5s var(--spring)}
+.qfly{position:fixed;z-index:9999;height:34px;line-height:34px;padding:0 14px;border-radius:17px;background:var(--acc,#f0a04b);color:#1a1209;font:600 13px/34px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.pgturn{position:fixed;z-index:9998;transform-origin:left center;backface-visibility:hidden;pointer-events:none;box-shadow:-10px 0 28px rgba(0,0,0,.5);will-change:transform}
+.pgsh{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,rgba(0,0,0,.65),rgba(0,0,0,0) 70%)}
 @keyframes qbump{35%{transform:scale(1.22)}}
 #qp{position:absolute;top:calc(var(--qt,100px) + 44px);right:8px;z-index:11;width:min(184px,46vw);max-height:max(84px,min(42%,250px,calc(100% - var(--qt,100px) - 44px - 120px)));display:flex;flex-direction:column;background:rgba(34,28,23,.95);border:1px solid var(--ln);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;opacity:0;transform:translateY(-8px) scale(.92);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .24s var(--ease),visibility 0s .24s}
 #qp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .2s var(--ease),transform .34s var(--spring),visibility 0s}
@@ -220,7 +223,7 @@ button,select,.it{touch-action:manipulation}
 .pill:active,.ic:active,.step:active,.tabs button:active,.chip:active{transform:scale(.95)}
 #note{transform:translate(-50%,16px) scale(.96);transition:opacity .25s var(--ease),transform .42s var(--spring)}#note.on{transform:translate(-50%,0) scale(1)}
 #amenu{animation-duration:.22s;animation-timing-function:var(--ease)}
-@media(prefers-reduced-motion:reduce){#qtg,#qtg b,#qp,.qi,#nxt,#nxt svg,#qpop,#qx svg,.pill,.ic,.step,.chip,#note{transition:none!important;animation:none!important}.v.on,.qi.new,#nxt.on::after,#dItems.stg>*,#ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on,#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.qfly,.pgturn{display:none!important}#qtg,#qtg b,#qp,.qi,#nxt,#nxt svg,#qpop,#qx svg,.pill,.ic,.step,.chip,#note{transition:none!important;animation:none!important}.v.on,.qi.new,#nxt.on::after,#dItems.stg>*,#ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on,#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet{animation:none!important}}
 
 /* ===== v18: sidebar compact view + liquid glass ===== */
 #drawer{background:linear-gradient(160deg,rgba(255,236,214,.07),rgba(34,28,23,.15) 38%,rgba(34,28,23,.10));-webkit-backdrop-filter:blur(26px) saturate(1.8) brightness(1.05);backdrop-filter:blur(26px) saturate(1.8) brightness(1.05);border:1px solid rgba(255,255,255,.13);border-left:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset -1px 0 0 rgba(255,255,255,.06),10px 0 40px rgba(0,0,0,.35)}
@@ -815,7 +818,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='92';
+const APP_VER='93';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1239,7 +1242,18 @@ function qRender(){
   if(!n)L.append(E('div','qe','Queue is empty'));
   qFresh=null;updNext()}
 function qBump(){const b=$('#qtg');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}
-function qAdd(s){const q=Qs();if(q.includes(s.id)){note('Already in queue');return}q.push(s.id);qFresh=s.id;qSave();qRender();if(!RM())qBump();note('Added to queue')}
+/* v93: the title flies to the queue button, then the button bumps */
+function qFly(title,from){
+  const to=$('#qtg').getBoundingClientRect();
+  if(!from||!to.width||!('animate' in Element.prototype)){qBump();return}
+  const g=E('div','qfly',title||'Untitled'),w=Math.min(from.width,220),x0=from.left+(from.width-w)/2,y0=from.top+from.height/2-17;
+  g.style.cssText='left:'+x0+'px;top:'+y0+'px;width:'+w+'px';document.body.append(g);
+  const dx=to.left+to.width/2-(x0+w/2),dy=to.top+to.height/2-(y0+17),arc=-Math.min(90,Math.abs(dy)*.35+30);
+  const a=g.animate([{transform:'translate(0,0) scale(1)',opacity:1,offset:0},
+    {transform:'translate('+dx*.45+'px,'+(dy*.45+arc)+'px) scale(.62)',opacity:1,offset:.5,easing:'ease-in'},
+    {transform:'translate('+dx+'px,'+dy+'px) scale(.12)',opacity:.2,offset:1}],{duration:640,easing:'cubic-bezier(.3,.1,.3,1)',fill:'forwards'});
+  const done=()=>{g.remove();qBump()};a.onfinish=done;a.oncancel=done}
+function qAdd(s,from){const q=Qs();if(q.includes(s.id)){note('Already in queue');return}q.push(s.id);qFresh=s.id;qSave();qRender();if(!RM())qFly(s.title,from);note('Added to queue')}
 function qRemove(id,row){
   if(row&&row.classList.contains('out'))return;
   const go=()=>{const i=queue.indexOf(id);if(i>=0){queue.splice(i,1);qSave()}qRender()};
@@ -1273,7 +1287,7 @@ function qOpen(on){const p=$('#qp');if(on==null)on=!p.classList.contains('open')
 $('#qtg').onclick=()=>qOpen();$('#qx').onclick=()=>qOpen(false);
 /* sidebar popup */
 function qPop(s,el){
-  qpS=s;const p=$('#qpop');$('#qpt').textContent=s.title||'Untitled';
+  qpS=s;qpR=el.getBoundingClientRect();const p=$('#qpop');$('#qpt').textContent=s.title||'Untitled';
   const r=el.getBoundingClientRect(),w=p.offsetWidth,h=p.offsetHeight;
   const x=clamp(r.left+r.width/2-w/2,8,innerWidth-w-8);let y=r.bottom+2,up=false;
   if(y+h>innerHeight-8){y=r.top-h-2;up=true}y=Math.max(8,y);
@@ -1281,7 +1295,7 @@ function qPop(s,el){
   $('#qbg').classList.add('on');p.classList.add('on')}
 function qpClose(){$('#qbg').classList.remove('on');$('#qpop').classList.remove('on')}
 $('#qbg').onclick=qpClose;
-$('#qpa').onclick=()=>{const s=qpS;qpClose();if(s)qAdd(s)};
+$('#qpa').onclick=()=>{const s=qpS,f=qpR;qpClose();if(s)qAdd(s,f)};
 $('#qpo').onclick=()=>{const s=qpS;qpClose();if(s){drawer(false);openSong(s,true)}};
 /* Next Song: shown only while the existing .end line is visible AND the queue has a song */
 function watchEnd(){
@@ -1289,14 +1303,26 @@ function watchEnd(){
   const e=$('#txt .end');if(!e||!('IntersectionObserver' in window))return;
   endIO=new IntersectionObserver(es=>{endVis=es[es.length-1].isIntersecting;updNext()},{root:$('#lyr'),rootMargin:'0px 0px -44px 0px',threshold:0});endIO.observe(e)}
 function updNext(){const b=$('#nxt'),on=endVis&&qSongs().length>0&&$('#play').classList.contains('on');b.classList.toggle('on',on);b.tabIndex=on?0:-1;b.setAttribute('aria-hidden',on?'false':'true')}
+/* v93: page turn — the old page is copied on top and swings away like a book page */
+let turning=0,qpR=null;
+function pageSnap(){try{const L=$('#lyr'),r=L.getBoundingClientRect(),P=$('#play');if(!r.width)return null;
+  const c=L.cloneNode(true);c.removeAttribute('id');c.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+  const w=E('div','pgturn');w.style.cssText='left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px';
+  c.style.cssText='position:absolute;inset:0;overflow:hidden;pointer-events:none;background:'+(getComputedStyle(P).backgroundColor||'#0d0a08');
+  w.append(c);return {w,c,st:L.scrollTop}}catch(e){return null}}
+function pageTurn(k){turning=1;document.body.append(k.w);k.c.scrollTop=k.st;
+  const sh=E('div','pgsh');k.w.append(sh);
+  const a=k.w.animate([{transform:'perspective(1400px) rotateY(0)',offset:0},{transform:'perspective(1400px) rotateY(-100deg)',offset:1}],{duration:720,easing:'cubic-bezier(.5,0,.25,1)',fill:'forwards'});
+  sh.animate([{opacity:0},{opacity:.55,offset:.45},{opacity:0}],{duration:720,fill:'forwards'});
+  const done=()=>{k.w.remove();turning=0};a.onfinish=done;a.oncancel=done;setTimeout(()=>{if(turning)done()},1200)}
 function qNext(){
   if(nexting)return;const id=Qs().find(x=>songs.some(o=>o.id===x));if(!id)return;const s=songs.find(o=>o.id===id);
-  nexting=1;
+  nexting=1;const snap=RM()?null:pageSnap();
   try{openSong(s)}catch(err){nexting=0;note('Could not open song',1);return}
   if(cur===s){const i=queue.indexOf(id);if(i>=0){queue.splice(i,1);qSave()}} /* removed only after the song really is active */
-  qRender();setTimeout(()=>{nexting=0},700)}
+  qRender();if(snap)pageTurn(snap);setTimeout(()=>{nexting=0},700)}
 $('#nxt').onclick=qNext;
-function songFx(){if(RM())return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});}catch(e){}}
+function songFx(){if(RM()||turning)return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});}catch(e){}}
 /* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
 document.addEventListener('gesturestart',e=>e.preventDefault());
 const FLASH='.ic,.step,#qtg,#spb,#spx,#qx,#dView,#nxt,.clr,#dTop,#sortb,#goog,#find';

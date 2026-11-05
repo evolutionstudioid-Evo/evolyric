@@ -831,7 +831,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='101';
+const APP_VER='102';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -956,18 +956,19 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
     sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})))}
-/* v101: slide tutorial (portrait deck in tutorial.html, cached for offline) */
-/* a fresh iframe each time (set before it is attached) so the deck adds no entries to the Back history */
+/* v102: Tutorial = portrait slide deck (tutorial.js, cached for offline) */
+/* the deck (tutorial.js, cached for offline) is shown in a srcdoc iframe; a fresh iframe each time so it adds no Back-history entries */
 function tutOpen(){let t=$('#tut');if(!t){t=E('div');t.id='tut';t.setAttribute('role','dialog');t.setAttribute('aria-label','Tutorial');t.setAttribute('data-nt','');document.body.append(t)}
-  t.textContent='';const f=document.createElement('iframe');f.title='Tutorial';f.src='tutorial.html#'+(PREF.lang==='id'?'id':'en');t.append(f);t.classList.add('on')}
+  const show_=()=>{t.textContent='';const f=document.createElement('iframe');f.title='Tutorial';f.srcdoc=window.TUT_HTML(PREF.lang);t.append(f);t.classList.add('on')};
+  if(window.TUT_HTML)return show_();
+  const sc=document.createElement('script');sc.src='tutorial.js';sc.onload=show_;sc.onerror=()=>note(L('Could not load the tutorial. Check your connection.','Tutorial tidak bisa dimuat. Periksa koneksimu.'),1);document.head.append(sc)}
 function tutClose(){const t=$('#tut');if(t){t.classList.remove('on');t.textContent=''}}
 addEventListener('message',e=>{const t=$('#tut');if(e.data==='evo-tut-close'&&t&&t.firstChild&&e.source===t.firstChild.contentWindow)tutClose()});
 /* Help */
 function helpOpen(){show('help');helpRender()}
 function helpRender(){const b=$('#helpbody');b.textContent='';
   b.append(E('div','sgrp',L('Help','Bantuan')),sCard(
-    sRow(L('Slide tutorial','Tutorial slide'),{sub:L('A short visual guide','Panduan visual singkat'),go:tutOpen}),
-    sRow(L('Tutorial','Tutorial'),{go:()=>docOpen('help',L('Tutorial','Tutorial'),docTutorial)}),
+    sRow(L('Tutorial','Tutorial'),{go:tutOpen}),
     sRow(L('About EvoLyric','Tentang EvoLyric'),{go:()=>docOpen('help',L('About','Tentang'),docAbout)}),
     sRow(L('Credit','Kredit'),{go:()=>docOpen('help',L('Credit','Kredit'),docCredit)})))}
 /* Account settings (avatar menu) */
@@ -983,16 +984,6 @@ function docOpen(from,title,build){docFrom=from;$('#doctitle').textContent=title
 const dH=t=>E('h2','',t),dP=t=>E('p','',t);
 function dUl(a){const u=E('ul');a.forEach(t=>u.append(E('li','',t)));return u}
 function dA(txt,href){const a=E('a','',txt);a.href=href;a.target='_blank';a.rel='noopener';return a}
-function docTutorial(b){b.className='sbody doc';
-  const S=(h,a)=>{b.append(dH(h),dUl(a))};
-  S(L('Quick start','Mulai cepat'),L(['Tap + on Home and choose New song.','Type a title and paste the lyrics, then Save.','Tap the song to open it. Tap the screen to start or pause the auto-scroll.'],['Ketuk + di Home lalu pilih New song.','Isi judul dan tempel lirik, lalu Save.','Ketuk lagu untuk membukanya. Ketuk layar untuk mulai atau jeda auto-scroll.']));
-  S(L('Gestures on the lyrics','Gestur di layar lirik'),L(['Tap: play or pause.','Drag left or right: change the speed (a fader shows the value).','Hold still for 1 second while playing: fast-forward (speed 30) until you let go.','Pinch with two fingers: text size.','Tap three times: edit the song.'],['Ketuk: putar atau jeda.','Geser kiri atau kanan: ubah kecepatan (fader menampilkan nilainya).','Tahan diam 1 detik saat berjalan: maju cepat (kecepatan 30) sampai dilepas.','Cubit dua jari: ukuran teks.','Ketuk tiga kali: edit lagu.']));
-  S(L('Sections and pauses','Section dan jeda'),L(['Write labels like [Verse] or [Chorus] on their own line. They become buttons at the top; tap one to jump there.','Intro and Interlude pause the scroll automatically. In the editor you can set Pause here or Keep scrolling for any section.'],['Tulis label seperti [Verse] atau [Chorus] di barisnya sendiri. Label jadi tombol di atas; ketuk untuk loncat ke bagian itu.','Intro dan Interlude menjeda scroll otomatis. Di editor kamu bisa memilih Pause here atau Keep scrolling untuk tiap section.']));
-  S(L('Library, categories and queue','Library, kategori, dan antrean'),L(['Use categories as setlists, for example one per gig.','Tap a song in the side list and choose Add to Queue to line songs up; a Next Song button appears at the end of the lyrics.','Search and sort from the Home screen.'],['Pakai kategori sebagai setlist, misalnya satu per acara.','Ketuk lagu di daftar samping lalu pilih Add to Queue untuk membuat antrean; tombol Next Song muncul di akhir lirik.','Cari dan urutkan dari layar Home.']));
-  S(L('Editor','Editor'),L(['Set title, artist and key. Undo and redo are in the toolbar.','Highlight colours mark important lines. Section buttons on the right insert labels.'],['Atur judul, artis, dan nada dasar. Undo dan redo ada di toolbar.','Warna highlight menandai baris penting. Tombol section di kanan menyisipkan label.']));
-  S(L('Notes and annotations','Catatan dan anotasi'),L(['Open the pen button in the editor to draw, add shapes, text notes and images over the lyrics.','Each mark is attached to the letters it sits on, so it stays with its word when you zoom or the lyrics are edited.','Use Move to adjust, Erase to remove, and Undo or Redo for mistakes.'],['Buka tombol pena di editor untuk menggambar, menambah bentuk, catatan teks, dan gambar di atas lirik.','Setiap tanda menempel pada huruf di bawahnya, jadi tetap bersama katanya saat zoom atau lirik diedit.','Gunakan Move untuk menggeser, Erase untuk menghapus, dan Undo atau Redo untuk salah gambar.']));
-  S(L('Friends and sending songs','Teman dan kirim lagu'),L(['Sign in, pick a username, then add friends by username.','Send one or many songs to one or many friends. They receive a copy; annotations are not sent.'],['Masuk, pilih username, lalu tambah teman lewat username.','Kirim satu atau banyak lagu ke satu atau banyak teman. Mereka menerima salinan; anotasi tidak ikut terkirim.']));
-  S(L('Install and offline','Pasang dan offline'),L(['iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.','After the first open, your songs work without internet.','After an update, close the app completely and open it again.'],['iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.','Setelah dibuka sekali, lagu tetap bisa dipakai tanpa internet.','Setelah ada pembaruan, tutup app sepenuhnya lalu buka lagi.']))}
 function docAbout(b){b.className='sbody doc roll';b.append(E('div','spc'));
   const w=E('div','lgw');w.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg2)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg>';
   const vEl=E('div','mut',L('Version ','Versi ')+APP_VER);let vt=0;vEl.onclick=()=>{if(++vt<5)return;vt=0;let lg=[];try{lg=JSON.parse(localStorage.getItem('evo.bklog')||'[]')}catch(e){}const c=csh();c.append(E('h3','','Back log'));const pre=E('pre','',lg.join('\n')||'(empty)');pre.style.cssText='margin:0 6px 10px;max-width:320px;max-height:46vh;overflow:auto;font-size:11px;text-align:left;white-space:pre-wrap';pre.setAttribute('data-nt','');const x=E('button','','Close');x.onclick=ctxClose;const cl=E('button','','Clear');cl.onclick=()=>{try{localStorage.removeItem('evo.bklog')}catch(e){}ctxClose()};c.append(pre,cl,x);$('#ctx').classList.add('on')};

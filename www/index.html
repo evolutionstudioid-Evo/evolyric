@@ -830,7 +830,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='99';
+const APP_VER='100';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1005,7 +1005,9 @@ function docAbout(b){b.className='sbody doc roll';b.append(E('div','spc'));
   const CR=(role,names)=>{b.append(E('div','cr',role));names.forEach(n=>{const d=E('div','cn',n);d.setAttribute('data-nt','');b.append(d)})};
   CR(L('Concept & Idea','Ide & Konsep'),['Jeffry Ferdian','Windhy Setiawan']);
   CR(L('Design, Programming & Development','Desain, Pemrograman & Pengembangan'),['Jeffry Ferdian']);
+  /* Testers credit hidden for now (v100); restore this line to show it again:
   CR(L('Testers','Tester'),['Jeffry Ferdian','Windhy Setiawan','Gandhi Satya','Anya Margaretha','Edo Lasyah','Mytha Ayu','Ozzy Kusuma','Franssella Bella','Win Yovina','Harun Alra']);
+  */
   b.append(E('div','cr',''));
   b.append(dP(L('Developed by Evolution Digital Studio.','Developed by Evolution Digital Studio.')));S('Innovation for Musicians. Technology for Creativity.');b.append(E('div','spc'));creditRoll(b)}
 /* credits-style auto-scroll for the About page: starts by itself, pauses while you touch/scroll, resumes after a moment, stops at the end */

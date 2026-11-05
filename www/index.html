@@ -318,6 +318,10 @@ html:has(#play.on){background:#0d0a08}
 /* ===== v30: Home "+" button (New song / Import .txt) ===== */
 #items{padding-bottom:92px}
 #fab{position:absolute;right:16px;bottom:16px;z-index:21;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--acc);color:#15110e;box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .3s var(--spring)}
+#lastb{position:absolute;right:86px;bottom:23px;z-index:21;width:42px;height:42px;border-radius:50%;border:.75px solid rgba(255,255,255,.8);background:rgba(20,16,13,.55);color:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font:600 18px/1 'Bricolage Grotesque',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .2s var(--ease),background .2s}
+#lastb[hidden]{display:none}#lastb:active{transform:scale(.9);background:rgba(255,255,255,.12)}
+:root[data-theme="light"] #lastb{border-color:rgba(31,24,18,.75);color:rgba(31,24,18,.9);background:rgba(255,255,255,.7)}
+@media(max-height:480px){#lastb{bottom:17px;right:72px}}
 #fab svg{width:26px;height:26px;transition:transform .32s var(--spring)}
 #fab[aria-expanded=true] svg{transform:rotate(45deg)}
 #fab:active{transform:scale(.92)}
@@ -550,6 +554,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
     <button id="slb" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 5.5H16M7.5 10H16M7.5 14.5H16"/><path d="M3.5 5.5h.01M3.5 10h.01M3.5 14.5h.01" stroke-width="2.4"/></svg>Create setlist</button>
     <button id="imp" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5v9M6.5 9.5 10 13l3.5-3.5M4 16h12"/></svg>Import .txt</button>
   </div>
+  <button id="lastb" type="button" aria-label="Open lyrics"><span aria-hidden="true">L</span></button>
   <button id="fab" type="button" aria-label="Add song" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><path d="M10 3.5v13M3.5 10h13"/></svg></button>
   <input type="file" id="file" accept=".txt,text/plain" multiple hidden>
 </section>
@@ -851,7 +856,8 @@ function slDraw(){const B=$('#slBody'),keep=B.querySelector('#slList')?B.querySe
 $('#slX').onclick=()=>{if(slView==='root')return void $('#slbox').classList.remove('on');slView=slView==='songs'&&slSrc!=='all'?'cats':'root';slSel=new Set();slDraw()};
 $('#slbox').onclick=e=>{if(e.target.id==='slbox')$('#slX').onclick()};
 $('#slDone').onclick=()=>{const ids=[...new Set([...slList,...slSel])].filter(id=>songs.some(x=>x.id===id));$('#slbox').classList.remove('on');slSel=new Set();if(!ids.length)return;
-  const fill=add=>{const q=Qs();if(!add)q.length=0;ids.forEach(id=>{if(!q.includes(id))q.push(id)});qFresh=null;qSave();qRender();note('Setlist ready: '+ids.length+(ids.length===1?' song':' songs')+' in the queue')};
+  const fill=add=>{const q=Qs();if(!add)q.length=0;ids.forEach(id=>{if(!q.includes(id))q.push(id)});qFresh=null;const f=songs.find(x=>x.id===ids[0]);try{openSong(f)}catch(err){qSave();qRender();note('Could not open song',1);return}if(cur===f){const i=q.indexOf(f.id);if(i>=0)q.splice(i,1)} /* v115: Done opens the first lyric; the rest wait in Next song */
+    qSave();qRender()};
   if(!Qs().length)return fill(false);
   const c=csh();c.append(E('h3','','Your queue is not empty'));const a=E('button','','Replace the queue');a.onclick=()=>{ctxClose();fill(false)};const b=E('button','','Add to the end');b.onclick=()=>{ctxClose();fill(true)};const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,b,x);$('#ctx').classList.add('on')};
 function addOpen(){const cat=curCat();if(!cat)return;aMode='cat';aTo=null;aSel=new Set();$('#aT').textContent='Add Songs';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
@@ -900,7 +906,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='114';
+const APP_VER='115';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -920,7 +926,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Done when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Selesai kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Done when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Selesai kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -1133,7 +1139,7 @@ function resetTop(){ /* every opened song starts at the top: scroll, auto-scroll
   const L=$('#lyr');pos=0;frac=0;last=0;txtEl.style.transform='';L.scrollTop=0;
   requestAnimationFrame(()=>{if(!playing||pos<2){L.scrollTop=0;pos=0;txtEl.style.transform=''}})}
 function openSong(s,keep){
-  recAdd(s&&s.id);
+  recAdd(s&&s.id);try{localStorage.setItem('evo.lastsong',s.id)}catch(e){}
   if(typeof songFx==='function')songFx();
   const was=playing;cur=s;menuOpen(false);$('#sp').value=s.speed;
   $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
@@ -1259,6 +1265,12 @@ function exitFs(){
   setTimeout(fixPad,80);
 }
 document.addEventListener('fullscreenchange',()=>setTimeout(fixPad,80)); /* Esc leaves browser fullscreen only; the app layout stays */
+/* v115: L button on the home screen returns to the last opened lyric; hidden until a lyric has been opened */
+function lastSong(){if(cur)return songs.includes(cur)?cur:songs.find(x=>x.id===cur.id)||null;
+  let id=null;try{id=localStorage.getItem('evo.lastsong')}catch(e){}
+  const l=id&&songs.find(x=>x.id===id);if(l)return l;
+  const q=Qs();for(const i of q){const x=songs.find(o=>o.id===i);if(x){q.splice(q.indexOf(i),1);qSave();qRender();return x}}return null}
+$('#lastb').onclick=()=>{const s=lastSong();if(!s)return void note('Select a song first',true);if(s===cur&&$('#play')){show('play');enterFs();hl()}else openSong(s)};
 function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';refresh();show('list')} /* Home returns to the list with an empty search */
 document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.querySelector('input');
   b.addEventListener('pointerdown',e=>e.preventDefault()); /* keep focus (and the on-screen keyboard) on the box */

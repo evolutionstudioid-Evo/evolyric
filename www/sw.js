@@ -1,5 +1,5 @@
-const V='evolyric-app-102',F='evolyric-fonts';
-const TUTIMG=['login','username','home','menu','drawer','play','queue','edit','secbar','vocal','custom','hl','annot','cats','catpick','friends','send','backup','prefs'].flatMap(n=>['id','en'].map(l=>'tut/'+n+'_'+l+'.jpg'));
+const V='evolyric-app-103',F='evolyric-fonts';
+const TUTIMG=['account', 'acctmenu', 'addsongs', 'annot', 'annot2', 'backup', 'catmenu', 'catpick', 'cats', 'custom', 'drawer', 'edit', 'fab', 'findfriend', 'friendmenu', 'friends', 'gear', 'help', 'hl', 'home', 'inbox', 'incat', 'light', 'login', 'newcat', 'note', 'play', 'playmenu', 'prefs', 'profile', 'qpop', 'queue', 'recent', 'requests', 'search', 'secbar', 'sendmany', 'sendone', 'side', 'songmenu', 'sort', 'speed', 'stop', 'tools', 'username', 'vocal'].flatMap(n=>['id','en'].map(l=>'man/'+n+'_'+l+'.webp'));
 const SHELL=['./','index.html','manifest.webmanifest','config.js','cloud.js','tutorial.js',...TUTIMG,'vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!==F&&x.startsWith('evolyric-')).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});

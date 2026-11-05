@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v106 – Section button, no version in About
+- The Section panel drawer button is now a text button "Section": orange when the panel is shown, dark when hidden.
+- About no longer shows the version number (the app is still in development). The hidden 5-tap diagnostics now sits on the "EvoLyric" title.
+
 ## v105 – Section panel drawer + accordion
 - New button at the right end of the editor toolbar hides or shows the whole Section panel. Hidden: the lyrics box uses the full width; shown again: it narrows back. The choice is remembered.
 - The Section categories now work as an accordion: only SONG is open by default, and opening VOICING or PERFORMANCE closes the others (tap the open one to close it).

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v119 – Setlist panel on the right
+- Create setlist now has a box on the right that always shows the setlist in order (1, 2, 3…), with × to remove. No need to go back to the first screen to see it.
+
 ## v118 – L button upright
 - The L on the Home button is now upright (not italic).
 

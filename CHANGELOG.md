@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v115 – Done opens the first lyric, L button on Home
+- Create setlist → Done now opens the first song straight away; the rest wait in Next song, in order.
+- New L button next to + on Home: returns to the last lyric (also after closing and reopening the app). If nothing was opened yet it takes the first song in the queue, or shows "Select a song first".
+
 ## v114 – Create setlist redesigned
 - Create setlist now starts with a choice: All Songs or Categories. Pick a category first, then its songs.
 - Select songs and press Add; go Back to pick from another category or All Songs. The setlist (numbered, with Remove) builds up on the first screen.

@@ -95,6 +95,19 @@ Setiap fitur atau layar baru **wajib punya terjemahan Indonesia dan Inggris**. R
 
 Detail ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Pemeriksa terjemahan memerlukan Playwright (`npm i playwright`).
 
+## Tes otomatis
+
+Folder `tests/` berisi 47 tes Playwright untuk alur inti: layar utama, layar lirik, editor, setlist dan tombol L, kategori, teman (penerimaan lagu), data (cadangan/pemulihan) dan terjemahan. Tes membuka `www/index.html` di Chromium dengan data contoh, tanpa Supabase dan tanpa mengubah kode aplikasi.
+
+```bash
+npm install
+npx playwright install chromium
+npm test              # semua tes
+node tests/run.js Setlist   # hanya tes yang namanya memuat "Setlist"
+```
+
+Jalankan sebelum membuka pull request. Tes ini berjalan di browser desktop/emulasi; pengujian di perangkat nyata tetap diperlukan.
+
 ## Aplikasi native (opsional)
 
 Kerangka Capacitor sudah tersedia. Prasyarat: Node.js.

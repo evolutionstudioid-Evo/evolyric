@@ -318,10 +318,9 @@ html:has(#play.on){background:#0d0a08}
 /* ===== v30: Home "+" button (New song / Import .txt) ===== */
 #items{padding-bottom:92px}
 #fab{position:absolute;right:16px;bottom:16px;z-index:21;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--acc);color:#15110e;box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .3s var(--spring)}
-#lastb{position:absolute;right:86px;bottom:23px;z-index:21;width:42px;height:42px;border-radius:50%;border:.75px solid rgba(255,255,255,.8);background:rgba(20,16,13,.55);color:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font:600 18px/1 'Bricolage Grotesque',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .2s var(--ease),background .2s}
-#lastb[hidden]{display:none}#lastb:active{transform:scale(.9);background:rgba(255,255,255,.12)}
-:root[data-theme="light"] #lastb{border-color:rgba(31,24,18,.75);color:rgba(31,24,18,.9);background:rgba(255,255,255,.7)}
-@media(max-height:480px){#lastb{bottom:17px;right:72px}}
+#lastb{position:absolute;right:20px;bottom:84px;z-index:21;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--acc);background:transparent;color:var(--acc);display:flex;align-items:center;justify-content:center;font:italic 400 30px/1 'Instrument Serif',Georgia,serif;padding:0 2px 3px 0;-webkit-tap-highlight-color:transparent;transition:transform .2s var(--ease),background .2s}
+#lastb:active{transform:scale(.9);background:rgba(255,255,255,.06)}
+@media(max-height:480px){#lastb{bottom:76px;right:16px;width:40px;height:40px;font-size:25px}}
 #fab svg{width:26px;height:26px;transition:transform .32s var(--spring)}
 #fab[aria-expanded=true] svg{transform:rotate(45deg)}
 #fab:active{transform:scale(.92)}
@@ -910,7 +909,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='116';
+const APP_VER='117';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

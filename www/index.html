@@ -679,12 +679,12 @@ function adapt(c){if(document.documentElement.dataset.theme!=='light'||typeof c!
   let out=c;
   if(l>.3||s<.2){l=Math.min(l,.42);if(s<.2)s=Math.min(s,.1);for(;l>.12;l-=.02){const r=f(0),g=f(8),b=f(4),L=lum(r,g,b);if((0.93+.05)/(L+.05)>=4.7){out='#'+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');break}}}
   return _adc[c]=out}
-const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185','male 1':'#38bdf8','male 2':'#e8a15a','female 1':'#ff7eb6','female 2':'#c4a5ff',all:'#ffd23f',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
+const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185','male 1':'#38bdf8','male 2':'#e8a15a','female 1':'#ff7eb6','female 2':'#c4a5ff',all:'#ffd23f','vokal 1':'#38bdf8','vokal 2':'#ff7eb6','vokal 3':'#c4a5ff','vokal 4':'#e8a15a','vokal 5':'#ffd23f',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
 const HC={r:'rgba(255,69,58,.45)',o:'rgba(255,149,0,.5)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)',b:'rgba(10,132,255,.45)',i:'rgba(94,92,230,.5)',v:'rgba(191,90,242,.5)'},HLN={r:'Red',o:'Orange',y:'Yellow',g:'Green',b:'Blue',i:'Indigo',v:'Violet'};
 const lblColor=(s,lo)=>adapt((s.colors&&s.colors[lo])||LC[lo]||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e');
 /* v90: voice labels (Male 1/2, Female 1/2, All). Written as their own [label] line; right after a section label they are shown beside that section's name,
    and the lyrics up to the next label take the voice colour. Any other label ends it. */
-const isGen=lo=>/^(male|female)( \d+)?$/.test(lo)||lo==='all';
+const isGen=lo=>/^vokal \d+$/.test(lo)||/^(male|female)( \d+)?$/.test(lo)||lo==='all'; /* Male/Female/All: older songs */
 
 /* ---------- Daftar ---------- */
 /* v32: pinned songs + sort. cr/md are plain song fields (synced through app_data); older songs fall back to the time inside their id. */
@@ -811,7 +811,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='90';
+const APP_VER='91';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -904,7 +904,7 @@ i18nMO.observe(document.body,{childList:true,subtree:true,characterData:true,att
 function setLang(v){PREF.lang=v==='id'?'id':'en';prefSave();idCache.clear();i18nRun();if(typeof prefRender==='function'&&$('#prefs').classList.contains('on'))prefRender()}
 /* for tools/i18n-audit.js: visible text that has no Indonesian version */
 /* text that must stay as is: brand, musical terms, names, numbers, text already written in Indonesian via L() */
-const I18N_KEEP=new Set(['About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
+const I18N_KEEP=new Set(['About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vokal 1','Vokal 2','Vokal 3','Vokal 4','Vokal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
 const i18nKeep=e=>!/[A-Za-z]{3}/.test(e)||I18N_KEEP.has(e)||LID.has(e)||tr(e)!==e||/^#[0-9a-f]{6}$/i.test(e)||/@[\w.-]+/.test(e)||/^Versi \d+$/.test(e)||/^\[/.test(e)||/^(Intro|Verse|Pre-Chorus|Chorus|Interlude|Bridge|Coda|Outro|Male|Female)\b/.test(e)||(user&&(e===user.name||e===user.email));
 window.i18nMissing=()=>{const out=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);for(let n;n=w.nextNode();){if(i18nSkip(n))continue;const o=I18N_EN.get(n),e=(o?o.e:n.nodeValue).trim();if(i18nKeep(e))continue;if(getComputedStyle(n.parentElement).display!=='none')out.add(e)}
   document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>I18N_ATTR.forEach(a=>{if(!el.hasAttribute(a))return;const M=I18N_EN.get(el),e=((M&&M[a])?M[a].e:el.getAttribute(a)).trim();if(!i18nKeep(e))out.add(a+': '+e)}));return [...out]};
@@ -1356,7 +1356,7 @@ Ly.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{p
 Ly.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* ---------- Edit ---------- */
-const SECS=['Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Male 1','Male 2','Female 1','Female 2','All','Medley','Rit','Rall'];
+const SECS=['Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Vokal 1','Vokal 2','Vokal 3','Vokal 4','Vokal 5','Medley','Rit','Rall'];
 SECS.forEach(n=>{const b=E('button','',n);b.style.color=LC[n.toLowerCase()]||LC[n.toLowerCase().replace(/\s*\d+$/,'')]||'#a8a29e';b.onclick=()=>ins(n);$('#side').append(b)});
 const SW=['#ff5d5d','#fb923c','#fbbf24','#4ade80','#2dd4bf','#38bdf8','#4da3ff','#7c83ff','#c084fc','#f472b6'];let swc=SW[0];
 function pickSw(c){swc=c;[...$('#sws').children].forEach(b=>b.classList.toggle('on',b.dataset.c===c))}

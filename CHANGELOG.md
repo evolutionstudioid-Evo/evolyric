@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v91 – Vokal 1–5
+- The voice labels are now Vokal 1 to Vokal 5 (blue, pink, light purple, light orange-brown, yellow) instead of Male/Female/All. They behave the same: beside the section name, colour the lyrics until the next label. Songs that already use [Male 1], [Female 1], [All] and so on keep working with their old colours.
+
 ## v90 – Voice labels (Male / Female / All)
 - Pressing Male 1, Male 2, Female 1, Female 2 or All inside a section puts the label right after that section's name; it is shown beside the name (not on its own line) and the lyrics of that section take the voice colour. Press the same voice again to remove it, or another to change it.
 - Colours: Male 1 blue, Male 2 light orange-brown, Female 1 pink, Female 2 light purple, All yellow; no voice stays white. The next label of any kind ends the voice, so the next section is plain again unless you give it a voice.

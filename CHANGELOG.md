@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v101 – Slide tutorial
+- New portrait slide tutorial (13 slides with real app screenshots) under Settings → Help → Slide tutorial. Opens in the app's language, swipe or tap to move, works offline, and Android Back or the X closes it.
+
 ## v100 – Testers removed from About
 - The Testers names are hidden from the About credits for now (kept in the code as a comment so they can be restored).
 

@@ -18,7 +18,7 @@ await step('avatar menu',()=>p.click('#avb'));await back();
 await step('gear menu',()=>p.click('#gear'));
 await step('preferences',()=>p.click('#gmenu .mi:nth-child(1)'));await p.click('#prX');
 for(const [i,n] of [[2,'help'],]){await p.click('#gear');await p.click('#gmenu .mi:nth-child(2)');await scan('help');
-  for(let r=1;r<=3;r++){await step('help doc '+r,()=>p.click('#helpbody .srow:nth-child('+r+')'));await p.click('#dcX')}await p.click('#hpX')}
+  for(let r=1;r<=3;r++){await step('help doc '+r,()=>p.click('#helpbody .srow:nth-child('+(r+1)+')'));await p.click('#dcX')}await p.click('#hpX')}
 await step('account settings',async()=>{await p.click('#avb');await p.click('#amenu .mi:has-text("Pengaturan Akun")')});
 await step('subscription',()=>p.click('#acctbody button.srow >> nth=0'));await p.click('#dcX');
 await step('backup',()=>p.click('#acctbody button.srow >> nth=1'));await p.click('#dcX');await p.click('#acX');

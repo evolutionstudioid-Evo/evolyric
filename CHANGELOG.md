@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v105 – Section panel drawer + accordion
+- New button at the right end of the editor toolbar hides or shows the whole Section panel. Hidden: the lyrics box uses the full width; shown again: it narrows back. The choice is remembered.
+- The Section categories now work as an accordion: only SONG is open by default, and opening VOICING or PERFORMANCE closes the others (tap the open one to close it).
+
 ## v104 – New Section panel
 - The old flat list of section labels in the editor is replaced by three collapsible categories (each with its own chevron, all open by default): SONG (Intro, Verse, Pre-Chorus, Chorus, Post-Chorus, Interlude, Instrumental, Solo, Bridge, Rap, Drop, Coda, Outro), VOICING (Vocal 1–5, Harmony, Choir) and PERFORMANCE (A Cappella, Sing-Along, Call & Response, Ad-Libs, Improvisation, Scat, Whistle, Scream, Whisper, Spoken, Break, Rit., Rall.). "Custom…" stays at the bottom.
 - Songs already saved keep working: older markers such as [Sing Along], [Free Style], [Medley], [Rit] and [Rall] still show with their colours; they are just no longer buttons.

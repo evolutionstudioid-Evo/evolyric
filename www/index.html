@@ -797,14 +797,16 @@ $('#q').oninput=refresh;$('#find').onclick=()=>{refresh();$('#q').focus()};
 $('#sortb').onclick=()=>{const c=csh();c.append(E('h3','','Sort by'));
   SORTS.forEach(([k,t])=>{const b=E('button','ck',t);b.append(E('i','',sortBy===k?'✓':''));b.onclick=()=>{sortBy=k;try{localStorage.setItem(SORTK,k)}catch(e){}ctxClose();refresh()};c.append(b)});
   $('#ctx').classList.add('on')};
+/* v99: open Google in a separate tab with a real link (noopener) — window.open left a blank white page behind the app; query is "<title> lyric" */
+function webSearch(q){const a=document.createElement('a');a.href='https://www.google.com/search?q='+encodeURIComponent(q+' lyric');a.target='_blank';a.rel='noopener noreferrer';a.style.display='none';document.body.append(a);a.click();setTimeout(()=>a.remove(),0)}
 $('#goog').onclick=()=>{
   const q=$('#q').value.trim();if(!q)return toast('Ketik judul lagu dulu');
-  window.open('https://www.google.com/search?q='+encodeURIComponent(q+' lirik'),'_blank');
+  webSearch(q);
   openEdit(null,'',q,null,lib.v==='cat'?[lib.id]:[])};
 /* v98: same globe button in the side panel: search Google for the typed title, then open a new song to paste into */
 $('#dgoog').onclick=()=>{
   const q=$('#dq').value.trim();if(!q)return toast('Ketik judul lagu dulu');
-  window.open('https://www.google.com/search?q='+encodeURIComponent(q+' lirik'),'_blank');
+  webSearch(q);
   drawer(false);openEdit(null,'',q,null,[])};
 function fabOpen(on){$('#fabm').classList.toggle('on',!!on);$('#fbg').classList.toggle('on',!!on);$('#fab').setAttribute('aria-expanded',on?'true':'false')}
 $('#fab').onclick=()=>fabOpen(!$('#fabm').classList.contains('on'));
@@ -828,7 +830,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='98';
+const APP_VER='99';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

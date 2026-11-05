@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v86 – Orange web-search globe
+- The globe button next to search now uses the theme\u2019s orange accent (darker orange on the light theme) instead of blue.
+
 ## v85 – Blue web-search globe
 - The globe button next to search (search the web for lyrics) is now Google blue.
 

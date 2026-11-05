@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v97 – "Next song" under the lyrics
+- Below the line at the very end of the lyrics, a small orange "Next song: <title>" shows the first song in the queue, so the singer can prepare without opening the queue panel. Fixed small size: lyric zoom does not change it. Hidden when the queue is empty.
+
 ## v96 – Page curl
 - Next Song: replaced the hinged flip with a page curl. The page peels away from the right edge over a small roll, its back side slides off to the left, and a soft shadow follows the roll across the next song.
 

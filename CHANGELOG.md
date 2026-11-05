@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v88 – Highlights: 7 colours, easy change and remove
+- Seven highlight colours: red, orange, yellow, green, blue, indigo, violet.
+- Tap inside a highlight and the colour bar opens by itself with its colour marked. Pick another colour to change it, or tap the same colour / Remove to take it off. No text selection needed.
+- With no selection, a colour applies to the whole line the cursor is on. Selecting just a few words inside an existing highlight changes only those words.
+
 ## v87 – Annotate drawing no longer locks up
 - Fixed: the pen, shapes and text only worked the first time Annotate was opened. Each visit rebuilt the drawing layer but its touch handlers stayed on the old one, so from the second visit nothing could be drawn (it looked fixed after leaving the editor or reloading). The handlers are now attached to every new layer.
 - A stroke whose finger-lift was never received (for example when a dialog or another touch interrupted it) can no longer block the next stroke.

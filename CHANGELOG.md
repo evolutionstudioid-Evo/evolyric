@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v121 – Compact list button on Home
+- The 4-line compact/wide list button from the lyric sidebar is now also on Home, right next to Sort. Compact shows only title and key in tighter rows; the choice is remembered. Hidden in the Categories tab.
+
 ## v120 – Create setlist: tap to add, Set button
 - The Add button is gone: tapping a song adds it straight to the setlist (right panel).
 - Done is now called Set (same place, top right).

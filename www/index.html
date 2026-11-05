@@ -343,6 +343,8 @@ html:has(#play.on){background:#0d0a08}
 .sfield .clr:active{background:var(--ln);color:var(--fg)}
 /* v32: sort button, pin marker, "Pinned" header */
 #sortb{width:44px;flex:none;border-radius:12px;background:var(--card);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--mut)}
+#hView{width:44px;flex:none;border-radius:12px;background:var(--card);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--mut)}#hView[hidden]{display:none}#hView.on{color:var(--acct);border-color:var(--acc)}
+#items.cmp .it{padding:5px 4px}#items.cmp .it small{display:none}#items.cmp .it b{font-size:17px;line-height:1.2}#items.cmp .key{font-size:13px}#items.cmp .ltr{padding:8px 4px 1px;font-size:13px}
 #sortb svg{width:20px;height:20px}#sortb.on{color:var(--acct);border-color:var(--acc)}
 .ltr.pn{display:flex;align-items:center;gap:6px}.ltr.pn svg{width:14px;height:14px}
 .pinic{display:inline-flex;color:var(--acct);margin-right:6px;vertical-align:-1px}.pinic svg{width:14px;height:14px}
@@ -411,7 +413,7 @@ html:has(#play.on){background:#0d0a08}
 #dTop.on{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--ease),transform .3s var(--spring),visibility 0s}
 #dTop svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 /* v60: Home - tabs row with sort at the right, longer search field with a magnifier, web search as a globe */
-#tabs button{padding:8px 6px;font-size:14px;white-space:nowrap}#tabs #sortb{flex:none;width:44px;padding:0;border-radius:10px}
+#tabs button{padding:8px 4px;font-size:14px;white-space:nowrap;min-width:0}#tabs #sortb,#tabs #hView{flex:none;width:44px;padding:0;border-radius:10px}
 .sfield .mg{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--mut);background:none;border:0;padding:0;z-index:1}
 .sfield .mg svg,#goog svg,#dgoog svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .sfield #q{padding-left:40px}
@@ -543,7 +545,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 <section id="list" class="v on">
   <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span><b class="tier" id="tier" data-tier="pro">Pro</b></span></h1><span id="svw" hidden>⚠ Not saved</span><button class="ic" id="gear" type="button" aria-label="Settings" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button><div id="auth"></div></div>
   <div id="amenu" role="menu" hidden></div><div id="gmenu" role="menu" hidden></div>
-  <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button></div>
+  <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button><button id="hView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="hvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
   <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="goog" type="button" aria-label="Search the web for these lyrics" title="Search the web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg></button></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
@@ -776,7 +778,7 @@ function refresh(){
   const cat=lib.v==='cat'?curCat():null;
   const tabOn=lib.v==='cat'?'cats':lib.v;$('#tabs').querySelectorAll('button[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===tabOn));
   $('#crumb').hidden=!cat;$('#cName').textContent=cat?cat.name:'';
-  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='recent';
+  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='recent';$('#hView').hidden=lib.v==='cats';
   $('#q').placeholder=lib.v==='all'?'Search songs…':lib.v==='recent'?'Search recent songs…':cat?'Search in '+cat.name+'…':'Search categories…';
   $('#actrow').hidden=lib.v==='all'||lib.v==='recent';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
   if(lib.v==='cats')catList();
@@ -910,7 +912,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='120';
+const APP_VER='121';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1305,6 +1307,12 @@ const SBV='evolyric-sbview';
 function sbView(c,sv){dw.classList.toggle('cmp',c);const b=$('#dView');b.setAttribute('aria-pressed',c?'true':'false');b.setAttribute('aria-label',c?'Wide list':'Compact list');
   $('#dvi').setAttribute('d',c?'M3 4h14M3 8h14M3 12h14M3 16h14':'M3 5h14M3 10h14M3 15h14');if(sv){try{localStorage.setItem(SBV,c?'compact':'wide')}catch(e){}}}
 try{sbView(localStorage.getItem(SBV)==='compact')}catch(e){sbView(false)}
+/* v121: same compact toggle on Home, next to Sort */
+const HV='evolyric-homeview';
+function hvView(c,sv){$('#items').classList.toggle('cmp',c);const b=$('#hView');b.classList.toggle('on',c);b.setAttribute('aria-pressed',c?'true':'false');b.setAttribute('aria-label',c?'Wide list':'Compact list');
+  $('#hvi').setAttribute('d',c?'M3 4h14M3 8h14M3 12h14M3 16h14':'M3 5h14M3 10h14M3 15h14');if(sv){try{localStorage.setItem(HV,c?'compact':'wide')}catch(e){}}}
+try{hvView(localStorage.getItem(HV)==='compact')}catch(e){hvView(false)}
+$('#hView').onclick=()=>hvView(!$('#items').classList.contains('cmp'),1);
 $('#dView').onclick=()=>sbView(!dw.classList.contains('cmp'),1);
 $('#dr').onclick=()=>drawer(!dw.classList.contains('open'));
 $('#dq').oninput=drawerItems;$('#dX').onclick=sc.onclick=()=>drawer(false);

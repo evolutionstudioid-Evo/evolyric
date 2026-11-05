@@ -503,7 +503,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 .wc .sub{margin:0 0 26px;color:var(--mut);font-size:15px;line-height:1.5}.wc .err{margin:12px 0 0;font-size:14px;min-height:1px}.wc .lnk{display:block;margin:10px auto 0}.wc .priv{margin:18px 4px 0}
 .wu{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:0 14px;margin:0 0 4px}.wu:focus-within{border-color:var(--acc)}.wu span{color:var(--mut);font-weight:700}.wu input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--fg);font:600 17px/1 'Atkinson Hyperlegible',system-ui,sans-serif;padding:15px 0}
 .wgo{width:100%;min-height:48px;margin-top:12px;font-size:16px}.wgo:disabled{opacity:.45}
-#goog{color:#4285F4}:root[data-theme="light"] #goog{color:#1a62c6}
+#goog{color:var(--acct)}
 </style>
 </head>
 <body>
@@ -808,7 +808,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='85';
+const APP_VER='86';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

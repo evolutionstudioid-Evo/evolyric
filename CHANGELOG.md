@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v109 – Keyboard button follows the phone keyboard
+- When the phone hides the keyboard by itself (the ✓ button on iPhone, the back / hide key on Android, or tapping away), the Keyboard button in the editor now switches off too. Tapping the Keyboard button again still hides the keyboard and switches the button off.
+
 ## v108 – Own text selection (no phone pop-up) and quieter messages
 - Editor, keyboard off: selecting text now uses EvoLyric's own orange selection with two drag handles, so the phone's Cut / Copy / Paste / AutoFill / Look Up pop-up no longer appears (iPhone and Android). The highlight colour bar uses this selection. A short tap clears it. Turn the keyboard on and the normal phone selection and pop-up are back.
 - Removed the routine bottom pop-ups (Added to queue, Pinned to top, Song deleted, Category created/deleted, songs added to a category, Profile saved, Signed out, Backup file saved). Errors and the results that have no other visible sign (copied backup, songs restored, sent to a friend, friend request) still show. Friend/delivery notifications at the top are unchanged.

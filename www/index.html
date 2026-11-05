@@ -913,7 +913,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='124';
+const APP_VER='125';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -933,7 +933,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -976,7 +976,7 @@ const ID={'Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncu
 const IDP=[
 [/^(\d+) songs? in setlist$/,'$1 lagu di setlist'],[/^(\d+) songs?$/,'$1 lagu'],[/^(\d+) categor(?:y|ies)$/,'$1 kategori'],
 [/^Create \((\d+)\)$/,'Buat ($1)'],
-[/^Setlist ready: (\d+) songs? in the queue$/,'Setlist siap: $1 lagu di antrean'],[/^A category can send up to (\d+) songs$/,'Satu kategori bisa mengirim maksimal $1 lagu'],[/^Send category “(.+)” to…$/,'Kirim kategori “$1” ke…'],
+[/^Setlist ready: (\d+) songs? in the queue$/,'Setlist siap: $1 lagu di antrean'],[/^A category can send up to (\d+) songs$/,'Satu kategori bisa mengirim maksimal $1 lagu'],[/^Send category “(.+)” to…$/,'Kirim kategori “$1” ke…'],[/^Send “(.+)” to…$/,'Kirim “$1” ke…'],
 [/^(\d+) of (\d+) songs will be added$/,'$1 dari $2 lagu akan ditambahkan'],[/^Category “(.+)” saved$/,'Kategori “$1” disimpan'],[/^from @(\S+) · category · (\d+) songs?$/,'dari @$1 · kategori · $2 lagu'],
 [/^Search in (.+)…$/,'Cari di $1…'],[/^Add Songs to (.+)$/,'Tambah Lagu ke $1'],[/^No songs in this category yet\. Tap “Add Songs to (.+)”\.$/,'Belum ada lagu di kategori ini. Ketuk “Tambah Lagu ke $1”.'],
 [/^Remove from (.+)$/,'Hapus dari $1'],[/^Removed from (.+)$/,'Dihapus dari $1'],[/^Maximum (\d+) songs per group$/,'Maksimal $1 lagu per kelompok'],[/^(\d+) songs? added to (.+)$/,'$1 lagu ditambahkan ke $2'],

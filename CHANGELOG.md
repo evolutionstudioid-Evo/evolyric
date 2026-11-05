@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v125 – Indonesian fixes
+- Translated the "Send “song” to…" title and the setlist search label.
+
 ## v124 – Slimmer search bar
 - The Home search box and the Google button are now as tall as the tab buttons above (width unchanged).
 

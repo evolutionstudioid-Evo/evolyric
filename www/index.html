@@ -62,7 +62,7 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 14px color-mix(in srgb,currentColor 25%,transparent),0 0 10px color-mix(in srgb,currentColor 45%,transparent),0 0 22px color-mix(in srgb,currentColor 22%,transparent);
 }
 #lyr{flex:1;overflow-y:auto;position:relative;padding:0 18px;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 36px,#000 calc(100% - 44px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 36px,#000 calc(100% - 44px),transparent 100%)}
-.ln{line-height:1.45;white-space:pre-wrap;text-align:center;font-weight:700}.sec{color:var(--acct);font-size:.6em;font-weight:700;margin:1.1em 0 .2em;text-align:center}#ttl+.sec{margin-top:0}#ttl{font:800 60px/1.1 'Bricolage Grotesque',system-ui,sans-serif;text-align:center;margin:0 0 24px;color:var(--fg);overflow-wrap:anywhere}
+.ln{line-height:1.45;white-space:pre-wrap;text-align:center;font-weight:700}.sec{color:var(--acct);font-size:.6em;font-weight:700;margin:1.1em 0 .2em;text-align:center}#ttl+.sec{margin-top:0}.sec .gtag{margin-left:.8em;font-size:.95em}#ttl{font:800 60px/1.1 'Bricolage Grotesque',system-ui,sans-serif;text-align:center;margin:0 0 24px;color:var(--fg);overflow-wrap:anywhere}
 .m{color:var(--m)}.f{color:var(--f)}
 .ctl{display:flex;align-items:center;gap:10px;padding:10px 12px}
 .ctl label{flex:1;display:flex;flex-direction:column;font-size:12px;color:var(--mut)}
@@ -679,9 +679,12 @@ function adapt(c){if(document.documentElement.dataset.theme!=='light'||typeof c!
   let out=c;
   if(l>.3||s<.2){l=Math.min(l,.42);if(s<.2)s=Math.min(s,.1);for(;l>.12;l-=.02){const r=f(0),g=f(8),b=f(4),L=lum(r,g,b);if((0.93+.05)/(L+.05)>=4.7){out='#'+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');break}}}
   return _adc[c]=out}
-const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185',all:'#e7e5e4',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
+const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185','male 1':'#38bdf8','male 2':'#e8a15a','female 1':'#ff7eb6','female 2':'#c4a5ff',all:'#ffd23f',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b'};
 const HC={r:'rgba(255,69,58,.45)',o:'rgba(255,149,0,.5)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)',b:'rgba(10,132,255,.45)',i:'rgba(94,92,230,.5)',v:'rgba(191,90,242,.5)'},HLN={r:'Red',o:'Orange',y:'Yellow',g:'Green',b:'Blue',i:'Indigo',v:'Violet'};
-const lblColor=(s,lo)=>adapt((s.colors&&s.colors[lo])||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e');
+const lblColor=(s,lo)=>adapt((s.colors&&s.colors[lo])||LC[lo]||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e');
+/* v90: voice labels (Male 1/2, Female 1/2, All). Written as their own [label] line; right after a section label they are shown beside that section's name,
+   and the lyrics up to the next label take the voice colour. Any other label ends it. */
+const isGen=lo=>/^(male|female)( \d+)?$/.test(lo)||lo==='all';
 
 /* ---------- Daftar ---------- */
 /* v32: pinned songs + sort. cr/md are plain song fields (synced through app_data); older songs fall back to the time inside their id. */
@@ -808,7 +811,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='89';
+const APP_VER='90';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1055,9 +1058,9 @@ function noteStyle(el,o){const st=el.style;st.fontSize=(NS[o.s]||.6)+'em';st.fon
   if(o.x){st.border='1.5px solid currentColor';st.borderRadius='.45em';st.padding='.12em .7em';st.display='table';st.margin=o.a==='l'?'.4em auto .4em 0':o.a==='r'?'.4em 0 .4em auto':'.4em auto'}
   else{st.border='';st.borderRadius='';st.padding='';st.display='';st.margin='.35em 0'}}
 function lineEl(ln,col){
-  const d=E('div','ln '+col),re=/\{([roygbiv]):([^{}]*)\}/g;let i=0,m;
+  const d=E('div','ln'),re=/\{([roygbiv]):([^{}]*)\}/g;let i=0,m;
   while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);k.style.background=HC[m[1]];d.append(k);i=m.index+m[0].length}
-  if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';return d}
+  if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';if(col)d.style.color=col;return d}
 function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
   t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
@@ -1354,7 +1357,7 @@ Ly.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* ---------- Edit ---------- */
 const SECS=['Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Male 1','Male 2','Female 1','Female 2','All','Medley','Rit','Rall'];
-SECS.forEach(n=>{const b=E('button','',n);b.style.color=LC[n.toLowerCase().replace(/\s*\d+$/,'')]||'#a8a29e';b.onclick=()=>ins(n);$('#side').append(b)});
+SECS.forEach(n=>{const b=E('button','',n);b.style.color=LC[n.toLowerCase()]||LC[n.toLowerCase().replace(/\s*\d+$/,'')]||'#a8a29e';b.onclick=()=>ins(n);$('#side').append(b)});
 const SW=['#ff5d5d','#fb923c','#fbbf24','#4ade80','#2dd4bf','#38bdf8','#4da3ff','#7c83ff','#c084fc','#f472b6'];let swc=SW[0];
 function pickSw(c){swc=c;[...$('#sws').children].forEach(b=>b.classList.toggle('on',b.dataset.c===c))}
 SW.forEach(c=>{const b=E('button');b.style.background=c;b.dataset.c=c;b.setAttribute('aria-label',c);b.onclick=()=>pickSw(c);$('#sws').append(b)});
@@ -1403,7 +1406,9 @@ function secInfo(){
   for(let i=Math.min(ci,L.length-1);i>=0;i--)if(isLbl(L[i])){a=i;break}
   const bar=$('#secbar');dsArm=0;$('#ds').textContent='Delete section';$('#ds').classList.remove('warn');
   if(a<0){bar.hidden=true;return null}
-  let b=L.length;for(let i=a+1;i<L.length;i++)if(isLbl(L[i])){b=i;break}
+  let from=a+1;if(isGen(L[a].trim().slice(1,-1).toLowerCase())){let j=a-1;while(j>=0&&!L[j].trim())j--;if(j>=0&&isLbl(L[j])&&!isGen(L[j].trim().slice(1,-1).toLowerCase()))a=j} /* a voice tag right under a section belongs to that section */
+  {let j=a+1;while(j<L.length&&!L[j].trim())j++;if(j<L.length&&isLbl(L[j])&&isGen(L[j].trim().slice(1,-1).toLowerCase())&&!isGen(L[a].trim().slice(1,-1).toLowerCase()))from=j+1}
+  let b=L.length;for(let i=from;i<L.length;i++)if(isLbl(L[i])){b=i;break}
   const nm=L[a].trim().slice(1,-1);$('#sn').textContent=nm;stopBtn(nm.toLowerCase());$('#sn').style.color=lblColor({colors:ed&&ed.colors},nm.toLowerCase());bar.hidden=false;return{L,a,b}}
 function stopBtn(lo){const b=$('#sstop');b.hidden=!stopEligible(lo);if(b.hidden)return;const on=stopOf(ed,lo);b.textContent=on?'⏸ Pause here':'▶ Keep going';b.title=on?'Auto-scroll pauses at this section':'Auto-scroll keeps going through this section';b.classList.toggle('on',on)}
 $('#sstop').onclick=()=>{const x=secInfo();if(!x)return;const lo=x.L[x.a].trim().slice(1,-1).toLowerCase(),want=!stopOf(ed,lo);
@@ -1465,7 +1470,18 @@ $('#eU').onclick=()=>undo(-1);$('#eR').onclick=()=>undo(1);
 document.addEventListener('keydown',e=>{
   if(!$('#edit').classList.contains('on')||!(e.ctrlKey||e.metaKey)||e.key.toLowerCase()!=='z')return;
   e.preventDefault();undo(e.shiftKey?1:-1)});
+function insGender(name){
+  const sy=ta.scrollTop;snap();const v=ta.value,p=ta.selectionStart,L=v.split('\n'),ci=v.slice(0,p).split('\n').length-1,col=p-(p?v.lastIndexOf('\n',p-1)+1:0);
+  const isL=l=>/^\[.+\]$/.test(l.trim()),nm=l=>l.trim().slice(1,-1).toLowerCase();let a=-1;
+  for(let i=Math.min(ci,L.length-1);i>=0;i--)if(isL(L[i])){a=i;break}
+  if(a<0)return false; /* no section above: a normal label above the lyrics */
+  const tag='['+name+']';let cl=ci;
+  if(isGen(nm(L[a]))){if(nm(L[a])===name.toLowerCase()){L.splice(a,1);if(a<ci)cl--}else L[a]=tag} /* change it, or press the same voice again to remove it */
+  else{L.splice(a+1,0,tag);if(a+1<=ci)cl++}
+  ta.value=L.join('\n');cl=Math.max(0,Math.min(cl,L.length-1));const st=L.slice(0,cl).join('\n').length+(cl>0?1:0),pos=st+Math.min(col,L[cl].length);
+  ta.selectionStart=ta.selectionEnd=pos;ta.focus({preventScroll:true});ta.scrollTop=sy;snap();ed.dirty=true;snapCaret();return true}
 function ins(name,color){
+  if(!color&&isGen(name.toLowerCase())&&insGender(name))return;
   const sy=ta.scrollTop;snap();const v=ta.value,p=ta.selectionStart;
   if(name==='Verse')name='Verse '+((v.match(/^\[Verse \d+\]$/gm)||[]).length+1);
   if(color)ed.colors[name.toLowerCase()]=color;
@@ -1508,13 +1524,15 @@ const baseOf=lo=>lo.replace(/\s*\d+$/,''),stopDef=lo=>/^(intro|interlude)/.test(
 const stopOf=(s,lo)=>{const v=s&&s.stops&&s.stops[lo];return v==='p'?true:v==='k'?false:stopDef(lo)};
 let STDL=null;
 const stopEligible=lo=>{if(!STDL)STDL=new Set(SECS.map(n=>baseOf(n.toLowerCase())));return stopDef(lo)||!STDL.has(baseOf(lo))};
-function buildLines(t,lyr,colors,onSec){const le=[];let col='';
-  (lyr||'').split('\n').forEach(ln=>{let d;const no=noteParse(ln);
-    if(no){d=E('div','note',no.t);noteStyle(d,no)}
+function buildLines(t,lyr,colors,onSec){const le=[];let col='',lastSec=null;
+  (lyr||'').split('\n').forEach(ln=>{let d,add=true;const no=noteParse(ln);
+    if(no){d=E('div','note',no.t);noteStyle(d,no);lastSec=null}
     else{const m=ln.trim().match(/^\[(.+)\]$/);
-      if(m){const n=m[1],lo=n.toLowerCase();col=lo.startsWith('male')?'m':lo.startsWith('female')?'f':'';const lc=lblColor({colors},lo);d=E('div','sec',n);d.style.color=lc;d.dataset.k=lo;if(onSec)onSec(d,n,lc)}
-      else d=lineEl(ln,col)}
-    t.append(d);le.push(d)});
+      if(m){const n=m[1],lo=n.toLowerCase(),lc=lblColor({colors},lo),g=isGen(lo);
+        if(g&&lastSec){d=lastSec;add=false;const tg=E('span','gtag',n);tg.style.color=lc;d.append(tg);lastSec=null;col=lc} /* beside the section name */
+        else{d=E('div','sec',n);d.style.color=lc;d.dataset.k=lo;if(onSec)onSec(d,n,lc);col=g?lc:'';lastSec=g?null:d}}
+      else{d=lineEl(ln,col);if(ln.trim())lastSec=null}}
+    if(add)t.append(d);le.push(d)});
   return le}
 /* v74: annotations are anchored to a CHARACTER of the lyrics (line l, character index ch); ox/oy are the offset (in em of the lyric font) from the centre of that
    character to the item's start point. The position is read from the real text layout every time, so when the lyrics are zoomed or re-wrap, the mark

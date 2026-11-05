@@ -105,8 +105,10 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height
 .crumb{display:flex;align-items:center;gap:10px;padding:0 12px 8px}.crumb button{color:var(--acct);font-weight:700;padding:6px 0;white-space:nowrap}.crumb b{flex:1;min-width:0;font:800 20px/1.2 'Bricolage Grotesque',system-ui,sans-serif;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 #dcat{max-width:118px}
 .catsel{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-#nbox,#catbox,#addbox,#imbox{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
-#nbox.on,#catbox.on,#addbox.on,#imbox.on{display:flex}
+#nbox,#catbox,#addbox,#imbox,#slbox{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
+#nbox.on,#catbox.on,#addbox.on,#imbox.on,#slbox.on{display:flex}
+#slbox .asheet{position:relative}#slBody{flex:1;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain;display:flex;flex-direction:column;min-height:0}#slList{flex:1;overflow:auto;overscroll-behavior:contain}.slhint{padding:0 4px 10px}.slbar{display:flex;gap:8px;align-items:center;padding:0 0 8px}.slbar .sfield{flex:1}
+.slsrc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:14px;margin-bottom:8px;border:1px solid var(--ln);border-radius:12px;background:var(--bg)}.slsrc b{font-family:'Bricolage Grotesque',sans-serif;font-size:16px}
 #imItems{flex:1;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain}.imn{padding:0 12px 8px;display:flex;flex-direction:column;gap:4px}.imn input{width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:9px 11px}#imErr{min-height:1em;color:#ff7a7a}
 .imr{display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--ln)}.imr>div{flex:1;min-width:0;line-height:1.25}.imr small{display:block;color:var(--mut)}.imr .tag{color:var(--acct)}.imr .cyc{flex:none;min-width:84px;padding:7px 8px;border-radius:9px;border:1px solid var(--ln);background:var(--card);font-size:13px;font-weight:700}.imr .cyc.s0{border-color:var(--acc);color:var(--acct)}.imr .cyc.s2{opacity:.55}
 #nbox .sheet,#catbox .sheet{width:min(92vw,360px)}
@@ -228,7 +230,7 @@ button,select,.it{touch-action:manipulation}
 /* motion polish */
 .v.on{animation:vin .3s var(--ease)}@keyframes vin{from{opacity:0}}
 #ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on{animation:ofade .2s ease-out}
-#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet,#imbox.on .asheet{animation:sheetin .32s var(--spring)}
+#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet,#imbox.on .asheet,#slbox.on .asheet{animation:sheetin .32s var(--spring)}
 @keyframes ofade{from{opacity:0}}@keyframes sheetin{from{opacity:0;transform:translateY(16px) scale(.96)}}
 #drawer{transition:transform .38s var(--ease),visibility 0s .38s}#drawer.open{transition:transform .38s var(--ease),visibility 0s}
 #scrim{transition:opacity .38s var(--ease),visibility 0s .38s}#scrim.open{transition:opacity .38s var(--ease),visibility 0s}
@@ -642,6 +644,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 <div id="nbox"><div class="sheet"><h3 id="nt">New category</h3><input id="nn" maxlength="30" placeholder="Category name" autocomplete="off"><div class="err" id="ne"></div><p class="mut" id="nhint" style="margin:0 10px 8px;font-size:13px"></p><button id="nok">Save</button><button id="ncx">Cancel</button></div></div>
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
+<div id="slbox"><div class="asheet"><div class="ah"><button id="slX">Cancel</button><div><b id="slT">Create setlist</b><small id="slC"></small></div><button class="pill" id="slDone">Done</button></div><div id="slBody"></div></div></div>
 <div id="imbox"><div class="asheet"><div class="ah"><button id="imX">Cancel</button><div><b id="imT">Category</b><small id="imC"></small></div><button class="pill" id="imOK">Save</button></div><div class="imn"><input id="imName" maxlength="30" aria-label="Category name" placeholder="Category name"><small id="imErr" class="mut"></small></div><div id="imItems"></div></div></div>
 <section id="welcome" class="v"><div class="wc"><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg3)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2>Evo<i>Lyric</i></h2>
   <div id="wstep1"><p class="sub">A lyric teleprompter for live performers.</p><button class="gbtn" id="wgbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="werr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p></div>
@@ -805,25 +808,56 @@ $('#nbox').onclick=e=>{if(e.target.id==='nbox')$('#nbox').classList.remove('on')
 /* Add Songs popup: multi-select from the Master Library; songs already in the category are locked */
 let aSel=new Set(),aMode='cat',aTo=null;
 function addItems(){
-  const cat=aMode==='send'||aMode==='setlist'?null:curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
+  const cat=aMode==='send'?null:curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
   songs.filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))}).sort((a,b)=>a.title.localeCompare(b.title,'id')).forEach(s=>{
     const has=!!cat&&cat.ids.includes(s.id),b=E('button','arow'+(aSel.has(s.id)?' sel':''));b.disabled=has;
     const m=E('span');m.append(E('div','',s.title||'Untitled'),E('small','mut',s.artist||''));
-    b.append(E('span','chk',has?'✓':aSel.has(s.id)?(aMode==='setlist'?String([...aSel].indexOf(s.id)+1):'✓'):''),m);if(has)b.append(E('em','','Already added'));
-    b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else{if(aMode==='send'&&aSel.size>=SEND_MAX)return void note('Maximum '+SEND_MAX+' songs per group',true);aSel.add(s.id)}if(aMode==='setlist'){addItems();aCount();return}b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
+    b.append(E('span','chk',has?'✓':aSel.has(s.id)?'✓':''),m);if(has)b.append(E('em','','Already added'));
+    b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else{if(aMode==='send'&&aSel.size>=SEND_MAX)return void note('Maximum '+SEND_MAX+' songs per group',true);aSel.add(s.id)}b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
     box.append(b)});
   if(!box.children.length)box.append(E('p','mut','No songs.'))}
-function aCount(){const n=aSel.size;$('#aC').textContent=n+' selected';$('#aOK').disabled=!n;const v=aMode==='send'?'Send':aMode==='setlist'?'Create':'Add';$('#aOK').textContent=n?v+' ('+n+')':v}
-/* v113: Create setlist = pick songs in the order you want; they go into the queue (Next song) in that order. The numbers show the order. */
-function slOpen(){if(!songs.length)return void note('Your library is empty',true);aMode='setlist';aTo=null;aSel=new Set();$('#aT').textContent='Create setlist';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
-function slDone(){const ids=[...aSel].filter(id=>songs.some(x=>x.id===id));if(!ids.length)return;$('#addbox').classList.remove('on');aSel=new Set();
+function aCount(){const n=aSel.size;$('#aC').textContent=n+' selected';$('#aOK').disabled=!n;const v=aMode==='send'?'Send':'Add';$('#aOK').textContent=n?v+' ('+n+')':v}
+/* v114: Create setlist. Choose where to pick from (All Songs or a category), select songs and press Add; go Back to pick from another place; Done puts the whole setlist, in order, into the queue (Next song). */
+let slList=[],slSel=new Set(),slView='root',slSrc=null,slQ='';
+const slSongs=()=>{const c=slSrc&&slSrc!=='all'?cats.find(x=>x.id===slSrc):null;return(c?c.ids.map(id=>songs.find(x=>x.id===id)).filter(Boolean):songs).slice().sort((a,b)=>(a.title||'').localeCompare(b.title||'','id'))};
+function slOpen(){if(!songs.length)return void note('Your library is empty',true);slList=[];slSel=new Set();slView='root';slSrc=null;slQ='';slDraw();$('#slbox').classList.add('on')}
+function slDraw(){const B=$('#slBody'),keep=B.querySelector('#slList')?B.querySelector('#slList').scrollTop:0;B.textContent='';
+  $('#slX').textContent=slView==='root'?'Cancel':'Back';
+  $('#slC').textContent=slList.length+(slList.length===1?' song in setlist':' songs in setlist');
+  $('#slT').textContent=slView==='cats'?'Choose a category':slView==='songs'?(slSrc==='all'?'All Songs':((cats.find(x=>x.id===slSrc)||{}).name||'Category')):'Create setlist';
+  if(slView==='root'){
+    const mk=(t,n,f)=>{const b=E('button','slsrc');b.type='button';b.append(E('b','',t),E('small','mut',n));b.onclick=f;return b};
+    B.append(E('p','mut slhint','Choose where to pick songs from. You can come back and pick from another place; press Done when the setlist is ready.'),
+      mk('All Songs',songs.length+(songs.length===1?' song':' songs'),()=>{slView='songs';slSrc='all';slQ='';slDraw()}),
+      mk('Categories',cats.length+(cats.length===1?' category':' categories'),()=>{slView='cats';slDraw()}));
+    if(slList.length){B.append(E('div','fh','Setlist'));slList.forEach((id,i)=>{const x=songs.find(o=>o.id===id);if(!x)return;const r=E('div','imr'),t=E('div'),rm=E('button','cyc','Remove');rm.type='button';
+      t.append(E('b','',(i+1)+'. '+(x.title||'Untitled')),E('small','',x.artist||''));rm.onclick=()=>{slList.splice(i,1);slDraw()};r.append(t,rm);B.append(r)})}}
+  else if(slView==='cats'){const L=E('div');L.id='slList';L.style.cssText='padding:0 10px 10px';
+    [...cats].sort(byName).forEach(c=>{const b=E('button','arow');b.type='button';const m=E('span');m.append(E('div','',c.name),E('small','mut',c.ids.length+(c.ids.length===1?' song':' songs')));b.append(m,E('em','','›'));b.onclick=()=>{slView='songs';slSrc=c.id;slQ='';slDraw()};L.append(b)});
+    if(!cats.length)L.append(E('p','mut','No categories yet. Create one below.'));B.append(L)}
+  else{const bar=E('div','slbar'),f=E('span','sfield'),i=E('input');i.placeholder='Search songs…';i.value=slQ;i.setAttribute('aria-label','Search songs');f.append(i);
+    const add=E('button','pill');add.type='button';add.disabled=!slSel.size;add.textContent=slSel.size?'Add ('+slSel.size+')':'Add';
+    add.onclick=()=>{if(!slSel.size)return;slSel.forEach(id=>{if(!slList.includes(id))slList.push(id)});slSel=new Set();slDraw()};bar.append(f,add);B.append(bar);
+    const L=E('div');L.id='slList';B.append(L);
+    const fill=()=>{L.textContent='';const T=slQ.toLowerCase().split(/\s+/).filter(Boolean);
+      slSongs().filter(x=>{const h=((x.title||'')+' '+(x.artist||'')).toLowerCase();return T.every(w=>h.includes(w))}).forEach(x=>{
+        const inL=slList.indexOf(x.id),sel=slSel.has(x.id),b=E('button','arow'+(sel?' sel':''));b.type='button';b.disabled=inL>=0;
+        const m=E('span');m.append(E('div','',x.title||'Untitled'),E('small','mut',x.artist||''));
+        b.append(E('span','chk',inL>=0?String(inL+1):sel?String(slList.length+[...slSel].indexOf(x.id)+1):''),m);if(inL>=0)b.append(E('em','','In setlist'));
+        b.onclick=()=>{if(slSel.has(x.id))slSel.delete(x.id);else slSel.add(x.id);slDraw()};L.append(b)});
+      if(!L.children.length)L.append(E('p','mut','No songs.'))};
+    i.oninput=()=>{slQ=i.value;fill()};fill()}
+  const L2=B.querySelector('#slList');if(L2)L2.scrollTop=keep}
+$('#slX').onclick=()=>{if(slView==='root')return void $('#slbox').classList.remove('on');slView=slView==='songs'&&slSrc!=='all'?'cats':'root';slSel=new Set();slDraw()};
+$('#slbox').onclick=e=>{if(e.target.id==='slbox')$('#slX').onclick()};
+$('#slDone').onclick=()=>{const ids=[...new Set([...slList,...slSel])].filter(id=>songs.some(x=>x.id===id));$('#slbox').classList.remove('on');slSel=new Set();if(!ids.length)return;
   const fill=add=>{const q=Qs();if(!add)q.length=0;ids.forEach(id=>{if(!q.includes(id))q.push(id)});qFresh=null;qSave();qRender();note('Setlist ready: '+ids.length+(ids.length===1?' song':' songs')+' in the queue')};
   if(!Qs().length)return fill(false);
-  const c=csh();c.append(E('h3','','Your queue is not empty'));const a=E('button','','Replace the queue');a.onclick=()=>{ctxClose();fill(false)};const b=E('button','','Add to the end');b.onclick=()=>{ctxClose();fill(true)};const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,b,x);$('#ctx').classList.add('on')}
+  const c=csh();c.append(E('h3','','Your queue is not empty'));const a=E('button','','Replace the queue');a.onclick=()=>{ctxClose();fill(false)};const b=E('button','','Add to the end');b.onclick=()=>{ctxClose();fill(true)};const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,b,x);$('#ctx').classList.add('on')};
 function addOpen(){const cat=curCat();if(!cat)return;aMode='cat';aTo=null;aSel=new Set();$('#aT').textContent='Add Songs';$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
 $('#aq').oninput=addItems;$('#aX').onclick=()=>{aSel=new Set();$('#addbox').classList.remove('on')};
 $('#addbox').onclick=e=>{if(e.target.id==='addbox')$('#aX').onclick()};
-$('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();if(aMode==='setlist')return slDone();const cat=curCat();if(!cat||!aSel.size)return;let n=0;
+$('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();const cat=curCat();if(!cat||!aSel.size)return;let n=0;
   aSel.forEach(id=>{if(songs.some(s=>s.id===id)&&!cat.ids.includes(id)){cat.ids.push(id);n++}});
   save();aSel=new Set();$('#addbox').classList.remove('on');refresh();
   saveBad?note('Could not save changes',1):note(n+(n===1?' song':' songs')+' added to '+cat.name)};
@@ -866,7 +900,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='113';
+const APP_VER='114';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -886,7 +920,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Done when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Selesai kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -927,6 +961,7 @@ const ID={'Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu b
 '3–20 characters: letters, numbers, . _ and -. Friends find you by this name.':'3–20 karakter: huruf, angka, . _ dan -. Teman mencarimu lewat nama ini.','At least 3 characters':'Minimal 3 karakter','Sing Along':'Sing Along','speed':'kecepatan','e.g. Drums stop here':'mis. Drum berhenti di sini','Intro and Interlude pause the scroll automatically. In the editor you can set Pause here or Keep scrolling for any section.':'Intro dan Interlude menjeda scroll otomatis. Di editor kamu bisa memilih Pause here atau Keep scrolling untuk tiap bagian.'
 };
 const IDP=[
+[/^(\d+) songs? in setlist$/,'$1 lagu di setlist'],[/^(\d+) songs?$/,'$1 lagu'],[/^(\d+) categor(?:y|ies)$/,'$1 kategori'],
 [/^Create \((\d+)\)$/,'Buat ($1)'],
 [/^Setlist ready: (\d+) songs? in the queue$/,'Setlist siap: $1 lagu di antrean'],[/^A category can send up to (\d+) songs$/,'Satu kategori bisa mengirim maksimal $1 lagu'],[/^Send category “(.+)” to…$/,'Kirim kategori “$1” ke…'],
 [/^(\d+) of (\d+) songs will be added$/,'$1 dari $2 lagu akan ditambahkan'],[/^Category “(.+)” saved$/,'Kategori “$1” disimpan'],[/^from @(\S+) · category · (\d+) songs?$/,'dari @$1 · kategori · $2 lagu'],
@@ -962,7 +997,7 @@ i18nMO.observe(document.body,{childList:true,subtree:true,characterData:true,att
 function setLang(v){PREF.lang=v==='id'?'id':'en';prefSave();idCache.clear();i18nRun();if(typeof prefRender==='function'&&$('#prefs').classList.contains('on'))prefRender()}
 /* for tools/i18n-audit.js: visible text that has no Indonesian version */
 /* text that must stay as is: brand, musical terms, names, numbers, text already written in Indonesian via L() */
-const I18N_KEEP=new Set(['Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
+const I18N_KEEP=new Set(['Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
 const i18nKeep=e=>!/[A-Za-z]{3}/.test(e)||I18N_KEEP.has(e)||LID.has(e)||tr(e)!==e||/^#[0-9a-f]{6}$/i.test(e)||/@[\w.-]+/.test(e)||/^Versi \d+$/.test(e)||/^\[/.test(e)||/^(Intro|Verse|Pre-Chorus|Chorus|Interlude|Bridge|Coda|Outro|Male|Female)\b/.test(e)||(user&&(e===user.name||e===user.email));
 window.i18nMissing=()=>{const out=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);for(let n;n=w.nextNode();){if(i18nSkip(n))continue;const o=I18N_EN.get(n),e=(o?o.e:n.nodeValue).trim();if(i18nKeep(e))continue;if(getComputedStyle(n.parentElement).display!=='none')out.add(e)}
   document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>I18N_ATTR.forEach(a=>{if(!el.hasAttribute(a))return;const M=I18N_EN.get(el),e=((M&&M[a])?M[a].e:el.getAttribute(a)).trim();if(!i18nKeep(e))out.add(a+': '+e)}));return [...out]};

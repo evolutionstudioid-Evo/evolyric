@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v114 – Create setlist redesigned
+- Create setlist now starts with a choice: All Songs or Categories. Pick a category first, then its songs.
+- Select songs and press Add; go Back to pick from another category or All Songs. The setlist (numbered, with Remove) builds up on the first screen.
+- Done is at the top: it puts the whole setlist, in order, into the queue (asks to replace or add to the end if the queue already has songs).
+
 ## v113 – Send categories, setlists, 300-song limit
 - Send a whole category: press and hold a category → Send category → pick friends. It arrives as one card in Songs from friends. Opening it lists every song as "New" or "You already have this song"; per song you choose Save a copy / Use mine / Skip, and name the new category. Nothing in your library is ever overwritten, and nothing is duplicated unless you choose to.
 - Create setlist (in the + menu): pick songs in the order you want (numbered); they go into the queue / Next song in that order. If the queue already has songs you can replace it or add to the end.

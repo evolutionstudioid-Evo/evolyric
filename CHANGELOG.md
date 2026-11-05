@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v116 – Long press ignores swipes
+- On Home, swiping or scrolling the list no longer selects a song or opens its menu. The menu (send, delete, new version…) only opens when you hold still for a moment.
+
 ## v115 – Done opens the first lyric, L button on Home
 - Create setlist → Done now opens the first song straight away; the rest wait in Next song, in order.
 - New L button next to + on Home: returns to the last lyric (also after closing and reopening the app). If nothing was opened yet it takes the first song in the queue, or shows "Select a song first".

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v123 – Sort button moved
+- The Sort button now sits right next to the compact-list button, under the search box (it left the tab row).
+
 ## v122 – Compact button moved
 - The compact/wide list button on Home now sits on the left, under the search box and above the song list (it left the tab row).
 

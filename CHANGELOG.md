@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v95 – Smoother page turn
+- Next Song: the page now bends like real paper while it turns (hinged strips), catches the light, shows its back side and casts a moving shadow on the next song, which settles in softly beneath. Longer, with an ease in and out.
+
 ## v94 – Orange song title
 - The song title in the lyrics header now uses the theme's orange accent (a darker orange in the light theme).
 

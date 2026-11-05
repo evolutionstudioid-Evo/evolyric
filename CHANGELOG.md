@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v99 – Web search fix
+- Fixed a blank white page left behind the app after coming back from the Google search: Google is now opened with a normal separate-tab link instead of window.open.
+- The search is now "<title> lyric" (English) instead of "<title> lirik".
+
 ## v98 – Web search in the side panel
 - The globe button (search the web for these lyrics) is now also in the side song list, next to the search box: it opens a Google search for the typed title + "lirik" and a new song with that title ready to paste into.
 

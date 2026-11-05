@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v124 – Slimmer search bar
+- The Home search box and the Google button are now as tall as the tab buttons above (width unchanged).
+
 ## v123 – Sort button moved
 - The Sort button now sits right next to the compact-list button, under the search box (it left the tab row).
 

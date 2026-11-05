@@ -24,6 +24,10 @@ body{background:var(--bg);color:var(--fg);font:16px/1.4 'Atkinson Hyperlegible',
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 #ta[inputmode=none]{-webkit-touch-callout:none}
+#csw{position:absolute;display:none;pointer-events:none;z-index:5}#csm{position:absolute;left:0;top:0;overflow:hidden;box-sizing:border-box;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;color:transparent;border-color:transparent;pointer-events:none;-webkit-user-select:none;user-select:none}
+#csm mark{background:rgba(240,160,75,.4);color:transparent;border-radius:3px}
+.csh{position:absolute;width:34px;height:34px;margin:0 0 0 -17px;pointer-events:auto;touch-action:none;background:radial-gradient(circle at 50% 14px,var(--acc) 0 8px,transparent 9px);-webkit-user-select:none;user-select:none}.csh::before{content:"";position:absolute;left:16px;top:0;width:2px;height:6px;background:var(--acc)}
+#csw.drag .csh{pointer-events:none}#csw.drag #csm{pointer-events:auto}
 img,svg{-webkit-user-drag:none}
 button,input,textarea{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer;padding:0}
@@ -668,7 +672,9 @@ const migVocal=()=>{let ch=false;const fx=o=>{if(!o||typeof o!=='object')return;
 const save=()=>{migVocal();saveLocal();if(window.Cloud)Cloud.touch()};
 try{if(migVocal())saveLocal()}catch(e){}
 function toast(){}
-let noteT;function note(m,bad){const n=$('#note');n.textContent=m;n.classList.toggle('bad',!!bad);n.classList.add('on');clearTimeout(noteT);noteT=setTimeout(()=>n.classList.remove('on'),2400)}
+/* v108: no bottom pop-ups for routine confirmations (the screen already shows the result); errors and the few results with no visible change still show */
+const QUIET=/^(Pinned to top|Unpinned|Removed from |Song deleted|Category deleted|Category created|Added to queue|Already in queue|Profile saved|Signed out|Backup file saved|File cadangan disimpan)|songs? added to /;
+let noteT;function note(m,bad){if(!bad&&QUIET.test(m))return;const n=$('#note');n.textContent=m;n.classList.toggle('bad',!!bad);n.classList.add('on');clearTimeout(noteT);noteT=setTimeout(()=>n.classList.remove('on'),2400)}
 /* ---------- Categories data: category -> list of master song ids (songs are never copied) ---------- */
 const cid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const cname=v=>String(v||'').replace(/\s+/g,' ').trim();
@@ -843,7 +849,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='107';
+const APP_VER='108';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1491,10 +1497,11 @@ function openEdit(s,txt,title,base,pre){
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
   const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
   ed.annLyr=v;$('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';tmLoad(src);
-  $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
+  $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;cs=null;csRender();ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
 function secInfo(){
+  if(cs&&cs.v!==ta.value){cs=null;csRender()}
   noteInfo();hlSync();
   const L=ta.value.split('\n'),ci=ta.value.slice(0,ta.selectionStart).split('\n').length-1;let a=-1;
   for(let i=Math.min(ci,L.length-1);i>=0;i--)if(isLbl(L[i])){a=i;break}
@@ -1518,7 +1525,8 @@ ta.addEventListener('input',()=>secInfo());
 /* v88: highlights are {c:text} markers in the lyrics (c = r o y g b i v). Tap inside one to change its colour or remove it; no selection needed. */
 const HLR=/\{([roygbiv]):([^{}]*)\}/g;
 function hlList(v){const out=[];let m;HLR.lastIndex=0;while((m=HLR.exec(v)))out.push({s:m.index,e:m.index+m[0].length,c:m[1],t:m[2]});return out}
-function hlCtx(){const v=ta.value,p=ta.selectionStart,q=ta.selectionEnd,L=hlList(v);
+function SEL(){return cs&&cs.v===ta.value?[cs.a,cs.b]:[ta.selectionStart,ta.selectionEnd]}
+function hlCtx(){const v=ta.value,[p,q]=SEL(),L=hlList(v);
   if(p!==q){const o=L.filter(h=>h.s<q&&h.e>p);return o.length&&o.every(h=>h.c===o[0].c)?o[0]:null}
   const at=L.find(h=>p>=h.s&&p<h.e);if(at)return at;
   const ls=p?v.lastIndexOf('\n',p-1)+1:0;let le=v.indexOf('\n',p);if(le<0)le=v.length;
@@ -1526,7 +1534,7 @@ function hlCtx(){const v=ta.value,p=ta.selectionStart,q=ta.selectionEnd,L=hlList
 const hlWrap=(c,t)=>{const x=t.match(/^(\s*)([\s\S]*?)(\s*)$/);return !c||!x[2]?t:x[1]+'{'+c+':'+x[2]+'}'+x[3]};
 function hlApply(c){
   hlAuto=false; /* once you use the bar it stays open until you close it with the highlighter button */
-  const v0=ta.value;let a=ta.selectionStart,b=ta.selectionEnd;
+  const v0=ta.value;let[a,b]=SEL();
   if(a===b&&lastSel&&lastSel.v===v0&&(a===lastSel.a||a===lastSel.b)){a=lastSel.a;b=lastSel.b} /* some phones collapse the selection when a button is tapped */
   const L=hlList(v0);let ctx=null;
   ctx=a===b?hlCtx():(L.find(h=>h.s===a&&h.e===b)||null); /* caret in a highlight, or the highlight itself is selected */
@@ -1555,7 +1563,36 @@ $('#eH').onclick=()=>{hlAuto=false;$('#hlbar').hidden=!$('#hlbar').hidden;$('#eH
 Object.keys(HC).forEach(k=>{const b=E('button','sw');b.type='button';b.dataset.c=k;b.setAttribute('aria-label',HLN[k]);b.style.background=HC[k];b.style.setProperty('--c',HC[k]);b.onclick=()=>hlApply(b.dataset.c);$('#hlbar').insertBefore(b,$('#hx'))});
 $('#hx').onclick=()=>{const c=hlCtx();hlApply('')};
 ['pointerup','keyup','click','focus','select'].forEach(v=>ta.addEventListener(v,()=>setTimeout(snapCaret,0)));
-let lastSel=null;document.addEventListener('selectionchange',()=>{if(document.activeElement===ta){if(ta.selectionStart!==ta.selectionEnd)lastSel={a:ta.selectionStart,b:ta.selectionEnd,v:ta.value};snapCaret()}});
+let lastSel=null;document.addEventListener('selectionchange',()=>{if(document.activeElement===ta&&!csBusy){if(ta.selectionStart!==ta.selectionEnd){if(ta.inputMode==='none'){csSet(ta.selectionStart,ta.selectionEnd);return}lastSel={a:ta.selectionStart,b:ta.selectionEnd,v:ta.value}}snapCaret()}});
+/* v108: keyboard off = own selection (orange mark + two handles) so the phone's Cut / Copy / Paste / Look Up pop-up never appears; the native selection is collapsed at once.
+   Keyboard on = the normal native selection and pop-up. cs = {a,b,v}: the selected range of the lyrics text v. */
+let cs=null,csBusy=false,csDrag=null,csTap=null;
+const csw=E('div'),csm=E('div'),csi=E('div'),csA=E('div','csh'),csB=E('div','csh');csw.id='csw';csm.id='csm';csw.setAttribute('data-nt','');csm.append(csi);csw.append(csm,csA,csB);ta.parentElement.style.position='relative';ta.parentElement.append(csw);
+function csSet(a,b){cs={a,b,v:ta.value};csBusy=true;try{ta.setSelectionRange(a,a)}catch(e){}csBusy=false;csRender();secInfo()}
+function csPt(i){const w=document.createTreeWalker(csi,NodeFilter.SHOW_TEXT);let n,o=0,last=null;while(n=w.nextNode()){last=n;if(i<=o+n.data.length)return[n,i-o];o+=n.data.length}return last?[last,last.data.length]:null}
+function csRect(i,end){const t=ta.value.length,r=document.createRange();let x=end?csPt(Math.max(0,i-1)):csPt(i),y=end?csPt(i):csPt(Math.min(t,i+1));if(!x||!y)return null;r.setStart(x[0],x[1]);r.setEnd(y[0],y[1]);const q=r.getClientRects();if(!q.length)return null;return end?q[q.length-1]:q[0]}
+function csPos(){if(!cs||csw.style.display==='none')return;csi.style.transform='translateY('+(-ta.scrollTop)+'px)';
+  const W=csw.getBoundingClientRect(),H=ta.offsetHeight;
+  [[csA,csRect(cs.a,false),0],[csB,csRect(cs.b,true),1]].forEach(([h,r,e])=>{if(!r){h.style.display='none';return}const x=(e?r.right:r.left)-W.left,y=r.bottom-W.top;h.style.display=(y<2||y>H-2)?'none':'block';h.style.left=x+'px';h.style.top=(y+2)+'px'})}
+function csRender(){
+  const ok=cs&&cs.v===ta.value&&ta.inputMode==='none'&&$('#edit').classList.contains('on');
+  if(!ok){csw.style.display='none';if(cs&&cs.v!==ta.value)cs=null;return}
+  const g=getComputedStyle(ta),bw=['Left','Right','Top','Bottom'].map(k=>parseFloat(g['border'+k+'Width'])||0);
+  csw.style.display='block';Object.assign(csw.style,{left:ta.offsetLeft+'px',top:ta.offsetTop+'px',width:ta.offsetWidth+'px',height:ta.offsetHeight+'px'});
+  Object.assign(csm.style,{fontFamily:g.fontFamily,fontSize:g.fontSize,fontWeight:g.fontWeight,fontStyle:g.fontStyle,lineHeight:g.lineHeight,letterSpacing:g.letterSpacing,wordSpacing:g.wordSpacing,tabSize:g.tabSize,padding:g.padding,borderStyle:'solid',borderWidth:bw[2]+'px '+bw[1]+'px '+bw[3]+'px '+bw[0]+'px',width:(ta.clientWidth+bw[0]+bw[1])+'px',height:(ta.clientHeight+bw[2]+bw[3])+'px'});
+  const t=ta.value,m=E('mark');m.textContent=t.slice(cs.a,cs.b);csi.textContent='';csi.append(document.createTextNode(t.slice(0,cs.a)),m,document.createTextNode(t.slice(cs.b)+'\u200b'));
+  csPos()}
+function csIdx(x,y){let r=null;if(document.caretRangeFromPoint)r=document.caretRangeFromPoint(x,y);else if(document.caretPositionFromPoint){const q=document.caretPositionFromPoint(x,y);if(q)r={startContainer:q.offsetNode,startOffset:q.offset}}
+  if(!r||r.startContainer.nodeType!==3||!csi.contains(r.startContainer))return -1;
+  const w=document.createTreeWalker(csi,NodeFilter.SHOW_TEXT);let n,o=0;while(n=w.nextNode()){if(n===r.startContainer)return Math.min(ta.value.length,o+r.startOffset);o+=n.data.length}return -1}
+[csA,csB].forEach((h,k)=>{
+  h.addEventListener('pointerdown',e=>{if(!cs)return;e.preventDefault();e.stopPropagation();try{h.setPointerCapture(e.pointerId)}catch(_){}csDrag={anchor:k?cs.a:cs.b};csw.classList.add('drag')});
+  h.addEventListener('pointermove',e=>{if(!csDrag||!cs)return;const R=ta.getBoundingClientRect();if(e.clientY>R.bottom-28)ta.scrollTop+=12;else if(e.clientY<R.top+28)ta.scrollTop-=12;
+    const ix=csIdx(e.clientX,e.clientY-28);if(ix<0)return;const a=Math.min(ix,csDrag.anchor),b=Math.max(ix,csDrag.anchor);if(a===b||(a===cs.a&&b===cs.b))return;cs.a=a;cs.b=b;csRender()});
+  const up=()=>{if(!csDrag)return;csDrag=null;csw.classList.remove('drag');secInfo()};h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up)});
+ta.addEventListener('pointerdown',e=>{csTap={x:e.clientX,y:e.clientY,t:performance.now()}});
+ta.addEventListener('pointerup',e=>{if(cs&&csTap&&Math.hypot(e.clientX-csTap.x,e.clientY-csTap.y)<8&&performance.now()-csTap.t<350){cs=null;csRender();secInfo()}csTap=null}); /* a short tap clears the selection */
+ta.addEventListener('scroll',csPos);window.addEventListener('resize',csRender);if(window.ResizeObserver)new ResizeObserver(()=>csRender()).observe(ta);
 function snap(){clearTimeout(st);if(ta.value!==ed.h[ed.i]){ed.h.length=ed.i+1;ed.h.push(ta.value);ed.i++}}
 ta.oninput=()=>{ed.dirty=true;clearTimeout(st);st=setTimeout(snap,500)};
 $('#et').oninput=$('#ea').oninput=$('#ek').onchange=()=>ed.dirty=true;
@@ -1583,7 +1620,7 @@ function ins(name,color){
   let b=v.slice(0,ls);if(b&&!b.endsWith('\n\n'))b+='\n';
   ta.value=b+tag+v.slice(ls);ta.selectionStart=ta.selectionEnd=b.length+tag.length;
   ta.focus({preventScroll:true});ta.scrollTop=sy;snap();ed.dirty=true;snapCaret()}
-function setKb(on){ta.inputMode=on?'text':'none';ta.setAttribute('enterkeyhint',on?'enter':'done');const b=$('#eK');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')}
+function setKb(on){ta.inputMode=on?'text':'none';if(on&&cs&&cs.v===ta.value){const q=cs;cs=null;csRender();setTimeout(()=>{try{ta.setSelectionRange(q.a,q.b)}catch(e){}},0)}else if(!on)csRender();ta.setAttribute('enterkeyhint',on?'enter':'done');const b=$('#eK');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')}
 /* toolbar buttons must not steal focus from the textarea (keeps keyboard / selection alive) */
 document.querySelectorAll('#edit .tb button').forEach(b=>b.addEventListener('mousedown',e=>e.preventDefault()));
 $('#eK').onclick=()=>{

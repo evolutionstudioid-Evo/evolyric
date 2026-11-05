@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v104 – New Section panel
+- The old flat list of section labels in the editor is replaced by three collapsible categories (each with its own chevron, all open by default): SONG (Intro, Verse, Pre-Chorus, Chorus, Post-Chorus, Interlude, Instrumental, Solo, Bridge, Rap, Drop, Coda, Outro), VOICING (Vocal 1–5, Harmony, Choir) and PERFORMANCE (A Cappella, Sing-Along, Call & Response, Ad-Libs, Improvisation, Scat, Whistle, Scream, Whisper, Spoken, Break, Rit., Rall.). "Custom…" stays at the bottom.
+- Songs already saved keep working: older markers such as [Sing Along], [Free Style], [Medley], [Rit] and [Rall] still show with their colours; they are just no longer buttons.
+- Harmony and Choir behave like Vocal 1–5 (a tag beside the section name).
+
 ## v103 – Tutorial is now a full manual
 - The Tutorial now uses an iPad-style page (3:4) with a screenshot on the left and every button numbered and explained on the right. About 70 pages cover each screen: sign-in and username, adding a song, Google search, Home (tabs, sort, Recent, menus), the lyrics screen and gestures, speed, the queue and Next song, the whole editor (tools, keyboard, paste, section buttons, removing labels, pause/keep going, Vocal 1–5, custom labels, highlight, annotations), categories, friends (find, add, requests), sending songs, inbox, profile, account, backup and restore, preferences, help and light theme.
 - Includes a clickable table of contents, a language switch (ID/EN) and a closing page. All names in the screenshots are fictional (John, Mary, David, Lucy, Alex).

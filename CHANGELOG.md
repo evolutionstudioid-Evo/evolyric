@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v126 – Tutorial rebuilt
+- The in-app tutorial (Help → Tutorial, ID/EN) was rebuilt from the current app in 12 chapters: Getting started, Home screen, Lyrics view & live prompter, Setlist & queue, Editing songs, Annotation tools, Categories, Friends & sharing, Account & synchronization, Preferences, Backup & restore, Tips & best practices.
+- New slides: welcome, the line buttons (hamburger / compact list / wide list), compact list, Create setlist (source, picking, L button), key, the three Section groups with the new Voicing colours (Harmony green, Choir red), category pin / sort / send, receiving a category, receiving songs you already have, several devices, tips.
+- Screenshots were captured again from this version. Updated limits: 300 songs per send.
+
 ## v125 – Indonesian fixes
 - Translated the "Send “song” to…" title and the setlist search label.
 

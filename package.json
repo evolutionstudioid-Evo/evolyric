@@ -7,7 +7,8 @@
     "add:ios": "cap add ios",
     "sync": "cap sync",
     "android": "cap open android",
-    "ios": "cap open ios"
+    "ios": "cap open ios",
+    "test": "node tests/run.js"
   },
   "dependencies": {
     "@capacitor/core": "^8.6.0"
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@capacitor/cli": "^8.6.0",
     "@capacitor/android": "^8.6.0",
-    "@capacitor/ios": "^8.6.0"
+    "@capacitor/ios": "^8.6.0",
+    "playwright": "^1.50.0"
   }
 }

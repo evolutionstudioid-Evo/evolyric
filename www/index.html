@@ -169,12 +169,13 @@ button,select,.it{touch-action:manipulation}
 #qtg.has b{transform:scale(1)}
 #qtg.bump{animation:qbump .5s var(--spring)}
 .qfly{position:fixed;z-index:9999;height:34px;line-height:34px;padding:0 14px;border-radius:17px;background:var(--acc,#f0a04b);color:#1a1209;font:600 13px/34px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.45)}
-.pgturn{position:fixed;z-index:9998;pointer-events:none;perspective:1700px;perspective-origin:50% 40%}
-.pgs{position:absolute;top:0;height:100%;transform-origin:left center;transform-style:preserve-3d;will-change:transform}
-.pgf,.pgb{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
-.pgb{transform:rotateY(180deg);background:linear-gradient(90deg,#1b1510,#2a2017 55%,#1b1510)}
-.pgl{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.7),rgba(255,214,160,.16) 60%,rgba(0,0,0,.45));opacity:0;pointer-events:none}
-.pgcast{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(0,0,0,0) 38%);pointer-events:none;will-change:transform}
+.pgturn{position:fixed;z-index:9998;pointer-events:none;overflow:hidden}
+.pgl{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.pgbs,.pgback{position:absolute;top:0;height:100%;background:linear-gradient(90deg,#241b13,#33261b 50%,#241b13)}
+.pgbs{display:none}
+.pgback{background:linear-gradient(90deg,#1f1710,#2b2017 35%,#33261b)}
+.pgbsh{position:absolute;top:0;height:100%;width:34px;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.5))}
+.pgcast{position:absolute;top:0;height:100%;width:64px;background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0}
 @keyframes qbump{35%{transform:scale(1.22)}}
 #qp{position:absolute;top:calc(var(--qt,100px) + 44px);right:8px;z-index:11;width:min(184px,46vw);max-height:max(84px,min(42%,250px,calc(100% - var(--qt,100px) - 44px - 120px)));display:flex;flex-direction:column;background:rgba(34,28,23,.95);border:1px solid var(--ln);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;opacity:0;transform:translateY(-8px) scale(.92);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .24s var(--ease),visibility 0s .24s}
 #qp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .2s var(--ease),transform .34s var(--spring),visibility 0s}
@@ -822,7 +823,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='95';
+const APP_VER='96';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1312,26 +1313,30 @@ let turning=0,qpR=null;
 function pageSnap(){try{const L=$('#lyr'),r=L.getBoundingClientRect(),P=$('#play');if(!r.width)return null;
   const c=L.cloneNode(true);c.removeAttribute('id');c.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
   return {c,r,st:L.scrollTop,bg:getComputedStyle(P).backgroundColor||'#0d0a08'}}catch(e){return null}}
-/* the page is cut into hinged strips, so it bends like paper while it turns; light and a cast shadow follow it */
-function pageTurn(k){turning=1;const {r,c,bg}=k,N=8,sw=r.width/N,D=950;
-  const w=E('div','pgturn');w.style.cssText='left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px';
-  const cast=E('div','pgcast');w.append(cast);
-  const strips=[],lights=[];let host=w;
-  for(let i=0;i<N;i++){
-    const sp=E('div','pgs');sp.style.cssText='width:'+sw+'px;left:'+(i?sw:0)+'px';
-    const fr=E('div','pgf'),cl=c.cloneNode(true);cl.style.cssText='position:absolute;top:0;left:'+(-i*sw)+'px;width:'+r.width+'px;height:100%;overflow:hidden;pointer-events:none;background:'+bg;
-    cl.scrollTop=k.st;const li=E('div','pgl');fr.append(cl,li);
-    const bk=E('div','pgb');sp.append(fr,bk);host.append(sp);host=sp;strips.push(sp);lights.push(li)}
-  document.body.append(w);strips.forEach((sp,i)=>{sp.firstChild.firstChild.scrollTop=k.st});
-  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,t0=performance.now();let raf=0;
-  const frame=now=>{const t=Math.min(1,(now-t0)/D),p=ease(t),th=-p*180,bulge=Math.sin(Math.PI*p),bend=-bulge*13;
-    strips[0].style.transform='rotateY('+th+'deg)';for(let i=1;i<N;i++)strips[i].style.transform='rotateY('+bend+'deg)';
-    lights.forEach((l,i)=>{l.style.opacity=(bulge*.55*(.4+.6*i/N)).toFixed(3)});
-    const edge=r.width*Math.cos(th*Math.PI/180)*(1-.12*bulge);cast.style.opacity=(bulge*.8).toFixed(3);cast.style.transform='translateX('+Math.max(0,edge)+'px)';
+/* v96: page curl — the page peels away from the right edge over a small cylinder (a slight roll), its back side slides off to the left */
+function pageTurn(k){turning=1;const {r,c,bg}=k,W=r.width,H=r.height,R=15,N=10,PI=Math.PI,D=860,ds=PI*R/N;
+  const w=E('div','pgturn');w.style.cssText='left:'+r.left+'px;top:'+r.top+'px;width:'+W+'px;height:'+H+'px';
+  const mk=()=>{const x=E('div','pgw');x.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px';const q=c.cloneNode(true);
+    q.style.cssText='position:absolute;inset:0;overflow:hidden;pointer-events:none;background:'+bg;const o=E('div','pgl');x.append(q,o);return {x,q,o}};
+  const flat=mk(),cast=E('div','pgcast'),sheet=E('div','pgback'),sheetSh=E('div','pgbsh'),strips=[],backs=[];
+  w.append(cast,flat.x);for(let i=0;i<N;i++){const m=mk(),b=E('div','pgbs');strips.push(m);backs.push(b);w.append(m.x,b)}w.append(sheetSh,sheet);
+  document.body.append(w);flat.q.scrollTop=k.st;strips.forEach(m=>{m.q.scrollTop=k.st});
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,X0=W-3,X1=-R-4,t0=performance.now();let raf=0;
+  const frame=now=>{const t=Math.min(1,(now-t0)/D),x=X0+(X1-X0)*ease(t);
+    flat.x.style.clipPath='inset(0 '+Math.max(0,W-Math.max(x,0))+'px 0 0)';flat.o.style.opacity=0;
+    for(let i=0;i<N;i++){const u0=x+i*ds,u1=Math.min(W,x+(i+1)*ds),m=strips[i],bk=backs[i];
+      if(u1-u0<=.01||u0>=W||u1<0&&u0<0&&false){m.x.style.display=bk.style.display='none';continue}
+      const a0=i*ds/R,a1=Math.min(PI,(u1-x)/R),x0=x+R*Math.sin(a0),x1=x+R*Math.sin(a1),k2=(x1-x0)/Math.max(.01,u1-u0);
+      if(k2>0.02){bk.style.display='none';m.x.style.display='';
+        m.x.style.clipPath='inset(0 '+(W-u1)+'px 0 '+u0+'px)';m.x.style.transformOrigin='0 0';m.x.style.transform='translateX('+(x0-k2*u0)+'px) scaleX('+k2+')';
+        m.o.style.opacity=(.05+.5*Math.pow(Math.sin((a0+a1)/2),2)).toFixed(3)}
+      else{m.x.style.display='none';bk.style.display='';const l=Math.min(x0,x1);bk.style.left=l+'px';bk.style.width=Math.abs(x1-x0)+.6+'px';
+        bk.style.opacity=(.85+.15*Math.cos((a0+a1)/2)).toFixed(2)}}
+    const L=W-x-PI*R;if(L>0){sheet.style.display=sheetSh.style.display='';sheet.style.left=(x-L)+'px';sheet.style.width=L+.6+'px';sheetSh.style.left=(x-L-34)+'px'}else sheet.style.display=sheetSh.style.display='none';
+    cast.style.left=(x+R*.2)+'px';cast.style.opacity=Math.min(1,Math.max(0,(W-x)/30,0)).toFixed(2)*(t>.9?(1-t)*10:1);
     if(t<1)raf=requestAnimationFrame(frame);else done()};
   const done=()=>{cancelAnimationFrame(raf);w.remove();turning=0};
-  /* the new page settles in beneath the turning one */
-  try{$('#lyr').animate([{opacity:.35,transform:'scale(.97)'},{opacity:1,transform:'scale(1)'}],{duration:D,easing:'cubic-bezier(.2,.7,.2,1)'})}catch(e){}
+  try{$('#lyr').animate([{opacity:.55,transform:'scale(.985)'},{opacity:1,transform:'scale(1)'}],{duration:D,easing:'cubic-bezier(.2,.7,.2,1)'})}catch(e){}
   raf=requestAnimationFrame(frame);setTimeout(()=>{if(turning)done()},D+500)}
 function qNext(){
   if(nexting)return;const id=Qs().find(x=>songs.some(o=>o.id===x));if(!id)return;const s=songs.find(o=>o.id===id);

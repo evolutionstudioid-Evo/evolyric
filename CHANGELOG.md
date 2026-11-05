@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v110 – No Paste / Select / AutoFill pop-up after selecting
+- With the keyboard off, the text box is now un-focused while EvoLyric's own selection is shown, so the phone no longer pops up Paste / Select / Select All / AutoFill for the leftover caret. Colouring keeps the selection visible; a tap clears it.
+
 ## v109 – Keyboard button follows the phone keyboard
 - When the phone hides the keyboard by itself (the ✓ button on iPhone, the back / hide key on Android, or tapping away), the Keyboard button in the editor now switches off too. Tapping the Keyboard button again still hides the keyboard and switches the button off.
 

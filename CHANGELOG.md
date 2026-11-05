@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v96 – Page curl
+- Next Song: replaced the hinged flip with a page curl. The page peels away from the right edge over a small roll, its back side slides off to the left, and a soft shadow follows the roll across the next song.
+
 ## v95 – Smoother page turn
 - Next Song: the page now bends like real paper while it turns (hinged strips), catches the light, shows its back side and casts a moving shadow on the next song, which settles in softly beneath. Longer, with an ease in and out.
 

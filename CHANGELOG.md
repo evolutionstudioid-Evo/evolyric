@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v111 – Voicing colours
+- Choir lyrics are now red and Harmony lyrics are green (the other colours are unchanged).
+
 ## v110 – No Paste / Select / AutoFill pop-up after selecting
 - With the keyboard off, the text box is now un-focused while EvoLyric's own selection is shown, so the phone no longer pops up Paste / Select / Select All / AutoFill for the leftover caret. Colouring keeps the selection visible; a tap clears it.
 

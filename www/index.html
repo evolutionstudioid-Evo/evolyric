@@ -710,7 +710,7 @@ function adapt(c){if(document.documentElement.dataset.theme!=='light'||typeof c!
   if(l>.3||s<.2){l=Math.min(l,.42);if(s<.2)s=Math.min(s,.1);for(;l>.12;l-=.02){const r=f(0),g=f(8),b=f(4),L=lum(r,g,b);if((0.93+.05)/(L+.05)>=4.7){out='#'+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');break}}}
   return _adc[c]=out}
 const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185','male 1':'#38bdf8','male 2':'#e8a15a','female 1':'#ff7eb6','female 2':'#c4a5ff',all:'#ffd23f','vocal 1':'#38bdf8','vocal 2':'#ff7eb6','vocal 3':'#c4a5ff','vocal 4':'#e8a15a','vocal 5':'#ffd23f',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b',
-  'post-chorus':'#fb7185',instrumental:'#22d3ee',solo:'#facc15',rap:'#f97316',drop:'#e879f9',outro:'#14b8a6',harmony:'#a78bfa',choir:'#93c5fd','a cappella':'#fde68a','sing-along':'#f472b6','call & response':'#34d399','ad-libs':'#fdba74',improvisation:'#bef264',scat:'#67e8f9',whistle:'#d9f99d',scream:'#ef4444',whisper:'#c4b5fd',spoken:'#cbd5e1',break:'#94a3b8','rit.':'#fbbf24','rall.':'#f59e0b'};
+  'post-chorus':'#fb7185',instrumental:'#22d3ee',solo:'#facc15',rap:'#f97316',drop:'#e879f9',outro:'#14b8a6',harmony:'#4ade80',choir:'#ff5d5d','a cappella':'#fde68a','sing-along':'#f472b6','call & response':'#34d399','ad-libs':'#fdba74',improvisation:'#bef264',scat:'#67e8f9',whistle:'#d9f99d',scream:'#ef4444',whisper:'#c4b5fd',spoken:'#cbd5e1',break:'#94a3b8','rit.':'#fbbf24','rall.':'#f59e0b'};
 const HC={r:'rgba(255,69,58,.45)',o:'rgba(255,149,0,.5)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)',b:'rgba(10,132,255,.45)',i:'rgba(94,92,230,.5)',v:'rgba(191,90,242,.5)'},HLN={r:'Red',o:'Orange',y:'Yellow',g:'Green',b:'Blue',i:'Indigo',v:'Violet'};
 const lblColor=(s,lo)=>(lo=lo.replace(/^vokal /,'vocal '),adapt((s.colors&&s.colors[lo])||LC[lo]||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e'));
 /* v90: voice labels (Male 1/2, Female 1/2, All). Written as their own [label] line; right after a section label they are shown beside that section's name,
@@ -849,7 +849,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='110';
+const APP_VER='111';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

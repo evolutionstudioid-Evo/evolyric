@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v85 – Blue web-search globe
+- The globe button next to search (search the web for lyrics) is now Google blue.
+
 ## v84 – Sign-in required
 - Guest mode is gone: without a signed-in Google account the app stays on the Welcome page. Anyone who had chosen guest earlier is asked to sign in.
 

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v112 – Pin and sort categories
+- Categories: press and hold a category and choose Pin to top / Unpin. Pinned categories stay at the top with a pin icon (and sync with your account).
+- The sort button now also appears in the Categories tab: A–Z, Newest added, Oldest added (remembered separately from the song sort).
+
 ## v111 – Voicing colours
 - Choir lyrics are now red and Harmony lyrics are green (the other colours are unchanged).
 

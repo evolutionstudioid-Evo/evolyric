@@ -745,10 +745,14 @@ function items(box,q,pick,menu,pool,cat,empty,keep){
       row(s)});
   if(!box.children.length)box.append(E('p','mut',empty||'No songs.'));
 }
+/* v112: categories can be sorted too (A–Z / newest / oldest; the time comes from the category id) and pinned to the top */
+const CSORTS=[['az','A–Z'],['new','Newest added'],['old','Oldest added']],CSORTK='evolyric-catsort-v1';let catSortBy='az';try{const v=localStorage.getItem(CSORTK);if(CSORTS.some(x=>x[0]===v))catSortBy=v}catch(e){}
+const cTime=c=>{const m=/^c([0-9a-z]{6,9})[0-9a-z]{3}$/.exec(c.id||'');return m?parseInt(m[1],36)||0:0};
+const catSorter=()=>catSortBy==='new'?(a,b)=>cTime(b)-cTime(a)||byName(a,b):catSortBy==='old'?(a,b)=>cTime(a)-cTime(b)||byName(a,b):byName;
 function catList(){
   const box=$('#items');box.textContent='';const q=($('#q').value||'').trim().toLowerCase();
-  const L=[...cats].sort(byName).filter(c=>c.name.toLowerCase().includes(q));
-  L.forEach(c=>{const b=E('button','it'),t=E('b'),n=c.ids.length;t.append(E('span','',c.name),E('span','key',n+(n===1?' song':' songs')));b.append(t);
+  const cmp=catSorter(),F=cats.filter(c=>c.name.toLowerCase().includes(q)),L=[...F.filter(c=>c.pin).sort(cmp),...F.filter(c=>!c.pin).sort(cmp)]; /* pinned categories first */
+  L.forEach(c=>{const b=E('button','it'),t=E('b'),n=c.ids.length,nm=E('span','',c.name);if(c.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;nm.prepend(pi)}t.append(nm,E('span','key',n+(n===1?' song':' songs')));b.append(t);
     press(b,()=>{lib.v='cat';lib.id=c.id;$('#q').value='';refresh()},()=>ctxCat(c));box.append(b)});
   if(!L.length)box.append(E('p','mut',cats.length?'No matching categories.':'No categories yet. Create one to organize your songs.'))}
 function refresh(){
@@ -756,7 +760,7 @@ function refresh(){
   const cat=lib.v==='cat'?curCat():null;
   const tabOn=lib.v==='cat'?'cats':lib.v;$('#tabs').querySelectorAll('button[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===tabOn));
   $('#crumb').hidden=!cat;$('#cName').textContent=cat?cat.name:'';
-  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='cats'||lib.v==='recent';
+  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='recent';
   $('#q').placeholder=lib.v==='all'?'Search songs…':lib.v==='recent'?'Search recent songs…':cat?'Search in '+cat.name+'…':'Search categories…';
   $('#actrow').hidden=lib.v==='all'||lib.v==='recent';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
   if(lib.v==='cats')catList();
@@ -777,6 +781,7 @@ function ctxOpen(s,cat){
 function ctxCat(c){
   const k=csh();k.append(E('h3','',c.name));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;k.append(b)};
+  add(c.pin?'Unpin':'Pin to top',()=>{if(c.pin)delete c.pin;else c.pin=Date.now();save();ctxClose();refresh()});
   add('Rename',()=>{ctxClose();nameBox('Rename category',c.name,c.id,n=>{c.name=n;save();refresh()})});
   add('Delete category',()=>ask('Delete “'+c.name+'”?','Only the category is deleted. The songs stay in All Songs and in their other categories.','Delete category',()=>{cats=cats.filter(x=>x!==c);save();if(lib.id===c.id){lib.v='cats';lib.id=null}refresh();note('Category deleted')}),'del');
   $('#ctx').classList.add('on')}
@@ -813,8 +818,8 @@ $('#aOK').onclick=()=>{if(aMode==='send')return sendBatch();const cat=curCat();i
   saveBad?note('Could not save changes',1):note(n+(n===1?' song':' songs')+' added to '+cat.name)};
 $('#act').onclick=()=>{if(lib.v==='cat')addOpen();else nameBox('New category','',null,n=>{cats.push({id:cid(),name:n,ids:[]});save();refresh();note('Category created')})};
 $('#q').oninput=refresh;$('#find').onclick=()=>{refresh();$('#q').focus()};
-$('#sortb').onclick=()=>{const c=csh();c.append(E('h3','','Sort by'));
-  SORTS.forEach(([k,t])=>{const b=E('button','ck',t);b.append(E('i','',sortBy===k?'✓':''));b.onclick=()=>{sortBy=k;try{localStorage.setItem(SORTK,k)}catch(e){}ctxClose();refresh()};c.append(b)});
+$('#sortb').onclick=()=>{const c=csh(),inCats=lib.v==='cats';c.append(E('h3','','Sort by'));
+  (inCats?CSORTS:SORTS).forEach(([k,t])=>{const cur=inCats?catSortBy:sortBy,b=E('button','ck',t);b.append(E('i','',cur===k?'✓':''));b.onclick=()=>{if(inCats){catSortBy=k;try{localStorage.setItem(CSORTK,k)}catch(e){}}else{sortBy=k;try{localStorage.setItem(SORTK,k)}catch(e){}}ctxClose();refresh()};c.append(b)});
   $('#ctx').classList.add('on')};
 /* v99: open Google in a separate tab with a real link (noopener) — window.open left a blank white page behind the app; query is "<title> lyric" */
 function webSearch(q){const a=document.createElement('a');a.href='https://www.google.com/search?q='+encodeURIComponent(q+' lyric');a.target='_blank';a.rel='noopener noreferrer';a.style.display='none';document.body.append(a);a.click();setTimeout(()=>a.remove(),0)}
@@ -849,7 +854,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='111';
+const APP_VER='112';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

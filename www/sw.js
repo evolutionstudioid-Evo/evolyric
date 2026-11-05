@@ -1,10 +1,11 @@
-const V='evolyric-app-100',F='evolyric-fonts';
-const SHELL=['./','index.html','manifest.webmanifest','config.js','cloud.js','vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
+const V='evolyric-app-101',F='evolyric-fonts';
+const SHELL=['./','index.html','manifest.webmanifest','config.js','cloud.js','tutorial.html','vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!==F&&x.startsWith('evolyric-')).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
   const r=e.request;if(r.method!=='GET')return;const u=new URL(r.url);
   if(u.origin===location.origin){
+    if(u.pathname.endsWith('/tutorial.html')){e.respondWith(caches.match('tutorial.html').then(m=>m||fetch(r)));return}
     if(r.mode==='navigate'||u.pathname.endsWith('/')||u.pathname.endsWith('index.html')){
       /* network-first, but never make the stage wait: after 2.5 s fall back to the cached page */
       e.respondWith((async()=>{

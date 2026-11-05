@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v122 – Compact button moved
+- The compact/wide list button on Home now sits on the left, under the search box and above the song list (it left the tab row).
+
 ## v121 – Compact list button on Home
 - The 4-line compact/wide list button from the lyric sidebar is now also on Home, right next to Sort. Compact shows only title and key in tighter rows; the choice is remembered. Hidden in the Categories tab.
 

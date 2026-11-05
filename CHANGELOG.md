@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v100 – Testers removed from About
+- The Testers names are hidden from the About credits for now (kept in the code as a comment so they can be restored).
+
 ## v99 – Web search fix
 - Fixed a blank white page left behind the app after coming back from the Google search: Google is now opened with a normal separate-tab link instead of window.open.
 - The search is now "<title> lyric" (English) instead of "<title> lirik".

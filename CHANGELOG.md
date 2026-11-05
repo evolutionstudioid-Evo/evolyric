@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v118 – L button upright
+- The L on the Home button is now upright (not italic).
+
 ## v117 – L button restyled
 - The L button on Home now sits above the + button: a transparent orange ring with an orange italic serif L.
 

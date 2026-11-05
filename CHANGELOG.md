@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v87 – Annotate drawing no longer locks up
+- Fixed: the pen, shapes and text only worked the first time Annotate was opened. Each visit rebuilt the drawing layer but its touch handlers stayed on the old one, so from the second visit nothing could be drawn (it looked fixed after leaving the editor or reloading). The handlers are now attached to every new layer.
+- A stroke whose finger-lift was never received (for example when a dialog or another touch interrupted it) can no longer block the next stroke.
+
 ## v86 – Orange web-search globe
 - The globe button next to search now uses the theme\u2019s orange accent (darker orange on the light theme) instead of blue.
 

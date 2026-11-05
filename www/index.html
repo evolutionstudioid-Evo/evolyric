@@ -808,7 +808,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='86';
+const APP_VER='87';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1552,9 +1552,9 @@ function anGo(d){const n=an.hi+d;if(n<0||n>=an.h.length)return;an.hi=n;an.items=
 function openAnn(){if(ed.ann&&ed.ann.length&&ed.annLyr!=null&&ed.annLyr!==ta.value)annRemap(ed.ann,ed.annLyr.split('\n'),ta.value.split('\n'));ed.annLyr=ta.value;const f=ed.s?ed.s.font:ed.base?ed.base.font:defFont(),t=$('#antx'),start=JSON.stringify(ed.ann||[]);
   an={items:JSON.parse(start),sel:-1,tool:'pen',shape:'r',c:'o',w:2,em:f,h:[start],hi:0,start,dr:null};
   t.textContent='';t.style.fontSize=f+'px';t._le=buildLines(t,ta.value,ed.colors);
-  const lay=E('div','annl ed');lay.id='anlay';const cap=E('div','ancap');cap.id='ancap';t.append(lay,cap);
+  const lay=E('div','annl ed');lay.id='anlay';const cap=E('div','ancap');cap.id='ancap';t.append(lay,cap);if(anBindCap)anBindCap(cap);
   anInit();show('ann');$('#anl').scrollTop=0;anTool('pen');requestAnimationFrame(anRedraw)}
-let anReady=false;
+let anReady=false,anBindCap=null;
 function anInit(){if(anReady)return;anReady=true;
   const O=$('#anO');
   Object.keys(ANC).forEach(k=>{const b=E('button','asw');b.type='button';b.dataset.c=k;b.style.setProperty('--c',ANC[k]);b.setAttribute('aria-label','Colour '+k);O.append(b)});
@@ -1572,7 +1572,7 @@ function anInit(){if(anReady)return;anReady=true;
   $('#anEd').onclick=()=>{const it=an&&an.items[an.sel];if(!it||it.k!=='x')return;noteOpen(-1,o=>{it.o=o;anSnap();anRedraw()},it.o,()=>{an.items.splice(an.sel,1);an.sel=-1;anSnap();anRedraw();anUi()})};
   $('#anFile').onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(f)anImage(f)};
   $('#anOK').onclick=anDone;$('#anX').onclick=anBack;
-  const lay=()=>$('#anlay'),cap=$('#ancap');
+  const lay=()=>$('#anlay');
   /* Move / Erase: pointer events land on the items themselves */
   $('#antx').addEventListener('pointerdown',e=>{if(!an||(an.tool!=='sel'&&an.tool!=='erase'))return;const n=e.target.closest&&e.target.closest('[data-i]');if(!n){if(an.sel>=0){an.sel=-1;anRedraw();anUi()}return}
     const i=+n.getAttribute('data-i'),it=an.items[i];if(!it)return;
@@ -1584,8 +1584,11 @@ function anInit(){if(anReady)return;anReady=true;
     const up=ev=>{if(ev.pointerId!==pid)return;document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);
       if(moved&&ev.type==='pointerup'){const O=chOrigin(t),p=annPos(it,t,t._le,an.em),r=node.getBoundingClientRect(),a=annAnchor(t,t._le,an.em,p.x+ev.clientX-x0,p.y+ev.clientY-y0,r.left+r.width/2-O.x,r.top+r.height/2-O.y);Object.assign(it,a);anSnap()}anRedraw()};
     document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});
-  /* Pen / Shape / Text: the capture layer takes the touch */
-  cap.addEventListener('pointerdown',e=>{if(!an||!['pen','shape','text'].includes(an.tool)||an.dr)return;e.preventDefault();try{cap.setPointerCapture(e.pointerId)}catch(_){}
+  /* Pen / Shape / Text: the capture layer takes the touch. v87: the layer is created again every time Annotate opens, so these listeners are bound
+     to each new layer (before, only the first one had them and the pen stopped working from the second visit on). */
+  anBindCap=cap=>{
+  cap.addEventListener('pointerdown',e=>{if(!an||!['pen','shape','text'].includes(an.tool)||!e.isPrimary)return;if(an.dr){if(an.dr.el)an.dr.el.remove();an.dr=null} /* a stroke that never got its pointerup must not lock drawing */
+    e.preventDefault();try{cap.setPointerCapture(e.pointerId)}catch(_){}
     const r=cap.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;an.dr={x0:x,y0:y,pts:[[x,y]],pid:e.pointerId,el:null,mv:0}});
   cap.addEventListener('pointermove',e=>{const d=an&&an.dr;if(!d||e.pointerId!==d.pid)return;const r=cap.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
     if(Math.hypot(x-d.x0,y-d.y0)>5)d.mv=1;const svg=$('#anlay .ansvg'),col=adapt(ANC[an.c]),sw=Math.max(1,ANW[an.w]*an.em);
@@ -1602,7 +1605,8 @@ function anInit(){if(anReady)return;anReady=true;
     else if(an.tool==='shape'){if(d.x1==null||Math.hypot(d.x1-d.x0,d.y1-d.y0)<6)return;an.items.push({k:an.shape,...A,c:an.c,w:ANW[an.w],a:r2((d.x1-d.x0)/em),b:r2((d.y1-d.y0)/em)})}
     else if(an.tool==='text'){if(d.mv)return;noteOpen(-1,o=>{an.items.push({k:'x',...A,o});an.sel=an.items.length-1;anSnap();anRedraw();anTool('sel')},{...NOTE_DEF,t:''});return}
     anSnap();anRedraw();anUi()};
-  cap.addEventListener('pointerup',end);cap.addEventListener('pointercancel',end);
+  cap.addEventListener('pointerup',end);cap.addEventListener('pointercancel',end);cap.addEventListener('lostpointercapture',e=>{if(an&&an.dr&&e.pointerId===an.dr.pid){if(an.dr.el)an.dr.el.remove();an.dr=null}})};
+  anBindCap($('#ancap'));
   addEventListener('resize',()=>{if($('#ann').classList.contains('on'))anRedraw()})}
 function anTool(k){if(!an)return;an.tool=k;if(k!=='sel')an.sel=-1;const cap=$('#ancap'),lay=$('#anlay');
   cap.style.pointerEvents=['pen','shape','text'].includes(k)?'auto':'none';lay.className='annl ed t-'+k;anRedraw();anUi()}

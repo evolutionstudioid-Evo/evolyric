@@ -169,8 +169,12 @@ button,select,.it{touch-action:manipulation}
 #qtg.has b{transform:scale(1)}
 #qtg.bump{animation:qbump .5s var(--spring)}
 .qfly{position:fixed;z-index:9999;height:34px;line-height:34px;padding:0 14px;border-radius:17px;background:var(--acc,#f0a04b);color:#1a1209;font:600 13px/34px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.45)}
-.pgturn{position:fixed;z-index:9998;transform-origin:left center;backface-visibility:hidden;pointer-events:none;box-shadow:-10px 0 28px rgba(0,0,0,.5);will-change:transform}
-.pgsh{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,rgba(0,0,0,.65),rgba(0,0,0,0) 70%)}
+.pgturn{position:fixed;z-index:9998;pointer-events:none;perspective:1700px;perspective-origin:50% 40%}
+.pgs{position:absolute;top:0;height:100%;transform-origin:left center;transform-style:preserve-3d;will-change:transform}
+.pgf,.pgb{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.pgb{transform:rotateY(180deg);background:linear-gradient(90deg,#1b1510,#2a2017 55%,#1b1510)}
+.pgl{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.7),rgba(255,214,160,.16) 60%,rgba(0,0,0,.45));opacity:0;pointer-events:none}
+.pgcast{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(0,0,0,0) 38%);pointer-events:none;will-change:transform}
 @keyframes qbump{35%{transform:scale(1.22)}}
 #qp{position:absolute;top:calc(var(--qt,100px) + 44px);right:8px;z-index:11;width:min(184px,46vw);max-height:max(84px,min(42%,250px,calc(100% - var(--qt,100px) - 44px - 120px)));display:flex;flex-direction:column;background:rgba(34,28,23,.95);border:1px solid var(--ln);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;opacity:0;transform:translateY(-8px) scale(.92);visibility:hidden;pointer-events:none;transition:opacity .18s var(--ease),transform .24s var(--ease),visibility 0s .24s}
 #qp.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity .2s var(--ease),transform .34s var(--spring),visibility 0s}
@@ -818,7 +822,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='94';
+const APP_VER='95';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1307,17 +1311,31 @@ function updNext(){const b=$('#nxt'),on=endVis&&qSongs().length>0&&$('#play').cl
 let turning=0,qpR=null;
 function pageSnap(){try{const L=$('#lyr'),r=L.getBoundingClientRect(),P=$('#play');if(!r.width)return null;
   const c=L.cloneNode(true);c.removeAttribute('id');c.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+  return {c,r,st:L.scrollTop,bg:getComputedStyle(P).backgroundColor||'#0d0a08'}}catch(e){return null}}
+/* the page is cut into hinged strips, so it bends like paper while it turns; light and a cast shadow follow it */
+function pageTurn(k){turning=1;const {r,c,bg}=k,N=8,sw=r.width/N,D=950;
   const w=E('div','pgturn');w.style.cssText='left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px';
-  c.style.cssText='position:absolute;inset:0;overflow:hidden;pointer-events:none;background:'+(getComputedStyle(P).backgroundColor||'#0d0a08');
-  w.append(c);return {w,c,st:L.scrollTop}}catch(e){return null}}
-function pageTurn(k){turning=1;document.body.append(k.w);k.c.scrollTop=k.st;
-  const sh=E('div','pgsh');k.w.append(sh);
-  const a=k.w.animate([{transform:'perspective(1400px) rotateY(0)',offset:0},{transform:'perspective(1400px) rotateY(-100deg)',offset:1}],{duration:720,easing:'cubic-bezier(.5,0,.25,1)',fill:'forwards'});
-  sh.animate([{opacity:0},{opacity:.55,offset:.45},{opacity:0}],{duration:720,fill:'forwards'});
-  const done=()=>{k.w.remove();turning=0};a.onfinish=done;a.oncancel=done;setTimeout(()=>{if(turning)done()},1200)}
+  const cast=E('div','pgcast');w.append(cast);
+  const strips=[],lights=[];let host=w;
+  for(let i=0;i<N;i++){
+    const sp=E('div','pgs');sp.style.cssText='width:'+sw+'px;left:'+(i?sw:0)+'px';
+    const fr=E('div','pgf'),cl=c.cloneNode(true);cl.style.cssText='position:absolute;top:0;left:'+(-i*sw)+'px;width:'+r.width+'px;height:100%;overflow:hidden;pointer-events:none;background:'+bg;
+    cl.scrollTop=k.st;const li=E('div','pgl');fr.append(cl,li);
+    const bk=E('div','pgb');sp.append(fr,bk);host.append(sp);host=sp;strips.push(sp);lights.push(li)}
+  document.body.append(w);strips.forEach((sp,i)=>{sp.firstChild.firstChild.scrollTop=k.st});
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,t0=performance.now();let raf=0;
+  const frame=now=>{const t=Math.min(1,(now-t0)/D),p=ease(t),th=-p*180,bulge=Math.sin(Math.PI*p),bend=-bulge*13;
+    strips[0].style.transform='rotateY('+th+'deg)';for(let i=1;i<N;i++)strips[i].style.transform='rotateY('+bend+'deg)';
+    lights.forEach((l,i)=>{l.style.opacity=(bulge*.55*(.4+.6*i/N)).toFixed(3)});
+    const edge=r.width*Math.cos(th*Math.PI/180)*(1-.12*bulge);cast.style.opacity=(bulge*.8).toFixed(3);cast.style.transform='translateX('+Math.max(0,edge)+'px)';
+    if(t<1)raf=requestAnimationFrame(frame);else done()};
+  const done=()=>{cancelAnimationFrame(raf);w.remove();turning=0};
+  /* the new page settles in beneath the turning one */
+  try{$('#lyr').animate([{opacity:.35,transform:'scale(.97)'},{opacity:1,transform:'scale(1)'}],{duration:D,easing:'cubic-bezier(.2,.7,.2,1)'})}catch(e){}
+  raf=requestAnimationFrame(frame);setTimeout(()=>{if(turning)done()},D+500)}
 function qNext(){
   if(nexting)return;const id=Qs().find(x=>songs.some(o=>o.id===x));if(!id)return;const s=songs.find(o=>o.id===id);
-  nexting=1;const snap=RM()?null:pageSnap();
+  nexting=1;const snap=RM()?null:pageSnap();if(snap)turning=1;
   try{openSong(s)}catch(err){nexting=0;note('Could not open song',1);return}
   if(cur===s){const i=queue.indexOf(id);if(i>=0){queue.splice(i,1);qSave()}} /* removed only after the song really is active */
   qRender();if(snap)pageTurn(snap);setTimeout(()=>{nexting=0},700)}

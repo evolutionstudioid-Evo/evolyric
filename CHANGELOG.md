@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v132 – Triple-tap removed
+- Tapping three times on the lyrics screen no longer opens the editor: on stage a quick burst of taps could pause, resume and then open the editor by accident. Open it from ⋮ → Edit song. A tap still plays/pauses.
+- Tutorial and README updated (ID/EN). Tests: 1 new automatic test.
+
 ## v131 – Clear queue
 - The Queue panel now has a “Clear queue” button under the list, inside the same box and always at the bottom. It is hidden while the queue is empty and shown as soon as there is one song. First tap arms it (the label turns red and reads “Tap again”, for 3 seconds), second tap empties the whole queue — so a stray tap on stage cannot wipe it. ID/EN translated.
 - Tests: 1 new automatic test.

@@ -30,12 +30,16 @@ test('Home: Recent lists songs in the order they were opened',async()=>{
   await p.click('#tabs [data-v=recent]');
   const r=await p.evaluate(()=>[...document.querySelectorAll('#items .it b')].map(e=>e.textContent.replace(/\s*[A-G][b#]?$/,'').trim()));
   eq(r,['Hujan Reda','Langit Malam'],'recent order');await t.close()});
-test('Home: search puts titles that start with the letters first, not alphabetical matches from the artist',async()=>{
-  const t=await open(),p=t.page;
-  await p.evaluate(()=>{songs.push({id:'z1',title:'Aku Takut',artist:'Lala Band',lyrics:'x',speed:5,font:30},{id:'z2',title:'Laut Kidul',artist:'Zed',lyrics:'x',speed:5,font:30},{id:'z3',title:'Di Tepi Laut',artist:'Budi',lyrics:'x',speed:5,font:30});refresh()});
+test('Home: search priority is title word 1, 2, 3+, then artist word 1, 2, 3+, then the middle of a word',async()=>{
+  const t=await open(),p=t.page,S=(id,ti,ar)=>({id,title:ti,artist:ar,lyrics:'x',speed:5,font:30});
+  await p.evaluate(a=>{songs.length=0;a.forEach(x=>songs.push(x));cats.length=0;refresh()},[
+    S('a1','Zebra Kuning Lagu','Q'),S('a2','Zebra Lagu','Q'),S('a3','Lagu Zebra','Q'),S('a4','Kc','Lara'),S('a5','Kb','Budi Lani'),S('a6','Ka','Ani Budi Lola'),S('a7','Pulau','Sal'),S('a8','Aku Takut','Cinta')]);
   await p.fill('#q','l');await p.waitForTimeout(250);
-  const r=await p.evaluate(()=>[...document.querySelectorAll('#items .it b')].map(e=>e.textContent.replace(/\s*[A-G][b#]?$/,'').trim()));
-  eq(r.slice(0,4),['Langit Malam','Laut Kidul','Di Tepi Laut','Aku Takut'],'ranking: '+r.join(' | '));await t.close()});
+  const ids=await p.evaluate(()=>[...document.querySelectorAll('#items .it')].map(b=>b.querySelector('b span,b').textContent.trim()));
+  eq(ids.slice(0,3),['Lagu Zebra','Zebra Lagu','Zebra Kuning Lagu'],'title: word 1, 2, 3+: '+ids.join(' | '));
+  eq(ids.slice(3,6),['Kc','Kb','Ka'],'artist: word 1, 2, 3+ (titles are in reverse A–Z): '+ids.join(' | '));
+  eq(ids.includes('Aku Takut'),false,'no L at all in Aku Takut / Cinta');
+  eq(ids[6]==='Pulau',true,'middle-of-word match is last');await t.close()});
 test('Home: quiet confirmations stay hidden, errors still show',async()=>{
   const t=await open(),p=t.page,vis=()=>p.evaluate(()=>$('#note').classList.contains('on')&&$('#note').textContent);
   await p.evaluate(()=>note('Added to queue'));eq(await vis(),false,'routine note hidden');

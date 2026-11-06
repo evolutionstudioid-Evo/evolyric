@@ -748,9 +748,13 @@ function sorter(){return sortBy==='new'?(a,b)=>crOf(b)-crOf(a)||byTitle(a,b):sor
 function items(box,q,pick,menu,pool,cat,empty,keep){
   box.textContent='';q=(q||'').toLowerCase();const T=q.split(/\s+/).filter(Boolean);let L='';
   const cmp=sorter(),hit=(pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))});
-  /* v128: while searching, the best match comes first: title starts with it, then a title word, then an artist word, then anywhere else; the chosen sort only orders songs of the same rank */
-  const rank=s=>{if(!T.length)return 0;const ti=(s.title||'').toLowerCase(),ar=(s.artist||'').toLowerCase(),w=T[0],ws=x=>x.split(/[^\p{L}\p{N}]+/u);
-    return ti.startsWith(q)||ti.startsWith(w)?0:ws(ti).some(x=>x.startsWith(w))?1:ws(ar).some(x=>x.startsWith(w))?2:ti.includes(w)?3:4},
+  /* v129: while searching, the best match comes first. Only the START of a word counts: title 1st word, title 2nd word, title later words, then artist 1st word, 2nd word, later words; matches in the middle of a word come last. The chosen sort only orders songs of the same rank. */
+  const ws=x=>x.split(/[^\p{L}\p{N}]+/u).filter(Boolean),
+    rank=s=>{if(!T.length)return 0;const ti=(s.title||'').toLowerCase(),ar=(s.artist||'').toLowerCase(),w=T[0];
+      if(ti.startsWith(q))return 0;
+      const a=ws(ti).findIndex(x=>x.startsWith(w));if(a>=0)return Math.min(a,2);
+      const b=ws(ar).findIndex(x=>x.startsWith(w));if(b>=0)return 3+Math.min(b,2);
+      return 6},
     cmpR=T.length&&!keep?(a,b)=>rank(a)-rank(b)||cmp(a,b):cmp;
   const pins=keep?[]:hit.filter(s=>s.pin).sort(cmpR),rest=keep?hit:hit.filter(s=>!s.pin).sort(cmpR); /* keep = keep the given order (Recent) */
   const row=s=>{
@@ -917,7 +921,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='128';
+const APP_VER='129';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

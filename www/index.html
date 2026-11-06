@@ -922,7 +922,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='132';
+const APP_VER='133';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1529,11 +1529,18 @@ function gEnd(e,cancel){
   if(g.boost){boostSp=0;return}
   if(g.sp){hudHide();return}
   if(!cancel&&!g.mv&&performance.now()-g.t<600){
-    /* v132: no triple-tap shortcut to the editor (a stray burst of taps on stage opened it); use ⋮ → Edit song */
-    setPlay(!playing)}}
+        setPlay(!playing)}}
 Ly.addEventListener('pointerup',e=>gEnd(e,false));Ly.addEventListener('pointercancel',e=>gEnd(e,true));
 Ly.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
 Ly.addEventListener('contextmenu',e=>e.preventDefault());
+/* v133: double-tap the title bar (the space between ☰ and ⋮) = edit this song. Also in ⋮ → Edit song. The lyrics area no longer has any edit shortcut, so a burst of taps on stage cannot open the editor. */
+(function(){const bar=$('#play .hd');let d=null,last=0,lx=0,ly=0;
+  bar.addEventListener('pointerdown',e=>{d=e.target.closest('button')?null:{x:e.clientX,y:e.clientY}});
+  bar.addEventListener('pointerup',e=>{if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>12){d=null;return}d=null;
+    const n=performance.now();
+    if(last&&n-last<400&&Math.hypot(e.clientX-lx,e.clientY-ly)<40){last=0;menuOpen(false);setPlay(false);openEdit(cur);return}
+    last=n;lx=e.clientX;ly=e.clientY});
+  bar.addEventListener('pointercancel',()=>{d=null})})();
 /* v130: if the phone suspends the page in the middle of a touch, the 'finger up' never arrives. Forget half-finished touches and leftover flying titles when the app is hidden, shown again, or a song is opened. */
 function resetInput(){PT.clear();if(G)clearTimeout(G.h);G=null;boostSp=0;spDown=0;$('#spp').classList.remove('act');pressStop=null;document.querySelectorAll('.qfly').forEach(e=>e.remove())}
 document.addEventListener('visibilitychange',resetInput);addEventListener('pagehide',resetInput);addEventListener('pageshow',resetInput);addEventListener('blur',resetInput);

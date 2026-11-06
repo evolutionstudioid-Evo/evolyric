@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v133 – Double-tap the title to edit
+- Double-tapping the title bar of the lyrics screen (the space between ☰ and ⋮) opens the editor for the song, without a confirmation. ⋮ → Edit song is still there. A single tap on the title does nothing, and the lyrics area has no edit shortcut (removed in v132), so a burst of taps on stage cannot open the editor. Tutorial and README updated (ID/EN).
+- Tests: the triple-tap test now also covers the new gesture.
+
 ## v132 – Triple-tap removed
 - Tapping three times on the lyrics screen no longer opens the editor: on stage a quick burst of taps could pause, resume and then open the editor by accident. Open it from ⋮ → Edit song. A tap still plays/pauses.
 - Tutorial and README updated (ID/EN). Tests: 1 new automatic test.

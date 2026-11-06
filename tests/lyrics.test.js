@@ -40,12 +40,19 @@ test('Lyrics: full screen is on by default and can be turned off in Preferences'
   await play(p);eq(await p.evaluate(()=>__fs),1,'asks for full screen by default');
   await p.evaluate(()=>{leavePlay();setFscrPref(false)});eq(await p.evaluate(()=>JSON.parse(localStorage.getItem('evo.prefs')).fscr),0,'saved');
   await p.evaluate(()=>{window.__fs=0});await play(p);eq(await p.evaluate(()=>__fs),0,'no request when off');await t.close()});
-test('Lyrics: three quick taps do not open the editor; a single tap still plays and pauses',async()=>{
+test('Lyrics: double-tap the title bar opens the editor; three taps on the lyrics, or one tap on the bar, do not',async()=>{
   const t=await open(),p=t.page;await play(p);
-  const tap=()=>p.evaluate(()=>{const r=$('#lyr').getBoundingClientRect(),o={pointerId:5,bubbles:true,clientX:r.x+r.width/2,clientY:r.y+r.height/2,pointerType:'touch',button:0};$('#lyr').dispatchEvent(new PointerEvent('pointerdown',o));$('#lyr').dispatchEvent(new PointerEvent('pointerup',o))});
-  await tap();eq(await p.evaluate(()=>playing),true,'one tap starts');await tap();await tap();await p.waitForTimeout(300);
-  eq(await p.evaluate(()=>document.querySelector('.v.on').id),'play','still on the lyrics screen after 3 taps');
-  eq(await p.evaluate(()=>playing),true,'three taps = start, stop, start');await t.close()});
+  const tap=(sel,dx=0)=>p.evaluate(([s,dx])=>{const el=$(s),r=el.getBoundingClientRect(),o={pointerId:5,bubbles:true,clientX:r.x+r.width/2+dx,clientY:r.y+r.height/2,pointerType:'touch',button:0};el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',o))},[sel,dx]);
+  const view=()=>p.evaluate(()=>document.querySelector('.v.on').id);
+  await tap('#lyr');await tap('#lyr');await tap('#lyr');await p.waitForTimeout(300);
+  eq(await view(),'play','three taps on the lyrics: no editor');
+  await tap('#ptit');await p.waitForTimeout(500);eq(await view(),'play','one tap on the title: nothing');
+  await p.waitForTimeout(500);
+  await tap('#ptit');await tap('#ptit',30);await p.waitForTimeout(500);
+  eq(await view(),'edit','double-tap on the bar opens the editor');eq(await p.evaluate(()=>$('#et').value),'Pulang ke Panggung','editing the open song');
+  await p.evaluate(()=>$('#eX').click());await p.waitForTimeout(300);
+  await play(p);await tap('#dr');await tap('#dr');await p.waitForTimeout(300);
+  eq(await view()==='edit',false,'double-tap on a button is not the shortcut');await t.close()});
 test('Lyrics: the ⋮ menu offers Edit song, Restart and Send to friend',async()=>{
   const t=await open(),p=t.page;await play(p);
   await p.evaluate(()=>{menuOpen(true)});await p.waitForTimeout(300);

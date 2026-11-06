@@ -913,8 +913,8 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='126';
-const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
+const APP_VER='127';
+const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
 const L=(en,id)=>{if(PREF.lang!=='id')return en;(Array.isArray(id)?id:[id]).forEach(x=>LID.add(x));return id};
@@ -924,6 +924,7 @@ function applyTheme(){const t=themeNow();document.documentElement.dataset.theme=
 if(lightMQ&&lightMQ.addEventListener)lightMQ.addEventListener('change',()=>{if(PREF.theme==='auto')applyTheme()});
 applyTheme();
 const defFont=()=>Math.max(20,Math.min(60,+PREF.font||32));
+function setFscrPref(on){PREF.fscr=on?1:0;prefSave();if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
 function setAwakePref(on){PREF.awake=on?1:0;prefSave();if(!on){try{wl&&wl.release&&wl.release()}catch(e){}wl=null;try{nsV&&nsV.pause()}catch(e){}nsOn=0}else if(typeof playing!=='undefined'&&playing)keepAwake()}
 function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('nodim',!on)}
 /* ---------- v76: language (English / Indonesia) ----------
@@ -1041,6 +1042,7 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
   b.append(E('div','sgrp',L('Screen','Layar')),sCard(
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
     sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
+    sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})))}
 /* v102: Tutorial = portrait slide deck (tutorial.js, cached for offline) */
 /* the deck (tutorial.js, cached for offline) is shown in a srcdoc iframe; a fresh iframe each time so it adds no Back-history entries */
@@ -1264,7 +1266,7 @@ $('#sp').onchange=save;
 function enterFs(){ /* the play view IS the fullscreen view: layout class stays for as long as a song is open; browser fullscreen is best-effort */
   if(!fs){fs=true;$('#play').classList.add('fs');setTimeout(()=>{fixPad();$('#lyr').scrollTop=$('#lyr').scrollTop;hl()},80)}
   const el=document.documentElement;
-  if(!document.fullscreenElement&&el.requestFullscreen&&!/iPhone|iPad|iPod/.test(navigator.userAgent))el.requestFullscreen().catch(()=>{});
+  if(PREF.fscr&&!document.fullscreenElement&&el.requestFullscreen&&!/iPhone|iPad|iPod/.test(navigator.userAgent))el.requestFullscreen().catch(()=>{});
 }
 function exitFs(){
   if(!fs)return;fs=false;$('#play').classList.remove('fs');

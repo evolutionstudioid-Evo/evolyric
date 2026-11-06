@@ -40,6 +40,12 @@ test('Lyrics: full screen is on by default and can be turned off in Preferences'
   await play(p);eq(await p.evaluate(()=>__fs),1,'asks for full screen by default');
   await p.evaluate(()=>{leavePlay();setFscrPref(false)});eq(await p.evaluate(()=>JSON.parse(localStorage.getItem('evo.prefs')).fscr),0,'saved');
   await p.evaluate(()=>{window.__fs=0});await play(p);eq(await p.evaluate(()=>__fs),0,'no request when off');await t.close()});
+test('Lyrics: three quick taps do not open the editor; a single tap still plays and pauses',async()=>{
+  const t=await open(),p=t.page;await play(p);
+  const tap=()=>p.evaluate(()=>{const r=$('#lyr').getBoundingClientRect(),o={pointerId:5,bubbles:true,clientX:r.x+r.width/2,clientY:r.y+r.height/2,pointerType:'touch',button:0};$('#lyr').dispatchEvent(new PointerEvent('pointerdown',o));$('#lyr').dispatchEvent(new PointerEvent('pointerup',o))});
+  await tap();eq(await p.evaluate(()=>playing),true,'one tap starts');await tap();await tap();await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>document.querySelector('.v.on').id),'play','still on the lyrics screen after 3 taps');
+  eq(await p.evaluate(()=>playing),true,'three taps = start, stop, start');await t.close()});
 test('Lyrics: the ⋮ menu offers Edit song, Restart and Send to friend',async()=>{
   const t=await open(),p=t.page;await play(p);
   await p.evaluate(()=>{menuOpen(true)});await p.waitForTimeout(300);

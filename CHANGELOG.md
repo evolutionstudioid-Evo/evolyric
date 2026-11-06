@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v129 – Search order refined
+- Search priority is now: title first word, title second word, title later words, then artist first word, second word, later words — always by the first letters of a word. Matches in the middle of a word are listed last. The chosen sort only orders songs of the same rank; pinned songs stay on top.
+- Tests: the search test now covers all six levels.
+
 ## v128 – Search ranks the best match first
 - Search matched the typed text anywhere in the title or artist and then listed results A–Z, so typing “L” could put “Aku Takut” (matched through the artist name) above “Laut Kidul”. Results are now ranked: title starts with the text, then a title word starts with it, then an artist word, then anything else. The chosen sort only orders songs of the same rank. Pinned songs still stay on top.
 - Tests: 1 new automatic test.

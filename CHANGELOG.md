@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v128 – Search ranks the best match first
+- Search matched the typed text anywhere in the title or artist and then listed results A–Z, so typing “L” could put “Aku Takut” (matched through the artist name) above “Laut Kidul”. Results are now ranked: title starts with the text, then a title word starts with it, then an artist word, then anything else. The chosen sort only orders songs of the same rank. Pinned songs still stay on top.
+- Tests: 1 new automatic test.
+
 ## v127 – Full-screen preference
 - New switch in Preferences → Screen: “Full screen on lyrics”. It is ON by default (the lyrics view stays full screen as before). Turning it off stops EvoLyric from asking Chrome for full screen, so Android Chrome no longer shows its “To exit full screen” notice; the status and navigation bars then stay visible.
 - Tests: 1 new automatic test.

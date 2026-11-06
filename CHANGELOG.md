@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v127 – Full-screen preference
+- New switch in Preferences → Screen: “Full screen on lyrics”. It is ON by default (the lyrics view stays full screen as before). Turning it off stops EvoLyric from asking Chrome for full screen, so Android Chrome no longer shows its “To exit full screen” notice; the status and navigation bars then stay visible.
+- Tests: 1 new automatic test.
+
 ## v126 – Tutorial rebuilt
 - The in-app tutorial (Help → Tutorial, ID/EN) was rebuilt from the current app in 12 chapters: Getting started, Home screen, Lyrics view & live prompter, Setlist & queue, Editing songs, Annotation tools, Categories, Friends & sharing, Account & synchronization, Preferences, Backup & restore, Tips & best practices.
 - New slides: welcome, the line buttons (hamburger / compact list / wide list), compact list, Create setlist (source, picking, L button), key, the three Section groups with the new Voicing colours (Harmony green, Choir red), category pin / sort / send, receiving a category, receiving songs you already have, several devices, tips.

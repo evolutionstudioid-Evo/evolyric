@@ -33,6 +33,13 @@ test('Lyrics: annotations are drawn on top of the lyrics and follow the text',as
   eq(await p.evaluate(()=>document.querySelectorAll('#txt .annl svg line,#txt .annl svg path').length>0),true,'underline drawn');
   await p.evaluate(()=>{cur.font=40;$('#txt').style.fontSize='40px';annPlay()});
   eq(await p.evaluate(()=>document.querySelectorAll('#txt .annl svg').length),1,'still drawn after zoom');await t.close()});
+test('Lyrics: full screen is on by default and can be turned off in Preferences',async()=>{
+  const t=await open(),p=t.page;
+  eq(await p.evaluate(()=>PREF.fscr),1,'default on');
+  await p.evaluate(()=>{window.__fs=0;document.documentElement.requestFullscreen=()=>{window.__fs++;return Promise.resolve()}});
+  await play(p);eq(await p.evaluate(()=>__fs),1,'asks for full screen by default');
+  await p.evaluate(()=>{leavePlay();setFscrPref(false)});eq(await p.evaluate(()=>JSON.parse(localStorage.getItem('evo.prefs')).fscr),0,'saved');
+  await p.evaluate(()=>{window.__fs=0});await play(p);eq(await p.evaluate(()=>__fs),0,'no request when off');await t.close()});
 test('Lyrics: the ⋮ menu offers Edit song, Restart and Send to friend',async()=>{
   const t=await open(),p=t.page;await play(p);
   await p.evaluate(()=>{menuOpen(true)});await p.waitForTimeout(300);

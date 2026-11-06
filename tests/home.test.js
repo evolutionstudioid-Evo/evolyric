@@ -40,6 +40,19 @@ test('Home: search priority is title word 1, 2, 3+, then artist word 1, 2, 3+, t
   eq(ids.slice(3,6),['Kc','Kb','Ka'],'artist: word 1, 2, 3+ (titles are in reverse A–Z): '+ids.join(' | '));
   eq(ids.includes('Aku Takut'),false,'no L at all in Aku Takut / Cinta');
   eq(ids[6]==='Pulau',true,'middle-of-word match is last');await t.close()});
+test('Stability: redrawing the list never adds scroll listeners, and scrolling stays cheap',async()=>{
+  const t=await open(),p=t.page;
+  await p.evaluate(()=>{window.__n=0;const o=window.addEventListener;window.addEventListener=function(a,...r){if(a==='scroll')__n++;return o.call(this,a,...r)};for(let i=6;i<=100;i++)songs.push({id:'x'+i,title:'Lagu '+i,artist:'A',lyrics:'x',speed:5,font:30})});
+  await p.evaluate(()=>{for(let i=0;i<200;i++)refresh()});
+  eq(await p.evaluate(()=>__n),0,'scroll listeners added by 200 redraws');
+  const ms=await p.evaluate(()=>{const t0=performance.now();for(let i=0;i<50;i++)document.dispatchEvent(new Event('scroll'));return(performance.now()-t0)/50});
+  assert(ms<2,'a scroll event took '+ms.toFixed(2)+' ms');await t.close()});
+test('Stability: a touch left half-finished is forgotten when the app is hidden or a song is opened',async()=>{
+  const t=await open(),p=t.page;
+  await p.evaluate(()=>{PT.set(77,{x:1,y:1});G={x:1,y:1,t:0,mv:0};spDown=1;const f=document.createElement('div');f.className='qfly';document.body.append(f);document.dispatchEvent(new Event('visibilitychange'))});
+  eq(await p.evaluate(()=>[PT.size,G,spDown,document.querySelectorAll('.qfly').length]),[0,null,0,0],'after hide/show');
+  await p.evaluate(()=>{PT.set(78,{x:1,y:1});openSong(songs[0])});await p.waitForTimeout(400);
+  eq(await p.evaluate(()=>PT.size),0,'after opening a song');await t.close()});
 test('Home: quiet confirmations stay hidden, errors still show',async()=>{
   const t=await open(),p=t.page,vis=()=>p.evaluate(()=>$('#note').classList.contains('on')&&$('#note').textContent);
   await p.evaluate(()=>note('Added to queue'));eq(await vis(),false,'routine note hidden');

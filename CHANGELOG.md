@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v130 – Stability
+- Fixed a slowdown that grew the longer the app stayed open. Since v116 every song row added its own scroll listener each time the list was redrawn (every search keystroke, every tab change) and none were ever removed, so the work per scroll grew without limit (measured: 0.16 ms per scroll event at the start, 33 ms after 300 redraws with 100 songs). There is now a single listener.
+- Half-finished touches (the phone suspended the page before the finger-up arrived) are forgotten when the app is hidden or shown again and when a song is opened, so a stuck touch can no longer confuse the lyrics gestures or keep the speed panel from closing.
+- Leftover flying song titles are removed, and the flight can no longer stay on screen if its animation never finishes.
+- Tests: 2 new automatic tests.
+
 ## v129 – Search order refined
 - Search priority is now: title first word, title second word, title later words, then artist first word, second word, later words — always by the first letters of a word. Matches in the middle of a word are listed last. The chosen sort only orders songs of the same rank; pinned songs stay on top.
 - Tests: the search test now covers all six levels.

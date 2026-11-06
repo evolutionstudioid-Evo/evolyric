@@ -709,12 +709,12 @@ function recAdd(id){if(!id)return;recent=[id,...recent.filter(x=>x!==id&&songs.s
 const recSongs=()=>recent.map(id=>songs.find(s=>s.id===id)).filter(Boolean);
 function poolFor(id){const c=id&&cats.find(x=>x.id===id);if(!c)return songs;const S=new Set(c.ids);return songs.filter(x=>S.has(x.id))}
 /* v116: a long press only counts when the finger stays put; any swipe/scroll cancels it (and the OS context menu that follows a scroll) */
-let scrollAt=0;addEventListener('scroll',()=>{scrollAt=Date.now()},true);
+let scrollAt=0,pressStop=null; /* v130: ONE global scroll listener (it used to be added again for every list row on every redraw, which slowed the app down the longer it ran) */
+addEventListener('scroll',()=>{scrollAt=Date.now();if(pressStop)pressStop()},true);
 function press(b,tap,hold){let tm,lp=0,x0=0,y0=0,mv=0;const en=()=>clearTimeout(tm);
-  b.addEventListener('pointerdown',e=>{lp=0;mv=0;x0=e.clientX;y0=e.clientY;en();tm=setTimeout(()=>{if(mv||Date.now()-scrollAt<350)return;lp=1;hold()},500)});
+  b.addEventListener('pointerdown',e=>{lp=0;mv=0;x0=e.clientX;y0=e.clientY;en();pressStop=()=>{mv=1;en()};tm=setTimeout(()=>{if(mv||Date.now()-scrollAt<350)return;lp=1;hold()},500)});
   b.addEventListener('pointermove',e=>{if(!mv&&Math.hypot(e.clientX-x0,e.clientY-y0)>8){mv=1;en()}});
-  ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,en));
-  addEventListener('scroll',()=>{mv=1;en()},{capture:true,passive:true});
+  ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,()=>{en();pressStop=null}));
   b.addEventListener('contextmenu',e=>{e.preventDefault();en();if(mv||Date.now()-scrollAt<350)return;if(!lp){lp=1;hold()}});
   b.onclick=()=>{if(lp){lp=0;return}tap()}}
 const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350)};
@@ -921,7 +921,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='129';
+const APP_VER='130';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1159,7 +1159,7 @@ function openSong(s,keep){
   recAdd(s&&s.id);try{localStorage.setItem('evo.lastsong',s.id)}catch(e){}
   if(typeof songFx==='function')songFx();
   const was=playing;cur=s;menuOpen(false);$('#sp').value=s.speed;
-  $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
+  $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;if(typeof resetInput==='function')resetInput();show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
   const f=secEls()[0];startEl=f&&f._stop?f:null;
   setPlay(false); /* a newly opened song is always paused, even if the previous one was auto-scrolling */
   waiting=!!startEl;
@@ -1377,7 +1377,7 @@ function qFly(title,from){
   const a=g.animate([{transform:'translate(0,0) scale(1)',opacity:1,offset:0},
     {transform:'translate('+dx*.45+'px,'+(dy*.45+arc)+'px) scale(.62)',opacity:1,offset:.5,easing:'ease-in'},
     {transform:'translate('+dx+'px,'+dy+'px) scale(.12)',opacity:.2,offset:1}],{duration:640,easing:'cubic-bezier(.3,.1,.3,1)',fill:'forwards'});
-  const done=()=>{g.remove();qBump()};a.onfinish=done;a.oncancel=done}
+  let fin=0;const done=()=>{if(fin)return;fin=1;g.remove();qBump()};a.onfinish=done;a.oncancel=done;setTimeout(done,1500)}
 function qAdd(s,from){const q=Qs();if(q.includes(s.id)){note('Already in queue');return}q.push(s.id);qFresh=s.id;qSave();qRender();if(!RM())qFly(s.title,from);note('Added to queue')}
 function qRemove(id,row){
   if(row&&row.classList.contains('out'))return;
@@ -1527,6 +1527,9 @@ function gEnd(e,cancel){
 Ly.addEventListener('pointerup',e=>gEnd(e,false));Ly.addEventListener('pointercancel',e=>gEnd(e,true));
 Ly.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
 Ly.addEventListener('contextmenu',e=>e.preventDefault());
+/* v130: if the phone suspends the page in the middle of a touch, the 'finger up' never arrives. Forget half-finished touches and leftover flying titles when the app is hidden, shown again, or a song is opened. */
+function resetInput(){PT.clear();if(G)clearTimeout(G.h);G=null;boostSp=0;spDown=0;$('#spp').classList.remove('act');pressStop=null;document.querySelectorAll('.qfly').forEach(e=>e.remove())}
+document.addEventListener('visibilitychange',resetInput);addEventListener('pagehide',resetInput);addEventListener('pageshow',resetInput);addEventListener('blur',resetInput);
 
 /* ---------- Edit ---------- */
 /* v104: the Section panel = three collapsible categories (the only label list; SECS is derived from it). Older markers in saved lyrics (Sing Along, Free Style, Medley, Rit, Rall…) still work: LC keeps their colours and SEC_OLD keeps them "standard". */

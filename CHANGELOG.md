@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v131 – Clear queue
+- The Queue panel now has a “Clear queue” button under the list, inside the same box and always at the bottom. It is hidden while the queue is empty and shown as soon as there is one song. First tap arms it (the label turns red and reads “Tap again”, for 3 seconds), second tap empties the whole queue — so a stray tap on stage cannot wipe it. ID/EN translated.
+- Tests: 1 new automatic test.
+
 ## v130 – Stability
 - Fixed a slowdown that grew the longer the app stayed open. Since v116 every song row added its own scroll listener each time the list was redrawn (every search keystroke, every tab change) and none were ever removed, so the work per scroll grew without limit (measured: 0.16 ms per scroll event at the start, 33 ms after 300 redraws with 100 songs). There is now a single listener.
 - Half-finished touches (the phone suspended the page before the finger-up arrived) are forgotten when the app is hidden or shown again and when a song is opened, so a stuck touch can no longer confuse the lyrics gestures or keep the speed panel from closing.

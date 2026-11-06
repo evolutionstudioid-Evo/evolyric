@@ -50,6 +50,19 @@ test('Setlist: after the app is closed and reopened, L still opens the last lyri
   await p.reload();await p.waitForTimeout(600);
   await p.evaluate(()=>{const s=JSON.parse(localStorage.getItem(LK)||'[]');if(!s.length){songs.length=0;songs.push({id:'s4',title:'Hujan Reda',artist:'x',lyrics:'[Verse]\nx',speed:5,font:30})}show('list')});
   await p.click('#lastb');await p.waitForTimeout(400);eq(await p.evaluate(()=>cur&&cur.id),'s4','reopened last song');await t.close()});
+test('Queue: Clear queue is hidden when empty, needs two taps, and empties the whole queue (songs stay in the library)',async()=>{
+  const t=await open(),p=t.page;await p.evaluate(()=>{openSong(songs[4]);qRender();qOpen(true)});await p.waitForTimeout(500);
+  eq(await p.evaluate(()=>$('#qclr').hidden),true,'hidden when empty');
+  await p.evaluate(()=>{qAdd(songs[0]);qAdd(songs[1]);qAdd(songs[2])});await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>$('#qclr').hidden),false,'shown with songs');
+  await p.evaluate(()=>{qSongs();const q=$('#qp').getBoundingClientRect(),b=$('#qclr').getBoundingClientRect();window.__below=b.bottom<=q.bottom+1&&b.top>=$('#ql').getBoundingClientRect().bottom-1});
+  eq(await p.evaluate(()=>__below),true,'button sits at the bottom of the same box');
+  await p.click('#qclr');eq(await p.evaluate(()=>Qs().length),3,'first tap only arms');
+  eq(await p.evaluate(()=>$('#qclr').textContent),'Tap again','armed label');
+  await p.click('#qclr');await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>[Qs().length,songs.length,$('#qclr').hidden]),[0,5,true],'cleared, library intact, button hidden');
+  await p.evaluate(()=>{qAdd(songs[0])});await p.click('#qclr');await p.waitForTimeout(3300);
+  eq(await p.evaluate(()=>[$('#qclr').textContent,Qs().length]),['Clear queue',1],'arming expires after 3 s');await t.close()});
 test('Queue: Add to Queue does not add the same song twice, and removing from the queue keeps the song',async()=>{
   const t=await open(),p=t.page;await p.evaluate(()=>{qAdd(songs[1]);qAdd(songs[1]);qAdd(songs[2])});
   eq(await p.evaluate(()=>Qs()),['s2','s3'],'no duplicates');

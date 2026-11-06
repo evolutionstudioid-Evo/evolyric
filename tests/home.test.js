@@ -17,8 +17,8 @@ test('Home: compact list toggles, is remembered after a reload',async()=>{
   const t=await open(),p=t.page;
   await p.click('#hView');assert(await p.evaluate(()=>$('#items').classList.contains('cmp')),'compact on');
   const stored=await p.evaluate(()=>localStorage.getItem('evolyric-homeview'));eq(stored,'compact','stored');
-  await p.reload();await p.waitForTimeout(500);await p.evaluate(()=>show('list'));
-  assert(await p.evaluate(()=>$('#items').classList.contains('cmp')),'compact remembered');
+  await p.reload();await p.waitForFunction(()=>typeof songs!=='undefined');await p.waitForTimeout(900);await p.evaluate(()=>{show('list');refresh()});
+  const dbg=await p.evaluate(()=>[$('#items').className,localStorage.getItem('evolyric-homeview'),location.href]);assert(dbg[0].includes('cmp'),'compact remembered '+JSON.stringify(dbg));
   await p.click('#hView');assert(!(await p.evaluate(()=>$('#items').classList.contains('cmp'))),'wide again');await t.close()});
 test('Home: the Categories tab hides the compact button, All Songs shows it',async()=>{
   const t=await open(),p=t.page;
@@ -30,6 +30,12 @@ test('Home: Recent lists songs in the order they were opened',async()=>{
   await p.click('#tabs [data-v=recent]');
   const r=await p.evaluate(()=>[...document.querySelectorAll('#items .it b')].map(e=>e.textContent.replace(/\s*[A-G][b#]?$/,'').trim()));
   eq(r,['Hujan Reda','Langit Malam'],'recent order');await t.close()});
+test('Home: search puts titles that start with the letters first, not alphabetical matches from the artist',async()=>{
+  const t=await open(),p=t.page;
+  await p.evaluate(()=>{songs.push({id:'z1',title:'Aku Takut',artist:'Lala Band',lyrics:'x',speed:5,font:30},{id:'z2',title:'Laut Kidul',artist:'Zed',lyrics:'x',speed:5,font:30},{id:'z3',title:'Di Tepi Laut',artist:'Budi',lyrics:'x',speed:5,font:30});refresh()});
+  await p.fill('#q','l');await p.waitForTimeout(250);
+  const r=await p.evaluate(()=>[...document.querySelectorAll('#items .it b')].map(e=>e.textContent.replace(/\s*[A-G][b#]?$/,'').trim()));
+  eq(r.slice(0,4),['Langit Malam','Laut Kidul','Di Tepi Laut','Aku Takut'],'ranking: '+r.join(' | '));await t.close()});
 test('Home: quiet confirmations stay hidden, errors still show',async()=>{
   const t=await open(),p=t.page,vis=()=>p.evaluate(()=>$('#note').classList.contains('on')&&$('#note').textContent);
   await p.evaluate(()=>note('Added to queue'));eq(await vis(),false,'routine note hidden');

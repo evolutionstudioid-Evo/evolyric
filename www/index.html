@@ -748,7 +748,11 @@ function sorter(){return sortBy==='new'?(a,b)=>crOf(b)-crOf(a)||byTitle(a,b):sor
 function items(box,q,pick,menu,pool,cat,empty,keep){
   box.textContent='';q=(q||'').toLowerCase();const T=q.split(/\s+/).filter(Boolean);let L='';
   const cmp=sorter(),hit=(pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))});
-  const pins=keep?[]:hit.filter(s=>s.pin).sort(cmp),rest=keep?hit:hit.filter(s=>!s.pin).sort(cmp); /* keep = keep the given order (Recent) */
+  /* v128: while searching, the best match comes first: title starts with it, then a title word, then an artist word, then anywhere else; the chosen sort only orders songs of the same rank */
+  const rank=s=>{if(!T.length)return 0;const ti=(s.title||'').toLowerCase(),ar=(s.artist||'').toLowerCase(),w=T[0],ws=x=>x.split(/[^\p{L}\p{N}]+/u);
+    return ti.startsWith(q)||ti.startsWith(w)?0:ws(ti).some(x=>x.startsWith(w))?1:ws(ar).some(x=>x.startsWith(w))?2:ti.includes(w)?3:4},
+    cmpR=T.length&&!keep?(a,b)=>rank(a)-rank(b)||cmp(a,b):cmp;
+  const pins=keep?[]:hit.filter(s=>s.pin).sort(cmpR),rest=keep?hit:hit.filter(s=>!s.pin).sort(cmpR); /* keep = keep the given order (Recent) */
   const row=s=>{
       const b=E('button','it'),t=E('b'),n=E('span','',s.title||'Untitled');
       if(s.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;n.prepend(pi)}
@@ -913,7 +917,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='127';
+const APP_VER='128';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

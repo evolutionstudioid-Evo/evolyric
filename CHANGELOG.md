@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v134 – Hotfix: offline service worker restored
+- v132 and v133 shipped an empty `sw.js` (a release-script mistake). Phones that picked it up lost offline start-up: the app would not open without internet. The full service worker is back (cache `evolyric-app-134`); it installs and takes over immediately, so the next online visit repairs it.
+- A debug script (`_a.js`) that was committed by mistake in v131 is removed.
+- New automatic tests: `sw.js` is complete and matches the app version, every pre-cached file exists, the app opens offline after the first visit, and no stray debug scripts are in the repo.
+
 ## v133 – Double-tap the title to edit
 - Double-tapping the title bar of the lyrics screen (the space between ☰ and ⋮) opens the editor for the song, without a confirmation. ⋮ → Edit song is still there. A single tap on the title does nothing, and the lyrics area has no edit shortcut (removed in v132), so a burst of taps on stage cannot open the editor. Tutorial and README updated (ID/EN).
 - Tests: the triple-tap test now also covers the new gesture.

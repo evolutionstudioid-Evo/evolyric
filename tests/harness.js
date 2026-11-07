@@ -12,7 +12,7 @@ const seed=(over={})=>({songs:SONGS.map((s,i)=>({id:s[0],title:s[1],artist:s[2],
 let browser;
 async function open(o={}){
   if(!server)await serve();browser=browser||await chromium.launch();
-  const ctx=await browser.newContext({serviceWorkers:'block',...(o.device?devices[o.device]:{viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true})});
+  const ctx=await browser.newContext({serviceWorkers:o.sw?'allow':'block',...(o.device?devices[o.device]:{viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true})});
   const lang=o.lang||'en';
   await ctx.addInitScript(l=>{if(!localStorage.getItem('evo.prefs'))localStorage.setItem('evo.prefs',JSON.stringify({theme:'dark',lang:l,awake:0,dim:0,font:30}))},lang);
   const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));

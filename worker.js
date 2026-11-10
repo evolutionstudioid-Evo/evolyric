@@ -41,14 +41,33 @@ function lyricScore(text){
 }
 function lyricFromHtml(html){
   const candidates=[],patterns=[
-    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
-    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
-    /<div[^>]*id=["']lyrics["'][^>]*>([\s\S]*?)<\/div>/gi,
-    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi
+    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
+    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
+    /<div[^>]*id=["']lyrics["'][^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
+    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi
   ];
-  for(const re of patterns){let m;while((m=re.exec(html))&&candidates.length<40){const t=cleanLyrics(m[1]);if(t.length>80)candidates.push(t)}}
-  const json=/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;let m;
-  while((m=json.exec(html))){try{const d=JSON.parse(m[1]),stack=[d];while(stack.length){const x=stack.pop();if(!x||typeof x!=='object')continue;if(typeof x.lyrics==='string'){const t=cleanLyrics(x.lyrics);if(t.length>80)candidates.push(t)}stack.push(...Object.values(x))}}catch(e){}}
+  for(const re of patterns){
+    let m,parts=[];
+    while((m=re.exec(html))&&parts.length<40){
+      const t=cleanLyrics(m[1]);
+      if(t.length>20)parts.push(t);
+    }
+    const joined=[...new Set(parts)].join('\\n\\n');
+    if(joined.length>80)candidates.push(joined);
+  }
+  const json=/<script[^>]*type=["']application\\/ld\\+json["'][^>]*>([\\s\\S]*?)<\\/script>/gi;let m;
+  while((m=json.exec(html))){
+    try{
+      const d=JSON.parse(m[1]),stack=[d];
+      while(stack.length){
+        const x=stack.pop();if(!x||typeof x!=='object')continue;
+        if(typeof x.lyrics==='string'){
+          const t=cleanLyrics(x.lyrics);if(t.length>80)candidates.push(t);
+        }
+        stack.push(...Object.values(x));
+      }
+    }catch(e){}
+  }
   const unique=[...new Set(candidates)];
   return unique.sort((a,b)=>lyricScore(b)-lyricScore(a))[0]||'';
 }

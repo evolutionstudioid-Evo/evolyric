@@ -30,24 +30,24 @@ async function tempo(req,env,ctx){
 const LYRIC_HOSTS=['genius.com','azlyrics.com','lyrics.com','musixmatch.com','songlyrics.com','metrolyrics.com','lyricstranslate.com'];
 const decode=s=>String(s||'').replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(+n)).replace(/&#x([\da-f]+);/gi,(_,n)=>String.fromCodePoint(parseInt(n,16)));
 function cleanLyrics(s){
-  return decode(String(s||'').replace(/<script[\\s\\S]*?<\\/script>/gi,'').replace(/<style[\\s\\S]*?<\\/style>/gi,''))
-    .replace(/<br\\s*\\/?\\s*>/gi,'\\n').replace(/<\\/(?:div|p|li|h[1-6])\\s*>/gi,'\\n')
-    .replace(/<[^>]*>/g,'').replace(/\\u00a0/g,' ').replace(/\\r/g,'')
-    .replace(/[\\t ]+\\n/g,'\\n').replace(/\\n{3,}/g,'\\n\\n').trim();
+  return decode(String(s||'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,''))
+    .replace(/<br\s*\/?\s*>/gi,'\n').replace(/<\/(?:div|p|li|h[1-6])\s*>/gi,'\n')
+    .replace(/<[^>]*>/g,'').replace(/\u00a0/g,' ').replace(/\r/g,'')
+    .replace(/[\t ]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
 }
 function lyricScore(text){
-  const lines=text.split('\\n').map(x=>x.trim()).filter(Boolean),unique=new Set(lines.map(x=>x.toLowerCase()));
+  const lines=text.split('\n').map(x=>x.trim()).filter(Boolean),unique=new Set(lines.map(x=>x.toLowerCase()));
   return text.length+Math.min(lines.length,300)*10+unique.size*2;
 }
 function lyricFromHtml(html){
   const candidates=[],patterns=[
-    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
-    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
-    /<div[^>]*id=["']lyrics["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
-    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi
+    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
+    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
+    /<div[^>]*id=["']lyrics["'][^>]*>([\s\S]*?)<\/div>/gi,
+    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi
   ];
   for(const re of patterns){let m;while((m=re.exec(html))&&candidates.length<40){const t=cleanLyrics(m[1]);if(t.length>80)candidates.push(t)}}
-  const json=/<script[^>]*type=["']application\\/ld\\+json["'][^>]*>([\\s\\S]*?)<\\/script>/gi;let m;
+  const json=/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;let m;
   while((m=json.exec(html))){try{const d=JSON.parse(m[1]),stack=[d];while(stack.length){const x=stack.pop();if(!x||typeof x!=='object')continue;if(typeof x.lyrics==='string'){const t=cleanLyrics(x.lyrics);if(t.length>80)candidates.push(t)}stack.push(...Object.values(x))}}catch(e){}}
   const unique=[...new Set(candidates)];
   return unique.sort((a,b)=>lyricScore(b)-lyricScore(a))[0]||'';

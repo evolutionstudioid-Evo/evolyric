@@ -52,10 +52,20 @@ async function extractLyricsFromPage(){
     const MAX=18000;
     const clean=value=>String(value||'').replace(/\\u00a0/g,' ').replace(/\\r/g,'').replace(/[ \\t]+\\n/g,'\\n').replace(/\\n{3,}/g,'\\n\\n').trim();
     const candidates=[];
-    const selectors=['[data-lyrics-container]','.Lyrics__Container','#lyrics','[class*="lyrics" i]'];
+    const host=location.hostname.toLowerCase();
+    const selectors=host.includes('genius')?['[data-lyrics-container="true"]']:
+      host.includes('azlyrics')?['div.col-xs-12.col-lg-8.text-center','div.lyrics']:
+      host.includes('lyrics.com')?['#lyric-body-text','.lyric-body']:
+      host.includes('songlyrics')?['#songLyricsDiv']:
+      host.includes('musixmatch')?['[data-testid*="lyrics" i]','[class*="Lyrics__Container"]','[class*="lyrics" i]']:
+      ['[data-lyrics-container="true"]','#lyrics'];
     for(const selector of selectors){
       const nodes=[...document.querySelectorAll(selector)].slice(0,40);
-      const parts=nodes.map(n=>clean(n.innerText||n.textContent)).filter(x=>x.length>20);
+      const parts=nodes.map(n=>{
+        const copy=n.cloneNode(true);
+        copy.querySelectorAll('[data-exclude-from-selection],script,style,noscript,nav,footer,aside').forEach(x=>x.remove());
+        return clean(copy.innerText||copy.textContent);
+      }).filter(x=>x.length>20);
       const joined=[...new Set(parts)].join('\\n\\n');
       if(joined.length>80)candidates.push(joined);
     }

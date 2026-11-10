@@ -28,7 +28,7 @@ async function tempo(req,env,ctx){
   ctx.waitUntil(cache.put(ck,new Response(out,{headers:{'content-type':'application/json','cache-control':'public, max-age=2592000'}})));
   return new Response(out,{headers:{'content-type':'application/json','cache-control':'no-store'}})}
 const LYRIC_HOSTS=['genius.com','azlyrics.com','lyrics.com','musixmatch.com','songlyrics.com','metrolyrics.com','lyricstranslate.com'];
-const SOURCE_PRIORITY={genius.com:100,azlyrics.com:90,lyrics.com:80,songlyrics.com:75,musixmatch.com:60,metrolyrics.com:55,lyricstranslate.com:50};
+const SOURCE_PRIORITY={'genius.com':100,'azlyrics.com':90,'lyrics.com':80,'songlyrics.com':75,'musixmatch.com':60,'metrolyrics.com':55,'lyricstranslate.com':50};
 const NOISE_LINES=/^(read more|how to format lyrics:?|type out all lyrics.*|lyrics should be broken down.*|use section headers.*|use italics.*|if you don't understand.*|to learn more about adding songs.*|visit the transcribers forum|cancel)$/i;
 const decode=s=>String(s||'').replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(+n)).replace(/&#x([\da-f]+);/gi,(_,n)=>String.fromCodePoint(parseInt(n,16)));
 function stripExcluded(html){

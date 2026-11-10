@@ -53,7 +53,7 @@ function fetchWithTimeout(url,init={}){
   return fetch(url,{...init,signal:c.signal}).finally(()=>clearTimeout(timer));
 }
 function lyricLinks(html,base){
-  const links=[],re=/<a\\s[^>]*href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi;let m;
+  const links=[],re=/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;
   while((m=re.exec(html))&&links.length<40){
     let href=decode(m[1]);
     try{

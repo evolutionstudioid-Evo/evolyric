@@ -94,17 +94,21 @@ function lyricLinks(html,base){
 async function searchLyrics(query){
   const providers=[
     ['https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),'https://www.google.com'],
+    ['https://www.google.co.id/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),'https://www.google.co.id'],
     ['https://html.duckduckgo.com/html/?'+new URLSearchParams({q:query}),'https://html.duckduckgo.com']
   ];
   let busy=false;
   for(const [url,base] of providers){
-    try{
-      const r=await fetchWithTimeout(url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});
-      if(r.status===429){busy=true;continue}
-      if(!r.ok)continue;
-      const links=lyricLinks(await r.text(),base);
-      if(links.length)return links;
-    }catch(e){}
+    for(let attempt=0;attempt<2;attempt++){
+      try{
+        const r=await fetchWithTimeout(url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});
+        if(r.status===429){busy=true;if(attempt===0)await new Promise(ok=>setTimeout(ok,350));continue}
+        if(!r.ok)break;
+        const links=lyricLinks(await r.text(),base);
+        if(links.length)return links;
+        break;
+      }catch(e){if(attempt===1)break}
+    }
   }
   return busy?null:[];
 }

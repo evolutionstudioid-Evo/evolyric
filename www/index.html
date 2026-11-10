@@ -418,7 +418,7 @@ html:has(#play.on){background:#0d0a08}
 .sfield .mg{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--mut);background:none;border:0;padding:0;z-index:1}
 .sfield .mg svg,#goog svg,#dgoog svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .sfield #q{padding-left:40px;padding-top:0;padding-bottom:0;height:38px}#goog{height:38px;padding-top:0;padding-bottom:0}
-#goog,#dgoog{width:46px;flex:none;border-radius:12px;background:var(--card);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--mut);padding:0}#goog[hidden]{display:none}
+#goog,#dgoog{width:46px;flex:none;border-radius:12px;background:var(--card);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;color:var(--mut);padding:0}#goog[hidden]{display:none}.impLyric{flex:none;min-height:44px;padding:0 12px;white-space:nowrap;font-size:14px}
 /* v52: fixed song title in the header */
 #ptit{min-width:0;text-align:center;font:700 20px/1.2 'Bricolage Grotesque',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--acct);pointer-events:none;padding:0 4px}
 /* v43: annotations */
@@ -548,7 +548,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
   <div id="amenu" role="menu" hidden></div><div id="gmenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
-  <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="goog" type="button" aria-label="Search the web for these lyrics" title="Search the web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg></button></div>
+  <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="goog" type="button" aria-label="Search the web for these lyrics" title="Search the web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg></button><button id="impLyric" class="pill impLyric" type="button">Import Lyric</button></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
   <div id="hvrow"><button id="hView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="hvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button></div>
   <div id="items"></div>
@@ -890,12 +890,17 @@ $('#sortb').onclick=()=>{const c=csh(),inCats=lib.v==='cats';c.append(E('h3','',
   $('#ctx').classList.add('on')};
 /* v135: try Cloudflare's public-page lyrics lookup first; retain Google/manual paste as fallback. */
 function webSearch(q){const a=document.createElement('a');a.href='https://www.google.com/search?q='+encodeURIComponent(q+' lyrics');a.target='_blank';a.rel='noopener noreferrer';a.style.display='none';document.body.append(a);a.click();setTimeout(()=>a.remove(),0)}
+const LYRIC_REQUEST_TIMEOUT=15000;
+async function fetchJsonWithTimeout(url,ms=LYRIC_REQUEST_TIMEOUT){
+  const c=new AbortController(),timer=setTimeout(()=>c.abort(),ms);
+  try{const r=await fetch(url,{signal:c.signal});let j=null;try{j=await r.json()}catch(e){j={error:'bad_response'}}return{r,j}}
+  finally{clearTimeout(timer)}
+}
 async function fetchLyrics(q,pre){
   const parts=q.split(/\s+[–—-]\s+/),title=(parts[0]||q).trim(),artist=(parts.length>1?parts.slice(1).join(' - '):'').trim();
   const b=$('#goog');b.disabled=true;toast('Mencari lirik…');
   try{
-    const r=await fetch('/api/lyrics?'+new URLSearchParams({title,artist}));
-    const j=await r.json();
+    const {r,j}=await fetchJsonWithTimeout('/api/lyrics?'+new URLSearchParams({title,artist}));
     if(r.ok&&j.lyrics&&j.lyrics.length>80){
       openEdit(null,j.lyrics,j.title||title,null,pre||[]);
       $('#ea').value=j.artist||artist;
@@ -908,9 +913,29 @@ async function fetchLyrics(q,pre){
   finally{b.disabled=false}
   webSearch(q);openEdit(null,'',title,null,pre||[]);$('#ea').value=artist;return false;
 }
+async function importLyrics(q,pre){
+  const parts=q.split(/\s+[–—-]\s+/),title=(parts[0]||q).trim(),artist=(parts.length>1?parts.slice(1).join(' - '):'').trim(),b=$('#impLyric');
+  b.disabled=true;note('Mengimpor lirik…');
+  try{
+    const {r,j}=await fetchJsonWithTimeout('/api/lyrics?'+new URLSearchParams({title,artist}));
+    if(r.ok&&j.lyrics&&j.lyrics.length>80){
+      openEdit(null,j.lyrics,j.title||title,null,pre||[]);
+      $('#ea').value=j.artist||artist;
+      note('Lirik diimpor. Periksa dan simpan lagu.');
+      return true;
+    }
+    const msg=j.error==='search_busy'?'Pencarian sedang sibuk.':j.error==='no_results'?'Lirik tidak ditemukan.':'Impor lirik gagal.';
+    note(msg+' Editor dibuka agar kamu bisa menempelkan lirik.',1);
+  }catch(e){note(e&&e.name==='AbortError'?'Impor lirik timeout.':'Impor lirik gagal. Editor dibuka.',1)}
+  finally{b.disabled=false}
+  openEdit(null,'',title,null,pre||[]);$('#ea').value=artist;return false;
+}
 $('#goog').onclick=()=>{
   const q=$('#q').value.trim();if(!q)return toast('Ketik judul lagu dulu');
   fetchLyrics(q,lib.v==='cat'?[lib.id]:[])};
+$('#impLyric').onclick=()=>{
+  const q=$('#q').value.trim();if(!q)return toast('Ketik judul lagu dulu');
+  importLyrics(q,lib.v==='cat'?[lib.id]:[])};
 $('#dgoog').onclick=()=>{
   const q=$('#dq').value.trim();if(!q)return toast('Ketik judul lagu dulu');
   drawer(false);fetchLyrics(q,[])};
@@ -981,7 +1006,7 @@ const ID={'Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':
 'Friends and people who find you by your username can read your bio. Your email is never shown.':'Teman dan orang yang menemukanmu lewat username bisa membaca bio-mu. Emailmu tidak pernah ditampilkan.','Friends and sending songs':'Teman dan kirim lagu','Friends are not enabled on the server yet.':'Fitur teman belum aktif di server.','Friends are not enabled on the server yet. Run supabase/003_friends.sql in the Supabase SQL Editor, then reopen the app.':'Fitur teman belum aktif di server. Jalankan supabase/003_friends.sql di Supabase SQL Editor, lalu buka ulang aplikasi.',
 'Google sign-in is not configured yet.':'Masuk dengan Google belum dikonfigurasi.','Green':'Hijau','Hand':'Tangan','Help':'Bantuan','Hide queue':'Sembunyikan antrean','Highlight':'Sorot','Highlight colours mark important lines. Section buttons on the right insert labels.':'Warna sorot menandai baris penting. Tombol bagian di kanan menyisipkan label.',
 'Hold a note by its handle (⋮⋮) and drag it to any line. Tap Done to apply.':'Tahan catatan pada pegangannya (⋮⋮) lalu seret ke baris mana pun. Ketuk Selesai untuk menerapkan.','Hold still for 1 second while playing: fast-forward (speed 30) until you let go.':'Tahan diam 1 detik saat berjalan: maju cepat (kecepatan 30) sampai dilepas.','Home':'Home','Hosting: Cloudflare':'Hosting: Cloudflare',
-'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
+'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Import Lyric':'Impor Lirik','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
 'iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.':'iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.',
 'Keep screen awake':'Layar tetap menyala','Keep tapping to the beat…':'Terus ketuk mengikuti ketukan…','Key':'Nada','Keyboard':'Keyboard','Label name':'Nama label','Language':'Bahasa','Left':'Kiri','Library, categories and queue':'Library, kategori, dan antrean','Light':'Terang','Line':'Garis','Lyrics':'Lirik','Looking up tempo… (up to 20 s)':'Mencari tempo… (maks. 20 detik)',
 'Made by Evolution Studio ID.':'Dibuat oleh Evolution Studio ID.','Make New Version':'Buat Versi Baru','Male 1':'Pria 1','Male 2':'Pria 2','Maximum 20 characters':'Maksimal 20 karakter','Maximum 30 characters':'Maksimal 30 karakter','Maximum 8 images per song':'Maksimal 8 gambar per lagu','Menu':'Menu','Mid':'Tengah','Mono':'Mono','Move':'Geser','Move notes':'Pindahkan catatan','My Library':'Library Saya',

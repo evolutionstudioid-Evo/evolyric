@@ -47,13 +47,18 @@ function lyricFromHtml(html){
   return '';
 }
 function hostAllowed(u){try{const h=new URL(u).hostname.toLowerCase();return LYRIC_HOSTS.some(x=>h===x||h.endsWith('.'+x))}catch(e){return false}}
+const LYRIC_FETCH_TIMEOUT=8000;
+function fetchWithTimeout(url,init={}){
+  const c=new AbortController(),timer=setTimeout(()=>c.abort(),LYRIC_FETCH_TIMEOUT);
+  return fetch(url,{...init,signal:c.signal}).finally(()=>clearTimeout(timer));
+}
 async function lyrics(req){
   if(req.method!=='GET')return J({error:'method'},405);
   const q=new URL(req.url).searchParams,title=(q.get('title')||'').trim().slice(0,120),artist=(q.get('artist')||'').trim().slice(0,120);
   if(!title)return J({error:'title'},400);
   const query=[title,artist,'lyrics'].filter(Boolean).join(' ');
   let search;
-  try{search=await fetch('https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}})}
+  try{search=await fetchWithTimeout('https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}})}
   catch(e){return J({error:'search_unavailable'},502)}
   if(!search.ok)return J({error:search.status===429?'search_busy':'search_unavailable'},502);
   const html=await search.text(),links=[],re=/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;
@@ -63,7 +68,7 @@ async function lyrics(req){
     links.push({url:href,label:cleanLyrics(m[2]).slice(0,120)});
   }
   for(const item of links.slice(0,8)){
-    try{const r=await fetch(item.url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});if(!r.ok)continue;
+    try{const r=await fetchWithTimeout(item.url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});if(!r.ok)continue;
       const text=lyricFromHtml(await r.text());if(text.length>80)return J({title,artist,lyrics:text,source:item.url})}catch(e){}
   }
   return J({error:links.length?'lyrics_not_extractable':'no_results',results:links.slice(0,5).map(x=>({url:x.url,title:x.label}))},404);

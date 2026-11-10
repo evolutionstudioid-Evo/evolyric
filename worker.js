@@ -75,7 +75,21 @@ function lyricLinks(html,base){
 async function searchLyrics(query){
   const providers=[
     ['https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),'https://www.google.com'],
-    ['https://html.duckduckgo.com/html/?'+new URLSearchParams({q:query}),'httpsasync function lyrics(req){
+    ['https://html.duckduckgo.com/html/?'+new URLSearchParams({q:query}),'https://html.duckduckgo.com']
+  ];
+  let busy=false;
+  for(const [url,base] of providers){
+    try{
+      const r=await fetchWithTimeout(url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});
+      if(r.status===429){busy=true;continue}
+      if(!r.ok)continue;
+      const links=lyricLinks(await r.text(),base);
+      if(links.length)return links;
+    }catch(e){}
+  }
+  return busy?null:[];
+}
+async function lyrics(req){
   if(req.method!=='GET')return J({error:'method'},405);
   const q=new URL(req.url).searchParams,title=(q.get('title')||'').trim().slice(0,120),artist=(q.get('artist')||'').trim().slice(0,120);
   if(!title)return J({error:'title'},400);
@@ -88,11 +102,6 @@ async function searchLyrics(query){
       if(score>bestScore){best=text;bestScore=score;bestSource=item.url}}catch(e){}
   }
   if(best)return J({title,artist,lyrics:best,source:bestSource});
-  return J({error:links.length?'lyrics_not_extractable':'no_results',results:links.slice(0,5).map(x=>({url:x.url,title:x.label}))},404);
-}
-    try{const r=await fetchWithTimeout(item.url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});if(!r.ok)continue;
-      const text=lyricFromHtml(await r.text());if(text.length>80)return J({title,artist,lyrics:text,source:item.url})}catch(e){}
-  }
   return J({error:links.length?'lyrics_not_extractable':'no_results',results:links.slice(0,5).map(x=>({url:x.url,title:x.label}))},404);
 }
 export default{async fetch(req,env,ctx){

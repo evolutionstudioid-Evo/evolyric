@@ -888,17 +888,32 @@ $('#q').oninput=refresh;$('#find').onclick=()=>{refresh();$('#q').focus()};
 $('#sortb').onclick=()=>{const c=csh(),inCats=lib.v==='cats';c.append(E('h3','','Sort by'));
   (inCats?CSORTS:SORTS).forEach(([k,t])=>{const cur=inCats?catSortBy:sortBy,b=E('button','ck',t);b.append(E('i','',cur===k?'✓':''));b.onclick=()=>{if(inCats){catSortBy=k;try{localStorage.setItem(CSORTK,k)}catch(e){}}else{sortBy=k;try{localStorage.setItem(SORTK,k)}catch(e){}}ctxClose();refresh()};c.append(b)});
   $('#ctx').classList.add('on')};
-/* v99: open Google in a separate tab with a real link (noopener) — window.open left a blank white page behind the app; query is "<title> lyric" */
-function webSearch(q){const a=document.createElement('a');a.href='https://www.google.com/search?q='+encodeURIComponent(q+' lyric');a.target='_blank';a.rel='noopener noreferrer';a.style.display='none';document.body.append(a);a.click();setTimeout(()=>a.remove(),0)}
+/* v135: try Cloudflare's public-page lyrics lookup first; retain Google/manual paste as fallback. */
+function webSearch(q){const a=document.createElement('a');a.href='https://www.google.com/search?q='+encodeURIComponent(q+' lyrics');a.target='_blank';a.rel='noopener noreferrer';a.style.display='none';document.body.append(a);a.click();setTimeout(()=>a.remove(),0)}
+async function fetchLyrics(q,pre){
+  const parts=q.split(/\s+[–—-]\s+/),title=(parts[0]||q).trim(),artist=(parts.length>1?parts.slice(1).join(' - '):'').trim();
+  const b=$('#goog');b.disabled=true;toast('Mencari lirik…');
+  try{
+    const r=await fetch('/api/lyrics?'+new URLSearchParams({title,artist}));
+    const j=await r.json();
+    if(r.ok&&j.lyrics&&j.lyrics.length>80){
+      openEdit(null,j.lyrics,j.title||title,null,pre||[]);
+      $('#ea').value=j.artist||artist;
+      note('Lirik ditemukan. Periksa dan simpan lagu.');
+      return true;
+    }
+    const msg=j.error==='search_busy'?'Pencarian sedang sibuk.':'Lirik otomatis tidak ditemukan.';
+    note(msg+' Membuka Google untuk pencarian manual.',1);
+  }catch(e){note('Pencarian otomatis gagal. Membuka Google.',1)}
+  finally{b.disabled=false}
+  webSearch(q);openEdit(null,'',title,null,pre||[]);$('#ea').value=artist;return false;
+}
 $('#goog').onclick=()=>{
   const q=$('#q').value.trim();if(!q)return toast('Ketik judul lagu dulu');
-  webSearch(q);
-  openEdit(null,'',q,null,lib.v==='cat'?[lib.id]:[])};
-/* v98: same globe button in the side panel: search Google for the typed title, then open a new song to paste into */
+  fetchLyrics(q,lib.v==='cat'?[lib.id]:[])};
 $('#dgoog').onclick=()=>{
   const q=$('#dq').value.trim();if(!q)return toast('Ketik judul lagu dulu');
-  webSearch(q);
-  drawer(false);openEdit(null,'',q,null,[])};
+  drawer(false);fetchLyrics(q,[])};
 function fabOpen(on){$('#fabm').classList.toggle('on',!!on);$('#fbg').classList.toggle('on',!!on);$('#fab').setAttribute('aria-expanded',on?'true':'false')}
 $('#fab').onclick=()=>fabOpen(!$('#fabm').classList.contains('on'));
 $('#fbg').onclick=()=>fabOpen(false); /* tap outside closes the popup */

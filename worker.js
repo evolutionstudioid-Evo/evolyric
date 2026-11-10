@@ -41,10 +41,10 @@ function lyricScore(text){
 }
 function lyricFromHtml(html){
   const candidates=[],patterns=[
-    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
-    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
-    /<div[^>]*id=["']lyrics["'][^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
-    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi
+    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
+    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
+    /<div[^>]*id=["']lyrics["'][^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
+    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi
   ];
   for(const re of patterns){
     let m,parts=[];
@@ -52,10 +52,10 @@ function lyricFromHtml(html){
       const t=cleanLyrics(m[1]);
       if(t.length>20)parts.push(t);
     }
-    const joined=[...new Set(parts)].join('\\n\\n');
+    const joined=[...new Set(parts)].join('\n\n');
     if(joined.length>80)candidates.push(joined);
   }
-  const json=/<script[^>]*type=["']application\\/ld\\+json["'][^>]*>([\\s\\S]*?)<\\/script>/gi;let m;
+  const json=/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;let m;
   while((m=json.exec(html))){
     try{
       const d=JSON.parse(m[1]),stack=[d];

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v135 – Find lyrics (LRCLIB)
+- New **Find lyrics** button in the editor toolbar (magnifier, next to Paste). It searches [LRCLIB](https://lrclib.net) — a free public lyrics database that needs no key and no sign-in, so it works for guests too — using the title and artist you typed, and lists up to 8 matches (title, artist · album · length, first lyric line). Tap one to put its lyrics in the text box.
+- The browser asks lrclib.net directly. Nothing is scraped and no EvoLyric server is involved (`worker.js` is unchanged).
+- Safe by design: the lyrics replace the text box but **Undo** brings your old text back; a title or artist you already typed is never overwritten (empty ones are filled from the match); identical versions are shown once; instrumentals and tracks without text are skipped. LRCLIB lyrics have no `[Section]` labels, so add them with the Section panel as usual. If a track only has time-synced lyrics, the time stamps are removed.
+- With no artist the search is by title only and, if that finds nothing, widens once to a general search. Offline, a missing title, no match and network errors each show a clear message. The Google globe button on Home is unchanged.
+- Credit to LRCLIB in the result list and in Help → About. Indonesian translations added; `tools/i18n-audit.js` has two new steps.
+- Tests: 10 new automatic tests (`tests/lrclib.test.js`, LRCLIB is replaced by a stub, the real site is never called). Cache `evolyric-app-135`.
+
 ## v134 – Hotfix: offline service worker restored
 - v132 and v133 shipped an empty `sw.js` (a release-script mistake). Phones that picked it up lost offline start-up: the app would not open without internet. The full service worker is back (cache `evolyric-app-134`); it installs and takes over immediately, so the next online visit repairs it.
 - A debug script (`_a.js`) that was committed by mistake in v131 is removed.

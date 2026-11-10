@@ -397,14 +397,15 @@ html:has(#play.on){background:#0d0a08}
 #emeta #ec svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 #emeta #ec span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#emeta #ec span.mut{color:var(--mut)}
 #etools{align-items:center;flex-wrap:nowrap;gap:2px;padding:0 10px 6px;overflow-x:auto;scrollbar-width:none}#etools::-webkit-scrollbar{display:none}
-#etools button{flex:none;width:42px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:transparent;border:1px solid transparent;color:var(--fg)}
+#etools button{flex:none;width:36px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:transparent;border:1px solid transparent;color:var(--fg)}
 #etools button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #etools button:active{background:var(--card)}#etools button.on{color:#15110e}#etools button.on svg{stroke:#15110e}
 /* v105: the Section panel is a drawer on the right; hidden = the text box takes the full width */
 #side{transition:flex-basis .25s,width .25s,opacity .2s,visibility 0s}.ed{transition:gap .25s}
 #edit.noside #side{width:0!important;flex:0 0 0!important;opacity:0;visibility:hidden;padding:0;overflow:hidden;pointer-events:none;transition:flex-basis .25s,width .25s,opacity .2s,visibility 0s .25s}
 #edit.noside .ed{gap:0}
-#etools button#eSd{width:auto;padding:0 14px;font-size:14px;font-weight:600;color:var(--mut);background:transparent;border:1px solid var(--ln)}#etools button#eSd.on{background:var(--acc);border-color:var(--acc);color:#15110e}
+#etools button#eSd{width:auto;padding:0 12px;font-size:14px;font-weight:600;color:var(--mut);background:transparent;border:1px solid var(--ln)}#etools button#eSd.on{background:var(--acc);border-color:var(--acc);color:#15110e}
+#etools button:disabled{opacity:.45}.sheet .lrr div{font-weight:600}.sheet .lrr small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sheet p.mut{margin:6px 10px 10px;font-size:14px}.sheet .credit{margin:8px 10px 4px;font-size:12px;color:var(--mut)}.sheet .credit a{color:inherit;text-decoration:underline}
 @media(prefers-reduced-motion:reduce){#side,.ed,#edit.noside #side{transition:none}}
 #etools .tsep{flex:none;width:1px;height:20px;background:var(--ln);margin:0 7px}
 /* v60: back-to-top in the sidebar */
@@ -591,7 +592,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
   <div class="sb" id="etm"><input class="fld" id="eb" type="number" inputmode="numeric" min="30" max="300" placeholder="BPM" aria-label="Tempo in BPM"><select class="fld" id="ebl" aria-label="Beats per lyric line"><option value="2">2 beats/line</option><option value="4">4 beats/line</option><option value="8">8 beats/line</option></select><button type="button" class="fld" id="ebt" aria-label="Tap tempo">Tap</button><button type="button" class="fld" id="ebf" aria-label="Find tempo online">Find</button></div><div class="mut" id="ebn" hidden></div>
   <div class="tb" id="etools" role="toolbar" aria-label="Editor tools">
     <button id="eU" type="button" aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button><button id="eR" type="button" aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20v-7a4 4 0 0 1 4-4h16"/></svg></button><i class="tsep"></i>
-    <button id="eP" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></button><button id="eK" type="button" aria-label="Keyboard" title="Keyboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/></svg></button><i class="tsep"></i>
+    <button id="eP" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></button><button id="eL" type="button" aria-label="Find lyrics" title="Find lyrics"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.9-4.9"/><path d="M8 9.5h5M8 12.5h3"/></svg></button><button id="eK" type="button" aria-label="Keyboard" title="Keyboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/></svg></button><i class="tsep"></i>
     <button id="eH" type="button" aria-label="Highlight" title="Highlight"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg></button><button id="eN" type="button" aria-label="Notes and drawing" title="Notes and drawing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 2.8a2.1 2.1 0 0 1 3 3L9 17.3 4.8 18.4l1.1-4.2Z"/><path d="M2.5 21.4c1.2-1.6 2.4-1.6 3.6 0s2.4 1.6 3.6 0 2.4-1.6 3.6 0 2.4 1.6 3.6 0 2.4-1.6 3.6 0"/></svg></button><button id="eSd" type="button" aria-label="Hide section panel" aria-pressed="true" aria-controls="side" style="margin-left:auto">Section</button>
   </div>
   <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button id="hx" type="button">Remove</button></div>
@@ -796,7 +797,7 @@ function refresh(){
   else items($('#items'),$('#q').value,s=>openSong(s),true,cat?poolFor(cat.id):songs,cat,cat&&!$('#q').value.trim()?'No songs in this category yet. Tap “Add Songs to '+cat.name+'”.':'No songs.')}
 $('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh()};
 $('#cBack').onclick=()=>{lib.v='cats';lib.id=null;$('#q').value='';refresh()};
-const csh=()=>{const c=$('#csheet');c.textContent='';return c};
+const csh=()=>{const c=$('#csheet');c.textContent='';c.style.cssText='';return c};
 function ctxOpen(s,cat){
   const c=csh();c.append(E('h3','',s.title||'Untitled'));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;c.append(b);return b};
@@ -922,7 +923,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='134';
+const APP_VER='135';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -943,7 +944,7 @@ function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Find lyrics':'Cari lirik','Choose the lyrics':'Pilih lirik','No lyrics found on LRCLIB. Check the title and artist, or paste the lyrics.':'Lirik tidak ditemukan di LRCLIB. Periksa judul dan artis, atau tempel liriknya.','Lyrics from':'Lirik dari','Searching lyrics…':'Mencari lirik…','You are offline. Paste the lyrics instead.':'Kamu offline. Tempel liriknya saja.','Lyrics search failed. Check your connection, or paste the lyrics.':'Pencarian lirik gagal. Periksa koneksimu, atau tempel liriknya.','Lyrics replaced. Tap Undo to bring back your text.':'Lirik diganti. Ketuk Undo untuk mengembalikan teksmu.','Lyrics added. Check them, then save.':'Lirik ditambahkan. Periksa dulu, lalu simpan.','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -1020,7 +1021,7 @@ i18nMO.observe(document.body,{childList:true,subtree:true,characterData:true,att
 function setLang(v){PREF.lang=v==='id'?'id':'en';prefSave();idCache.clear();i18nRun();if(typeof prefRender==='function'&&$('#prefs').classList.contains('on'))prefRender()}
 /* for tools/i18n-audit.js: visible text that has no Indonesian version */
 /* text that must stay as is: brand, musical terms, names, numbers, text already written in Indonesian via L() */
-const I18N_KEEP=new Set(['Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
+const I18N_KEEP=new Set(['Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Pencarian lirik oleh','LRCLIB','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
 const i18nKeep=e=>!/[A-Za-z]{3}/.test(e)||I18N_KEEP.has(e)||LID.has(e)||tr(e)!==e||/^#[0-9a-f]{6}$/i.test(e)||/@[\w.-]+/.test(e)||/^Versi \d+$/.test(e)||/^\[/.test(e)||/^(Intro|Verse|Pre-Chorus|Chorus|Interlude|Bridge|Coda|Outro|Male|Female)\b/.test(e)||(user&&(e===user.name||e===user.email));
 window.i18nMissing=()=>{const out=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);for(let n;n=w.nextNode();){if(i18nSkip(n))continue;const o=I18N_EN.get(n),e=(o?o.e:n.nodeValue).trim();if(i18nKeep(e))continue;if(getComputedStyle(n.parentElement).display!=='none')out.add(e)}
   document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>I18N_ATTR.forEach(a=>{if(!el.hasAttribute(a))return;const M=I18N_EN.get(el),e=((M&&M[a])?M[a].e:el.getAttribute(a)).trim();if(!i18nKeep(e))out.add(a+': '+e)}));return [...out]};
@@ -1122,6 +1123,7 @@ function creditRoll(b){const tok=++crTok;if(window.matchMedia&&matchMedia('(pref
 
 function docCredit(b){b.className='sbody doc';
   b.append(dH(L('Tempo data','Data tempo')));const p=E('p');p.append(L('Song tempo data by ','Data tempo lagu oleh '),dA('GetSongBPM.com','https://getsongbpm.com'));b.append(p);
+  b.append(dH(L('Lyrics search','Pencarian lirik')));const p2=E('p');p2.append(L('Lyrics lookup by ','Pencarian lirik oleh '),dA('LRCLIB','https://lrclib.net'));b.append(p2);
   b.append(dH(L('Fonts','Font')),dUl(['Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']));
   b.append(dH(L('Services','Layanan')),dUl([L('Sign-in and cloud sync: Supabase','Masuk dan sinkron cloud: Supabase'),L('Hosting: Cloudflare','Hosting: Cloudflare')]))}
 function docSub(b){b.className='sbody doc';
@@ -1758,6 +1760,49 @@ $('#eP').onclick=()=>{
   if(!navigator.clipboard?.readText)return pasteFail();
   navigator.clipboard.readText().then(x=>{snap();ta.setRangeText(x,ta.selectionStart,ta.selectionEnd,'end');snap();ed.dirty=true}).catch(pasteFail)};
 function pasteFail(){setKb(true);ta.focus()}
+/* v135: Find lyrics. Looks the song up on LRCLIB (free public API: no key, no sign-in, so it works for guests too) and lets you pick the match.
+   The browser asks lrclib.net directly: nothing is scraped and none of our servers is involved. Lyrics come as plain text, replace the text box
+   and can be undone with Undo. Synced (.lrc) lyrics are only used when a track has no plain text; their time stamps are removed. */
+const LRC_URL='https://lrclib.net/api/search';
+const lrcPlain=r=>{if(!r)return'';const p=String(r.plainLyrics||'').replace(/\r\n?/g,'\n').trim();if(p)return p;
+  return String(r.syncedLyrics||'').replace(/\r\n?/g,'\n').split('\n').map(l=>l.replace(/^(\s*\[\d+:\d+(?:[.:]\d+)?\])+\s?/,'').replace(/<\d+:\d+(?:[.:]\d+)?>/g,'')).join('\n').replace(/\n{3,}/g,'\n\n').trim()};
+/* drop instrumentals and tracks without text, and show a version only once when its lyrics are identical */
+function lrcRank(list){const seen=new Set(),out=[];
+  (Array.isArray(list)?list:[]).forEach(r=>{if(!r||r.instrumental)return;const t=lrcPlain(r);if(!t)return;
+    const k=String(r.artistName||'').toLowerCase()+'|'+t.toLowerCase().replace(/\s+/g,' ');if(seen.has(k))return;seen.add(k);out.push(r)});
+  return out.slice(0,8)}
+async function lrcFind(title,artist){
+  const get=async p=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),12000);
+    try{const r=await fetch(LRC_URL+'?'+new URLSearchParams(p),{signal:c.signal});if(!r.ok)throw new Error('http '+r.status);return await r.json()}finally{clearTimeout(t)}};
+  let out=lrcRank(await get(artist?{track_name:title,artist_name:artist}:{track_name:title}));
+  if(!out.length)out=lrcRank(await get({q:(title+' '+artist).trim()}));
+  return out}
+const lrcDur=s=>{s=Math.round(+s||0);return s>0?Math.floor(s/60)+':'+String(s%60).padStart(2,'0'):''};
+function lrcPick(list){
+  $('#note').classList.remove('on'); /* hide “Searching lyrics…” once the results are here */
+  const c=csh();c.style.cssText='width:min(92vw,380px);max-height:76vh;overflow-y:auto';c.append(E('h3','','Choose the lyrics'));
+  if(!list.length)c.append(E('p','mut','No lyrics found on LRCLIB. Check the title and artist, or paste the lyrics.'));
+  list.forEach(r=>{const b=E('button','lrr');b.type='button';b.setAttribute('data-nt',''); /* title, artist and lyric line come from LRCLIB: never translated */
+    const first=lrcPlain(r).split('\n').find(l=>l.trim())||'';
+    b.append(E('div','',r.trackName||'Untitled'),E('small','mut',[r.artistName,r.albumName,lrcDur(r.duration)].filter(Boolean).join(' · ')),E('small','mut',first));
+    b.onclick=()=>{ctxClose();lrcApply(r)};c.append(b)});
+  const cr=E('div','credit');cr.append('Lyrics from ');const a=E('a','','LRCLIB');a.href='https://lrclib.net';a.target='_blank';a.rel='noopener';cr.append(a);c.append(cr);
+  $('#ctx').classList.add('on')}
+function lrcApply(r){
+  const lyr=lrcPlain(r);if(!lyr)return;const had=ta.value.trim();
+  snap();setLines(lyr.split('\n'),0);ta.scrollTop=0;
+  if(!$('#et').value.trim())$('#et').value=r.trackName||'';
+  if(!$('#ea').value.trim())$('#ea').value=r.artistName||'';
+  note(had?'Lyrics replaced. Tap Undo to bring back your text.':'Lyrics added. Check them, then save.')}
+let lrcBusy=0;
+$('#eL').onclick=async()=>{
+  if(lrcBusy)return;const title=$('#et').value.trim(),art=$('#ea').value.trim();
+  if(!title)return note('Add a song title first',1);
+  if(!navigator.onLine)return note('You are offline. Paste the lyrics instead.',1);
+  lrcBusy=1;const b=$('#eL');b.disabled=true;note('Searching lyrics…');
+  try{lrcPick(await lrcFind(title,art))}
+  catch(e){note('Lyrics search failed. Check your connection, or paste the lyrics.',1)}
+  finally{lrcBusy=0;b.disabled=false}};
 /* A real key press means the user is typing: leave "keyboard off" mode so the caret is never snapped to line start (that reversed typing and arrow keys) */
 ta.addEventListener('keydown',e=>{if(ta.inputMode!=='none'||e.ctrlKey||e.metaKey||e.altKey||['Shift','Control','Alt','Meta','CapsLock','Escape','Tab'].includes(e.key))return;setKb(true)});
 ta.addEventListener('beforeinput',()=>{if(ta.inputMode==='none')setKb(true)});

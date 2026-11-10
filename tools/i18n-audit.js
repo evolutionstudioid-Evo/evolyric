@@ -25,6 +25,8 @@ await step('backup',()=>p.click('#acctbody button.srow >> nth=1'));await p.click
 await step('sort menu',()=>p.click('#sortb'));await back();
 await step('+ menu',()=>p.click('#fab'));await step('new song editor',()=>p.click('#fabm button >> nth=0'));
 await step('editor',async()=>{});
+await step('find lyrics results',async()=>{await p.evaluate(()=>lrcPick([{trackName:'Contoh',artistName:'Artis',albumName:'Album',duration:200,plainLyrics:'Baris satu\nBaris dua'}]))});await p.evaluate(()=>ctxClose());
+await step('find lyrics empty',async()=>{await p.evaluate(()=>lrcPick([]))});await p.evaluate(()=>ctxClose());
 for(const sel of ['#eX','#edit .tb button >> nth=0']){const open=await p.evaluate(()=>document.querySelector('#edit.on')!==null);if(!open)break;await p.click(sel).catch(()=>{});await p.waitForTimeout(200);const d=await p.$('.dlg button, #dlg button');if(d)await scan('discard dialog')}
 await p.evaluate(()=>{if(typeof show==='function')show('list')});
 await step('categories tab',()=>p.click('#tabs [data-v=cats]'));

@@ -30,21 +30,27 @@ async function tempo(req,env,ctx){
 const LYRIC_HOSTS=['genius.com','azlyrics.com','lyrics.com','musixmatch.com','songlyrics.com','metrolyrics.com','lyricstranslate.com'];
 const decode=s=>String(s||'').replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(+n)).replace(/&#x([\da-f]+);/gi,(_,n)=>String.fromCodePoint(parseInt(n,16)));
 function cleanLyrics(s){
-  return decode(s).replace(/<br\s*\/?\s*>/gi,'\n').replace(/<\/(?:div|p|li|h[1-6])\s*>/gi,'\n')
-    .replace(/<[^>]*>/g,'').replace(/\r/g,'').replace(/[\t ]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+  return decode(String(s||'').replace(/<script[\\s\\S]*?<\\/script>/gi,'').replace(/<style[\\s\\S]*?<\\/style>/gi,''))
+    .replace(/<br\\s*\\/?\\s*>/gi,'\\n').replace(/<\\/(?:div|p|li|h[1-6])\\s*>/gi,'\\n')
+    .replace(/<[^>]*>/g,'').replace(/\\u00a0/g,' ').replace(/\\r/g,'')
+    .replace(/[\\t ]+\\n/g,'\\n').replace(/\\n{3,}/g,'\\n\\n').trim();
+}
+function lyricScore(text){
+  const lines=text.split('\\n').map(x=>x.trim()).filter(Boolean),unique=new Set(lines.map(x=>x.toLowerCase()));
+  return text.length+Math.min(lines.length,300)*10+unique.size*2;
 }
 function lyricFromHtml(html){
-  const patterns=[
-    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
-    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
-    /<div[^>]*id=["']lyrics["'][^>]*>([\s\S]*?)<\/div>/gi,
-    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi
+  const candidates=[],patterns=[
+    /<div[^>]*data-lyrics-container=["'][^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
+    /<div[^>]*class=["'][^"']*Lyrics__Container[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
+    /<div[^>]*id=["']lyrics["'][^>]*>([\\s\\S]*?)<\\/div>/gi,
+    /<div[^>]*class=["'][^"']*lyrics[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>/gi
   ];
-  for(const re of patterns){let m,parts=[];while((m=re.exec(html))&&parts.length<30){const t=cleanLyrics(m[1]);if(t.length>80)parts.push(t)}
-    if(parts.length)return parts.join('\n\n').slice(0,18000)}
-  const json=/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;let m;
-  while((m=json.exec(html))){try{const d=JSON.parse(m[1]);const stack=[d];while(stack.length){const x=stack.pop();if(!x||typeof x!=='object')continue;if(typeof x.lyrics==='string'&&x.lyrics.length>80)return x.lyrics.slice(0,18000);stack.push(...Object.values(x))}}catch(e){}}
-  return '';
+  for(const re of patterns){let m;while((m=re.exec(html))&&candidates.length<40){const t=cleanLyrics(m[1]);if(t.length>80)candidates.push(t)}}
+  const json=/<script[^>]*type=["']application\\/ld\\+json["'][^>]*>([\\s\\S]*?)<\\/script>/gi;let m;
+  while((m=json.exec(html))){try{const d=JSON.parse(m[1]),stack=[d];while(stack.length){const x=stack.pop();if(!x||typeof x!=='object')continue;if(typeof x.lyrics==='string'){const t=cleanLyrics(x.lyrics);if(t.length>80)candidates.push(t)}stack.push(...Object.values(x))}}catch(e){}}
+  const unique=[...new Set(candidates)];
+  return unique.sort((a,b)=>lyricScore(b)-lyricScore(a))[0]||'';
 }
 function hostAllowed(u){try{const h=new URL(u).hostname.toLowerCase();return LYRIC_HOSTS.some(x=>h===x||h.endsWith('.'+x))}catch(e){return false}}
 const LYRIC_FETCH_TIMEOUT=8000;
@@ -69,27 +75,21 @@ function lyricLinks(html,base){
 async function searchLyrics(query){
   const providers=[
     ['https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),'https://www.google.com'],
-    ['https://html.duckduckgo.com/html/?'+new URLSearchParams({q:query}),'https://html.duckduckgo.com']
-  ];
-  let busy=false;
-  for(const [url,base] of providers){
-    try{
-      const r=await fetchWithTimeout(url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});
-      if(r.status===429){busy=true;continue}
-      if(!r.ok)continue;
-      const links=lyricLinks(await r.text(),base);
-      if(links.length)return links;
-    }catch(e){}
-  }
-  return busy?null:[];
-}
-async function lyrics(req){
+    ['https://html.duckduckgo.com/html/?'+new URLSearchParams({q:query}),'httpsasync function lyrics(req){
   if(req.method!=='GET')return J({error:'method'},405);
   const q=new URL(req.url).searchParams,title=(q.get('title')||'').trim().slice(0,120),artist=(q.get('artist')||'').trim().slice(0,120);
   if(!title)return J({error:'title'},400);
   const links=await searchLyrics([title,artist,'lyrics'].filter(Boolean).join(' '));
   if(links===null)return J({error:'search_busy'},502);
-  for(const item of links.slice(0,8)){
+  let best='',bestScore=0,bestSource='';
+  for(const item of links.slice(0,6)){
+    try{const r=await fetchWithTimeout(item.url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});if(!r.ok)continue;
+      const text=lyricFromHtml(await r.text()),score=text.length>120?lyricScore(text):0;
+      if(score>bestScore){best=text;bestScore=score;bestSource=item.url}}catch(e){}
+  }
+  if(best)return J({title,artist,lyrics:best,source:bestSource});
+  return J({error:links.length?'lyrics_not_extractable':'no_results',results:links.slice(0,5).map(x=>({url:x.url,title:x.label}))},404);
+}
     try{const r=await fetchWithTimeout(item.url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});if(!r.ok)continue;
       const text=lyricFromHtml(await r.text());if(text.length>80)return J({title,artist,lyrics:text,source:item.url})}catch(e){}
   }

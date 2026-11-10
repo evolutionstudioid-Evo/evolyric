@@ -17,6 +17,10 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 - Gestur: geser kiri/kanan untuk kecepatan, tahan untuk maju cepat, cubit untuk ukuran huruf. Ketuk dua kali pada judul untuk membuka editor (atau menu ⋮ → Edit lagu).
 - Layar penuh untuk panggung, tema terang dan gelap (layar lirik selalu gelap), serta opsi menjaga layar tetap menyala.
 
+**Mengisi lirik**
+- Di editor, tombol **Cari lirik** (kaca pembesar di sebelah Tempel) mencari judul dan artis di [LRCLIB](https://lrclib.net), database lirik publik yang gratis tanpa kunci dan tanpa login. Pilih salah satu hasil untuk mengisi lirik; teks lama bisa dikembalikan dengan Undo. Lirik dari LRCLIB tidak memiliki label section, jadi tambahkan lewat panel Section.
+- Tombol globe di Home tetap membuka Google di tab baru untuk menyalin lirik secara manual.
+
 **Section, voicing, dan anotasi**
 - Penanda bagian lagu dalam tiga kelompok yang dapat dibuka dan ditutup: **Song** (Intro, Verse, Chorus, Bridge, dan lainnya), **Voicing** (Vocal 1–5, Harmony, Choir) dan **Performance** (A Cappella, Sing-Along, Call & Response, dan lainnya).
 - Setiap section berwarna dan menjadi tombol loncat di atas layar lirik. Intro dan Interlude dapat berhenti otomatis (*Pause here*) atau terus berjalan (*Keep going*).
@@ -44,6 +48,7 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 | Aplikasi | HTML, CSS, dan JavaScript murni dalam satu berkas (`www/index.html`), tanpa framework |
 | Offline | Service worker (`www/sw.js`) dengan cache versi |
 | Backend | Supabase (Auth, Postgres, RPC) |
+| Lirik | LRCLIB (API publik gratis), dipanggil langsung dari peramban |
 | Hosting | Cloudflare Workers (aset statis dari `www/`, `worker.js` untuk `/api/*`) |
 | Native (opsional) | Capacitor (Android dan iOS) |
 

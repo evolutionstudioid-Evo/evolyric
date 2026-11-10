@@ -52,21 +52,43 @@ function fetchWithTimeout(url,init={}){
   const c=new AbortController(),timer=setTimeout(()=>c.abort(),LYRIC_FETCH_TIMEOUT);
   return fetch(url,{...init,signal:c.signal}).finally(()=>clearTimeout(timer));
 }
+function lyricLinks(html,base){
+  const links=[],re=/<a\\s[^>]*href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi;let m;
+  while((m=re.exec(html))&&links.length<40){
+    let href=decode(m[1]);
+    try{
+      const u=new URL(href,base);
+      if(u.hostname.endsWith('google.com')&&u.pathname==='/url')href=u.searchParams.get('q')||'';
+      else if(u.hostname.endsWith('duckduckgo.com')&&u.pathname==='/l/')href=u.searchParams.get('uddg')||'';
+    }catch(e){href=''}
+    if(!hostAllowed(href)||links.some(x=>x.url===href))continue;
+    links.push({url:href,label:cleanLyrics(m[2]).slice(0,120)});
+  }
+  return links;
+}
+async function searchLyrics(query){
+  const providers=[
+    ['https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),'https://www.google.com'],
+    ['https://html.duckduckgo.com/html/?'+new URLSearchParams({q:query}),'https://html.duckduckgo.com']
+  ];
+  let busy=false;
+  for(const [url,base] of providers){
+    try{
+      const r=await fetchWithTimeout(url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});
+      if(r.status===429){busy=true;continue}
+      if(!r.ok)continue;
+      const links=lyricLinks(await r.text(),base);
+      if(links.length)return links;
+    }catch(e){}
+  }
+  return busy?null:[];
+}
 async function lyrics(req){
   if(req.method!=='GET')return J({error:'method'},405);
   const q=new URL(req.url).searchParams,title=(q.get('title')||'').trim().slice(0,120),artist=(q.get('artist')||'').trim().slice(0,120);
   if(!title)return J({error:'title'},400);
-  const query=[title,artist,'lyrics'].filter(Boolean).join(' ');
-  let search;
-  try{search=await fetchWithTimeout('https://www.google.com/search?'+new URLSearchParams({q:query,gbv:'1',num:'8'}),{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}})}
-  catch(e){return J({error:'search_unavailable'},502)}
-  if(!search.ok)return J({error:search.status===429?'search_busy':'search_unavailable'},502);
-  const html=await search.text(),links=[],re=/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;
-  while((m=re.exec(html))&&links.length<40){
-    let href=decode(m[1]);if(href.startsWith('/url?')){try{href=new URL(href,'https://www.google.com').searchParams.get('q')||''}catch(e){}}
-    if(!hostAllowed(href)||links.some(x=>x.url===href))continue;
-    links.push({url:href,label:cleanLyrics(m[2]).slice(0,120)});
-  }
+  const links=await searchLyrics([title,artist,'lyrics'].filter(Boolean).join(' '));
+  if(links===null)return J({error:'search_busy'},502);
   for(const item of links.slice(0,8)){
     try{const r=await fetchWithTimeout(item.url,{headers:{'user-agent':'Mozilla/5.0 (compatible; EvoLyric/1.0)','accept':'text/html'}});if(!r.ok)continue;
       const text=lyricFromHtml(await r.text());if(text.length>80)return J({title,artist,lyrics:text,source:item.url})}catch(e){}

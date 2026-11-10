@@ -935,7 +935,21 @@ $('#goog').onclick=()=>{
   fetchLyrics(q,lib.v==='cat'?[lib.id]:[])};
 $('#impLyric').onclick=()=>{
   const q=$('#q').value.trim();if(!q)return toast('Ketik judul lagu dulu');
-  importLyrics(q,lib.v==='cat'?[lib.id]:[])};
+  const parts=q.split(/\s+[–—-]\s+/),title=(parts[0]||q).trim(),artist=(parts.length>1?parts.slice(1).join(' - '):'').trim(),pre=lib.v==='cat'?[lib.id]:[];
+  if(window.evoLyricDesktop){
+    window.evoLyricDesktop.startImport({title,artist});
+    return;
+  }
+  importLyrics(q,pre)};
+if(window.evoLyricDesktop){
+  window.evoLyricDesktop.onLyricImported(data=>{
+    if(!data||typeof data.lyrics!=='string'||data.lyrics.length<80)return void note('Hasil lirik tidak valid.',1);
+    openEdit(null,data.lyrics,data.title||'',null,lib.v==='cat'?[lib.id]:[]);
+    $('#ea').value=data.artist||'';
+    note('Lirik diimpor dari WebView. Periksa dan simpan lagu.');
+  });
+  window.evoLyricDesktop.onImportStatus(status=>{if(status&&status.message)note(status.message,!!status.error)});
+}
 $('#dgoog').onclick=()=>{
   const q=$('#dq').value.trim();if(!q)return toast('Ketik judul lagu dulu');
   drawer(false);fetchLyrics(q,[])};

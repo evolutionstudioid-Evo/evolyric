@@ -1,3 +1,7 @@
+## v136 – Windows WebView lyric import
+- Added a Windows Electron/WebView proof-of-concept for Import Lyric: Google Search and public lyric pages are inspected in a real WebView, then sanitized text is sent to the existing editor through a preload bridge.
+- Browser/PWA mode keeps the existing fallback; no database or Cloudflare deployment changes.
+
 # CHANGELOG
 
 ## v134 – Hotfix: offline service worker restored

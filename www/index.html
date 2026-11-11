@@ -607,6 +607,9 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 /* v144: Auto Section button at the top of the editor's Section panel */
 #side #eA{flex:none;width:100%;padding:8px 4px;border-radius:10px;border:1px solid rgba(240,160,75,.55);background:rgba(240,160,75,.1);color:var(--acct);font:800 12px/1.15 'Atkinson Hyperlegible',system-ui,sans-serif;text-align:center}
 #side #eA:active{transform:scale(.96)}
+/* v146: colour tone sliders */
+svg.lg{filter:saturate(var(--tsat,1))} /* the app logo follows the colour slider (Google's logo keeps its colours) */
+.srng input[type=range]{flex:0 0 46%;max-width:220px;accent-color:var(--acct);height:28px}
 </style>
 </head>
 <body>
@@ -793,6 +796,41 @@ const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* v75: colours chosen for the dark theme are darkened for display on the light theme (stored values are untouched) */
 const _adc={};
+/* v146 – colour tone (Preferences → Appearance): saturation (0 = monochrome), background brightness and contrast.
+   A filter over the whole screen would be heavy while scrolling and would break the floating buttons, so instead every colour in the
+   stylesheet is recalculated once into an override sheet (#tone), and colours set from script go through tone(). */
+let TN={sat:1,bri:0,con:1,hl:true,id:true};
+const TONE_RE=/#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b|rgba?\([^)]*\)/gi,TONE_T=/#[0-9a-f]{3,8}\b|rgba?\(/i;
+function toneRGB(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0,s=0,l=(mx+mn)/2;
+  if(d){s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?((g-b)/d+(g<b?6:0)):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6}
+  s*=TN.sat;const dark=document.documentElement.dataset.theme!=='light';
+  const w=dark?(l<.45?1-l/.45:0):(l>.55?(l-.55)/.45:0);l=Math.min(1,Math.max(0,l+TN.bri*.18*w));l=Math.min(1,Math.max(0,.5+(l-.5)*TN.con));
+  const q=l<.5?l*(1+s):l+s-l*s,pp=2*l-q,hu=t=>{t=(t+1)%1;return t<1/6?pp+(q-pp)*6*t:t<.5?q:t<2/3?pp+(q-pp)*(2/3-t)*6:pp};
+  return(s?[hu(h+1/3),hu(h),hu(h-1/3)]:[l,l,l]).map(v=>Math.round(v*255))}
+function tone(c){if(TN.id||typeof c!=='string'||!TONE_T.test(c))return c;
+  return c.replace(TONE_RE,m=>{let r,g,b,a=null;
+    if(m[0]==='#'){let x=m.slice(1);if(x.length<5)x=[...x].map(ch=>ch+ch).join('');r=parseInt(x.slice(0,2),16);g=parseInt(x.slice(2,4),16);b=parseInt(x.slice(4,6),16);if(x.length===8)a=+(parseInt(x.slice(6,8),16)/255).toFixed(3)}
+    else{const v=m.slice(m.indexOf('(')+1,-1).split(/[\s,\/]+/).filter(Boolean);if(v.length<3||v.slice(0,3).some(t=>/%|[a-z]/i.test(t)))return m;[r,g,b]=v.slice(0,3).map(Number);if(v[3]!=null)a=v[3]}
+    const [R,G,B]=toneRGB(r,g,b);return a==null?`rgb(${R},${G},${B})`:`rgba(${R},${G},${B},${a})`})}
+function toneCss(){let sh=document.getElementById('tone');if(!sh){sh=document.createElement('style');sh.id='tone';document.head.append(sh)}
+  if(TN.id){sh.textContent='';return}
+  const base=[...document.styleSheets].find(x=>x.ownerNode&&x.ownerNode.tagName==='STYLE'&&x.ownerNode.id!=='tone');if(!base)return;
+  const walk=rules=>{let o='';for(const r of rules){
+    if(r.type===1){const st=r.style;let d='';for(let i=0;i<st.length;i++){const p=st[i],v=st.getPropertyValue(p);let nv=null;
+        if(p.startsWith('--')&&/^\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*$/.test(v))nv=toneRGB(...v.split(',').map(Number)).join(','); /* rgb triplets such as the aurora's --c */
+        else if(TONE_T.test(v))nv=tone(v);
+        if(nv!=null&&nv!==v)d+=p+':'+nv+(st.getPropertyPriority(p)?' !important':'')+';'}
+      if(d)o+=r.selectorText+'{'+d+'}'}
+    else if(r.type===4){const x=walk(r.cssRules);if(x)o+='@media '+r.conditionText+'{'+x+'}'}}return o};
+  try{sh.textContent=walk(base.cssRules)}catch(e){sh.textContent=''}}
+/* inline colours set from script remember their original in data-tc, so a slider change can recolour them */
+function tc(el,c,prop){el.dataset.tc=c;if(prop)el.dataset.tp=prop;el.style[prop||'color']=(el.tagName==='MARK'&&TN.hl)?c:tone(c)}
+function toneApply(){const P=PREF;
+  TN={sat:Math.max(0,Math.min(100,P.sat==null?100:+P.sat))/100,bri:Math.max(-100,Math.min(100,+P.bri||0))/100,con:1+Math.max(-100,Math.min(100,+P.con||0))/333,hl:P.hlc!==0};
+  TN.id=TN.sat===1&&!TN.bri&&TN.con===1;toneCss();document.documentElement.style.setProperty('--tsat',TN.sat);
+  document.querySelectorAll('[data-tc]').forEach(el=>{const c=el.dataset.tc,p=el.dataset.tp||'color';el.style[p]=(el.tagName==='MARK'&&TN.hl)?c:tone(c)});
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=tone(document.documentElement.dataset.theme==='light'?'#faf6f0':'#15110e')}
+function themeChanged(){toneApply()}
 function adapt(c){if(document.documentElement.dataset.theme!=='light'||typeof c!=='string')return c;const m=/^#([0-9a-f]{6})$/i.exec(c);if(!m)return c;if(_adc[c])return _adc[c];
   const v=[0,2,4].map(i=>parseInt(m[1].slice(i,i+2),16)/255),mx=Math.max(...v),mn=Math.min(...v),d=mx-mn;let h=0,s=0,l=(mx+mn)/2;
   if(d){s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===v[0]?((v[1]-v[2])/d+(v[1]<v[2]?6:0)):mx===v[1]?(v[2]-v[0])/d+2:(v[0]-v[1])/d+4;h/=6}
@@ -803,7 +841,7 @@ function adapt(c){if(document.documentElement.dataset.theme!=='light'||typeof c!
 const LC={intro:'#fb923c',verse:'#4da3ff','pre-chorus':'#c084fc',chorus:'#ff5d5d',interlude:'#7c83ff',bridge:'#4ade80',coda:'#2dd4bf','sing along':'#f472b6','free style':'#a3e635',male:'#38bdf8',female:'#fb7185','male 1':'#38bdf8','male 2':'#e8a15a','female 1':'#ff7eb6','female 2':'#c4a5ff',all:'#ffd23f','vocal 1':'#38bdf8','vocal 2':'#ff7eb6','vocal 3':'#c4a5ff','vocal 4':'#e8a15a','vocal 5':'#ffd23f',medley:'#e879f9',rit:'#fbbf24',rall:'#f59e0b',
   'post-chorus':'#fb7185',instrumental:'#22d3ee',solo:'#facc15',rap:'#f97316',drop:'#e879f9',outro:'#14b8a6',harmony:'#4ade80',choir:'#ff5d5d','a cappella':'#fde68a','sing-along':'#f472b6','call & response':'#34d399','ad-libs':'#fdba74',improvisation:'#bef264',scat:'#67e8f9',whistle:'#d9f99d',scream:'#ef4444',whisper:'#c4b5fd',spoken:'#cbd5e1',break:'#94a3b8','rit.':'#fbbf24','rall.':'#f59e0b'};
 const HC={r:'rgba(255,69,58,.45)',o:'rgba(255,149,0,.5)',y:'rgba(255,214,10,.45)',g:'rgba(48,209,88,.4)',b:'rgba(10,132,255,.45)',i:'rgba(94,92,230,.5)',v:'rgba(191,90,242,.5)'},HLN={r:'Red',o:'Orange',y:'Yellow',g:'Green',b:'Blue',i:'Indigo',v:'Violet'};
-const lblColor=(s,lo)=>(lo=lo.replace(/^vokal /,'vocal '),adapt((s.colors&&s.colors[lo])||LC[lo]||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e'));
+const lblColor=(s,lo)=>(lo=lo.replace(/^vokal /,'vocal '),tone(adapt((s.colors&&s.colors[lo])||LC[lo]||LC[lo.replace(/\s*\d+$/,'')]||'#a8a29e')));
 /* v90: voice labels (Male 1/2, Female 1/2, All). Written as their own [label] line; right after a section label they are shown beside that section's name,
    and the lyrics up to the next label take the voice colour. Any other label ends it. */
 const isGen=lo=>/^vo[ck]al \d+$/.test(lo)||/^(male|female)( \d+)?$/.test(lo)||lo==='all'||lo==='harmony'||lo==='choir'; /* Male/Female/All: older songs; Harmony/Choir: VOICING tags like Vocal N */
@@ -1071,7 +1109,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='145';
+const APP_VER='146';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1080,7 +1118,7 @@ const lightMQ=window.matchMedia?matchMedia('(prefers-color-scheme: light)'):null
 function themeNow(){return PREF.theme==='auto'?(lightMQ&&lightMQ.matches?'light':'dark'):PREF.theme==='light'?'light':'dark'}
 function applyTheme(){const t=themeNow();document.documentElement.dataset.theme=t;const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#faf6f0':'#15110e';if(typeof themeChanged==='function')themeChanged(t)}
 if(lightMQ&&lightMQ.addEventListener)lightMQ.addEventListener('change',()=>{if(PREF.theme==='auto')applyTheme()});
-applyTheme();
+applyTheme();toneApply();
 const defFont=()=>Math.max(20,Math.min(60,+PREF.font||32));
 function setFscrPref(on){PREF.fscr=on?1:0;prefSave();if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
 function setAwakePref(on){PREF.awake=on?1:0;prefSave();if(!on){try{wl&&wl.release&&wl.release()}catch(e){}wl=null;try{nsV&&nsV.pause()}catch(e){}nsOn=0}else if(typeof playing!=='undefined'&&playing)keepAwake()}
@@ -1206,8 +1244,18 @@ function sStep(v,min,max,step,fn){const w=E('div','sstep'),m=E('button','','−'
   const set=x=>{v=Math.max(min,Math.min(max,x));n.textContent=v;fn(v)};m.onclick=()=>set(v-step);p.onclick=()=>set(v+step);w.append(m,n,p);return w}
 /* Preferences */
 function prefOpen(){show('prefs');prefRender()}
+/* v146: a slider row for the colour tone; the screen recolours while you drag */
+function sRng(label,sub,key,min,max,def){const r=E('div','srow srng');const l=E('div','lbl',label);if(sub)l.append(E('small','',sub));
+  const v=PREF[key]==null?def:+PREF[key],i=document.createElement('input');i.type='range';i.min=min;i.max=max;i.step=5;i.value=v;i.setAttribute('aria-label',label);
+  let raf=0;i.oninput=()=>{PREF[key]=+i.value;if(!raf)raf=requestAnimationFrame(()=>{raf=0;toneApply()})};i.onchange=()=>{prefSave();toneApply();try{refresh()}catch(e){}};
+  r.append(l,i);return r}
 function prefRender(){const b=$('#prefbody');b.textContent='';
-  b.append(E('div','sgrp',L('Appearance','Tampilan')),sCard(sRow(L('Theme','Tema'),{right:sSeg([['auto',L('Auto','Otomatis')],['light',L('Light','Terang')],['dark',L('Dark','Gelap')]],PREF.theme,v=>{PREF.theme=v;prefSave();applyTheme()})})));
+  b.append(E('div','sgrp',L('Appearance','Tampilan')),sCard(sRow(L('Theme','Tema'),{right:sSeg([['auto',L('Auto','Otomatis')],['light',L('Light','Terang')],['dark',L('Dark','Gelap')]],PREF.theme,v=>{PREF.theme=v;prefSave();applyTheme()})}),
+    sRng(L('Colour','Warna'),L('Left = monochrome','Kiri = monokrom'),'sat',0,100,100),
+    sRng(L('Background brightness','Kecerahan latar'),null,'bri',-100,100,0),
+    sRng(L('Contrast','Kontras'),null,'con',-100,100,0),
+    sRow(L('Keep highlight colours','Highlight tetap berwarna'),{sub:L('Coloured marks in the lyrics keep their colour in monochrome','Tanda warna di lirik tetap berwarna saat monokrom'),right:sSwitch(PREF.hlc!==0,on=>{PREF.hlc=on?1:0;prefSave();toneApply()})}),
+    sRow(L('Reset colours','Kembalikan warna awal'),{go:()=>{delete PREF.sat;delete PREF.bri;delete PREF.con;delete PREF.hlc;prefSave();toneApply();prefRender()}})));
   b.append(E('div','sgrp',L('Language','Bahasa')),sCard(sRow(L('App language','Bahasa aplikasi'),{right:sSeg([['en','English'],['id','Indonesia']],PREF.lang,v=>{setLang(v)})})));
   b.append(E('div','sgrp',L('Screen','Layar')),sCard(
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
@@ -1485,7 +1533,7 @@ function noteStyle(el,o){const st=el.style;st.fontSize=(NS[o.s]||.6)+'em';st.fon
   else{st.border='';st.borderRadius='';st.padding='';st.display='';st.margin='.35em 0'}}
 function lineEl(ln,col){
   const d=E('div','ln'),re=/\{([roygbiv]):([^{}]*)\}/g;let i=0,m;
-  while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);k.style.background=HC[m[1]];d.append(k);i=m.index+m[0].length}
+  while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);tc(k,HC[m[1]],'background');d.append(k);i=m.index+m[0].length}
   if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';if(col)d.style.color=col;return d}
 function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
@@ -1872,7 +1920,7 @@ SEC_GROUPS.forEach(([g,list],gi)=>{
   h.onclick=()=>{const open=w.classList.contains('shut'); /* accordion: opening one closes the others */
     document.querySelectorAll('#side .scw').forEach(x=>{const o=x===w?open:false;x.classList.toggle('shut',!o);x.querySelector('.sch').setAttribute('aria-expanded',o?'true':'false')})};
   body.setAttribute('data-nt','');
-  list.forEach(n=>{const b=E('button','',n);b.style.color=LC[n.toLowerCase()]||LC[n.toLowerCase().replace(/\s*\d+$/,'')]||'#a8a29e';b.onclick=()=>ins(n);body.append(b)});
+  list.forEach(n=>{const b=E('button','',n);tc(b,LC[n.toLowerCase()]||LC[n.toLowerCase().replace(/\s*\d+$/,'')]||'#a8a29e');b.onclick=()=>ins(n);body.append(b)});
   if(gi)w.classList.add('shut'); /* default: only SONG is open */
   w.append(h,body);$('#side').append(w)});
 /* drawer: hide / show the whole Section panel (remembered) */

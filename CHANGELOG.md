@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v154 – Search the internet without the globe button
+- The globe buttons next to the search boxes (Home and side panel) are gone; the search boxes use the full width.
+- **Search the internet** card: when the search box finds nothing in All Songs (Home or side panel), one tap searches LRCLIB, then Google, as the globe did.
+- **Hold a song on Home → Search online** (ID: Cari di internet) looks for the same title online – other singers or other versions.
+- Side panel: the category dropdown moved up into the header, next to the list-view button.
+- Interactive tour, quick guide and README updated to match.
+
 ## v153 – Livelier, still fast
 - **Page transitions:** Home → Lyrics rises in; Editor and settings pages slide in from the right; going back slides in from the left. 0.24–0.26 s, so it still feels instant. Off with Reduce Motion.
 - **L button flash:** tapping L gives a warm burst from the button while the last lyrics open.

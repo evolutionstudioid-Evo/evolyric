@@ -674,6 +674,12 @@ body.touring #tsv{display:none!important}
 #secs .chip{transition:transform .18s var(--ease),background .4s var(--ease),border-color .4s var(--ease),box-shadow .45s var(--ease),opacity .3s,text-shadow .4s,filter .3s}
 #secs .chip:not(.on){opacity:.38;filter:saturate(.35)}
 @media(prefers-reduced-motion:reduce){.v.on[data-tr]{animation:none!important}.lfx{display:none!important}#lastb.fl{animation:none!important}}
+/* v154: no globe buttons – wider search boxes; category dropdown in the side panel header; Search online in the song menu */
+#drawer .hd #dcat{flex:0 1 auto;max-width:150px;min-width:0;height:42px;padding:0 10px;font-size:14px}
+#play:not(.fs) #drawer .hd #dcat{height:38px}
+#dItems .ewb{width:calc(100% - 8px);margin:10px 4px}
+.ewb.busy svg{animation:wlspin 1s linear infinite}
+.sheet button.wsr{display:flex;align-items:center;gap:10px}.sheet button.wsr svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--acct);stroke-width:1.7}
 </style>
 </head>
 <body>
@@ -683,7 +689,7 @@ body.touring #tsv{display:none!important}
   <div id="amenu" role="menu" hidden></div><div id="gmenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
-  <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="goog" type="button" aria-label="Search the web for these lyrics" title="Search the web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg></button></div>
+  <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
   <div id="hvrow"><button id="hView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="hvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button></div>
   <div id="items"></div>
@@ -719,8 +725,8 @@ body.touring #tsv{display:none!important}
     <div id="vsp" role="group" aria-label="Versions"><div class="vsh"><span>Versions</span><button id="vsg" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>More version</button><button id="vsx" type="button" aria-label="Close versions"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="vsl"></div><p class="wlsrc">Lyrics from LRCLIB</p></div>
     <button id="vsb" type="button" aria-label="Versions" aria-expanded="false" aria-controls="vsp"><b id="vsbv"></b><small>versions</small></button>
   </div>
-  <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
-    <div class="sb"><span class="sfield"><input id="dq" placeholder="Search…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span><button id="dgoog" type="button" aria-label="Search the web for these lyrics" title="Search the web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg></button><select class="fld" id="dcat" aria-label="Category"></select></div><div id="dItems"></div><button id="dTop" type="button" aria-label="Back to top" title="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/><path d="M6 5h12"/></svg></button></div>
+  <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><select class="fld" id="dcat" aria-label="Category"></select><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
+    <div class="sb"><span class="sfield"><input id="dq" placeholder="Search…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="dItems"></div><button id="dTop" type="button" aria-label="Back to top" title="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/><path d="M6 5h12"/></svg></button></div>
 </section>
 
 <section id="edit" class="v">
@@ -978,7 +984,7 @@ function refresh(){
   const cat=lib.v==='cat'?curCat():null;
   const tabOn=lib.v==='cat'?'cats':lib.v;$('#tabs').querySelectorAll('button[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===tabOn));
   $('#crumb').hidden=!cat;$('#cName').textContent=cat?cat.name:'';
-  $('#goog').hidden=lib.v!=='all';$('#sortb').hidden=lib.v==='recent';$('#hView').hidden=lib.v==='cats';
+  $('#sortb').hidden=lib.v==='recent';$('#hView').hidden=lib.v==='cats';
   $('#q').placeholder=lib.v==='all'?'Search songs…':lib.v==='recent'?'Search recent songs…':cat?'Search in '+cat.name+'…':'Search categories…';
   $('#actrow').hidden=lib.v==='all'||lib.v==='recent';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
   if(lib.v==='cats')catList();
@@ -986,9 +992,12 @@ function refresh(){
   else items($('#items'),$('#q').value,s=>openSong(s),true,cat?poolFor(cat.id):songs,cat,cat&&!$('#q').value.trim()?'No songs in this category yet. Tap “Add Songs to '+cat.name+'”.':'No songs.');
   emptyWeb()}
 /* v152: nothing in the Library for what was typed -> one tap to look for it on the internet (same as the globe button) */
-function emptyWeb(){const q=$('#q').value.trim(),box=$('#items');if(lib.v!=='all'||!q||box.querySelector('.it'))return;
-  const b=E('button','ewb');b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>';
-  const t=E('span');t.append(E('b','',L('Search the internet','Cari di internet')));const qq=E('small','',q);qq.setAttribute('data-nt','');t.append(qq);b.append(t);b.onclick=()=>wlGo(q,$('#goog'));box.append(b)}
+function webCard(box,q,go){const b=E('button','ewb');b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>';
+  const t=E('span');t.append(E('b','',L('Search the internet','Cari di internet')));const qq=E('small','',q);qq.setAttribute('data-nt','');t.append(qq);b.append(t);b.onclick=()=>go(b);box.append(b);return b}
+/* v154: the globe buttons are gone – this card is the way to search online from the search box (Home: All Songs) */
+function emptyWeb(){const q=$('#q').value.trim(),box=$('#items');if(lib.v!=='all'||!q||box.querySelector('.it'))return;webCard(box,q,b=>wlGo(q,b))}
+/* v154: same card in the side panel (All Songs) */
+function dEmptyWeb(){const q=$('#dq').value.trim(),box=$('#dItems');if($('#dcat').value||!q||box.querySelector('.it'))return;webCard(box,q,b=>{drawer(false);wlGo(q,b)})}
 /* v152: the list slides in when you switch tab or open a category */
 function listIn(){const b=$('#items');b.classList.remove('lin');void b.offsetWidth;b.classList.add('lin');clearTimeout(listIn.t);listIn.t=setTimeout(()=>b.classList.remove('lin'),900)}
 $('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh();listIn()};
@@ -1000,6 +1009,7 @@ function ctxOpen(s,cat){
   if(user)add('Send to friend',()=>{ctxClose();sendPick(s)});
   add(s.pin?'Unpin':'Pin to top',()=>{if(s.pin)delete s.pin;else s.pin=Date.now();save();ctxClose();refresh();note(s.pin?'Pinned to top':'Unpinned')});
   add('Make New Version',()=>{ctxClose();openEdit(null,s.lyrics,(s.title||'')+'_new',s)});
+  {const g=add('Search online',()=>{ctxClose();wlGo(s.title||'',null)},'wsr');g.insertAdjacentHTML('afterbegin','<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>')} /* v154: the globe lives here now – same title, other singers or versions */
   if(cat)add('Remove from '+cat.name,()=>{cat.ids=cat.ids.filter(x=>x!==s.id);save();ctxClose();refresh();note('Removed from '+cat.name)});
   else add('Delete Song',()=>ask('Delete “'+(s.title||'Untitled')+'”?','This deletes the song from your Master Library and from all of its categories. This cannot be undone.','Delete Song',()=>{delSong(s);refresh();note('Song deleted')}),'del');
   $('#ctx').classList.add('on')}
@@ -1137,9 +1147,7 @@ function wlPaste(q){const c=csh();c.classList.add('wl');c.append(E('h3','','Past
 document.addEventListener('visibilitychange',()=>{if(!wlRet)return;if(document.hidden){wlRet.hid=true;return}if(wlRet.hid){const q=wlRet.q;setTimeout(()=>wlBack(q),250)}});
 function wlGo(q,btn){q=String(q||'').trim();if(!q)return toast('Ketik judul lagu dulu');if(wlBusy)return;
   const r=lrcPeek(q);if(r)return wlUse(q,r,true);
-  wlBusy=1;btn.classList.add('busy');lrcFind(q).then(res=>wlUse(q,res,false)).finally(()=>{wlBusy=0;btn.classList.remove('busy')})}
-$('#goog').onclick=()=>wlGo($('#q').value,$('#goog'));
-$('#dgoog').onclick=()=>{const q=$('#dq').value.trim();if(!q)return toast('Ketik judul lagu dulu');drawer(false);wlGo(q,$('#dgoog'))};
+  wlBusy=1;btn&&btn.classList.add('busy');lrcFind(q).then(res=>wlUse(q,res,false)).finally(()=>{wlBusy=0;btn&&btn.classList.remove('busy')})}
 $('#q').addEventListener('input',()=>lrcPrefetch($('#q').value));$('#dq').addEventListener('input',()=>lrcPrefetch($('#dq').value));
 function fabOpen(on){$('#fabm').classList.toggle('on',!!on);$('#fbg').classList.toggle('on',!!on);$('#fab').setAttribute('aria-expanded',on?'true':'false')}
 $('#fab').onclick=()=>fabOpen(!$('#fabm').classList.contains('on'));
@@ -1179,7 +1187,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='153';
+const APP_VER='154';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1227,7 +1235,7 @@ const ID={'Replace the existing section labels? Undo brings them back.':'Ganti l
 'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
 'iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.':'iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.',
 'Keep screen awake':'Layar tetap menyala','Keep tapping to the beat…':'Terus ketuk mengikuti ketukan…','Key':'Nada','Keyboard':'Keyboard','Label name':'Nama label','Language':'Bahasa','Left':'Kiri','Library, categories and queue':'Library, kategori, dan antrean','Light':'Terang','Line':'Garis','Lyrics':'Lirik','Looking up tempo… (up to 20 s)':'Mencari tempo… (maks. 20 detik)',
-'Made by Evolution Studio ID.':'Dibuat oleh Evolution Studio ID.','Make New Version':'Buat Versi Baru','Profile Settings':'Pengaturan Profil','Male 1':'Pria 1','Male 2':'Pria 2','Maximum 20 characters':'Maksimal 20 karakter','Maximum 30 characters':'Maksimal 30 karakter','Maximum 8 images per song':'Maksimal 8 gambar per lagu','Menu':'Menu','Mid':'Tengah','Mono':'Mono','Move':'Geser','Move notes':'Pindahkan catatan','My Library':'Library Saya',
+'Made by Evolution Studio ID.':'Dibuat oleh Evolution Studio ID.','Make New Version':'Buat Versi Baru','Search online':'Cari di internet','Profile Settings':'Pengaturan Profil','Male 1':'Pria 1','Male 2':'Pria 2','Maximum 20 characters':'Maksimal 20 karakter','Maximum 30 characters':'Maksimal 30 karakter','Maximum 8 images per song':'Maksimal 8 gambar per lagu','Menu':'Menu','Mid':'Tengah','Mono':'Mono','Move':'Geser','Move notes':'Pindahkan catatan','My Library':'Library Saya',
 'New category':'Kategori baru','New note':'Catatan baru','New song':'Lagu baru','Newest added':'Terbaru ditambahkan','Next song':'Lagu berikutnya','No categories yet. Create one below.':'Belum ada kategori. Buat di bawah.','No categories yet. Create one to organize your songs.':'Belum ada kategori. Buat satu untuk mengatur lagumu.','No friends yet. Search a username above to send a request.':'Belum ada teman. Cari username di atas untuk mengirim permintaan.','No matching categories.':'Tidak ada kategori yang cocok.','No one found with that username. Check the spelling.':'Tidak ada yang memakai username itu. Periksa ejaannya.','No songs.':'Tidak ada lagu.','No two dots in a row':'Tidak boleh dua titik berurutan',
 'Not now, keep using the demo':'Nanti saja, tetap pakai demo','Note text':'Teks catatan','Notes and annotations':'Catatan dan anotasi','Notes and drawing':'Catatan dan gambar','Oldest added':'Terlama ditambahkan','Only the category is deleted. The songs stay in All Songs and in their other categories.':'Hanya kategorinya yang dihapus. Lagu tetap ada di Semua Lagu dan kategori lainnya.','Open':'Buka','Open Friends':'Buka Teman','Open profile':'Buka profil','Open recent':'Buka terbaru','Open the pen button in the editor to draw, add shapes, text notes and images over the lyrics.':'Buka tombol pena di editor untuk menggambar, menambah bentuk, catatan teks, dan gambar di atas lirik.','Open your profile':'Buka profilmu','Or paste backup text here':'Atau tempel teks cadangan di sini',
 'Paste':'Tempel','Pen':'Pena','Pin to top':'Sematkan di atas','Pinch with two fingers: text size.':'Cubit dua jari: ukuran teks.','Pinned':'Disematkan','Pinned to top':'Disematkan di atas','Please check your username and bio.':'Periksa username dan bio-mu.','Please sign in again.':'Silakan masuk lagi.','Please try again.':'Silakan coba lagi.','Preferences':'Preferensi','Press Exit to close the app.':'Tekan Keluar untuk menutup aplikasi.','Preview':'Pratinjau','Pro':'Pro','Profile':'Profil','Profile saved':'Profil disimpan',
@@ -1362,7 +1370,7 @@ const tHome=()=>{fabOpen(false);if(!$('#list').classList.contains('on')){refresh
 const TOUR=[
  {h:['Welcome to EvoLyric','Selamat datang di EvoLyric'],d:['A one-minute tour: make a song, tidy it up, then sing it.','Tur satu menit: membuat lagu, merapikannya, lalu menyanyikannya.'],go:tHome},
  {t:'#fab',g:'tap',h:['Add a song','Tambah lagu'],d:['Tap + for New song, Create setlist or Import .txt.','Ketuk + untuk Lagu baru, Buat setlist, atau Impor .txt.'],go:tHome},
- {t:'#goog',g:'tap',h:['Lyrics from the internet','Lirik dari internet'],d:['Type a title in the search box, then tap the globe. EvoLyric looks on LRCLIB, then Google.','Ketik judul di kolom cari, lalu ketuk globe. EvoLyric mencari di LRCLIB, lalu Google.'],go:tHome},
+ {t:'#q',g:'tap',h:['Lyrics from the internet','Lirik dari internet'],d:['Type a title in the search box. Not in your Library? Tap Search the internet: EvoLyric looks on LRCLIB, then Google. Hold a song for Search online to find other versions.','Ketik judul di kolom cari. Tidak ada di Library? Ketuk Cari di internet: EvoLyric mencari di LRCLIB, lalu Google. Tahan sebuah lagu untuk Cari di internet versi lain.'],go:tHome},
  {t:'#ta',g:'tap',p:r=>[r.left+r.width*.45,r.top+Math.min(r.height*.3,120)],h:['The editor','Editor'],d:['Type or paste lyrics here. We use a demo song; it is not saved.','Ketik atau tempel lirik di sini. Kita pakai lagu contoh; lagu ini tidak disimpan.'],
   go:()=>{if(!$('#edit').classList.contains('on')||!tour.ed){openEdit(null,TOUR_LY,TOUR_T);$('#ea').value=TOUR_A;tour.ed=1;if(tour.i>=5)edAuto()}}},
  {t:'#eA',g:'tap',h:['Auto Section','Auto Section'],d:['One tap labels Verse, Chorus and Bridge for you.','Satu ketukan: Verse, Chorus, dan Bridge diberi label otomatis.']},
@@ -1488,7 +1496,7 @@ function creditRoll(b){const tok=++crTok;if(window.matchMedia&&matchMedia('(pref
 function docCredit(b){b.className='sbody doc';
   /* v151: tempo is not in use yet – its credit returns with the feature:
   b.append(dH(L('Tempo data','Data tempo')));const p=E('p');p.append(L('Song tempo data by ','Data tempo lagu oleh '),dA('GetSongBPM.com','https://getsongbpm.com'));b.append(p); */
-  b.append(dH(L('Lyrics search','Pencarian lirik')));const q=E('p');q.append(L('Lyrics found with the globe button come from','Lirik yang dicari lewat tombol globe berasal dari')+' ',dA('LRCLIB','https://lrclib.net'),L(', a free, open lyrics database. When nothing is found there, the search continues on Google.',', database lirik gratis dan terbuka. Jika tidak ditemukan di sana, pencarian dilanjutkan ke Google.'));b.append(q);
+  b.append(dH(L('Lyrics search','Pencarian lirik')));const q=E('p');q.append(L('Lyrics found with Search the internet come from','Lirik dari Cari di internet berasal dari')+' ',dA('LRCLIB','https://lrclib.net'),L(', a free, open lyrics database. When nothing is found there, the search continues on Google.',', database lirik gratis dan terbuka. Jika tidak ditemukan di sana, pencarian dilanjutkan ke Google.'));b.append(q);
   b.append(dH(L('Fonts','Font')),dUl(['Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)','Figtree (Open Font License)']));
   b.append(dH(L('Services','Layanan')),dUl([L('Sign-in and cloud sync: Supabase','Masuk dan sinkron cloud: Supabase'),L('Hosting: Cloudflare','Hosting: Cloudflare')]))}
 function docSub(b){b.className='sbody doc';
@@ -1844,7 +1852,7 @@ $('#mR').onclick=()=>{menuOpen(false);setPlay(false);skip.clear();$('#lyr').scro
 const dw=$('#drawer'),sc=$('#scrim');
 function drawer(on){if(on)menuOpen(false);if(!on||on)$('#dTop').classList.remove('on');dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
 function dFill(){const e=$('#dcat');e.textContent='';const o=E('option','','All Songs');o.value='';e.append(o);[...cats].sort(byName).forEach(c=>{const o=E('option','',c.name);o.value=c.id;e.append(o)});e.value=lib.v==='cat'?lib.id:''}
-const drawerItems=()=>items($('#dItems'),$('#dq').value,(s,b)=>qPop(s,b),false,poolFor($('#dcat').value||null)); /* single tap -> Add to Queue / Open popup (never opens directly) */
+const drawerItems=()=>{items($('#dItems'),$('#dq').value,(s,b)=>qPop(s,b),false,poolFor($('#dcat').value||null));dEmptyWeb()}; /* single tap -> Add to Queue / Open popup (never opens directly) */
 $('#dcat').onchange=drawerItems;
 /* sidebar view: wide (default) or compact (title + key only, tighter rows); remembered on this device */
 const SBV='evolyric-sbview';
@@ -2010,7 +2018,7 @@ $('#nxt').onclick=qNext;
 function songFx(){if(RM()||turning)return;try{$('#lyr').animate([{opacity:0},{opacity:1}],{duration:460,easing:EASE});}catch(e){}}
 /* Safari ignores user-scalable=no: block only its page-zoom gesture, nothing else */
 document.addEventListener('gesturestart',e=>e.preventDefault());
-const FLASH='.ic,.step,#qtg,#spb,#spx,#qx,#dView,#nxt,.clr,#dTop,#sortb,#goog,#dgoog,#find';
+const FLASH='.ic,.step,#qtg,#spb,#spx,#qx,#dView,#nxt,.clr,#dTop,#sortb,#find';
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest(FLASH);if(!b||b.disabled)return;
   b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');
   b.addEventListener('animationend',function f(ev){if(ev.animationName==='btnFlash'){b.classList.remove('flash');b.removeEventListener('animationend',f)}})},{passive:true});

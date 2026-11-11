@@ -14,6 +14,16 @@ test('Lyrics: a song always opens paused, and auto-scroll moves the lyrics once 
   const y=await p.evaluate(()=>$('#lyr').scrollTop);assert(y>20,'scrolled, got '+y);
   await p.evaluate(()=>setPlay(false));const y1=await p.evaluate(()=>$('#lyr').scrollTop);await p.waitForTimeout(500);
   eq(await p.evaluate(()=>$('#lyr').scrollTop),y1,'stays still when paused');await t.close()});
+test('Lyrics: the aurora glow shows only while auto-scroll runs, never takes touches, and can be turned off',async()=>{
+  const t=await open(),p=t.page;await play(p);
+  const st=()=>p.evaluate(()=>{const a=$('#aura'),c=getComputedStyle(a);return{op:c.opacity,disp:c.display,pe:c.pointerEvents}});
+  eq((await st()).op,'0','hidden while paused');
+  await p.evaluate(()=>setPlay(true));await p.waitForTimeout(1500);
+  const r=await st();eq([r.op,r.pe],['1','none'],'visible while playing, touch-transparent');
+  eq(await p.evaluate(()=>document.elementFromPoint(6,400)&&document.elementFromPoint(6,400).closest('#aura')),null,'edge touches reach the lyrics');
+  await p.evaluate(()=>setAuraPref(false));eq((await st()).disp,'none','switched off in Preferences');
+  eq(await p.evaluate(()=>JSON.parse(localStorage.getItem('evo.prefs')).aura),0,'choice remembered');
+  await p.evaluate(()=>{setAuraPref(true);setPlay(false)});await p.waitForTimeout(1500);eq((await st()).op,'0','fades out on pause');await t.close()});
 test('Lyrics: tapping a section chip jumps to that section and marks the chip active',async()=>{
   const t=await open(),p=t.page;await play(p);
   await p.evaluate(()=>{[...document.querySelectorAll('#secs .chip')].find(c=>c.textContent==='Bridge').click()});await p.waitForTimeout(600);

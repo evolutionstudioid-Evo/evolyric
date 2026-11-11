@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v153 – Livelier, still fast
+- **Page transitions:** Home → Lyrics rises in; Editor and settings pages slide in from the right; going back slides in from the left. 0.24–0.26 s, so it still feels instant. Off with Reduce Motion.
+- **L button flash:** tapping L gives a warm burst from the button while the last lyrics open.
+- **Section buttons in the lyrics screen:** only the active section is in full colour; the others are much dimmer, so you see at a glance where you are.
+
 ## v152 – Final polish (UI audit)
 Audit of every screen in dark/Indonesian and light/English at phone size. Nothing removed or restyled; fixes and small additions only.
 - **Fixed:** hints and labels of text boxes were never translated (e.g. Profile → Bio "Tell friends about yourself…", the note box "e.g. Drums stop here"); typed text stays untouched.

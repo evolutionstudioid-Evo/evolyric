@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v151 – Fewer credit lines
+- "Tempo data by GetSongBPM.com" is hidden (account menu and Help → Credit) while the tempo feature is not in use; it returns with the feature.
+- The "Lyrics from LRCLIB" line under the version list and the versions panel is hidden; LRCLIB is credited in Help → Credit.
+- **Cancel** in the Choose a version list is now a framed button.
+
 ## v150 – Simpler Backup & restore, clearer names, updated credits
 - **Backup & restore** is now three buttons:
   - **Backup** saves all songs and categories (with sections, colours and notes) in one **`.evolyric`** file. On iPhone/iPad it opens the share sheet (Save to Files / iCloud Drive).

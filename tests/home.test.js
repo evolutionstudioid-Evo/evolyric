@@ -93,4 +93,10 @@ test('Menus: opening the account menu closes the gear menu; the name card is inf
   await p.evaluate(()=>show('list'));await p.click('#avb');await p.click('#gear');await p.waitForTimeout(150);
   eq(await p.evaluate(()=>[$('#gmenu').hidden,$('#amenu').hidden]),[false,true],'gear closes the account menu');
   eq(t.errors,[],'no page errors');await t.close()});
+test('Credits: no tempo credit while tempo is not in use (account menu and Help → Credit); LRCLIB is credited',async()=>{
+  const t=await open(),p=t.page;await p.evaluate(()=>{user={id:'u',name:'Rani Putri',email:'rani@example.com',username:'rani'};renderAuth()});
+  await p.click('#avb');eq(await p.evaluate(()=>/GetSongBPM/.test($('#amenu').textContent)),false,'account menu');
+  await p.evaluate(()=>docOpen('help','Credit',docCredit));await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>[/GetSongBPM|Tempo/.test($('#docbody').textContent),/LRCLIB/.test($('#docbody').textContent)]),[false,true],'credit page');
+  await t.close()});
 };

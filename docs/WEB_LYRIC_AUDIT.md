@@ -92,4 +92,4 @@ Kesimpulan: tidak ada konsep lagu sementara. Pengaman utamanya sudah ada secara 
 
 Setiap fase: PR sendiri, tes otomatis, nomor versi sendiri, dicoba pemilik sebelum fase berikutnya.
 
-**Keputusan yang masih terbuka (sebelum Fase 4):** (a) bila LRCLIB menemukan beberapa versi lagu — pilih otomatis atau tampilkan daftar singkat; (b) globe mencari dari kolom pencarian yang ada, atau perlu kolom judul + artis terpisah.
+**Keputusan pemilik (11 Nov):** (a) bila LRCLIB menemukan beberapa versi lagu → tampilkan pop-up daftar singkat untuk dipilih; (b) globe mencari dari teks kolom pencarian yang sudah ada (judul saja cukup).

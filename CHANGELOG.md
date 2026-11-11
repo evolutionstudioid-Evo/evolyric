@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v147 – Short in-app guide
+- **Help → Tutorial** is now a short guide: cover, 8 steps, closing page (10 slides instead of 94):
+  Home, adding songs (incl. the Apple Notes Shortcut import), Editor & Auto Section, lyrics screen & gestures,
+  queue & Next, online lyrics (Save, Versions, More version), theme & colour, ⚙ menu & account.
+- New pictures from fictional data: 16 images (~320 KB) replace 108 (~1.2 MB); tutorial.js 174 KB → 30 KB.
+- On tall phone screens the picture is shown larger with the explanation underneath.
+
 ## v146 – Colour, brightness and contrast (monochrome option)
 - **Preferences → Appearance** has three new sliders under Theme:
   - **Colour** – left = **monochrome**, right = full colour as before, in between calmer colours;

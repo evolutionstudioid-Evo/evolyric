@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## EvoLyric 1.0 (build v156)
+- First release. Help → About EvoLyric shows **Version 1.0** (ID: Versi 1.0) under the logo.
+- Build numbers (v1…v156, the service-worker cache) keep counting as before; the version people see is set by `APP_REL` in `www/index.html`.
+
 ## v155 – Shorter About
 - Help → About EvoLyric is now one short paragraph about what EvoLyric does for vocalists, followed by the credits and the closing line. The About Us / Vision / Mission / Ecosystem / Philosophy sections were removed.
 

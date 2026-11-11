@@ -813,13 +813,27 @@ const SORTK='evolyric-sort-v1';let sortBy='az';try{const v=localStorage.getItem(
 const idTime=s=>{const m=/^s(\d{12,})/.exec(s.id||'');return m?+m[1]:0};
 const crOf=s=>s.cr||idTime(s),mdOf=s=>s.md||crOf(s);
 const byTitle=(a,b)=>(a.title||'').localeCompare(b.title||'','id');
+/* v143: typo-tolerant search. fzK = how many letters may be wrong for a word of that length (short words must be exact);
+   fzD = edit distance (insert, delete, replace, swap of two neighbours) that stops early once it is over the limit;
+   fzOk = a typed word matches a word of the song – whole word, or the start of it while still typing. */
+const fzN=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const fzK=n=>n<=3?0:n<=6?1:2;
+function fzD(a,b,k){if(Math.abs(a.length-b.length)>k)return k+1;let pp=null,p=Array.from({length:b.length+1},(_,j)=>j);
+  for(let i=1;i<=a.length;i++){const c=[i];let lo=i;for(let j=1;j<=b.length;j++){let v=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));
+      if(pp&&i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])v=Math.min(v,pp[j-2]+1);c[j]=v;if(v<lo)lo=v}
+    if(lo>k)return k+1;pp=p;p=c}return p[b.length]}
+function fzOk(t,w){const k=fzK(t.length);if(!k)return false;if(fzD(t,w,k)<=k)return true;
+  return w.length>t.length&&t.length>=5&&fzD(t,w.slice(0,t.length),1)<=1}
+const fzWs=x=>fzN(x).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
 function sorter(){return sortBy==='new'?(a,b)=>crOf(b)-crOf(a)||byTitle(a,b):sortBy==='old'?(a,b)=>crOf(a)-crOf(b)||byTitle(a,b):sortBy==='mod'?(a,b)=>mdOf(b)-mdOf(a)||byTitle(a,b):byTitle}
 function items(box,q,pick,menu,pool,cat,empty,keep){
   box.textContent='';q=(q||'').toLowerCase();const T=q.split(/\s+/).filter(Boolean);let L='';
-  const cmp=sorter(),hit=(pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))});
+  const fz=new Set(),cmp=sorter(),hit=(pool||songs).filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();if(T.every(w=>h.includes(w)))return true;
+    const W=fzWs(h),hn=fzN(h);if(T.every(w=>{const n=fzN(w);return hn.includes(n)||W.some(x=>fzOk(n,x))})){fz.add(s);return true}return false}); /* v143: near misses (typos) are found too */
   /* v129: while searching, the best match comes first. Only the START of a word counts: title 1st word, title 2nd word, title later words, then artist 1st word, 2nd word, later words; matches in the middle of a word come last. The chosen sort only orders songs of the same rank. */
   const ws=x=>x.split(/[^\p{L}\p{N}]+/u).filter(Boolean),
     rank=s=>{if(!T.length)return 0;const ti=(s.title||'').toLowerCase(),ar=(s.artist||'').toLowerCase(),w=T[0];
+      if(fz.has(s))return 7; /* typo matches come after every exact match */
       if(ti.startsWith(q))return 0;
       const a=ws(ti).findIndex(x=>x.startsWith(w));if(a>=0)return Math.min(a,2);
       const b=ws(ar).findIndex(x=>x.startsWith(w));if(b>=0)return 3+Math.min(b,2);
@@ -1054,7 +1068,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='142';
+const APP_VER='143';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1324,11 +1338,16 @@ function lrcNorm(t){return String(t||'').toLowerCase().normalize('NFD').replace(
   .replace(/\s*[(\[][^)\]]*[)\]]/g,' ').replace(/\s+-\s+.*$/,' ').replace(/[^\p{L}\p{N}]+/gu,' ').trim()}
 function lrcScore(r,q){const a=lrcNorm(r.trackName),b=lrcNorm(q);if(!a||!b)return 0;if(a===b)return 3;
   if((' '+b+' ').startsWith(' '+a+' ')||(' '+a+' ').startsWith(' '+b+' '))return 2;
-  const A=new Set((a+' '+lrcNorm(r.artistName)).split(' ')),B=b.split(' ');return B.filter(w=>A.has(w)).length/B.length>=.6?1:0}
+  const A=new Set((a+' '+lrcNorm(r.artistName)).split(' ')),B=b.split(' ');if(B.filter(w=>A.has(w)).length/B.length>=.6)return 1;
+  const AW=[...A];return B.filter(w=>A.has(w)||AW.some(x=>fzOk(w,x))).length/B.length>=.6?.75:0} /* v143: typos in the typed title */
 const lrcVariant=r=>{const m=/\b(live|remix|acoustic|akustik|unplugged|remaster(?:ed)?|version|versi|cover|karaoke|demo|edit|radio)\b/i.exec((r.trackName||'')+' '+(r.albumName||''));return m?m[1].toLowerCase():''};
-function lrcPick(list,q){const out=[],seen=new Set();
+/* v143: scorer for the typo retry – every typed word must match (exactly or within the typo limit) and titles covering more of
+   the typed words rank first, so "separuh nafs" lists Separuh Nafas before a song called just "Separuh". */
+function lrcFzScore(r,q){const B=lrcNorm(q).split(' ').filter(Boolean),T=lrcNorm(r.trackName).split(' '),A=T.concat(lrcNorm(r.artistName).split(' '));if(!B.length)return 0;
+  const m=W=>B.filter(w=>W.some(x=>x===w||fzOk(w,x))).length/B.length,all=m(A);return all<.6?0:.5+m(T)}
+function lrcPick(list,q,score){score=score||lrcScore;const out=[],seen=new Set();
   (Array.isArray(list)?list:[]).forEach((r,i)=>{if(!r||r.instrumental)return;const lyr=lyrNorm(r.plainLyrics||r.syncedLyrics||'');if(!lyr)return;
-    let sc=lrcScore(r,q);if(!sc)return;const v=lrcVariant(r);if(v)sc-=.5; /* originals before live / remix / acoustic versions */const sig=lrcNorm(lyr).slice(0,600);if(seen.has(sig))return;seen.add(sig);
+    let sc=score(r,q);if(!sc)return;const v=lrcVariant(r);if(v)sc-=.5; /* originals before live / remix / acoustic versions */const sig=lrcNorm(lyr).slice(0,600);if(seen.has(sig))return;seen.add(sig);
     out.push({id:r.id,title:String(r.trackName||'').trim(),artist:String(r.artistName||'').trim(),album:String(r.albumName||'').trim(),dur:Math.round(+r.duration||0),
       variant:v,lyrics:lyr,synced:!r.plainLyrics&&!!r.syncedLyrics,score:sc,i})});
   return out.sort((x,y)=>y.score-x.score||x.i-y.i).slice(0,8)}
@@ -1337,7 +1356,14 @@ async function lrcSearch(q){
   const ac=new AbortController(),to=setTimeout(()=>ac.abort(),LRC_MS);
   try{const r=await fetch(LRCLIB+'/search?q='+encodeURIComponent(q),{signal:ac.signal,credentials:'omit'});
     if(!r.ok)return{state:'error',items:[],status:r.status};
-    const items=lrcPick(await r.json(),q);return{state:items.length?'ok':'none',items}}
+    let items=lrcPick(await r.json(),q);
+    /* v143: LRCLIB itself does not forgive typos ("separuh nafs" finds nothing). Then ask again with single words (longest first,
+       at most two more requests) and keep only results whose title is close to what was typed. */
+    if(!items.length){const ws=[...new Set(lrcNorm(q).split(' ').filter(w=>w.length>=3))].sort((x,y)=>y.length-x.length).slice(0,2);
+      for(const w of ws){if(ws.length<2&&w===lrcNorm(q))break;
+        const r2=await fetch(LRCLIB+'/search?q='+encodeURIComponent(w),{signal:ac.signal,credentials:'omit'});if(!r2.ok)continue;
+        items=lrcPick(await r2.json(),q,lrcFzScore);if(items.length)break}}
+    return{state:items.length?'ok':'none',items}}
   catch(e){return{state:navigator.onLine===false?'offline':'error',items:[]}}
   finally{clearTimeout(to)}}
 function lrcFind(q){q=String(q||'').trim();const k=lrcNorm(q);if(!k)return Promise.resolve({state:'empty',items:[]});

@@ -121,11 +121,11 @@ test('LRCLIB: no match, server error and offline each give their own state; only
   const hits=await stub(p,r=>mode==='none'?json(r,[R(5,'Rindu','Agnes','Rindu')]):json(r,{error:'x'},500));
   eq((await p.evaluate(()=>lrcFind('lagu tidak ada'))).state,'none','no usable match');
   eq(await p.evaluate(()=>{const r=lrcPeek('Lagu Tidak Ada');return r&&r.state}),'none','cached (case-insensitive)');
-  await p.evaluate(()=>lrcFind('lagu tidak ada'));eq(hits.length,1,'second lookup served from cache');
+  await p.evaluate(()=>lrcFind('lagu tidak ada'));eq(hits.length,3,'first lookup + 2 single-word retries; second lookup served from cache');
   mode='err';eq((await p.evaluate(()=>lrcFind('lagu error'))).state,'error','server error');
   eq(await p.evaluate(()=>lrcPeek('lagu error')),null,'errors are not cached');
   await t.ctx.setOffline(true);eq((await p.evaluate(()=>lrcFind('lagu offline'))).state,'offline','offline');await t.ctx.setOffline(false);
-  eq((await p.evaluate(()=>lrcFind('   '))).state,'empty','empty query');eq(hits.length,2,'offline and empty never call LRCLIB');
+  eq((await p.evaluate(()=>lrcFind('   '))).state,'empty','empty query');eq(hits.length,4,'server error: no retries; offline and empty never call LRCLIB');
   eq(t.errors,[],'no page errors');await t.close()});
 test('LRCLIB: prefetch waits for a pause in typing, then the answer is ready instantly',async()=>{
   const t=await open(),p=t.page;const hits=await stub(p,r=>json(r,STUB));
@@ -272,4 +272,18 @@ test('Reload app: in the gear menu (ID: Muat ulang aplikasi); it reloads the pag
   await p.evaluate(()=>{window.__mark=1});
   await Promise.all([p.waitForNavigation({timeout:15000}),p.click('#gmenu .mi >> nth=2')]);await p.waitForTimeout(300);
   eq(await p.evaluate(()=>window.__mark),undefined,'page was reloaded');await t.close()});
+
+/* ---------- v143: typos in the LRCLIB search ---------- */
+test('LRCLIB: a typo that finds nothing is retried with single words and the closest title is kept',async()=>{
+  const t=await open(),p=t.page;
+  const SN=[R(20,'Separuh','Band X','Baris nol\nBaris nol dua'),R(21,'Separuh Nafas','Dewa 19','Baris satu\nBaris dua'),R(22,'Separuh Jiwa','Band Lain','Baris tiga\nBaris empat')];
+  const hits=await stub(p,r=>{const q=new URL(r.request().url()).searchParams.get('q');return json(r,q==='separuh'?SN:[])});
+  const res=await p.evaluate(()=>lrcFind('separuh nafs'));
+  eq([res.state,res.items.map(i=>i.title)],['ok',['Separuh Nafas']],'found despite the typo, unrelated title left out');
+  eq(hits.map(u=>new URL(u).searchParams.get('q')),['separuh nafs','separuh'],'one extra request with the longest word');
+  await t.close()});
+test('LRCLIB: when the retries find nothing close either, the answer is still none (Google takes over)',async()=>{
+  const t=await open(),p=t.page;const hits=await stub(p,r=>json(r,[R(30,'Lagu Lain','X','a\nb')]));
+  eq((await p.evaluate(()=>lrcFind('zzqx wwvv'))).state,'none','none');eq(hits.length,3,'original + two single words');
+  eq((await p.evaluate(()=>lrcFind('zzqxy'))).state,'none','single word: no pointless retry');eq(hits.length,4,'no retry for one word');await t.close()});
 };

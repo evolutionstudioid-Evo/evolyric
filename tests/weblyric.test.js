@@ -164,7 +164,7 @@ test('Globe: no match opens Google; coming back asks once – Show lyrics turns 
   await vis(p,true);await p.evaluate(()=>navigator.clipboard.writeText('Baris satu lirik\nBaris dua lirik\n\nBaris tiga'));await vis(p,false);await p.bringToFront();await p.waitForTimeout(500);
   const sh=await sheet(p);eq([sh[0],sh[2],sh[3]],['Copied the lyrics?','Show lyrics','Back'],'question shown');
   await p.click('#csheet .wlok');await p.waitForTimeout(500);
-  eq(await p.evaluate(()=>[$('#play').classList.contains('on'),isTemp(cur),cur.title,cur.src,cur.lyrics,songs.length]),[true,true,'lagu langka','google','Baris satu lirik\nBaris dua lirik\n\nBaris tiga',5],'copied lyrics shown as temporary song');
+  eq(await p.evaluate(()=>[$('#play').classList.contains('on'),isTemp(cur),cur.title,cur.src,cur.lyrics,songs.length]),[true,true,'lagu langka','google','[Verse 1]\nBaris satu lirik\nBaris dua lirik\n\nBaris tiga',5],'copied lyrics shown as temporary song (with Auto Section labels)');
   await vis(p,true);await vis(p,false);await p.waitForTimeout(500);eq(await sheet(p),null,'asked only once');
   await t.close()});
 test('Globe: Back after Google leaves everything as it was (Home stays Home, the open song stays open)',async()=>{

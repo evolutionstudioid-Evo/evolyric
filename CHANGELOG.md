@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v144 – Auto Section
+- EvoLyric can label the sections of a song by itself, from the paragraphs (blank lines) of the lyrics:
+  - paragraphs with the same or nearly the same words that come back 2+ times = **Chorus** (small differences like “s’lalu/selalu”, punctuation or a typo still count); a paragraph made of chorus lines (a half chorus at the end) is Chorus too; a song may start with its chorus;
+  - a shorter repeating paragraph that always comes right before the Chorus = **Pre-Chorus**;
+  - a paragraph that does not repeat, after the second Chorus, with a line count unlike the verses = **Bridge**;
+  - other paragraphs of 2+ lines = **Verse 1, 2, …**; one-line paragraphs (intro, ad-lib, coda) get no label – fill those yourself.
+  Only label lines are added; the lyrics themselves are not changed. Lyrics written as one block without blank lines are left alone.
+- **LRCLIB and Google lyrics** get the labels automatically when they open (unless they already have labels).
+- **Library songs** never change by themselves: the editor's Section panel has an **Auto Section** button at the top. If the song already has labels it asks first and replaces them; Undo brings them back. Nothing is saved until you tap Save.
+- Checked against two real songs labelled by hand: verses and choruses matched; one-line Intro/Interlude/Coda stay for you to add.
+- Tests: 4 new, 100 in total.
+
 ## v143 – Search forgives typos
 - **Library search** (Home, side panel, setlist and category pickers): a typo still finds the song – “pulng ke panggng”, “sore di pelabuhn”, swapped letters like “hujna”, also in the artist. Up to 1 wrong letter in words of 4–6 letters and 2 in longer words; words of 3 letters or less must be typed right, so results do not spill over. Exact matches always come first, typo matches after them.
 - **LRCLIB search** (globe button): LRCLIB itself finds nothing for a typo (checked: “separuh nafs” → 0 results). Now EvoLyric then asks again with single words (longest first, at most two more requests) and keeps only titles close to what you typed. If that also finds nothing, Google opens as before – Google corrects typos by itself.

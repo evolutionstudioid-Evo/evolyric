@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v136 – Web Lyric, phase 1: temporary lyrics (behind the scenes)
+- Foundation for Web Lyric. The lyrics screen can now show a **temporary song**: lyrics that are not in the Library. Nothing a user can see changes yet – there is no button that opens one (that comes in phase 4).
+- A temporary song is never put in the Library, so it is never saved, backed up or synced. It is not added to Recent and the Home **L** button never points at it. Speed and zoom changes on it do not touch the Library.
+- It disappears when you go back to Home or open another song (from the side panel or with Next). The **L** button then returns to your last Library song as before.
+- Until Save to Library / Edit in Editor exist (phase 2), ⋮ → Edit song, Send to friend and the title-bar double-tap are switched off for a temporary song, so an edit can never get lost.
+- Lyrics text is cleaned on the way in: Windows line endings, LRC time stamps and header tags, invisible characters and runs of blank lines.
+- Audit report for the whole feature: `docs/WEB_LYRIC_AUDIT.md`. Rollback point: branch `checkpoint-v135`.
+- Tests: 6 new automatic tests (`tests/weblyric.test.js`), 64 in total.
+
 ## v135 – Aurora glow while scrolling
 - While auto-scroll runs, a soft aurora light glows around the edges of the lyrics screen, slowly changing colour: magenta → purple → teal. It fades in when you tap to play and fades out when you pause. Only the screen frame glows; the middle stays clear, the glow sits under the lyrics and never catches a tap.
 - Light on the battery: only fade and slow drift are animated (handled by the graphics chip), and the animation stops completely while paused. With “Reduce motion” on, the glow stays still.

@@ -943,7 +943,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='135';
+const APP_VER='136';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1179,8 +1179,25 @@ $('#dcX').onclick=()=>{show(docFrom);if(docFrom==='help')helpRender();else acctR
 function resetTop(){ /* every opened song starts at the top: scroll, auto-scroll accumulator and sub-pixel offset */
   const L=$('#lyr');pos=0;frac=0;last=0;txtEl.style.transform='';L.scrollTop=0;
   requestAnimationFrame(()=>{if(!playing||pos<2){L.scrollTop=0;pos=0;txtEl.style.transform=''}})}
+/* v136 – Web Lyric phase 1: temporary lyrics. A temporary song is shown in the lyrics screen exactly like a library song,
+   but it is never put in songs[] — so save(), backup and cloud sync never see it — and it is never written to Recent or to the
+   Home "L" (last lyric) button. It disappears when the lyrics screen is left or another song is opened. Save / Edit come in phase 2. */
+const isTemp=s=>!!(s&&s._temp);
+function lyrNorm(t){
+  return String(t==null?'':t).replace(/\r\n?/g,'\n').replace(/[​-‍﻿]/g,'').replace(/ /g,' ')
+    .split('\n').filter(l=>!/^\s*\[(ar|ti|al|au|by|length|offset|re|ve|#)\s*:.*\]\s*$/i.test(l)) /* LRC header tags */
+    .map(l=>l.replace(/^\s*(\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]\s*)+/,'').replace(/<\d{1,3}:\d{2}(?:[.:]\d{1,3})?>/g,'').replace(/[ \t]+$/,'')) /* LRC time stamps */
+    .join('\n').replace(/\n{3,}/g,'\n\n').trim()}
+function tempSong(o){o=o||{};const lyr=lyrNorm(o.lyrics),now=Date.now();
+  const first=lyr.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim()))||'';
+  return{id:'tmp'+now.toString(36)+Math.random().toString(36).slice(2,6),_temp:true,src:o.src||'paste',srcId:o.srcId==null?null:o.srcId,
+    title:String(o.title||'').trim()||first.trim().slice(0,60)||'Untitled',artist:String(o.artist||'').trim(),key:'',lyrics:lyr,colors:{},
+    speed:5,font:defFont(),fav:false,cr:now,md:now}}
+function openTemp(o){const t=isTemp(o)?o:tempSong(o);if(!t.lyrics)return null;openSong(t);return t}
+function dropTemp(){if(!isTemp(cur))return false;cur=null;$('#txt').textContent='';$('#play').classList.remove('tmp');return true}
 function openSong(s,keep){
-  recAdd(s&&s.id);try{localStorage.setItem('evo.lastsong',s.id)}catch(e){}
+  if(!isTemp(s)){recAdd(s&&s.id);try{localStorage.setItem('evo.lastsong',s.id)}catch(e){}}
+  $('#play').classList.toggle('tmp',isTemp(s));
   if(typeof songFx==='function')songFx();
   const was=playing;cur=s;menuOpen(false);$('#sp').value=s.speed;
   $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;if(typeof resetInput==='function')resetInput();show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
@@ -1285,7 +1302,7 @@ function tick(t){
   if(L.scrollTop+L.clientHeight>=L.scrollHeight-2){setPlay(false);return}
   playRaf=requestAnimationFrame(tick);
 }
-function syncSpeed(){cur.speed=+$('#sp').value;$('#spv').textContent=cur.speed;$('#spbv').textContent=cur.speed;save()} /* applies live: tick() reads cur.speed every frame, so playback never stops */
+function syncSpeed(){cur.speed=+$('#sp').value;$('#spv').textContent=cur.speed;$('#spbv').textContent=cur.speed;if(!isTemp(cur))save()} /* applies live: tick() reads cur.speed every frame, so playback never stops */
 $('#sp').oninput=syncSpeed;
 $('#spMinus').onclick=()=>{$('#sp').value=Math.max(+$('#sp').min,+$('#sp').value-1);syncSpeed()};
 $('#spPlus').onclick=()=>{$('#sp').value=Math.min(+$('#sp').max,+$('#sp').value+1);syncSpeed()};
@@ -1307,12 +1324,12 @@ function exitFs(){
 }
 document.addEventListener('fullscreenchange',()=>setTimeout(fixPad,80)); /* Esc leaves browser fullscreen only; the app layout stays */
 /* v115: L button on the home screen returns to the last opened lyric; hidden until a lyric has been opened */
-function lastSong(){if(cur)return songs.includes(cur)?cur:songs.find(x=>x.id===cur.id)||null;
+function lastSong(){if(cur&&!isTemp(cur))return songs.includes(cur)?cur:songs.find(x=>x.id===cur.id)||null;
   let id=null;try{id=localStorage.getItem('evo.lastsong')}catch(e){}
   const l=id&&songs.find(x=>x.id===id);if(l)return l;
   const q=Qs();for(const i of q){const x=songs.find(o=>o.id===i);if(x){q.splice(q.indexOf(i),1);qSave();qRender();return x}}return null}
 $('#lastb').onclick=()=>{const s=lastSong();if(!s)return void note('Select a song first',true);if(s===cur&&$('#play')){show('play');enterFs();hl()}else openSong(s)};
-function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';refresh();show('list')} /* Home returns to the list with an empty search */
+function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';dropTemp();refresh();show('list')} /* Home returns to the list with an empty search */
 document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.querySelector('input');
   b.addEventListener('pointerdown',e=>e.preventDefault()); /* keep focus (and the on-screen keyboard) on the box */
   b.addEventListener('click',()=>{i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));i.focus()})});
@@ -1325,11 +1342,11 @@ setTier('pro');
   b.onclick=()=>{try{L.scrollTo({top:0,behavior:'smooth'})}catch(e){L.scrollTop=0}}})();
 /* menu */
 const mn=$('#menu');
-function menuOpen(on){if(on)$('#mS').hidden=!user;mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}
+function menuOpen(on){if(on){$('#mS').hidden=!user||isTemp(cur);$('#mE').hidden=isTemp(cur)}mn.classList.toggle('on',!!on);$('#mbg').classList.toggle('on',!!on);$('#mn').setAttribute('aria-expanded',on?'true':'false')}
 $('#mn').onclick=()=>menuOpen(!mn.classList.contains('on'));
 $('#mbg').onclick=()=>menuOpen(false); /* tap anywhere outside closes it (the tap does not reach the lyrics, so it never toggles play) */
-$('#mS').onclick=()=>{menuOpen(false);cur&&sendPick(cur)};
-$('#mE').onclick=()=>{menuOpen(false);setPlay(false);openEdit(cur)};
+$('#mS').onclick=()=>{menuOpen(false);cur&&!isTemp(cur)&&sendPick(cur)};
+$('#mE').onclick=()=>{menuOpen(false);if(isTemp(cur))return;setPlay(false);openEdit(cur)};
 $('#mR').onclick=()=>{menuOpen(false);setPlay(false);skip.clear();$('#lyr').scrollTop=0;waiting=!!startEl;if(waiting)toast('Ketuk layar atau tekan play untuk mulai')};
 /* laci */
 const dw=$('#drawer'),sc=$('#scrim');
@@ -1547,7 +1564,7 @@ Ly.addEventListener('pointermove',e=>{
     else G.vert=1}});
 function gEnd(e,cancel){
   PT.delete(e.pointerId);if(!G)return;
-  if(G.pinch){if(!PT.size){save();G=null}return}
+  if(G.pinch){if(!PT.size){if(!isTemp(cur))save();G=null}return}
   const g=G;G=null;clearTimeout(g.h);
   if(g.boost){boostSp=0;return}
   if(g.sp){hudHide();return}
@@ -1561,7 +1578,7 @@ Ly.addEventListener('contextmenu',e=>e.preventDefault());
   bar.addEventListener('pointerdown',e=>{d=e.target.closest('button')?null:{x:e.clientX,y:e.clientY}});
   bar.addEventListener('pointerup',e=>{if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>12){d=null;return}d=null;
     const n=performance.now();
-    if(last&&n-last<400&&Math.hypot(e.clientX-lx,e.clientY-ly)<40){last=0;menuOpen(false);setPlay(false);openEdit(cur);return}
+    if(last&&n-last<400&&Math.hypot(e.clientX-lx,e.clientY-ly)<40){last=0;if(isTemp(cur))return;menuOpen(false);setPlay(false);openEdit(cur);return}
     last=n;lx=e.clientX;ly=e.clientY});
   bar.addEventListener('pointercancel',()=>{d=null})})();
 /* v130: if the phone suspends the page in the middle of a touch, the 'finger up' never arrives. Forget half-finished touches and leftover flying titles when the app is hidden, shown again, or a song is opened. */

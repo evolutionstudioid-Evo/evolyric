@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v140 – Import from Apple Notes (shortcut file)
+- **+ → Import** now understands the text file made by the Apple Notes shortcut (“Kirim ke EvoImport”), where notes are separated by `===EVONOTE===`. Each note becomes **its own song**: the first line is the title (Apple Notes uses it as the note title), the rest is the lyrics, unchanged – section labels such as [Verse 1] and [Chorus] work straight away. The order of the file is kept.
+- Running the shortcut again is safe: a note that is already in the Library word for word (same title and lyrics) is skipped. The result is shown once, e.g. “3 songs imported” or “1 song imported, 2 already in your Library”.
+- Inside a category, imported songs also go into that category (as before).
+- Pasting the same text on Home imports the songs too, instead of opening the editor.
+- A normal .txt file without the separator still becomes one song, as before.
+- Tests: 4 new, 88 in total.
+
+## v139 – Web Lyric, phase 6: tutorial and README
+- New tutorial page **“Temporary lyrics from the internet”** (Songs chapter, right after “Finding songs and lyrics”), ID/EN, with its own picture: what temporary lyrics are, the **Save** button and the ⋮ menu (Save to Library / Edit in Editor). Table of contents renumbered; the new pictures are cached for offline use.
+- README: Web Lyric section.
+
 ## v138 – Web Lyric, phases 4 + 5: the globe button finds lyrics
 - **Globe button** (Home and side panel) now looks the typed title up on **LRCLIB** first, instead of opening Google and an empty editor:
   - **one match** → the lyrics open straight away in the lyrics screen as a temporary song (Save button in the header, ⋮ → Edit in Editor);

@@ -981,10 +981,30 @@ $('#fbg').onclick=()=>fabOpen(false); /* tap outside closes the popup */
 $('#nw').onclick=()=>{fabOpen(false);openEdit(null,'','',null,lib.v==='cat'?[lib.id]:[])};
 $('#imp').onclick=()=>{fabOpen(false);$('#file').click()};
 $('#slb').onclick=()=>{fabOpen(false);slOpen()};
-$('#file').onchange=async e=>{
+/* v140: a text file (or pasted text) made by the Apple Notes shortcut holds many notes separated by ===EVONOTE===.
+   Each part becomes its own song: title = its first line (Apple Notes uses the first line as the note title), lyrics = the rest,
+   unchanged. File order is kept. A part that is already in the Library word for word (same title and lyrics) is skipped,
+   so running the shortcut again never doubles the Library. Files without the marker import as before: one file = one song. */
+const EVONOTE=/\s*===EVONOTE===\s*/;
+function evoParts(x){
+  return String(x).replace(/\r\n?/g,'\n').replace(/[​﻿]/g,'').split(EVONOTE).map(p=>{
+    const ls=p.split('\n').map(l=>l.replace(/[ \t ]+$/,''));while(ls.length&&!ls[0].trim())ls.shift();while(ls.length&&!ls[ls.length-1].trim())ls.pop();
+    if(!ls.length)return null;
+    const first=ls[0].trim(),label=/^\[.+\]$/.test(first);
+    const body=label?ls:ls.slice(1);while(body.length&&!body[0].trim())body.shift();
+    return{title:label?'':first.slice(0,120),lyrics:body.join('\n')}}).filter(Boolean)}
+function evoImport(x,cc){const parts=evoParts(x),now=Date.now();let n=0,skip=0;
+  const have=new Set(songs.map(s=>normT(s.title)+'\u0000'+String(s.lyrics||'').trim()));
+  parts.forEach((p,i)=>{const title=p.title||'Untitled',k=normT(title)+'\u0000'+p.lyrics.trim();if(have.has(k)){skip++;return}have.add(k);
+    const ns={id:'s'+now.toString(36)+i+Math.random().toString(36).slice(2,5),title,artist:'',lyrics:p.lyrics,speed:5,font:defFont(),fav:false,cr:now+i,md:now+i};
+    songs.push(ns);if(cc)cc.ids.push(ns.id);n++});
+  return{n,skip}}
+const evoNote=r=>{const m=r.n+(r.n===1?' song':' songs')+' imported';note(r.skip?m+', '+r.skip+' already in your Library':m)};
+$('#file').onchange=async e=>{const cc=lib.v==='cat'&&curCat(),r={n:0,skip:0};let multi=false;
   for(const f of e.target.files){const x=await f.text();
-    const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:defFont(),cr:Date.now()};songs.push(ns);const cc=lib.v==='cat'&&curCat();if(cc)cc.ids.push(ns.id)}
-  save();refresh();toast('Impor selesai');e.target.value=''};
+    if(EVONOTE.test(x)){const q=evoImport(x,cc);r.n+=q.n;r.skip+=q.skip;multi=true;continue}
+    const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:defFont(),cr:Date.now()};songs.push(ns);if(cc)cc.ids.push(ns.id);r.n++}
+  save();refresh();e.target.value='';if(multi)evoNote(r);else toast('Impor selesai')};
 /* Not shown on Home any more; kept for a future Account > Backup & restore screen. */
 function copyBackup(){
   const t=backupText();
@@ -995,10 +1015,11 @@ document.addEventListener('paste',e=>{
   if(!$('#list').classList.contains('on')||/INPUT|TEXTAREA/.test(e.target.tagName))return;
   const x=e.clipboardData.getData('text');if(!x.trim())return;e.preventDefault();
   if(restoreBackup(x))return;
+  if(EVONOTE.test(x)){const r=evoImport(x,lib.v==='cat'&&curCat());save();refresh();evoNote(r);return}
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='138';
+const APP_VER='140';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1061,6 +1082,7 @@ const ID={'Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCL
 '3–20 characters: letters, numbers, . _ and -. Friends find you by this name.':'3–20 karakter: huruf, angka, . _ dan -. Teman mencarimu lewat nama ini.','At least 3 characters':'Minimal 3 karakter','Sing Along':'Sing Along','speed':'kecepatan','e.g. Drums stop here':'mis. Drum berhenti di sini','Intro and Interlude pause the scroll automatically. In the editor you can set Pause here or Keep scrolling for any section.':'Intro dan Interlude menjeda scroll otomatis. Di editor kamu bisa memilih Pause here atau Keep scrolling untuk tiap bagian.'
 };
 const IDP=[
+[/^(\d+) songs? imported, (\d+) already in your Library$/,'$1 lagu diimpor, $2 sudah ada di Library-mu'],[/^(\d+) songs? imported$/,'$1 lagu diimpor'],
 [/^(\d+) songs? in setlist$/,'$1 lagu di setlist'],[/^(\d+) songs?$/,'$1 lagu'],[/^(\d+) categor(?:y|ies)$/,'$1 kategori'],
 [/^Create \((\d+)\)$/,'Buat ($1)'],
 [/^Setlist ready: (\d+) songs? in the queue$/,'Setlist siap: $1 lagu di antrean'],[/^A category can send up to (\d+) songs$/,'Satu kategori bisa mengirim maksimal $1 lagu'],[/^Send category “(.+)” to…$/,'Kirim kategori “$1” ke…'],[/^Send “(.+)” to…$/,'Kirim “$1” ke…'],

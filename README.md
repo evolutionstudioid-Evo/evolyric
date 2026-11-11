@@ -7,7 +7,8 @@ EvoLyric berupa *Progressive Web App* (PWA): berjalan di peramban, dapat dipasan
 Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam tahap pengembangan.
 
 - Aplikasi: <https://evolyric.evolution-studio-id.workers.dev/>
-- Panduan pengguna: di dalam aplikasi, **Pengaturan → Bantuan → Tutorial** (Indonesia dan Inggris)
+- Panduan pengguna: di dalam aplikasi, **⚙ → Bantuan → Tur interaktif** (tur dengan animasi tangan) dan **Panduan singkat** (10 slide), Indonesia dan Inggris
+- Rencana berikutnya: [`docs/ROADMAP.md`](docs/ROADMAP.md)
 - Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md)
 
 ## Fitur
@@ -16,9 +17,11 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 - Auto-scroll dengan kecepatan yang diatur langsung di layar, lalu ketuk untuk memutar atau menjeda.
 - Gestur: geser kiri/kanan untuk kecepatan, tahan untuk maju cepat, cubit untuk ukuran huruf. Ketuk dua kali pada judul untuk membuka editor (atau menu ⋮ → Edit lagu).
 - Layar penuh untuk panggung, tema terang dan gelap (layar lirik selalu gelap), serta opsi menjaga layar tetap menyala.
+- Tampilan: slider **Warna** (geser ke kiri untuk monokrom), **Kecerahan latar**, dan **Kontras**, plus **Efek visual saat menggulir** (cahaya lembut di tepi layar, bisa dimatikan).
 
 **Section, voicing, dan anotasi**
 - Penanda bagian lagu dalam tiga kelompok yang dapat dibuka dan ditutup: **Song** (Intro, Verse, Chorus, Bridge, dan lainnya), **Voicing** (Vocal 1–5, Harmony, Choir) dan **Performance** (A Cappella, Sing-Along, Call & Response, dan lainnya).
+- **Auto Section** di editor memberi label otomatis: bagian yang berulang menjadi Chorus, bagian berbaris ganjil menjadi Bridge, paragraf awal Verse, dan Pre-Chorus dikenali. Lirik dari internet langsung diberi label.
 - Setiap section berwarna dan menjadi tombol loncat di atas layar lirik. Intro dan Interlude dapat berhenti otomatis (*Pause here*) atau terus berjalan (*Keep going*).
 - Anotasi di atas lirik: pena, teks, bentuk, pemindah, penghapus, dan enam warna. Tanda menempel pada hurufnya sehingga ikut bergerak saat lirik di-zoom atau diedit.
 
@@ -26,10 +29,12 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 - **Buat setlist**: pilih lagu dari Semua Lagu atau dari kategori, lihat urutannya di panel kanan, lalu tekan **Set**. Lagu pertama terbuka, sisanya menunggu di antrean *Next song*.
 - Tombol **L** di Home membawa kembali ke lirik terakhir yang dibuka.
 - Kategori untuk mengelompokkan lagu (misalnya satu per acara), dengan sematkan di atas dan pengurutan. Satu lagu dapat berada di banyak kategori.
-- Daftar lagu dengan tampilan lebar atau ringkas, pencarian, pengurutan, tab Terbaru, dan impor `.txt`.
+- Daftar lagu dengan tampilan lebar atau ringkas, pencarian yang tahan salah ketik 1–2 huruf, pengurutan, dan tab Terbaru.
+- **Impor `.txt`**: satu atau banyak file. File dari Shortcut Apple Notes (lagu dipisah `===EVONOTE===`) langsung menjadi banyak lagu.
 
 **Web Lyric (cari lirik di internet)**
-- Tombol **globe** (Home dan panel samping) mencari judul yang diketik di [LRCLIB](https://lrclib.net). Satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih; tidak ada hasil membuka Google.
+- Tombol **globe** (Home dan panel samping) mencari judul yang diketik di [LRCLIB](https://lrclib.net). Satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih (dengan tombol **Lebih banyak** ke Google); tidak ada hasil membuka Google. Pencarian juga tahan salah ketik.
+- Di layar lirik, pojok kecepatan berganti menjadi tombol **Versi** untuk berpindah ke versi lain atau ke Google (**Lebih banyak**).
 - Kembali dari Google: **Tampilkan lirik** memakai lirik yang kamu copy, **Kembali** tidak mengubah apa pun.
 - Lirik dari internet bersifat **sementara**: tidak masuk Library, Terbaru, cadangan, atau sinkron cloud, dan hilang saat kembali ke Home. Tombol **Simpan** (atau ⋮ → Simpan ke Library / Edit di Editor) untuk menyimpannya. Rincian teknis: [`docs/WEB_LYRIC_AUDIT.md`](docs/WEB_LYRIC_AUDIT.md).
 
@@ -39,7 +44,8 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 
 **Akun dan data**
 - Masuk dengan Google (Supabase Auth). Lagu dan kategori tersimpan ke cloud selama kamu masuk, sehingga muncul di perangkat lain dengan akun yang sama.
-- Cadangan manual (salin, unduh file, pulihkan dari file atau teks). Format cadangan SETLY (`GULIRLIRIK1`) dan EvoLyric dikenali.
+- **Backup & restore** (Akun → Pengaturan Akun): **Backup** menyimpan semua lagu dan kategori dalam satu file `.evolyric`; **Restore** membacanya kembali tanpa menimpa lagu yang sudah ada. **Ekspor .txt** menyimpan semua lirik dalam format Shortcut Apple Notes. Cadangan lama (SETLY `GULIRLIRIK1`, `EVOLYRIC1/2` dalam `.txt`) tetap dikenali.
+- Menu akun: Teman, **Pengaturan Profil**, Pengaturan Akun, Keluar. Menu ⚙: Preferensi, Bantuan, **Muat ulang aplikasi** (mengambil versi terbaru setelah data disimpan).
 - Antarmuka dua bahasa, Indonesia dan Inggris, yang berganti seketika.
 
 ## Teknologi
@@ -59,12 +65,14 @@ www/                 Aplikasi yang dipublikasikan
   index.html         Seluruh aplikasi
   sw.js              Service worker dan versi cache
   cloud.js           Sinkronisasi cloud
-  tutorial.js, man/  Tutorial dalam aplikasi (dihasilkan) dan tangkapan layarnya
+  tutorial.js, man/  Panduan singkat dalam aplikasi (dihasilkan) dan tangkapan layarnya
 supabase/            Skrip SQL, dijalankan berurutan (001 sampai 009)
 worker.js            Worker tepi: /api/tempo (data tempo, khusus pengguna yang masuk)
 wrangler.jsonc       Konfigurasi Cloudflare Workers
 tools/i18n-audit.js  Pemeriksa terjemahan
 CHANGELOG.md         Riwayat perubahan per versi
+docs/ROADMAP.md      Rencana berikutnya
+docs/WEB_LYRIC_AUDIT.md  Rincian teknis Web Lyric
 CONTRIBUTING.md      Aturan pengembangan
 SETUP-AUTH.md        Langkah mengaktifkan Google Sign-In
 ```
@@ -102,7 +110,7 @@ Detail ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Pemeriksa terjemahan memerlu
 
 ## Tes otomatis
 
-Folder `tests/` berisi 47 tes Playwright untuk alur inti: layar utama, layar lirik, editor, setlist dan tombol L, kategori, teman (penerimaan lagu), data (cadangan/pemulihan) dan terjemahan. Tes membuka `www/index.html` di Chromium dengan data contoh, tanpa Supabase dan tanpa mengubah kode aplikasi.
+Folder `tests/` berisi lebih dari 100 tes Playwright untuk alur inti: layar utama dan menu, layar lirik, Web Lyric, impor Shortcut, Auto Section, warna dan kontras, tur interaktif, editor, setlist dan tombol L, kategori, teman (penerimaan lagu), data (backup, restore, ekspor), PWA dan terjemahan. Tes membuka `www/index.html` di Chromium dengan data contoh, tanpa Supabase dan tanpa mengubah kode aplikasi.
 
 ```bash
 npm install
@@ -131,5 +139,6 @@ npx cap sync
 ## Catatan
 
 - Langganan belum tersedia dan tidak ada pembayaran di aplikasi ini.
+- Lirik dari tombol globe berasal dari [LRCLIB](https://lrclib.net) (database lirik terbuka) atau dari yang kamu salin sendiri di Google. Data tempo dari [GetSongBPM.com](https://getsongbpm.com).
 - Lirik umumnya dilindungi hak cipta. EvoLyric dirancang untuk pemakaian pribadi atau kelompok; jangan menjadikannya basis data lirik publik.
 - Data tersimpan di perangkat dan, saat masuk, di akun cloud milikmu. Alamat email tidak ditampilkan kepada pengguna lain.

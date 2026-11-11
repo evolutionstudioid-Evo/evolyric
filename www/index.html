@@ -660,6 +660,20 @@ body.touring #tsv{display:none!important}
 #spx,#qx,#vsx{position:relative}#spx::after,#qx::after,#vsx::after{content:'';position:absolute;inset:-8px -6px}
 #secbar button{position:relative}#secbar button::after{content:'';position:absolute;inset:-7px -2px}
 @media(prefers-reduced-motion:reduce){#items.lin>*,.ewb{animation:none!important}}
+/* v153 motion: page transitions, L flash, active section stands out */
+.v.on[data-tr=up]{animation:vUp .26s cubic-bezier(.2,.8,.2,1)}
+.v.on[data-tr=fwd]{animation:vFwd .24s cubic-bezier(.2,.8,.2,1)}
+.v.on[data-tr=back]{animation:vBack .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes vUp{from{opacity:0;transform:translateY(18px)}}
+@keyframes vFwd{from{opacity:0;transform:translateX(28px)}}
+@keyframes vBack{from{opacity:0;transform:translateX(-22px)}}
+.lfx{position:fixed;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;pointer-events:none;z-index:2000;background:radial-gradient(circle,rgba(255,226,180,.95) 0,rgba(240,160,75,.7) 32%,rgba(240,160,75,0) 70%);animation:lfx .45s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes lfx{0%{transform:scale(.5);opacity:1}100%{transform:scale(15);opacity:0}}
+#lastb.fl{animation:lfl .45s ease-out}
+@keyframes lfl{0%{background:var(--acc);color:#1a1209;box-shadow:0 0 0 0 rgba(240,160,75,.7)}100%{box-shadow:0 0 0 18px rgba(240,160,75,0)}}
+#secs .chip{transition:transform .18s var(--ease),background .4s var(--ease),border-color .4s var(--ease),box-shadow .45s var(--ease),opacity .3s,text-shadow .4s,filter .3s}
+#secs .chip:not(.on){opacity:.38;filter:saturate(.35)}
+@media(prefers-reduced-motion:reduce){.v.on[data-tr]{animation:none!important}.lfx{display:none!important}#lastb.fl{animation:none!important}}
 </style>
 </head>
 <body>
@@ -842,7 +856,10 @@ function press(b,tap,hold){let tm,lp=0,x0=0,y0=0,mv=0;const en=()=>clearTimeout(
   ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,()=>{en();pressStop=null}));
   b.addEventListener('contextmenu',e=>{e.preventDefault();en();if(mv||Date.now()-scrollAt<350)return;if(!lp){lp=1;hold()}});
   b.onclick=()=>{if(lp){lp=0;return}tap()}}
-const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350);if(v==='list'&&typeof tourAuto==='function'&&!tourOn())setTimeout(tourAuto,1200)};
+/* v153: direction-aware page transitions – Home → Lyrics rises, deeper pages (Editor, settings) slide in from the right, going back slides in from the left */
+const VRANK={list:0,play:1,edit:2};
+const show=v=>{const fr=document.querySelector('.v.on'),to=document.getElementById(v);if(to&&fr&&fr!==to){const a=VRANK[fr.id]??3,b=VRANK[v]??3;to.dataset.tr=fr.id==='list'&&v==='play'?'up':b>a?'fwd':b<a?'back':'fade'}
+  document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350);if(v==='list'&&typeof tourAuto==='function'&&!tourOn())setTimeout(tourAuto,1200)};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* v75: colours chosen for the dark theme are darkened for display on the light theme (stored values are untouched) */
 const _adc={};
@@ -1162,7 +1179,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='152';
+const APP_VER='153';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1796,7 +1813,11 @@ function lastSong(){if(cur&&!isTemp(cur))return songs.includes(cur)?cur:songs.fi
   let id=null;try{id=localStorage.getItem('evo.lastsong')}catch(e){}
   const l=id&&songs.find(x=>x.id===id);if(l)return l;
   const q=Qs();for(const i of q){const x=songs.find(o=>o.id===i);if(x){q.splice(q.indexOf(i),1);qSave();qRender();return x}}return null}
-$('#lastb').onclick=()=>{const s=lastSong();if(!s)return void note('Select a song first',true);if(s===cur&&$('#play')){show('play');enterFs();hl()}else openSong(s)};
+/* v153: the L button flashes – a warm burst from the button while the lyrics open */
+function lFlash(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}const b=$('#lastb'),r=b.getBoundingClientRect();if(!r.width)return;
+  b.classList.remove('fl');void b.offsetWidth;b.classList.add('fl');setTimeout(()=>b.classList.remove('fl'),500);
+  const f=E('div','lfx');f.setAttribute('aria-hidden','true');f.style.left=(r.left+r.width/2)+'px';f.style.top=(r.top+r.height/2)+'px';document.body.append(f);setTimeout(()=>f.remove(),600)}
+$('#lastb').onclick=()=>{const s=lastSong();if(!s)return void note('Select a song first',true);lFlash();if(s===cur&&$('#play')){show('play');enterFs();hl()}else openSong(s)};
 function leavePlay(){setPlay(false);if(fs)exitFs();$('#q').value='';dropTemp();refresh();show('list')} /* Home returns to the list with an empty search */
 document.querySelectorAll('.sfield .clr').forEach(b=>{const i=b.parentNode.querySelector('input');
   b.addEventListener('pointerdown',e=>e.preventDefault()); /* keep focus (and the on-screen keyboard) on the box */

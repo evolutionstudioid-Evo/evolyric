@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v141 – Change the LRCLIB version from the lyrics screen
+- When you pick lyrics from the LRCLIB list (several versions), the bottom-right corner of the lyrics screen shows a **versions** button (with the number of versions) in place of the Speed button. Tap it: the same list opens just above it, the version on screen is marked, and one tap switches to another version – speed and zoom stay as they were, the lyrics stay temporary until you Save.
+- The panel closes with a tap outside it, Back, or the small arrow; it never starts auto-scroll.
+- Library songs, a single LRCLIB match and lyrics pasted from Google keep the normal Speed button. After **Save** the song becomes a library song and the Speed button comes back. While the versions button is shown, speed can still be changed with the speed swipe on the lyrics.
+- Indonesian: Versi / Tutup versi.
+- Tests: 3 new, 91 in total.
+
 ## v140 – Import from Apple Notes (shortcut file)
 - **+ → Import** now understands the text file made by the Apple Notes shortcut (“Kirim ke EvoImport”), where notes are separated by `===EVONOTE===`. Each note becomes **its own song**: the first line is the title (Apple Notes uses it as the note title), the rest is the lyrics, unchanged – section labels such as [Verse 1] and [Chorus] work straight away. The order of the file is kept.
 - Running the shortcut again is safe: a note that is already in the Library word for word (same title and lyrics) is skipped. The result is shown once, e.g. “3 songs imported” or “1 song imported, 2 already in your Library”.

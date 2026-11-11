@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v143 – Search forgives typos
+- **Library search** (Home, side panel, setlist and category pickers): a typo still finds the song – “pulng ke panggng”, “sore di pelabuhn”, swapped letters like “hujna”, also in the artist. Up to 1 wrong letter in words of 4–6 letters and 2 in longer words; words of 3 letters or less must be typed right, so results do not spill over. Exact matches always come first, typo matches after them.
+- **LRCLIB search** (globe button): LRCLIB itself finds nothing for a typo (checked: “separuh nafs” → 0 results). Now EvoLyric then asks again with single words (longest first, at most two more requests) and keeps only titles close to what you typed. If that also finds nothing, Google opens as before – Google corrects typos by itself.
+- Tests: 3 new, 96 in total.
+
 ## v142 – More version, and Reload app
 - **More version** (Indonesian: **Lebih banyak**): the versions panel (bottom-right button on LRCLIB lyrics) has a new button at its top right, next to the close arrow. It opens Google for the song title; coming back asks **Show lyrics / Back** as usual – Back leaves the LRCLIB lyrics on screen.
 - The versions button now shows for **every** LRCLIB pick, also when LRCLIB found only one version, so More version is always one tap away. Library songs and lyrics pasted from Google keep the Speed button.

@@ -66,4 +66,17 @@ test('Home: a swipe over a song never opens its menu; holding still does',async(
   await tch([{x:r[0],y:r[1]},{x:r[0],y:r[1]-40},{x:r[0],y:r[1]-120},{x:r[0],y:r[1]-200}],900);eq(seen,false,'menu after swipe');
   await p.waitForTimeout(1200);const r2=await p.evaluate(()=>{const e=document.querySelectorAll('#items .it')[3].getBoundingClientRect();return[e.x+80,e.y+e.height/2]});
   await tch([{x:r2[0],y:r2[1]}],900);eq(seen,true,'menu after long press');await t.close()});
+
+test('Home: search forgives typos (1 letter in short words, 2 in long ones); exact matches stay on top',async()=>{
+  const t=await open(),p=t.page;
+  const rows=async q=>{await p.fill('#q',q);await p.waitForTimeout(150);return p.evaluate(()=>[...document.querySelectorAll('#items .it b > span:first-child')].map(e=>e.textContent))};
+  eq(await rows('pulng ke panggng'),['Pulang ke Panggung'],'two typos in two words');
+  eq(await rows('sore di pelabuhn'),['Sore di Pelabuhan'],'typo in the last word');
+  eq(await rows('hujna'),['Hujan Reda'],'two letters swapped');
+  eq((await rows('duo akustk')).sort(),['Hujan Reda','Sore di Pelabuhan'],'typo in the artist');
+  eq(await rows('xqzv'),[],'nonsense finds nothing');
+  eq(await rows('dx'),[],'short words must be exact (no typo tolerance)');
+  await p.evaluate(()=>{songs.push({id:'s9',title:'Langit Malan',artist:'Band Lain',lyrics:'x',speed:5,font:30,cr:1,md:1});refresh()});
+  eq(await rows('malam'),['Langit Malam','Langit Malan'],'exact match first, typo match after');
+  eq(t.errors,[],'no page errors');await t.close()});
 };

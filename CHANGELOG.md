@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v146 – Colour, brightness and contrast (monochrome option)
+- **Preferences → Appearance** has three new sliders under Theme:
+  - **Colour** – left = **monochrome**, right = full colour as before, in between calmer colours;
+  - **Background brightness** – darker or lighter background (works in the dark and the light theme);
+  - **Contrast** – softer or stronger difference between text and background.
+  Together with Dark / Light this gives dark-colour, dark-monochrome, light-colour, light-monochrome and anything in between. The screen recolours while you drag; the choice is kept on this device. **Reset colours** brings the original look back.
+- **Keep highlight colours** (on by default): coloured marks you put in lyrics keep their colour in monochrome, because they mean something on stage. Switch it off to make them grey too.
+- Everything follows the sliders: buttons, section chips and labels, the editor's Section panel, the aurora glow (white in monochrome), the app logo and the phone's status-bar colour. No filter is laid over the screen, so auto-scroll stays smooth.
+- Tests: 4 new, 108 in total.
+
 ## v145 – Auto Section: chorus found in many more songs (fixes “all Verse”)
 - Cause (e.g. *Perfect* by Ed Sheeran on LRCLIB): the chorus comes back with a changed or extra line each time, so no paragraph repeated as a whole and every paragraph became a Verse. Now paragraphs that share most of their lines count as the same chorus.
 - A pre-chorus whose words change each time is found too: the paragraph right before every chorus, always the same length and unlike the verses.

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v145 – Auto Section: chorus found in many more songs (fixes “all Verse”)
+- Cause (e.g. *Perfect* by Ed Sheeran on LRCLIB): the chorus comes back with a changed or extra line each time, so no paragraph repeated as a whole and every paragraph became a Verse. Now paragraphs that share most of their lines count as the same chorus.
+- A pre-chorus whose words change each time is found too: the paragraph right before every chorus, always the same length and unlike the verses.
+- Verse and chorus written in one paragraph are told apart (a run of lines that comes back later cuts the paragraph); a chorus split over two paragraphs gets one label; a short ad-lib in front of a chorus stays in the chorus; verses that share a refrain line stay verses.
+- Lyrics without any blank line (some LRCLIB entries are one block) are cut where the chorus repeats; the lines between become one verse each time.
+- Lyric-site markers become labels: “Reff:”, “Chorus 2”, “Pre Reff”, “Verse 1:”, “Bridge:”, “Intro”, “Interlude”, “Outro/Coda”, and “Back to reff” / “Ulangi reff” → [Chorus].
+- Re-checked against two real songs labelled by hand (Pupus, Hampa): verses and choruses match, with and without blank lines.
+- Tests: 4 new, 104 in total.
+
 ## v144 – Auto Section
 - EvoLyric can label the sections of a song by itself, from the paragraphs (blank lines) of the lyrics:
   - paragraphs with the same or nearly the same words that come back 2+ times = **Chorus** (small differences like “s’lalu/selalu”, punctuation or a typo still count); a paragraph made of chorus lines (a half chorus at the end) is Chorus too; a song may start with its chorus;

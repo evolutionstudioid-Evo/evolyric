@@ -1071,7 +1071,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='144';
+const APP_VER='145';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1388,26 +1388,67 @@ function asLine(a,b){const A=asW(a),B=asW(b);if(!A.length||!B.length)return fals
   let h=0;const U=B.slice();A.forEach(w=>{const i=U.findIndex(x=>x===w||fzOk(w,x)||(w.length>=4&&x.length>=4&&(x.startsWith(w.slice(0,4))&&Math.abs(x.length-w.length)<=2)));if(i>=0){h++;U.splice(i,1)}});return h/n>=.75}
 function asSim(P,Q){if(!P.length||!Q.length)return 0;const U=Q.slice();let h=0;P.forEach(l=>{const i=U.findIndex(x=>asLine(l,x));if(i>=0){h++;U.splice(i,1)}});return h/Math.max(P.length,Q.length)}
 function asCover(P,C){if(!P.length)return 0;return P.filter(l=>C.some(x=>asLine(l,x))).length/P.length}
+/* v145: textual section markers used by lyric sites ("Reff:", "Chorus 2", "Back to reff", "Ulangi reff") become labels */
+const SEC_MARK=[[/^(pre[\s-]?(reff?|chorus))$/,'Pre-Chorus'],[/^(reff?|refrain|chorus|korus)(\s*\d+)?$/,'Chorus'],[/^(verse|bait)(\s*\d+)?$/,'Verse'],
+  [/^(bridge)(\s*\d+)?$/,'Bridge'],[/^intro$/,'Intro'],[/^(interlude|musik|instrumental|solo)$/,'Interlude'],[/^(outro|coda|ending)$/,'Outro'],
+  [/^((back\s*to|kembali\s*ke|ulangi|ulang|repeat|balik\s*ke)\s*(reff?|refrain|chorus))$/,'Chorus']];
+function secMark(l){const t=fzN(l).replace(/[()\[\]{}:.*#!-]+/g,' ').replace(/\s+/g,' ').trim();if(!t||t.length>24)return null;
+  for(const [re,n] of SEC_MARK){const m=re.exec(t);if(m){const d=(t.match(/\d+/)||[])[0];return n==='Verse'&&d?'Verse '+d:n}}return null}
+/* v145 – blocks instead of whole paragraphs. A run of 2+ lines that comes back elsewhere in the song cuts a paragraph, so a verse and
+   its chorus written in one paragraph (or lyrics without any blank line) are told apart. Chorus variants (an extra line, a missing
+   line) still count as the same chorus; a part that always follows the chorus is part of it (one label); a short ad-lib in front of
+   a chorus stays in the chorus. If nothing repeats at all, the lyrics are left alone. */
 function autoSec(text){
-  const lines=String(text||'').replace(/\r\n?/g,'\n').split('\n'),paras=[];let cur=null;
-  lines.forEach(l=>{if(!l.trim()){cur=null;return}if(!cur){cur={raw:[],txt:[]};paras.push(cur)}cur.raw.push(l);if(!secLbl(l)&&!secNote(l))cur.txt.push(l)});
-  const P=paras.filter(p=>p.txt.length);if(P.length<2)return null;
-  const gid=P.map(()=>-1);let g=0;
-  for(let i=0;i<P.length;i++){if(gid[i]>=0)continue;gid[i]=g;for(let j=i+1;j<P.length;j++)if(gid[j]<0&&asSim(P[i].txt,P[j].txt)>=.7)gid[j]=g;g++}
-  const groups=[];P.forEach((p,i)=>{(groups[gid[i]]=groups[gid[i]]||[]).push(i)});
-  const rep=groups.filter(x=>x.length>=2),size=x=>x.reduce((a,i)=>a+P[i].txt.length,0);
-  const lab=P.map(()=>'');let chorus=null;
-  if(rep.length){chorus=rep.slice().sort((a,b)=>P[b[0]].txt.length-P[a[0]].txt.length||size(b)-size(a)||b.length-a.length)[0];chorus.forEach(i=>lab[i]='Chorus');
-    const C=P[chorus[0]].txt;
-    P.forEach((p,i)=>{if(!lab[i]&&p.txt.length>=2&&asCover(p.txt,C)>=.8)lab[i]='Chorus'});
-    rep.forEach(x=>{if(x===chorus||x.some(i=>lab[i]))return;const shorter=P[x[0]].txt.length<C.length,before=x.every(i=>lab[i+1]==='Chorus');if(shorter&&before)x.forEach(i=>lab[i]='Pre-Chorus')})}
-  const ci=lab.map((l,i)=>l==='Chorus'?i:-1).filter(i=>i>=0),second=ci.length>=2?ci[1]:Infinity;
-  const uniq=P.map((p,i)=>i).filter(i=>!lab[i]&&groups[gid[i]].length===1&&P[i].txt.length>=2);
-  if(chorus){const early=uniq.filter(i=>i<second).map(i=>P[i].txt.length),mode=early.length?early.sort((a,b)=>early.filter(v=>v===a).length-early.filter(v=>v===b).length).pop():null;
-    const br=uniq.find(i=>i>second&&mode!=null&&P[i].txt.length!==mode);if(br!=null)lab[br]='Bridge'}
-  let v=0;uniq.forEach(i=>{if(!lab[i])lab[i]='Verse '+(++v)});
+  const raw=String(text||'').replace(/\r\n?/g,'\n').split('\n'),paras=[];let cur=null,marks=0;
+  raw.forEach(l=>{if(!l.trim()){cur=null;return}if(secLbl(l))return;const mk=secMark(l);
+    if(mk){marks++;cur={lines:[],mark:mk};paras.push(cur);return}if(!cur){cur={lines:[]};paras.push(cur)}cur.lines.push(l)});
+  const T=[];paras.forEach((p,pi)=>p.lines.forEach((l,k)=>{if(!secNote(l))T.push({pi,k,l})}));
+  if(T.length<4&&!marks)return null;
+  const n=T.length,M=new Map(),mm=(a,b)=>{if(a<0||b<0||a>=n||b>=n||Math.abs(a-b)<2)return false;const key=a<b?a*n+b:b*n+a;if(!M.has(key))M.set(key,asLine(T[a].l,T[b].l));return M.get(key)};
+  const run=T.map((_,i)=>{for(let j=0;j<n;j++)if((mm(i,j)&&mm(i+1,j+1)&&T[i+1]&&T[j+1])||(mm(i,j)&&mm(i-1,j-1)&&i>0&&j>0))return true;return false});
+  /* blocks: paragraph pieces where "repeats elsewhere" changes */
+  const B=[];paras.forEach((p,pi)=>{if(p.mark){B.push({pi,lines:p.lines.slice(),txt:p.lines.filter(l=>!secNote(l)),mark:p.mark,own:true});return}
+    let b=null,ti=T.findIndex(t=>t.pi===pi);p.lines.forEach(l=>{const isT=!secNote(l),r=isT?run[ti]:(b?b.run:false);
+      /* two repeating runs that touch (a verse's refrain line, then the chorus) are cut apart unless they also come together elsewhere */
+      const brk=isT&&r&&b&&b.run&&b.txt.length&&!T.some((_,j)=>mm(ti-1,j)&&mm(ti,j+1));
+      if(!b||(isT&&r!==b.run)||brk){b={pi,lines:[],txt:[],run:r};B.push(b)}b.lines.push(l);if(isT){b.txt.push(l);ti++}})});
+  const single=paras.length<3;
+  /* a 1-2 line piece in front of a repeating piece of the same paragraph (ad-lib) joins it – only when blank lines mark the sections */
+  if(!single)for(let i=B.length-2;i>=0;i--){const a=B[i],c=B[i+1];if(!a.run&&!a.mark&&c.run&&a.pi===c.pi&&a.txt.length<=2){c.lines=a.lines.concat(c.lines);c.txt=a.txt.concat(c.txt);B.splice(i,1)}}
+  /* when the lyrics do use blank lines, a paragraph is at most "verse, then chorus": everything from its first repeating piece on is one
+     block, so a chorus with an extra or changed line stays one chorus */
+  if(paras.length>=3)for(let pi=0;pi<paras.length;pi++){const ps=B.filter(x=>x.pi===pi);const r=ps.findIndex(x=>x.run);if(r<0||ps.length-r<2)continue;
+    const keep=ps[r];ps.slice(r+1).forEach(x=>{keep.lines.push(...x.lines);keep.txt.push(...x.txt);B.splice(B.indexOf(x),1)})}
+  B.forEach(b=>{b.own=b.own||B.filter(x=>x.pi===b.pi).length===1});
+  const N=B.length,shared=(a,b)=>a.txt.filter(l=>b.txt.some(x=>asLine(l,x))).length;
+  const link=(a,b)=>{if(a.mark||b.mark||a.txt.length<2||b.txt.length<2)return false;const s=shared(a,b);return s>=2&&s>=.5*Math.min(a.txt.length,b.txt.length)};
+  const gid=B.map(()=>-1);let g=0;
+  for(let i=0;i<N;i++){if(gid[i]>=0)continue;gid[i]=g;const q=[i];while(q.length){const x=q.pop();for(let j=0;j<N;j++)if(gid[j]<0&&link(B[x],B[j])){gid[j]=g;q.push(j)}}g++}
+  const groups=[];B.forEach((b,i)=>{(groups[gid[i]]=groups[gid[i]]||[]).push(i)});
+  const lab=B.map(b=>b.mark||''),cont=B.map(()=>false);
+  const rep=groups.filter(x=>x.length>=2&&x.every(i=>!lab[i]));
+  if(!rep.length&&!marks)return null;
+  const avg=x=>x.reduce((a,i)=>a+B[i].txt.length,0)/x.length;
+  if(rep.length){const ch=rep.slice().sort((a,b)=>b.length-a.length||avg(b)-avg(a)||a[0]-b[0])[0];ch.forEach(i=>lab[i]='Chorus');
+    let changed=true;while(changed){changed=false; /* parts that always follow a chorus belong to it */
+      rep.forEach(x=>{if(x.some(i=>lab[i]||cont[i]))return;if(x.every(i=>i>0&&(lab[i-1]==='Chorus'||cont[i-1])&&B[i-1].run)){x.forEach(i=>cont[i]=true);changed=true}})}
+    const C=[].concat(...ch.map(i=>B[i].txt));
+    B.forEach((b,i)=>{if(!lab[i]&&!cont[i]&&b.txt.length>=2&&asCover(b.txt,C)>=.8)lab[i]='Chorus'});
+    rep.forEach(x=>{if(x.some(i=>lab[i]||cont[i]))return;if(avg(x)<avg(ch)&&x.every(i=>lab[i+1]==='Chorus'))x.forEach(i=>lab[i]='Pre-Chorus')})}
+  const uniq=B.map((b,i)=>i).filter(i=>!lab[i]&&!cont[i]&&groups[gid[i]].length===1&&B[i].txt.length>=2),
+    rest=B.map((b,i)=>i).filter(i=>!lab[i]&&!cont[i]&&B[i].txt.length>=2); /* verses may share a line or two (a refrain inside the verse) */
+  const ci=lab.map((l,i)=>l==='Chorus'?i:-1).filter(i=>i>=0);
+  if(ci.length){
+    const pre=uniq.filter(i=>lab[i+1]==='Chorus'),others=uniq.filter(i=>lab[i+1]!=='Chorus'&&ci[0]>i); /* verses before the first chorus */
+    if(pre.length>=2&&pre.every(i=>B[i].txt.length===B[pre[0]].txt.length)&&others.length&&others.every(i=>B[i].txt.length!==B[pre[0]].txt.length))pre.forEach(i=>lab[i]='Pre-Chorus');
+    const second=ci.length>=2?ci[1]:Infinity,vs=uniq.filter(i=>!lab[i]&&i<second).map(i=>B[i].txt.length);
+    const mode=vs.length?vs.slice().sort((a,b)=>vs.filter(v=>v===a).length-vs.filter(v=>v===b).length).pop():null;
+    const br=uniq.find(i=>!lab[i]&&i>second&&B[i].own&&mode!=null&&B[i].txt.length!==mode);if(br!=null)lab[br]='Bridge'}
+  let v=0;const vn=new Set(lab.filter(l=>/^Verse \d+$/.test(l)).map(l=>+l.slice(6)));
+  rest.forEach(i=>{if(lab[i])return;if(single&&i>0&&((rest.includes(i-1)&&/^Verse/.test(lab[i-1]||'')&&!B[i-1].mark)||(lab[i-1]==='Chorus'&&B[i].txt.length<=2))){lab[i]='';cont[i]=true;return} /* no blank lines: one verse until the next chorus; a 1-2 line ad-lib after a chorus stays in it */
+    do v++;while(vn.has(v));lab[i]='Verse '+v});
   if(!lab.some(Boolean))return null;
-  return P.map((p,i)=>(lab[i]?'['+lab[i]+']\n':'')+p.raw.filter(l=>!secLbl(l)).join('\n')).join('\n\n')}
+  return paras.map((p,pi)=>B.filter(b=>b.pi===pi).map(b=>{const i=B.indexOf(b);return(lab[i]?'['+lab[i]+']'+(b.lines.length?'\n':''):'')+b.lines.join('\n')}).join('\n')).join('\n\n')}
 function openTemp(o){const t=isTemp(o)?o:tempSong(o);if(!t.lyrics)return null;
   if((t.src==='lrclib'||t.src==='google')&&!t.lyrics.split('\n').some(secLbl)){const a=autoSec(t.lyrics);if(a)t.lyrics=a} /* v144 */openSong(t);return t}
 function dropTemp(){if(!isTemp(cur))return false;cur=null;$('#txt').textContent='';$('#play').classList.remove('tmp','lrc');vsOpen(false);return true}

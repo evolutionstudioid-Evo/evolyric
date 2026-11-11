@@ -28,6 +28,11 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 - Kategori untuk mengelompokkan lagu (misalnya satu per acara), dengan sematkan di atas dan pengurutan. Satu lagu dapat berada di banyak kategori.
 - Daftar lagu dengan tampilan lebar atau ringkas, pencarian, pengurutan, tab Terbaru, dan impor `.txt`.
 
+**Web Lyric (cari lirik di internet)**
+- Tombol **globe** (Home dan panel samping) mencari judul yang diketik di [LRCLIB](https://lrclib.net). Satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih; tidak ada hasil membuka Google.
+- Kembali dari Google: **Tampilkan lirik** memakai lirik yang kamu copy, **Kembali** tidak mengubah apa pun.
+- Lirik dari internet bersifat **sementara**: tidak masuk Library, Terbaru, cadangan, atau sinkron cloud, dan hilang saat kembali ke Home. Tombol **Simpan** (atau ⋮ → Simpan ke Library / Edit di Editor) untuk menyimpannya. Rincian teknis: [`docs/WEB_LYRIC_AUDIT.md`](docs/WEB_LYRIC_AUDIT.md).
+
 **Teman dan berbagi**
 - Cari teman lewat username, kirim dan terima permintaan pertemanan.
 - Kirim lagu atau satu kategori utuh (hingga 300 lagu sekali kirim). Saat menerima kategori, setiap lagu ditandai baru atau sudah ada, dan kamu memilih per lagu: simpan salinan, pakai milikku, atau lewati. Tidak ada lagu yang ditimpa.

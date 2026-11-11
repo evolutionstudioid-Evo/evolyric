@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v139 – Web Lyric, phase 6: tutorial and README
+- New tutorial page **“Temporary lyrics from the internet”** (Songs chapter, right after “Finding songs and lyrics”), ID/EN, with its own picture: what temporary lyrics are, the **Save** button and the ⋮ menu (Save to Library / Edit in Editor). Table of contents renumbered; the new pictures are cached for offline use.
+- README: Web Lyric section.
+
 ## v138 – Web Lyric, phases 4 + 5: the globe button finds lyrics
 - **Globe button** (Home and side panel) now looks the typed title up on **LRCLIB** first, instead of opening Google and an empty editor:
   - **one match** → the lyrics open straight away in the lyrics screen as a temporary song (Save button in the header, ⋮ → Edit in Editor);

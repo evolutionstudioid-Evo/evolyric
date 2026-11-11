@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v138 – Web Lyric, phases 4 + 5: the globe button finds lyrics
+- **Globe button** (Home and side panel) now looks the typed title up on **LRCLIB** first, instead of opening Google and an empty editor:
+  - **one match** → the lyrics open straight away in the lyrics screen as a temporary song (Save button in the header, ⋮ → Edit in Editor);
+  - **several versions** → a short list to pick from (title, artist · album · length, and a tag such as LIVE or COVER), with “Lyrics from LRCLIB”;
+  - **no match** (or LRCLIB not answering) → Google opens with “<title> lyric”, as before.
+- **Back from Google** asks once: **Show lyrics** turns what you copied into a temporary song in the lyrics screen; **Back** leaves everything as it was (Home stays Home, an open song stays open, same scroll position). If nothing usable was copied (empty, a link, one word) it says so and keeps the question open. If the clipboard cannot be read, a box opens to paste into by hand. On iPhone/iPad iOS shows its own small “Paste” bubble once.
+- The editor no longer opens automatically from the globe button.
+- LRCLIB is asked quietly when you stop typing in a search box, so a tap can open Google immediately (browsers only allow that during the tap). A tap before the answer arrives shows a spinning globe; if the browser then blocks the Google tab, a “Search Google” button opens it with one tap.
+- Offline: a clear message, nothing else happens.
+- Tutorial text updated for the new globe behaviour (ID/EN). New Indonesian texts: Pilih versi, Tampilkan lirik, Sudah copy liriknya?, etc.
+- Tests: 10 new (LRCLIB and Google replaced by stubs), 84 in total.
+
 ## v137 – Web Lyric, phases 2 + 3: Save to Library, Edit in Editor, LRCLIB lookup (behind the scenes)
 - Still nothing new for users to see: no button opens a temporary song yet (phase 4 wires the globe button).
 - **Save to Library**: a temporary song shows a **Save** button in the lyrics header (bookmark icon, between the title and ⋮) and the same action in ⋮. It turns the song into a normal library song right where you are – same screen, same scroll position, speed and zoom kept – and adds it to Recent and the **L** button. If a song with the same title (and artist) is already in the Library, it asks first (“Save a copy”). The button fades with the other floating buttons while auto-scroll runs.

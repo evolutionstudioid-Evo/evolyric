@@ -131,7 +131,86 @@ test('LRCLIB: prefetch waits for a pause in typing, then the answer is ready ins
   const t=await open(),p=t.page;const hits=await stub(p,r=>json(r,STUB));
   await p.evaluate(()=>{lrcPrefetch('ka');lrcPrefetch('kang');lrcPrefetch('kangen')});await p.waitForTimeout(1000);
   eq(hits.length,1,'only the last text is looked up');eq(await p.evaluate(()=>lrcPeek('kangen').items[0].id),1,'ready');await t.close()});
-test('LRCLIB: typing in the search boxes does not contact LRCLIB yet (phase 3 is not wired to any button)',async()=>{
+test('LRCLIB: typing in the search boxes asks LRCLIB once, after a pause',async()=>{
   const t=await open(),p=t.page;const hits=await stub(p,r=>json(r,STUB));
-  await p.fill('#q','kangen');await p.waitForTimeout(1000);eq(hits.length,0,'no request');await t.close()});
+  await p.type('#q','kangen',{delay:40});await p.waitForTimeout(1000);eq(hits.length,1,'one request after typing stops');await t.close()});
+
+/* ---------- phases 4 + 5: the globe button ---------- */
+const ONE=[R(11,'Separuh Nafas','Dewa 19','Aku tak bisa\nLuluhkan hatimu')];
+const pages=t=>{const a=[];t.ctx.on('page',pg=>a.push(pg));return a};
+const vis=(p,hidden)=>p.evaluate(h=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>h});Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>h?'hidden':'visible'});document.dispatchEvent(new Event('visibilitychange'))},hidden);
+const sheet=p=>p.evaluate(()=>$('#ctx').classList.contains('on')?[...$('#csheet').children].map(e=>e.textContent):null);
+test('Globe: one LRCLIB match opens straight into the lyrics screen as a temporary song (no editor, no Google)',async()=>{
+  const t=await open(),p=t.page;const pg=pages(t);await stub(p,r=>json(r,ONE));
+  await p.fill('#q','separuh nafas');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(500);
+  eq(await p.evaluate(()=>[$('#play').classList.contains('on'),isTemp(cur),cur.title,cur.artist,cur.src,$('#edit').classList.contains('on'),songs.length]),[true,true,'Separuh Nafas','Dewa 19','lrclib',false,5],'temporary lyrics shown');
+  eq(pg.length,0,'Google not opened');eq(t.errors,[],'no page errors');await t.close()});
+test('Globe: several versions show a short list to choose from; the chosen one opens',async()=>{
+  const t=await open(),p=t.page;await stub(p,r=>json(r,STUB));
+  await p.fill('#q','kangen');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(300);
+  const sh=await sheet(p);eq(sh[0],'Choose a version','list title');
+  eq(await p.evaluate(()=>[...document.querySelectorAll('#csheet .wlv')].map(b=>b.querySelector('b').textContent+' | '+b.querySelector('small').textContent)),
+    ['Kangen | Dewa 19 · Album · 3:20','Kangen | Band Lain · Album · 3:20','Kangen (Live) | Dewa 19 · Live Konser · 3:20live'],'versions with artist, album, length and tag');
+  assert(sh[sh.length-1]==='Lyrics from LRCLIB','source credit');
+  await p.click('#csheet .wlv >> nth=1');await p.waitForTimeout(400);
+  eq(await p.evaluate(()=>[isTemp(cur),cur.artist,cur.lyrics,$('#ctx').classList.contains('on')]),[true,'Band Lain','Kangen sync\nBaris dua',false],'picked version opened');
+  await t.close()});
+test('Globe: no match opens Google; coming back asks once – Show lyrics turns what was copied into a temporary song',async()=>{
+  const t=await open(),p=t.page;const pg=pages(t);await stub(p,r=>json(r,[]));
+  await t.ctx.grantPermissions(['clipboard-read','clipboard-write']);await t.ctx.route('https://www.google.com/**',r=>r.fulfill({status:200,contentType:'text/html',body:'google'}));
+  await p.fill('#q','lagu langka');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(600);
+  eq(pg.length,1,'Google opened');assert(pg[0].url().includes('google.com/search?q=lagu%20langka%20lyric'),'query: '+pg[0].url());
+  eq(await p.evaluate(()=>$('#edit').classList.contains('on')),false,'editor not opened any more');
+  await vis(p,true);await p.evaluate(()=>navigator.clipboard.writeText('Baris satu lirik\nBaris dua lirik\n\nBaris tiga'));await vis(p,false);await p.bringToFront();await p.waitForTimeout(500);
+  const sh=await sheet(p);eq([sh[0],sh[2],sh[3]],['Copied the lyrics?','Show lyrics','Back'],'question shown');
+  await p.click('#csheet .wlok');await p.waitForTimeout(500);
+  eq(await p.evaluate(()=>[$('#play').classList.contains('on'),isTemp(cur),cur.title,cur.src,cur.lyrics,songs.length]),[true,true,'lagu langka','google','Baris satu lirik\nBaris dua lirik\n\nBaris tiga',5],'copied lyrics shown as temporary song');
+  await vis(p,true);await vis(p,false);await p.waitForTimeout(500);eq(await sheet(p),null,'asked only once');
+  await t.close()});
+test('Globe: Back after Google leaves everything as it was (Home stays Home, the open song stays open)',async()=>{
+  const t=await open(),p=t.page;await stub(p,r=>json(r,[]));
+  await p.evaluate(()=>openSong(songs.find(s=>s.id==='s2')));await p.waitForTimeout(300);await p.evaluate(()=>{$('#lyr').scrollTop=120});
+  await p.evaluate(()=>{drawer(true)});await p.fill('#dq','lagu langka');await p.waitForTimeout(900);await p.click('#dgoog');await p.waitForTimeout(300);
+  await vis(p,true);await vis(p,false);await p.waitForTimeout(500);
+  await p.click('#csheet button:has-text("Back")');await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>[$('#play').classList.contains('on'),cur.id,isTemp(cur),$('#ctx').classList.contains('on'),$('#edit').classList.contains('on')]),[true,'s2',false,false,false],'same song, nothing changed');
+  await t.close()});
+test('Globe: nothing usable on the clipboard keeps the question open and says so; a refused clipboard offers a paste box',async()=>{
+  const t=await open(),p=t.page;await stub(p,r=>json(r,[]));await t.ctx.grantPermissions(['clipboard-read','clipboard-write']);
+  await p.fill('#q','lagu langka');await p.waitForTimeout(900);await p.click('#goog');
+  await vis(p,true);await p.evaluate(()=>navigator.clipboard.writeText('https://example.com/lirik'));await vis(p,false);await p.waitForTimeout(500);
+  await p.click('#csheet .wlok');await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>[$('#note').textContent,$('#note').classList.contains('bad'),$('#ctx').classList.contains('on'),$('#list').classList.contains('on')]),
+    ['No lyrics copied yet. Copy the lyrics first, then try again.',true,true,true],'told, question still open, still Home');
+  /* clipboard refused -> paste box */
+  await p.evaluate(()=>{navigator.clipboard.readText=()=>Promise.reject(new Error('denied'))});
+  await p.click('#csheet .wlok');await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>[$('#csheet h3').textContent,!!$('#csheet .wlta')]),['Paste the lyrics',true],'paste box');
+  await p.fill('#csheet .wlta','Baris satu lirik\nBaris dua lirik');await p.click('#csheet .wlok');await p.waitForTimeout(400);
+  eq(await p.evaluate(()=>[isTemp(cur),cur.lyrics]),[true,'Baris satu lirik\nBaris dua lirik'],'pasted lyrics shown');await t.close()});
+test('Globe: if the browser blocks the Google tab, one tap on Search Google opens it',async()=>{
+  const t=await open(),p=t.page;await stub(p,r=>json(r,[]));
+  await p.evaluate(()=>{window.__ws=0;webSearch=()=>{window.__ws++}}); /* simulate a blocked tab: nothing leaves the page */
+  await p.fill('#q','lagu langka');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(2200);
+  const sh=await sheet(p);eq([sh[0],sh[1]],['Not found on LRCLIB','Search Google'],'offered');
+  await p.click('#csheet button:has-text("Search Google")');eq(await p.evaluate(()=>window.__ws),2,'opened again from the tap');await t.close()});
+test('Globe: a tap before LRCLIB has answered waits for it (spinning globe), then opens the lyrics',async()=>{
+  const t=await open(),p=t.page;await stub(p,async r=>{await new Promise(z=>setTimeout(z,500));return json(r,ONE)});
+  await p.evaluate(()=>{$('#q').value='separuh nafas'});await p.click('#goog');
+  eq(await p.evaluate(()=>$('#goog').classList.contains('busy')),true,'busy while waiting');await p.waitForTimeout(900);
+  eq(await p.evaluate(()=>[isTemp(cur),$('#goog').classList.contains('busy')]),[true,false],'opened, spinner gone');await t.close()});
+test('Globe: offline says so and stays put (no Google, no editor)',async()=>{
+  const t=await open(),p=t.page;const pg=pages(t);await stub(p,r=>json(r,ONE));await t.ctx.setOffline(true);
+  await p.evaluate(()=>{$('#q').value='separuh nafas'});await p.click('#goog');await p.waitForTimeout(400);
+  eq(await p.evaluate(()=>[$('#note').textContent,$('#list').classList.contains('on'),cur]),['You are offline. Lyrics search needs an internet connection.',true,null],'offline note');
+  eq(pg.length,0,'no Google');await t.ctx.setOffline(false);await t.close()});
+test('Globe: empty search box does nothing',async()=>{
+  const t=await open(),p=t.page;const pg=pages(t);const hits=await stub(p,r=>json(r,ONE));
+  await p.click('#goog');await p.waitForTimeout(300);eq([hits.length,pg.length,await p.evaluate(()=>$('#list').classList.contains('on'))],[0,0,true],'nothing');await t.close()});
+test('Globe: the version list and the return question are translated in Indonesian',async()=>{
+  const t=await open({lang:'id'}),p=t.page;await stub(p,r=>json(r,STUB));
+  await p.fill('#q','kangen');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(300);
+  const a=await sheet(p);eq([a[0],a[a.length-2],a[a.length-1]],['Pilih versi','Batal','Lirik dari LRCLIB'],'list');
+  await p.evaluate(()=>{ctxClose();wlBack('x')});await p.waitForTimeout(200);
+  eq(await sheet(p),['Sudah copy liriknya?','Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Tampilkan lirik','Kembali'],'question');await t.close()});
 };

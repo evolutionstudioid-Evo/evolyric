@@ -14,6 +14,7 @@ async function open(o={}){
   if(!server)await serve();browser=browser||await chromium.launch();
   const ctx=await browser.newContext({serviceWorkers:o.sw?'allow':'block',...(o.device?devices[o.device]:{viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true})});
   const lang=o.lang||'en';
+  if(!o.tour)await ctx.addInitScript(()=>{if(!localStorage.getItem('evo.tour'))localStorage.setItem('evo.tour','1')});
   await ctx.addInitScript(l=>{if(!localStorage.getItem('evo.prefs'))localStorage.setItem('evo.prefs',JSON.stringify({theme:'dark',lang:l,awake:0,dim:0,font:30}))},lang);
   const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(URL);await page.waitForTimeout(500);

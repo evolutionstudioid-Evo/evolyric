@@ -610,6 +610,43 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 /* v146: colour tone sliders */
 svg.lg{filter:saturate(var(--tsat,1))} /* the app logo follows the colour slider (Google's logo keeps its colours) */
 .srng input[type=range]{flex:0 0 46%;max-width:220px;accent-color:var(--acct);height:28px}
+/* v148: interactive tour – spotlight, animated hand, explanation card */
+#tour{position:fixed;inset:0;z-index:3000;opacity:0;transition:opacity .25s;touch-action:none}
+#tour.on{opacity:1}
+#tour .tsp{position:fixed;border-radius:14px;box-shadow:0 0 0 200vmax rgba(6,4,3,.7);outline:2px solid var(--acc);outline-offset:0;transition:left .35s var(--ease),top .35s var(--ease),width .35s var(--ease),height .35s var(--ease);pointer-events:none}
+#tour .tsp.none{outline:none}
+#tour .thw{position:fixed;width:0;height:0;pointer-events:none;z-index:2}
+#tour .tmv{position:absolute;left:0;top:0}
+#tour .thd{position:absolute;left:-20px;top:-4px;width:56px;height:56px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.55));transform-origin:20px 4px}
+#tour .trp{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:3px solid var(--acc);background:rgba(240,160,75,.18);opacity:0}
+#tour .tdt{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 0 0 4px rgba(240,160,75,.5),0 4px 10px rgba(0,0,0,.5);display:none}
+#tour .g-tap .thd{animation:tPress 1.6s var(--ease) infinite}#tour .g-tap .trp{animation:tRip 1.6s ease-out infinite}
+#tour .g-dtap .thd{animation:tPress2 1.8s var(--ease) infinite}#tour .g-dtap .trp{animation:tRip2 1.8s ease-out infinite}
+#tour .g-swipe .tmv{animation:tSwipe 2.6s ease-in-out infinite}#tour .g-swipe .thd{transform:scale(.94)}#tour .g-swipe .trp{opacity:.9;transform:scale(.45)}
+#tour .g-hold .thd{animation:tHold 2.4s var(--ease) infinite}#tour .g-hold .trp{animation:tHoldR 2.4s linear infinite}
+#tour .g-pinch .thd,#tour .g-pinch .trp{display:none}#tour .g-pinch .tdt{display:block}
+#tour .g-pinch .tdt.a{animation:tPinA 2.2s ease-in-out infinite}#tour .g-pinch .tdt.b{animation:tPinB 2.2s ease-in-out infinite}
+@keyframes tPress{0%,100%{transform:translate(6px,16px)}35%,55%{transform:translate(0,0) scale(.9)}}
+@keyframes tRip{0%,38%{transform:scale(.3);opacity:0}45%{opacity:1}100%{transform:scale(1.5);opacity:0}}
+@keyframes tPress2{0%,100%{transform:translate(6px,16px)}22%,30%{transform:translate(0,0) scale(.9)}38%{transform:translate(2px,8px)}46%,54%{transform:translate(0,0) scale(.9)}68%{transform:translate(6px,16px)}}
+@keyframes tRip2{0%,24%{transform:scale(.3);opacity:0}28%{opacity:1}44%{transform:scale(1.2);opacity:0}48%{transform:scale(.3);opacity:0}52%{opacity:1}80%,100%{transform:scale(1.5);opacity:0}}
+@keyframes tSwipe{0%,100%{transform:translateX(0)}25%{transform:translateX(-56px)}75%{transform:translateX(56px)}}
+@keyframes tHold{0%,100%{transform:translate(6px,16px)}15%,80%{transform:translate(0,0) scale(.9)}}
+@keyframes tHoldR{0%,15%{transform:scale(.3);opacity:0}18%{opacity:1}75%{transform:scale(1.35);opacity:1}82%,100%{transform:scale(1.5);opacity:0}}
+@keyframes tPinA{0%,100%{transform:translate(-10px,10px)}50%{transform:translate(-46px,46px)}}
+@keyframes tPinB{0%,100%{transform:translate(10px,-10px)}50%{transform:translate(46px,-46px)}}
+#tour .ttc{position:fixed;width:min(340px,calc(100vw - 24px));padding:16px 16px 12px;border-radius:18px;background:var(--card);color:var(--fg);border:1px solid var(--ln);box-shadow:0 18px 50px rgba(0,0,0,.55);transition:top .3s var(--ease),left .3s var(--ease);z-index:3}
+#tour .ttc small{display:block;font:700 11px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:.14em;color:var(--acct);margin-bottom:8px}
+#tour .ttc h4{margin:0 0 6px;font:800 19px/1.2 'Atkinson Hyperlegible',system-ui,sans-serif}
+#tour .ttc p{margin:0;font-size:15px;line-height:1.45;color:var(--mut)}
+#tour .tbr{display:flex;align-items:center;gap:8px;margin-top:14px}
+#tour .tbr button{height:40px;padding:0 16px;border-radius:20px;font:700 15px 'Atkinson Hyperlegible',system-ui,sans-serif}
+#tour .tsk{color:var(--mut);margin-right:auto;padding:0 8px!important}
+#tour .tbk{border:1px solid var(--ln);color:var(--fg)}
+#tour .tnx{background:var(--acc);color:#1a1209;min-width:96px}
+#tour .tbk[hidden],#tour .tsk[hidden]{display:none}
+body.touring #tsv{display:none!important}
+@media(prefers-reduced-motion:reduce){#tour *{animation:none!important;transition:none!important}#tour .trp{opacity:.8;transform:scale(.6)}}
 </style>
 </head>
 <body>
@@ -792,7 +829,7 @@ function press(b,tap,hold){let tm,lp=0,x0=0,y0=0,mv=0;const en=()=>clearTimeout(
   ['pointerup','pointercancel','pointerleave'].forEach(v=>b.addEventListener(v,()=>{en();pressStop=null}));
   b.addEventListener('contextmenu',e=>{e.preventDefault();en();if(mv||Date.now()-scrollAt<350)return;if(!lp){lp=1;hold()}});
   b.onclick=()=>{if(lp){lp=0;return}tap()}}
-const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350)};
+const show=v=>{document.querySelectorAll('.v').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='list'&&window.Cloud)Cloud.idle();if(v==='list'&&typeof frNotify==='function')setTimeout(frNotify,350);if(v==='list'&&typeof tourAuto==='function'&&!tourOn())setTimeout(tourAuto,1200)};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* v75: colours chosen for the dark theme are darkened for display on the light theme (stored values are untouched) */
 const _adc={};
@@ -1109,7 +1146,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='147';
+const APP_VER='148';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1275,9 +1312,93 @@ addEventListener('message',e=>{const t=$('#tut');if(e.data==='evo-tut-close'&&t&
 function helpOpen(){show('help');helpRender()}
 function helpRender(){const b=$('#helpbody');b.textContent='';
   b.append(E('div','sgrp',L('Help','Bantuan')),sCard(
-    sRow(L('Tutorial','Tutorial'),{go:tutOpen}),
+    sRow(L('Interactive tour','Tur interaktif'),{go:()=>tourStart()}),
+    sRow(L('Quick guide','Panduan singkat'),{go:tutOpen}),
     sRow(L('About EvoLyric','Tentang EvoLyric'),{go:()=>docOpen('help',L('About','Tentang'),docAbout)}),
     sRow(L('Credit','Kredit'),{go:()=>docOpen('help',L('Credit','Kredit'),docCredit)})))}
+/* ---------- v148: interactive tour. A hand shows the gesture, a spotlight marks the place, a card explains it.
+   Runs once for new users (empty or sample library) and any time from Help → Interactive tour. It uses a fictional demo song
+   that is never saved: the editor is closed without saving and the lyrics screen shows it as a temporary song. ---------- */
+const TOURK='evo.tour',TOUR_T='Pulang ke Panggung',TOUR_A='Nada Band';
+const TOUR_LY='Lampu panggung mulai menyala\nRuangan hening menunggu kita\n\nPulang, pulang ke panggung\nTempat suaraku bertemu rumah\n\nJalan pulang terasa panjang\nTapi lagu menuntun kita\n\nPulang, pulang ke panggung\nTempat suaraku bertemu rumah\n\nDan bila lampu padam\nKita tetap bernyanyi\nSampai pagi datang\n\nPulang, pulang ke panggung\nTempat suaraku bertemu rumah';
+let tour=null;
+I18N_KEEP.add(TOUR_T);I18N_KEEP.add(TOUR_A); /* the demo song's title and artist are song data, not interface text */
+const tourOn=()=>!!tour;
+const tHome=()=>{fabOpen(false);if(!$('#list').classList.contains('on')){refresh();show('list')}};
+const TOUR=[
+ {h:['Welcome to EvoLyric','Selamat datang di EvoLyric'],d:['A one-minute tour: make a song, tidy it up, then sing it.','Tur satu menit: membuat lagu, merapikannya, lalu menyanyikannya.'],go:tHome},
+ {t:'#fab',g:'tap',h:['Add a song','Tambah lagu'],d:['Tap + for New song, Create setlist or Import .txt.','Ketuk + untuk Lagu baru, Buat setlist, atau Impor .txt.'],go:tHome},
+ {t:'#goog',g:'tap',h:['Lyrics from the internet','Lirik dari internet'],d:['Type a title in the search box, then tap the globe. EvoLyric looks on LRCLIB, then Google.','Ketik judul di kolom cari, lalu ketuk globe. EvoLyric mencari di LRCLIB, lalu Google.'],go:tHome},
+ {t:'#ta',g:'tap',p:r=>[r.left+r.width*.45,r.top+Math.min(r.height*.3,120)],h:['The editor','Editor'],d:['Type or paste lyrics here. We use a demo song; it is not saved.','Ketik atau tempel lirik di sini. Kita pakai lagu contoh; lagu ini tidak disimpan.'],
+  go:()=>{if(!$('#edit').classList.contains('on')||!tour.ed){openEdit(null,TOUR_LY,TOUR_T);$('#ea').value=TOUR_A;tour.ed=1;if(tour.i>=5)edAuto()}}},
+ {t:'#eA',g:'tap',h:['Auto Section','Auto Section'],d:['One tap labels Verse, Chorus and Bridge for you.','Satu ketukan: Verse, Chorus, dan Bridge diberi label otomatis.']},
+ {t:'#side',g:'tap',p:r=>[r.left+r.width/2,r.top+Math.min(r.height*.35,190)],h:['Section labels','Label section'],d:['Done: each label sits on its own line, like [Chorus]. To change one, put the cursor on a line and tap a label here.','Selesai: tiap label ada di barisnya sendiri, seperti [Chorus]. Mau ubah? Taruh kursor di baris, lalu ketuk label di sini.'],
+  go:()=>{if(!/^\[/m.test(ta.value))edAuto()}},
+ {t:'#eS',g:'tap',h:['Save','Simpan'],d:['Save puts the song in your Library. The demo song is not saved.','Simpan memasukkan lagu ke Library. Lagu contoh ini tidak disimpan.']},
+ {t:'#lyr',g:'tap',p:r=>[r.left+r.width/2,r.top+r.height*.42],h:['Sing','Mulai menyanyi'],d:['Tap the lyrics to play or pause. A song always opens paused.','Ketuk lirik untuk putar atau jeda. Lagu selalu terbuka dalam keadaan jeda.'],
+  go:()=>{if(!$('#play').classList.contains('on')){const v=ta.value;if(ed)ed.dirty=false;openTemp({title:TOUR_T,artist:TOUR_A,lyrics:/^\[/m.test(v)?v:(autoSec(TOUR_LY)||TOUR_LY)})}}},
+ {t:'#lyr',g:'swipe',p:r=>[r.left+r.width/2,r.top+r.height*.42],h:['Speed','Kecepatan'],d:['Touch and slide left or right to change the speed.','Sentuh lalu geser ke kiri atau kanan untuk mengubah kecepatan.']},
+ {t:'#lyr',g:'hold',p:r=>[r.left+r.width/2,r.top+r.height*.42],h:['Fast forward','Maju cepat'],d:['While it runs, hold your finger still for 1 second to fast-forward.','Saat berjalan, tahan jari diam 1 detik untuk maju cepat.']},
+ {t:'#lyr',g:'pinch',p:r=>[r.left+r.width/2,r.top+r.height*.42],h:['Text size','Ukuran teks'],d:['Pinch with two fingers to zoom. Each song keeps its own size.','Cubit dengan dua jari untuk zoom. Ukuran tiap lagu diingat.']},
+ {t:'#secs .chip',g:'tap',h:['Jump to a section','Loncat ke section'],d:['Tap Verse, Chorus and so on to go straight to that part.','Ketuk Verse, Chorus, dan lainnya untuk langsung ke bagian itu.']},
+ {t:'#spb',g:'tap',h:['Fine speed','Kecepatan halus'],d:['Or set the speed with the slider here.','Atau atur kecepatan dengan slider di sini.']},
+ {t:'#ptit',g:'dtap',h:['Edit the song','Edit lagu'],d:['Double-tap the title to open the editor. The ⋮ menu has Edit song too.','Ketuk dua kali judul untuk membuka editor. Menu ⋮ juga punya Edit lagu.']},
+ {t:'#qtg',g:'tap',h:['Queue','Antrean'],d:['Next songs wait here. At the end of the lyrics, Next opens the next one.','Lagu berikutnya menunggu di sini. Di akhir lirik, tombol Next membuka lagu berikutnya.']},
+ {t:'#gear',g:'tap',h:['You are ready','Siap tampil'],d:['Replay this tour any time: ⚙ → Help → Interactive tour.','Ulangi tur ini kapan saja: ⚙ → Bantuan → Tur interaktif.'],go:()=>{if($('#play').classList.contains('on'))leavePlay();tHome()}}];
+const HAND='<svg class="thd" viewBox="0 0 50 50" aria-hidden="true"><path d="M14 27V8a4 4 0 0 1 8 0v12a4 4 0 0 1 8 0v2a4 4 0 0 1 8 0v2a4 4 0 0 1 8 0v9c0 8-6 14-14 14h-4c-5 0-8-2-11-6l-7-9a3.5 3.5 0 0 1 5-5l5 4Z" fill="#fff" stroke="#1a1209" stroke-width="2.2" stroke-linejoin="round"/><path d="M22 20v6M30 22v5M38 24v5" stroke="#1a1209" stroke-width="2" stroke-linecap="round" fill="none"/></svg>';
+function tourStart(){if(tour)return;try{localStorage.setItem(TOURK,'1')}catch(e){}
+  try{gmOpen(false);closeMenu();ctxClose()}catch(e){}
+  if($('#play').classList.contains('on'))leavePlay();else if(!$('#list').classList.contains('on')){if(ed)ed.dirty=false;refresh();show('list')}
+  const o=E('div');o.id='tour';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-live','polite');
+  o.innerHTML='<div class="tsp none"></div><div class="thw" hidden><div class="tmv"><i class="trp"></i><i class="tdt a"></i><i class="tdt b"></i>'+HAND+'</div></div><div class="ttc"><small></small><h4></h4><p></p><div class="tbr"><button type="button" class="tsk"></button><button type="button" class="tbk"></button><button type="button" class="tnx"></button></div></div>';
+  document.body.append(o);document.body.classList.add('touring');
+  tour={o,i:-1,ed:0};
+  o.querySelector('.tsk').onclick=()=>tourEnd();o.querySelector('.tnx').onclick=()=>tGo(tour.i+1);o.querySelector('.tbk').onclick=()=>tGo(tour.i-1);
+  o.addEventListener('keydown',e=>{if(e.key==='Escape')tourEnd();else if(e.key==='ArrowRight')tGo(tour.i+1);else if(e.key==='ArrowLeft')tGo(tour.i-1)});
+  addEventListener('resize',tPlace);
+  requestAnimationFrame(()=>o.classList.add('on'));tGo(0)}
+function tGo(i){if(!tour)return;if(i>=TOUR.length)return tourEnd();if(i<0)return;
+  /* going back across a screen change re-opens that screen */
+  if(i<tour.i){if(i<3&&!$('#list').classList.contains('on')){if($('#play').classList.contains('on'))leavePlay();if(ed)ed.dirty=false;tour.ed=0;tHome()}
+    else if(i>=3&&i<7&&!$('#edit').classList.contains('on')){if($('#play').classList.contains('on'))leavePlay();tour.ed=0}}
+  tour.i=i;const s=TOUR[i];let wait=30;
+  /* every step after a screen change makes sure its screen is there (also when you go back) */
+  const scr=i<3?TOUR[0].go:i<7?TOUR[3].go:i<15?TOUR[7].go:s.go;
+  try{const was=document.querySelector('.v.on');scr&&scr();s.go&&s.go!==scr&&s.go();if(document.querySelector('.v.on')!==was)wait=420}catch(e){}
+  const c=tour.o.querySelector('.ttc');c.style.opacity='0';
+  setTimeout(()=>{if(!tour)return;tPlace();c.style.opacity='1';tour.o.querySelector('.tnx').focus({preventScroll:true})},wait)}
+function tPlace(){if(!tour||tour.i<0)return;const s=TOUR[tour.i],o=tour.o,n=TOUR.length,vw=innerWidth,vh=innerHeight;
+  const el=s.t?document.querySelector(s.t):null;let r=el&&el.getBoundingClientRect();
+  if(r&&(!r.width||!r.height||r.bottom<0||r.top>vh))r=null;
+  if(r){const l=Math.max(4,r.left),t=Math.max(4,r.top);r={left:l,top:t,right:Math.min(vw-4,r.right),bottom:Math.min(vh-4,r.bottom)};r.width=r.right-r.left;r.height=r.bottom-r.top}
+  const sp=o.querySelector('.tsp'),pad=6;
+  if(r){sp.classList.remove('none');Object.assign(sp.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+2*pad+'px',height:r.height+2*pad+'px'})}
+  else{sp.classList.add('none');Object.assign(sp.style,{left:vw/2+'px',top:vh/2+'px',width:'0px',height:'0px'})}
+  const hw=o.querySelector('.thw');let pt=null;
+  if(r&&s.g){pt=s.p?s.p(r):[r.left+r.width/2,r.top+r.height/2];hw.className='thw g-'+s.g;hw.style.left=pt[0]+'px';hw.style.top=pt[1]+'px';hw.hidden=false}else hw.hidden=true;
+  const c=o.querySelector('.ttc');
+  c.querySelector('small').textContent=(tour.i+1)+' / '+n;c.querySelector('h4').textContent=L(s.h[0],s.h[1]);c.querySelector('p').textContent=L(s.d[0],s.d[1]);
+  const sk=c.querySelector('.tsk'),bk=c.querySelector('.tbk'),nx=c.querySelector('.tnx');
+  sk.textContent=L('Skip','Lewati');sk.hidden=tour.i===n-1;bk.textContent=L('Back','Kembali');bk.hidden=tour.i===0;
+  nx.textContent=tour.i===0?L('Start','Mulai'):tour.i===n-1?L('Done','Selesai'):L('Next','Lanjut');
+  const cw=c.offsetWidth,ch=c.offsetHeight,m=12;let top,left;
+  if(!r){top=(vh-ch)/2;left=(vw-cw)/2}
+  else{const below=Math.max(r.bottom+pad,pt?pt[1]+58:0)+m,above=r.top-pad-m-ch;
+    top=below+ch<=vh-m?below:above>=m?above:vh-ch-Math.max(m,24);
+    left=Math.min(Math.max(m,r.left+r.width/2-cw/2),vw-cw-m)}
+  c.style.top=Math.round(top)+'px';c.style.left=Math.round(left)+'px'}
+function tourEnd(){if(!tour)return;const o=tour.o;tour=null;removeEventListener('resize',tPlace);document.body.classList.remove('touring');
+  o.classList.remove('on');setTimeout(()=>o.remove(),260);
+  if($('#play').classList.contains('on')&&isTemp(cur))leavePlay();
+  else if($('#edit').classList.contains('on')){if(ed)ed.dirty=false;refresh();show('list')}
+  fabOpen(false)}
+/* first run: only for a new user (empty or sample library), once, when Home is free */
+function tourAuto(){if(tour)return;let seen='1';try{seen=localStorage.getItem(TOURK)}catch(e){}if(seen)return;
+  if(!$('#list').classList.contains('on')||document.querySelector('#authbox.on,#tut.on,#ctx.on,#addbox.on,#slbox.on,#imbox.on,#csheet.on'))return;
+  if(AUTH_ON&&!user)return;
+  const fresh=!songs.length||(songs.length===1&&JSON.stringify(songs[0])===SAMPLE_J);
+  if(!fresh){try{localStorage.setItem(TOURK,'0')}catch(e){}return}
+  tourStart()}
 /* Account settings (avatar menu) */
 function acctOpen(){if(!user)return;closeMenu();show('acct');acctRender()}
 function acctRender(){const b=$('#acctbody');b.textContent='';const u=user||{};
@@ -2691,6 +2812,7 @@ async function initAuth(){
   ['pointerup','touchend','click','keydown'].forEach(ev=>addEventListener(ev,touchArm,{capture:true,passive:true}));
   const isOn=id=>$(id).classList.contains('on');
   function closeTop(){
+    if(tourOn()){tourEnd();return true}
     if($('#tut')&&isOn('#tut')){tutClose();return true}
     if(isOn('#ctx')){ctxClose();return true}
     if(isOn('#notebox')){closeNote();return true}

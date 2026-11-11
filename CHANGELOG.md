@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v148 – Interactive tour
+- New users get a one-minute **interactive tour** the first time Home opens (empty or sample library only; existing users are not interrupted).
+- A hand shows the gesture (tap, double-tap, swipe, hold, pinch), a spotlight marks the place and a card explains it, with Back / Next / Skip.
+- Flow: + and the globe on Home → editor with a demo song → Auto Section → Save → lyrics screen (play/pause, speed swipe,
+  fast-forward, pinch zoom, section jump, speed slider, double-tap title, queue) → back to Home.
+- The demo song is fictional and never saved: library, Recent, last lyric and queue stay untouched.
+- **⚙ → Help → Interactive tour** replays it any time; the slides are now called **Quick guide**. Android Back closes the tour.
+
 ## v147 – Short in-app guide
 - **Help → Tutorial** is now a short guide: cover, 8 steps, closing page (10 slides instead of 94):
   Home, adding songs (incl. the Apple Notes Shortcut import), Editor & Auto Section, lyrics screen & gestures,

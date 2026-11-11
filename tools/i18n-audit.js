@@ -5,6 +5,7 @@
 const {chromium}=require('playwright'),path=require('path');
 (async()=>{const b=await chromium.launch(),ctx=await b.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true}),p=await ctx.newPage(),err=[];
 p.on('pageerror',e=>err.push(e.message));
+await p.addInitScript(()=>localStorage.setItem('evo.tour','1'));
 await p.addInitScript(()=>localStorage.setItem('evo.prefs',JSON.stringify({theme:'light',lang:'id',awake:1,dim:1,font:32})));
 await p.goto('file://'+path.resolve(__dirname,'../www/index.html'));await p.waitForTimeout(900);
 await p.evaluate(()=>{user={id:'u',name:'Rani Putri',email:'rani@example.com',username:'rani'};renderAuth()});
@@ -17,8 +18,9 @@ await p.evaluate(()=>show('list'));
 await step('avatar menu',()=>p.click('#avb'));await back();
 await step('gear menu',()=>p.click('#gear'));
 await step('preferences',()=>p.click('#gmenu .mi:nth-child(1)'));await p.click('#prX');
+await step('tour',async()=>{await p.evaluate(()=>tourStart());for(let k=0;k<16;k++){await p.waitForTimeout(450);await scan('tour '+k);await p.click('#tour .tnx')}});
 for(const [i,n] of [[2,'help'],]){await p.click('#gear');await p.click('#gmenu .mi:nth-child(2)');await scan('help');
-  for(let r=2;r<=3;r++){await step('help doc '+r,()=>p.click('#helpbody .srow:nth-child('+r+')'));await p.click('#dcX')}await p.click('#hpX')}
+  for(let r=3;r<=4;r++){await step('help doc '+r,()=>p.click('#helpbody .srow:nth-child('+r+')'));await p.click('#dcX')}await p.click('#hpX')}
 await step('account settings',async()=>{await p.click('#avb');await p.click('#amenu .mi:has-text("Pengaturan Akun")')});
 await step('subscription',()=>p.click('#acctbody button.srow >> nth=0'));await p.click('#dcX');
 await step('backup',()=>p.click('#acctbody button.srow >> nth=1'));await p.click('#dcX');await p.click('#acX');

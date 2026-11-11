@@ -213,4 +213,40 @@ test('Globe: the version list and the return question are translated in Indonesi
   const a=await sheet(p);eq([a[0],a[a.length-2],a[a.length-1]],['Pilih versi','Batal','Lirik dari LRCLIB'],'list');
   await p.evaluate(()=>{ctxClose();wlBack('x')});await p.waitForTimeout(200);
   eq(await sheet(p),['Sudah copy liriknya?','Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Tampilkan lirik','Kembali'],'question');await t.close()});
+
+/* ---------- v141: versions button in the speed corner ---------- */
+const vis2=p=>p.evaluate(()=>({vsb:getComputedStyle($('#vsb')).display,spb:getComputedStyle($('#spb')).display}));
+test('Versions: after picking from the LRCLIB list, the speed corner shows a versions button instead of Speed',async()=>{
+  const t=await open(),p=t.page;await stub(p,r=>json(r,STUB));
+  await p.fill('#q','kangen');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(300);
+  await p.click('#csheet .wlv >> nth=1');await p.waitForTimeout(400);
+  eq(await vis2(p),{vsb:'flex',spb:'none'},'versions button replaces speed');
+  eq(await p.evaluate(()=>$('#vsbv').textContent),'3','shows how many versions');
+  await p.click('#vsb');await p.waitForTimeout(250);
+  const r=await p.evaluate(()=>({open:$('#vsp').classList.contains('open'),items:[...document.querySelectorAll('#vsl .wlv')].map(b=>b.querySelector('b').textContent+(b.classList.contains('cur')?' *':''))}));
+  eq(r,{open:true,items:['Kangen','Kangen *','Kangen (Live)']},'same list, current marked');
+  await p.evaluate(()=>{$('#sp').value=11;syncSpeed();setFont(cur.font+6)});const f0=await p.evaluate(()=>cur.font);
+  await p.click('#vsl .wlv >> nth=2');await p.waitForTimeout(400);
+  eq(await p.evaluate(()=>[isTemp(cur),cur.title,cur.artist,cur.lyrics,cur.speed,$('#vsp').classList.contains('open'),$('#play').classList.contains('lrc'),songs.length]),
+    [true,'Kangen (Live)','Dewa 19','Kangen versi live\nTepuk tangan',11,false,true,5],'switched, speed kept, still temporary, nothing saved');
+  eq(await p.evaluate(()=>cur.font),f0,'zoom kept');
+  /* after Save the song is a library song: Speed comes back */
+  await p.evaluate(()=>saveTemp());await p.waitForTimeout(150);
+  eq(await vis2(p),{vsb:'none',spb:'flex'},'speed back after saving');eq(t.errors,[],'no page errors');await t.close()});
+test('Versions: not shown for library songs, a single LRCLIB match, or lyrics pasted from Google',async()=>{
+  const t=await open(),p=t.page;await p.evaluate(()=>openSong(songs[0]));await p.waitForTimeout(300);
+  eq(await vis2(p),{vsb:'none',spb:'flex'},'library song');
+  await p.evaluate(()=>openTemp({title:'x',lyrics:'Satu\nDua',src:'lrclib',vers:[{id:1,title:'x',lyrics:'Satu\nDua'}],srcId:1}));await p.waitForTimeout(300);
+  eq(await vis2(p),{vsb:'none',spb:'flex'},'one version only');
+  await p.evaluate(()=>openTemp({title:'y',lyrics:'Satu\nDua',src:'google'}));await p.waitForTimeout(300);
+  eq(await vis2(p),{vsb:'none',spb:'flex'},'from Google');
+  await p.evaluate(()=>vsOpen(true));eq(await p.evaluate(()=>$('#vsp').classList.contains('open')),false,'panel cannot open without versions');await t.close()});
+test('Versions: a tap outside or Back closes the panel; going Home clears it; Indonesian labels',async()=>{
+  const t=await open({lang:'id'}),p=t.page;
+  await p.evaluate(()=>{const v=[{id:1,title:'A',artist:'X',lyrics:'Satu\nDua',dur:200},{id:2,title:'A',artist:'Y',lyrics:'Tiga\nEmpat',dur:210}];wlOpen(v[0],v)});await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>[$('#vsb small').textContent,$('#vsb').getAttribute('aria-label')]),['versi','Versi'],'ID');
+  await p.click('#vsb');await p.waitForTimeout(200);await p.mouse.click(150,400);await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>[$('#vsp').classList.contains('open'),playing]),[false,false],'outside tap closes without starting playback');
+  await p.click('#vsb');await p.waitForTimeout(200);await p.evaluate(()=>leavePlay());
+  eq(await p.evaluate(()=>[$('#vsp').classList.contains('open'),$('#play').classList.contains('lrc')]),[false,false],'cleared on Home');await t.close()});
 };

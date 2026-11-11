@@ -244,7 +244,7 @@ test('Versions: shown for every LRCLIB pick (one version too); not for library s
 test('Versions: a tap outside or Back closes the panel; going Home clears it; Indonesian labels',async()=>{
   const t=await open({lang:'id'}),p=t.page;
   await p.evaluate(()=>{const v=[{id:1,title:'A',artist:'X',lyrics:'Satu\nDua',dur:200},{id:2,title:'A',artist:'Y',lyrics:'Tiga\nEmpat',dur:210}];wlOpen(v[0],v)});await p.waitForTimeout(300);
-  eq(await p.evaluate(()=>[$('#vsb small').textContent,$('#vsb').getAttribute('aria-label')]),['versi','Versi'],'ID');
+  eq(await p.evaluate(()=>[$('#vsb small').textContent,$('#vsb').getAttribute('aria-label'),$('#vsg').textContent]),['versi','Versi','Lebih banyak'],'ID');
   await p.click('#vsb');await p.waitForTimeout(200);await p.mouse.click(150,400);await p.waitForTimeout(200);
   eq(await p.evaluate(()=>[$('#vsp').classList.contains('open'),playing]),[false,false],'outside tap closes without starting playback');
   await p.click('#vsb');await p.waitForTimeout(200);await p.evaluate(()=>leavePlay());
@@ -256,6 +256,7 @@ test('Versions: More version opens Google for the title; coming back asks Show l
   await p.evaluate(()=>{window.__q=[];webSearch=q=>window.__q.push(q);const v=[{id:1,title:'Lagu Uji',artist:'X',lyrics:'Satu\nDua'}];wlOpen(v[0],v)});await p.waitForTimeout(300);
   await p.click('#vsb');await p.waitForTimeout(200);
   eq(await p.evaluate(()=>$('#vsg').textContent),'More version','button label');
+  eq(await p.evaluate(()=>$('#vsg').parentElement.className),'vsh','in the panel header (top right)');
   await p.click('#vsg');await p.waitForTimeout(100);
   eq(await p.evaluate(()=>[window.__q,$('#vsp').classList.contains('open')]),[['Lagu Uji'],false],'Google searched for the title, panel closed');
   await vis(p,true);await vis(p,false);await p.waitForTimeout(500);

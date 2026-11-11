@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## v142 – More version, and Reload app
-- **More version**: the versions panel (bottom-right button on LRCLIB lyrics) has a new button at its foot. It opens Google for the song title; coming back asks **Show lyrics / Back** as usual – Back leaves the LRCLIB lyrics on screen.
+- **More version** (Indonesian: **Lebih banyak**): the versions panel (bottom-right button on LRCLIB lyrics) has a new button at its top right, next to the close arrow. It opens Google for the song title; coming back asks **Show lyrics / Back** as usual – Back leaves the LRCLIB lyrics on screen.
 - The versions button now shows for **every** LRCLIB pick, also when LRCLIB found only one version, so More version is always one tap away. Library songs and lyrics pasted from Google keep the Speed button.
 - **Reload app** in the ⚙︎ menu on Home (under Preferences and Help): loads a new EvoLyric version without closing and reopening the app. Unsaved cloud changes are sent first; offline, the saved version simply opens again.
 - Tests: 2 new, 93 in total.

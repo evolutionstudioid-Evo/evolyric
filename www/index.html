@@ -600,6 +600,10 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 #vsl .wlv.cur b{color:var(--acct)}
 :root[data-theme="light"] #vsb{background:rgba(255,255,255,.86)}
 @media(prefers-reduced-motion:reduce){#vsp,#vsb{transition:none!important}}
+/* v142: More version (Google) at the foot of the versions panel */
+#vsg{display:flex;align-items:center;gap:8px;width:100%;margin-top:4px;padding:11px 10px;border-radius:10px;border-top:1px solid var(--ln);color:var(--acct);font-weight:700;font-size:14.5px;text-align:left}
+#vsg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6}
+#vsg:active{background:var(--ln)}
 </style>
 </head>
 <body>
@@ -642,7 +646,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
   <div id="spc">
     <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" step="any" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
     <button id="spb" type="button" aria-label="Speed" aria-expanded="false" aria-controls="spp"><b id="spbv"></b><small>speed</small></button>
-    <div id="vsp" role="group" aria-label="Versions"><div class="vsh"><span>Versions</span><button id="vsx" type="button" aria-label="Close versions"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="vsl"></div><p class="wlsrc">Lyrics from LRCLIB</p></div>
+    <div id="vsp" role="group" aria-label="Versions"><div class="vsh"><span>Versions</span><button id="vsx" type="button" aria-label="Close versions"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="vsl"></div><button id="vsg" type="button" data-nt><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>More version</button><p class="wlsrc">Lyrics from LRCLIB</p></div>
     <button id="vsb" type="button" aria-label="Versions" aria-expanded="false" aria-controls="vsp"><b id="vsbv"></b><small>versions</small></button>
   </div>
   <div id="scrim"></div><div id="drawer"><div class="hd"><button class="pill" id="dBack">Home</button><span style="flex:1"></span><button class="ic" id="dView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="dvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button class="ic" id="dX" aria-label="Close">✕</button></div>
@@ -967,7 +971,7 @@ function vsRender(){const l=$('#vsl');l.textContent='';const t=cur;if(!isTemp(t)
   t.vers.forEach(it=>{const b=E('button','wlv'+(it.id===t.srcId?' cur':''));b.type='button';if(it.id===t.srcId)b.setAttribute('aria-current','true');
     b.append(E('b','',it.title));const sm=E('small','',[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · '));if(it.variant)sm.append(E('i','',it.variant));b.append(sm);
     b.onclick=()=>{if(it.id===t.srcId)return vsOpen(false);vsOpen(false);wlOpen(it,t.vers,{speed:t.speed,font:t.font})};l.append(b)})}
-function vsOpen(on){const p=$('#vsp'),b=$('#vsb');if(!p)return;if(on==null)on=!p.classList.contains('open');if(on&&!(isTemp(cur)&&cur.vers&&cur.vers.length>1))on=false;
+function vsOpen(on){const p=$('#vsp'),b=$('#vsb');if(!p)return;if(on==null)on=!p.classList.contains('open');if(on&&!(isTemp(cur)&&cur.src==='lrclib'&&cur.vers&&cur.vers.length))on=false;
   if(on)vsRender();p.classList.toggle('open',on);b.classList.toggle('hid',on);b.setAttribute('aria-expanded',on?'true':'false')}
 function wlPick(items){const c=csh();c.classList.add('wl');c.append(E('h3','','Choose a version'));
   items.forEach(it=>{const b=E('button','wlv');b.type='button';b.append(E('b','',it.title));
@@ -1050,7 +1054,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='141';
+const APP_VER='142';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1072,7 +1076,7 @@ function setAuraPref(on){PREF.aura=on?1:0;prefSave();$('#play').classList.toggle
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Versions':'Versi','versions':'versi','Close versions':'Tutup versi','Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCLIB','Copied the lyrics?':'Sudah copy liriknya?','Copy the lyrics on the Google page, then tap Show lyrics.':'Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Show lyrics':'Tampilkan lirik','Not found on LRCLIB':'Tidak ditemukan di LRCLIB','Search Google':'Cari di Google','Paste the lyrics':'Tempel liriknya','Paste the lyrics here':'Tempel lirik di sini','No lyrics copied yet. Copy the lyrics first, then try again.':'Belum ada lirik yang di-copy. Copy liriknya dulu, lalu coba lagi.','You are offline. Lyrics search needs an internet connection.':'Kamu sedang offline. Pencarian lirik butuh koneksi internet.','Save to Library':'Simpan ke Library','Edit in Editor':'Edit di Editor','A song with this title is already in your Library. Save another copy?':'Lagu dengan judul ini sudah ada di Library-mu. Simpan salinan lain?','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Loading the latest version…':'Memuat versi terbaru…','Versions':'Versi','versions':'versi','Close versions':'Tutup versi','Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCLIB','Copied the lyrics?':'Sudah copy liriknya?','Copy the lyrics on the Google page, then tap Show lyrics.':'Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Show lyrics':'Tampilkan lirik','Not found on LRCLIB':'Tidak ditemukan di LRCLIB','Search Google':'Cari di Google','Paste the lyrics':'Tempel liriknya','Paste the lyrics here':'Tempel lirik di sini','No lyrics copied yet. Copy the lyrics first, then try again.':'Belum ada lirik yang di-copy. Copy liriknya dulu, lalu coba lagi.','You are offline. Lyrics search needs an internet connection.':'Kamu sedang offline. Pencarian lirik butuh koneksi internet.','Save to Library':'Simpan ke Library','Edit in Editor':'Edit di Editor','A song with this title is already in your Library. Save another copy?':'Lagu dengan judul ini sudah ada di Library-mu. Simpan salinan lain?','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -1160,7 +1164,17 @@ function gmOpen(on){gm.hidden=!on;$('#gear').setAttribute('aria-expanded',on?'tr
 function buildGm(){gm.textContent='';
   const it=(ic,l,f)=>{const b=E('button','mi');b.type='button';b.setAttribute('role','menuitem');b.innerHTML=ic;b.append(l);b.onclick=()=>{gmOpen(false);f()};gm.append(b)};
   it('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>',L('Preferences','Preferensi'),prefOpen);
-  it('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2 1-1.2 1.8M12 17h.01"/></svg>',L('Help','Bantuan'),helpOpen)}
+  it('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2 1-1.2 1.8M12 17h.01"/></svg>',L('Help','Bantuan'),helpOpen);
+  it('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>',L('Reload app','Muat ulang aplikasi'),appReload)}
+/* v142: Reload app – picks up a new version without closing the app. Unsaved cloud changes are sent first, the service worker
+   checks for a new version (it installs and takes over by itself), then the page reloads; index.html is network-first, so online
+   you get the newest page, offline the saved one opens again. */
+async function appReload(){note('Loading the latest version…');
+  try{if(window.Cloud&&Cloud.flush)await Promise.race([Cloud.flush(3000),new Promise(z=>setTimeout(z,3500))])}catch(e){}
+  try{const r=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();
+    if(r){await Promise.race([r.update(),new Promise(z=>setTimeout(z,4000))]);const w=r.installing||r.waiting;
+      if(w)await Promise.race([new Promise(z=>{const f=()=>{if(w.state==='activated'||w.state==='redundant')z()};w.addEventListener('statechange',f);f()}),new Promise(z=>setTimeout(z,6000))])}}catch(e){}
+  location.reload()}
 $('#gear').onclick=e=>{e.stopPropagation();gmOpen(gm.hidden)};
 document.addEventListener('click',e=>{if(!gm.hidden&&!e.target.closest('#gmenu'))gmOpen(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gm.hidden){gmOpen(false);$('#gear').focus()}});
@@ -1348,7 +1362,7 @@ function saveTemp(force){const t=cur;if(!isTemp(t))return null;
 function editTemp(){const t=cur;if(!isTemp(t))return;setPlay(false);openEdit(null,t.lyrics,t.title,t,[]);ed.tmp=t;ed.dirty=false}
 function openSong(s,keep){
   if(!isTemp(s)){recAdd(s&&s.id);try{localStorage.setItem('evo.lastsong',s.id)}catch(e){}}
-  $('#play').classList.toggle('tmp',isTemp(s));$('#play').classList.toggle('lrc',isTemp(s)&&!!s.vers&&s.vers.length>1);if(isTemp(s)&&s.vers)$('#vsbv').textContent=s.vers.length;vsOpen(false);
+  $('#play').classList.toggle('tmp',isTemp(s));$('#play').classList.toggle('lrc',isTemp(s)&&s.src==='lrclib'&&!!s.vers&&s.vers.length>0);if(isTemp(s)&&s.vers)$('#vsbv').textContent=s.vers.length;vsOpen(false);
   if(typeof songFx==='function')songFx();
   const was=playing;cur=s;menuOpen(false);$('#sp').value=s.speed;
   $('#spv').textContent=s.speed;$('#spbv').textContent=s.speed;if(typeof resetInput==='function')resetInput();show('play');render();resetTop();skip.clear();enterFs(); /* v21: straight into fullscreen performance view */
@@ -1532,6 +1546,7 @@ function spOpen(on){const p=$('#spp'),b=$('#spb');if(on==null)on=!p.classList.co
 function spBump(){clearTimeout(spT);if($('#spp').classList.contains('open'))spT=setTimeout(()=>{if(spDown)spBump();else spOpen(false)},3000)} /* idle -> back to the small corner button */
 $('#spb').onclick=()=>spOpen();$('#spx').onclick=()=>spOpen(false);
 $('#vsb').onclick=()=>vsOpen();$('#vsx').onclick=()=>vsOpen(false);
+$('#vsg').onclick=()=>{const t=cur;if(!isTemp(t))return;vsOpen(false);wlGoogle(t.title,true)}; /* v142: More version -> Google; coming back asks Show lyrics / Back as usual */
 $('#spp').addEventListener('pointerdown',spBump);$('#spp').addEventListener('click',spBump);
 $('#sp').addEventListener('pointerdown',()=>{spDown=1;$('#spp').classList.add('act')});
 ['pointerup','pointercancel'].forEach(v=>$('#sp').addEventListener(v,()=>{spDown=0;$('#spp').classList.remove('act');spBump()}));

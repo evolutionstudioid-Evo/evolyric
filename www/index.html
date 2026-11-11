@@ -680,6 +680,7 @@ body.touring #tsv{display:none!important}
 #dItems .ewb{width:calc(100% - 8px);margin:10px 4px}
 .ewb.busy svg{animation:wlspin 1s linear infinite}
 .sheet button.wsr{display:flex;align-items:center;gap:10px}.sheet button.wsr svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--acct);stroke-width:1.7}
+.doc .lgw .rel{font-size:14px;font-weight:600;color:var(--acct);letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -1187,7 +1188,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='155';
+const APP_VER='156',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1457,7 +1458,7 @@ function dA(txt,href){const a=E('a','',txt);a.href=href;a.target='_blank';a.rel=
 function docAbout(b){b.className='sbody doc roll';b.append(E('div','spc'));
   const w=E('div','lgw');w.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg2)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg>';
   let vt=0;const vEl=E('div','big','EvoLyric');vEl.onclick=()=>{if(++vt<5)return;vt=0;let lg=[];try{lg=JSON.parse(localStorage.getItem('evo.bklog')||'[]')}catch(e){}const c=csh();c.append(E('h3','','Back log'));const pre=E('pre','',lg.join('\n')||'(empty)');pre.style.cssText='margin:0 6px 10px;max-width:320px;max-height:46vh;overflow:auto;font-size:11px;text-align:left;white-space:pre-wrap';pre.setAttribute('data-nt','');const x=E('button','','Close');x.onclick=ctxClose;const cl=E('button','','Clear');cl.onclick=()=>{try{localStorage.removeItem('evo.bklog')}catch(e){}ctxClose()};c.append(pre,cl,x);$('#ctx').classList.add('on')};
-  const t=E('div');t.append(vEl);w.append(t);b.append(w);
+  const t=E('div');const rel=E('div','rel',L('Version','Versi')+' '+APP_REL);rel.setAttribute('data-nt','');t.append(vEl,rel);w.append(t);b.append(w);
   /* v155: About is one short paragraph, then credits and the closing line */
   b.append(dP(L('EvoLyric is built by Evolution Digital Studio for vocalists. Lyrics are easy to read on stage, new lyrics can be found in seconds, and editing and customising are quick and simple, so every show runs smoothly and engagingly.','EvoLyric dibuat oleh Evolution Digital Studio untuk para vokalis. Lirik jadi mudah dibaca di atas panggung, lirik baru bisa ditemukan dalam hitungan detik, dan pengeditan dan kustomisasi menjadi cepat dan sederhana, sehingga setiap penampilan berjalan lancar dan menarik.')));
   const S=t=>{const d=dP(t);d.style.fontWeight='700';b.append(d)};

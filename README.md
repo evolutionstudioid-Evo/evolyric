@@ -4,7 +4,7 @@
 
 EvoLyric berupa *Progressive Web App* (PWA): berjalan di peramban, dapat dipasang ke layar utama iPhone, iPad, dan Android, serta tetap berfungsi tanpa internet setelah dibuka sekali saat online.
 
-Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam tahap pengembangan.
+Aplikasi dikembangkan oleh **Evolution Digital Studio**. Versi saat ini: **1.0** (build v156).
 
 - Aplikasi: <https://evolyric.evolution-studio-id.workers.dev/>
 - Panduan pengguna: di dalam aplikasi, **⚙ → Bantuan → Tur interaktif** (tur dengan animasi tangan) dan **Panduan singkat** (10 slide), Indonesia dan Inggris

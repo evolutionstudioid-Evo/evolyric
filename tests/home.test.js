@@ -99,4 +99,8 @@ test('Credits: no tempo credit while tempo is not in use (account menu and Help 
   await p.evaluate(()=>docOpen('help','Credit',docCredit));await p.waitForTimeout(200);
   eq(await p.evaluate(()=>[/GetSongBPM|Tempo/.test($('#docbody').textContent),/LRCLIB/.test($('#docbody').textContent)]),[false,true],'credit page');
   await t.close()});
+test('About shows the release version under the logo',async()=>{
+  for(const [lang,want] of [['en','Version 1.0'],['id','Versi 1.0']]){const t=await open({lang}),p=t.page;
+    await p.evaluate(()=>docOpen('help','About',docAbout));await p.waitForTimeout(200);
+    eq(await p.$eval('#docbody .lgw .rel',e=>e.textContent),want,lang);await t.close()}});
 };

@@ -79,4 +79,18 @@ test('Home: search forgives typos (1 letter in short words, 2 in long ones); exa
   await p.evaluate(()=>{songs.push({id:'s9',title:'Langit Malan',artist:'Band Lain',lyrics:'x',speed:5,font:30,cr:1,md:1});refresh()});
   eq(await rows('malam'),['Langit Malam','Langit Malan'],'exact match first, typo match after');
   eq(t.errors,[],'no page errors');await t.close()});
+test('Menus: opening the account menu closes the gear menu; the name card is info only and Profile Settings opens the profile',async()=>{
+  const t=await open(),p=t.page;await p.evaluate(()=>{user={id:'u',name:'Rani Putri',email:'rani@example.com',username:'rani'};renderAuth()});
+  await p.click('#gear');eq(await p.evaluate(()=>$('#gmenu').hidden),false,'gear menu open');
+  await p.click('#avb');await p.waitForTimeout(150);
+  eq(await p.evaluate(()=>[$('#gmenu').hidden,$('#amenu').hidden]),[true,false],'only the account menu is open');
+  const items=await p.evaluate(()=>[...document.querySelectorAll('#amenu .mi')].map(b=>b.textContent));
+  assert(items.includes('Profile Settings')&&!items.includes('My Library'),'Profile Settings replaces My Library: '+items);
+  eq(await p.evaluate(()=>{const h=$('#amenu .mh');return[h.tagName,!!h.querySelector('.chev')]}),['DIV',false],'name card is not a button');
+  await p.click('#amenu .mi:has-text("Profile Settings")');await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>[$('#profile').classList.contains('on'),$('#amenu').hidden]),[true,true],'profile open, menu closed');
+  /* the other way round still works */
+  await p.evaluate(()=>show('list'));await p.click('#avb');await p.click('#gear');await p.waitForTimeout(150);
+  eq(await p.evaluate(()=>[$('#gmenu').hidden,$('#amenu').hidden]),[false,true],'gear closes the account menu');
+  eq(t.errors,[],'no page errors');await t.close()});
 };

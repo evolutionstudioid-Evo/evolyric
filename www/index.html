@@ -569,6 +569,8 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 :root[data-theme="light"] #tsv{background:rgba(255,255,255,.86);border-color:rgba(200,110,30,.5)}
 /* ===== v138: Web Lyric – version list, return-from-Google question, busy globe ===== */
 #csheet.wl{width:min(92vw,380px);max-height:80vh;overflow:auto}
+#csheet.wl .wlh{display:flex;align-items:center;gap:8px}#csheet.wl .wlh h3{flex:1;min-width:0;margin:0}
+#csheet.wl .wlg{flex:none;display:flex;align-items:center;gap:6px;height:30px;padding:0 11px 0 9px;border-radius:15px;border:1px solid rgba(240,160,75,.5);color:var(--acct);font-weight:700;font-size:13px;white-space:nowrap}#csheet.wl .wlg svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7}#csheet.wl .wlg:active{background:var(--ln)}
 #csheet.wl h3{white-space:normal;color:var(--fg);font-weight:700;font-size:16px}
 .wlv b{display:block;font-size:15.5px;font-weight:700;line-height:1.25}
 .wlv small{display:block;margin-top:3px;color:var(--mut);font-size:12.5px;line-height:1.3}
@@ -1065,12 +1067,14 @@ function vsRender(){const l=$('#vsl');l.textContent='';const t=cur;if(!isTemp(t)
     b.onclick=()=>{if(it.id===t.srcId)return vsOpen(false);vsOpen(false);wlOpen(it,t.vers,{speed:t.speed,font:t.font})};l.append(b)})}
 function vsOpen(on){const p=$('#vsp'),b=$('#vsb');if(!p)return;if(on==null)on=!p.classList.contains('open');if(on&&!(isTemp(cur)&&cur.src==='lrclib'&&cur.vers&&cur.vers.length))on=false;
   if(on)vsRender();p.classList.toggle('open',on);b.classList.toggle('hid',on);b.setAttribute('aria-expanded',on?'true':'false')}
-function wlPick(items){const c=csh();c.classList.add('wl');c.append(E('h3','','Choose a version'));
+function wlPick(items,q){const c=csh();c.classList.add('wl');const hd=E('div','wlh');hd.append(E('h3','','Choose a version'));
+  if(q){const g=E('button','wlg');g.type='button';g.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>';g.append('More version');g.onclick=()=>{ctxClose();wlGoogle(q,true)};hd.append(g)} /* v149: same Google button as the versions panel */
+  c.append(hd);
   items.forEach(it=>{const b=E('button','wlv');b.type='button';b.append(E('b','',it.title));
     const m=[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · ');const sm=E('small','',m);if(it.variant)sm.append(E('i','',it.variant));b.append(sm);b.onclick=()=>wlOpen(it,items);c.append(b)});
   const x=E('button','','Cancel');x.type='button';x.onclick=ctxClose;c.append(x,E('p','wlsrc','Lyrics from LRCLIB'));$('#ctx').classList.add('on')}
 function wlUse(q,r,inTap){
-  if(r.state==='ok')return r.items.length===1?wlOpen(r.items[0],r.items):wlPick(r.items);
+  if(r.state==='ok')return r.items.length===1?wlOpen(r.items[0],r.items):wlPick(r.items,q);
   if(r.state==='offline')return note('You are offline. Lyrics search needs an internet connection.',true);
   if(r.state==='empty')return;
   wlGoogle(q,inTap)} /* none / error -> Google */
@@ -1146,7 +1150,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='148';
+const APP_VER='149';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1194,7 +1198,7 @@ const ID={'Replace the existing section labels? Undo brings them back.':'Ganti l
 'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
 'iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.':'iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.',
 'Keep screen awake':'Layar tetap menyala','Keep tapping to the beat…':'Terus ketuk mengikuti ketukan…','Key':'Nada','Keyboard':'Keyboard','Label name':'Nama label','Language':'Bahasa','Left':'Kiri','Library, categories and queue':'Library, kategori, dan antrean','Light':'Terang','Line':'Garis','Lyrics':'Lirik','Looking up tempo… (up to 20 s)':'Mencari tempo… (maks. 20 detik)',
-'Made by Evolution Studio ID.':'Dibuat oleh Evolution Studio ID.','Make New Version':'Buat Versi Baru','Male 1':'Pria 1','Male 2':'Pria 2','Maximum 20 characters':'Maksimal 20 karakter','Maximum 30 characters':'Maksimal 30 karakter','Maximum 8 images per song':'Maksimal 8 gambar per lagu','Menu':'Menu','Mid':'Tengah','Mono':'Mono','Move':'Geser','Move notes':'Pindahkan catatan','My Library':'Library Saya',
+'Made by Evolution Studio ID.':'Dibuat oleh Evolution Studio ID.','Make New Version':'Buat Versi Baru','Profile Settings':'Pengaturan Profil','Male 1':'Pria 1','Male 2':'Pria 2','Maximum 20 characters':'Maksimal 20 karakter','Maximum 30 characters':'Maksimal 30 karakter','Maximum 8 images per song':'Maksimal 8 gambar per lagu','Menu':'Menu','Mid':'Tengah','Mono':'Mono','Move':'Geser','Move notes':'Pindahkan catatan','My Library':'Library Saya',
 'New category':'Kategori baru','New note':'Catatan baru','New song':'Lagu baru','Newest added':'Terbaru ditambahkan','Next song':'Lagu berikutnya','No categories yet. Create one below.':'Belum ada kategori. Buat di bawah.','No categories yet. Create one to organize your songs.':'Belum ada kategori. Buat satu untuk mengatur lagumu.','No friends yet. Search a username above to send a request.':'Belum ada teman. Cari username di atas untuk mengirim permintaan.','No matching categories.':'Tidak ada kategori yang cocok.','No one found with that username. Check the spelling.':'Tidak ada yang memakai username itu. Periksa ejaannya.','No songs.':'Tidak ada lagu.','No two dots in a row':'Tidak boleh dua titik berurutan',
 'Not now, keep using the demo':'Nanti saja, tetap pakai demo','Note text':'Teks catatan','Notes and annotations':'Catatan dan anotasi','Notes and drawing':'Catatan dan gambar','Oldest added':'Terlama ditambahkan','Only the category is deleted. The songs stay in All Songs and in their other categories.':'Hanya kategorinya yang dihapus. Lagu tetap ada di Semua Lagu dan kategori lainnya.','Open':'Buka','Open Friends':'Buka Teman','Open profile':'Buka profil','Open recent':'Buka terbaru','Open the pen button in the editor to draw, add shapes, text notes and images over the lyrics.':'Buka tombol pena di editor untuk menggambar, menambah bentuk, catatan teks, dan gambar di atas lirik.','Open your profile':'Buka profilmu','Or paste backup text here':'Atau tempel teks cadangan di sini',
 'Paste':'Tempel','Pen':'Pena','Pin to top':'Sematkan di atas','Pinch with two fingers: text size.':'Cubit dua jari: ukuran teks.','Pinned':'Disematkan','Pinned to top':'Disematkan di atas','Please check your username and bio.':'Periksa username dan bio-mu.','Please sign in again.':'Silakan masuk lagi.','Please try again.':'Silakan coba lagi.','Preferences':'Preferensi','Press Exit to close the app.':'Tekan Keluar untuk menutup aplikasi.','Preview':'Pratinjau','Pro':'Pro','Profile':'Profil','Profile saved':'Profil disimpan',
@@ -2548,15 +2552,15 @@ function renderAuth(){
   else{const b=E('button','avb');b.id='avb';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','Account menu: '+u.name);b.append(avatarEl(u));b.onclick=e=>{e.stopPropagation();toggleMenu()};box.append(b)}
   if(!u)closeMenu();frBadge()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
-  const h=E('button','mh'),t=E('div');h.type='button';h.onclick=profOpen;h.setAttribute('aria-label','Open your profile');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t,E('span','chev','›'));m.append(h);
+  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
   const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&(o.soon||o.lock)){b.disabled=true;b.append(E('em','',o.lock||'Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
   it('Friends',frOpen,{sub:frAlerts()?String(frAlerts()):''});
-  it('My Library',()=>{closeMenu();lib.v='all';lib.id=null;$('#q').value='';refresh();$('#items').scrollTop=0});
+  it('Profile Settings',profOpen); /* v149: replaces My Library; the name card above is no longer a button */
   it('Account Settings',acctOpen);
   m.append(E('hr'));it('Sign Out',signOut,{out:1});
   const cr=E('div','credit');cr.append('Tempo data by ');const ca=E('a','','GetSongBPM.com');ca.href='https://getsongbpm.com';ca.target='_blank';ca.rel='noopener';cr.append(ca);m.append(cr)}
 function toggleMenu(){$('#amenu').hidden?openMenu():closeMenu()}
-function openMenu(){const u=user||getHint();if(!u)return;buildMenu(u);$('#amenu').hidden=false;const b=$('#avb');b&&b.setAttribute('aria-expanded','true');const f=$('#amenu .mi:not(:disabled)');f&&f.focus({preventScroll:true})}
+function openMenu(){const u=user||getHint();if(!u)return;if(!$('#gmenu').hidden)gmOpen(false); /* v149: never two menus at once */buildMenu(u);$('#amenu').hidden=false;const b=$('#avb');b&&b.setAttribute('aria-expanded','true');const f=$('#amenu .mi:not(:disabled)');f&&f.focus({preventScroll:true})}
 function closeMenu(){$('#amenu').hidden=true;const b=$('#avb');b&&b.setAttribute('aria-expanded','false')}
 document.addEventListener('click',e=>{if(!$('#amenu').hidden&&!e.target.closest('#amenu'))closeMenu()});
 let authFrom=null;

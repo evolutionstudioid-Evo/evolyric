@@ -148,13 +148,21 @@ test('Globe: one LRCLIB match opens straight into the lyrics screen as a tempora
 test('Globe: several versions show a short list to choose from; the chosen one opens',async()=>{
   const t=await open(),p=t.page;await stub(p,r=>json(r,STUB));
   await p.fill('#q','kangen');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(300);
-  const sh=await sheet(p);eq(sh[0],'Choose a version','list title');
+  const sh=await sheet(p);eq(await p.$eval('#csheet .wlh h3',e=>e.textContent),'Choose a version','list title');
   eq(await p.evaluate(()=>[...document.querySelectorAll('#csheet .wlv')].map(b=>b.querySelector('b').textContent+' | '+b.querySelector('small').textContent)),
     ['Kangen | Dewa 19 · Album · 3:20','Kangen | Band Lain · Album · 3:20','Kangen (Live) | Dewa 19 · Live Konser · 3:20live'],'versions with artist, album, length and tag');
   assert(sh[sh.length-1]==='Lyrics from LRCLIB','source credit');
   await p.click('#csheet .wlv >> nth=1');await p.waitForTimeout(400);
   eq(await p.evaluate(()=>[isTemp(cur),cur.artist,cur.lyrics,$('#ctx').classList.contains('on')]),[true,'Band Lain','Kangen sync\nBaris dua',false],'picked version opened');
   await t.close()});
+test('Globe: the version list has More version at the top right; it opens Google with what was typed',async()=>{
+  const t=await open(),p=t.page;const pg=pages(t);await stub(p,r=>json(r,STUB));await t.ctx.route('https://www.google.com/**',r=>r.fulfill({status:200,contentType:'text/html',body:'google'}));
+  await p.fill('#q','kangen');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(300);
+  eq(await p.$eval('#csheet .wlh .wlg',e=>e.textContent),'More version','button in the list header');
+  await p.click('#csheet .wlg');await p.waitForTimeout(700);
+  eq(await p.evaluate(()=>$('#ctx').classList.contains('on')),false,'list closed');
+  eq(pg.length,1,'Google opened');assert(/kangen/i.test(decodeURIComponent(pg[0].url())),'searched for what was typed: '+pg[0].url());
+  eq(t.errors,[],'no page errors');await t.close()});
 test('Globe: no match opens Google; coming back asks once – Show lyrics turns what was copied into a temporary song',async()=>{
   const t=await open(),p=t.page;const pg=pages(t);await stub(p,r=>json(r,[]));
   await t.ctx.grantPermissions(['clipboard-read','clipboard-write']);await t.ctx.route('https://www.google.com/**',r=>r.fulfill({status:200,contentType:'text/html',body:'google'}));
@@ -210,7 +218,7 @@ test('Globe: empty search box does nothing',async()=>{
 test('Globe: the version list and the return question are translated in Indonesian',async()=>{
   const t=await open({lang:'id'}),p=t.page;await stub(p,r=>json(r,STUB));
   await p.fill('#q','kangen');await p.waitForTimeout(900);await p.click('#goog');await p.waitForTimeout(300);
-  const a=await sheet(p);eq([a[0],a[a.length-2],a[a.length-1]],['Pilih versi','Batal','Lirik dari LRCLIB'],'list');
+  const a=await sheet(p);eq([a[0],a[a.length-2],a[a.length-1]],['Pilih versiLebih banyak','Batal','Lirik dari LRCLIB'],'list (title + Lebih banyak)');
   await p.evaluate(()=>{ctxClose();wlBack('x')});await p.waitForTimeout(200);
   eq(await sheet(p),['Sudah copy liriknya?','Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Tampilkan lirik','Kembali'],'question');await t.close()});
 

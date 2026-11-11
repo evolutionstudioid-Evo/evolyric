@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v149 – Menu fixes and More version in the first version list
+- Opening the account menu (profile photo) now closes the ⚙ menu, so two menus are never open at once.
+- Account menu: **My Library** is replaced by **Profile Settings**; the name / email / username card at the top is information only.
+- The **Choose a version** list (globe search with several results) has **More version** (ID: Lebih banyak) at the top right: it opens Google with what you typed.
+
 ## v148 – Interactive tour
 - New users get a one-minute **interactive tour** the first time Home opens (empty or sample library only; existing users are not interrupted).
 - A hand shows the gesture (tap, double-tap, swipe, hold, pinch), a spotlight marks the place and a card explains it, with Back / Next / Skip.

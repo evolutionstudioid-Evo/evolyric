@@ -16,7 +16,7 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 **Menampilkan lirik**
 - Auto-scroll dengan kecepatan yang diatur langsung di layar, lalu ketuk untuk memutar atau menjeda.
 - Gestur: geser kiri/kanan untuk kecepatan, tahan untuk maju cepat, cubit untuk ukuran huruf. Ketuk dua kali pada judul untuk membuka editor (atau menu ⋮ → Edit lagu).
-- Layar penuh untuk panggung, tema terang dan gelap (layar lirik selalu gelap), serta opsi menjaga layar tetap menyala.
+- Layar penuh untuk panggung, tema terang dan gelap (juga di layar lirik), serta opsi menjaga layar tetap menyala.
 - Tampilan: slider **Warna** (geser ke kiri untuk monokrom), **Kecerahan latar**, dan **Kontras**, plus **Efek visual saat menggulir** (cahaya lembut di tepi layar, bisa dimatikan).
 
 **Section, voicing, dan anotasi**

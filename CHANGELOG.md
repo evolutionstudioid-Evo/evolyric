@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v152 – Final polish (UI audit)
+Audit of every screen in dark/Indonesian and light/English at phone size. Nothing removed or restyled; fixes and small additions only.
+- **Fixed:** hints and labels of text boxes were never translated (e.g. Profile → Bio "Tell friends about yourself…", the note box "e.g. Drums stop here"); typed text stays untouched.
+- **Fixed:** the search box in Create setlist looked like a bare browser field; it now matches the other search boxes.
+- **Fixed:** the sign-in card still showed "Song tempo data by GetSongBPM.com"; hidden like the other tempo credits.
+- **New:** when a search finds nothing in All Songs, a **Search the internet** card runs the globe search for what you typed.
+- **New:** the list slides in softly when you switch tab (All Songs / Categories / Recent) or open a category (off with Reduce Motion).
+- **Easier to tap:** the small close arrows of the Speed, Queue and Versions panels and the Section bar buttons have a larger touch area (same look).
+- Screen readers: every on/off switch in Preferences now says what it switches.
+- README: the lyrics screen follows the light theme too (the old note said it was always dark).
+
 ## v151 – Fewer credit lines
 - "Tempo data by GetSongBPM.com" is hidden (account menu and Help → Credit) while the tempo feature is not in use; it returns with the feature.
 - The "Lyrics from LRCLIB" line under the version list and the versions panel is hidden; LRCLIB is credited in Help → Credit.

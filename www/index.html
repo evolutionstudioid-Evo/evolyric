@@ -45,7 +45,7 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .wm span i{font-style:normal;font-weight:600;letter-spacing:-.6px;background:linear-gradient(100deg,#f0a04b 10%,#ffd9a0 90%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .ic{width:44px;height:44px;border-radius:12px;font-size:20px;background:var(--card)}
 .sb{display:flex;gap:8px;padding:0 12px 8px}
-.sb input,.fld{flex:1;min-width:0;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px}
+.sb input,.fld,.slbar .sfield input{flex:1;min-width:0;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px}
 .pill{background:var(--acc);color:#15110e;border-radius:12px;padding:0 14px;font-weight:700;min-height:44px}
 #items,#dItems{flex:1;overflow:auto;padding:0 12px;overscroll-behavior:contain}
 .ltr{color:var(--acct);font-size:15px;padding:14px 4px 4px}
@@ -650,6 +650,16 @@ svg.lg{filter:saturate(var(--tsat,1))} /* the app logo follows the colour slider
 #tour .tbk[hidden],#tour .tsk[hidden]{display:none}
 body.touring #tsv{display:none!important}
 @media(prefers-reduced-motion:reduce){#tour *{animation:none!important;transition:none!important}#tour .trp{opacity:.8;transform:scale(.6)}}
+/* v152 polish: list entrance, internet search from an empty result, bigger touch areas for small close buttons */
+#items.lin>*{animation:itin .34s var(--ease) both}
+#items.lin>:nth-child(2){animation-delay:0.025s}#items.lin>:nth-child(3){animation-delay:0.050s}#items.lin>:nth-child(4){animation-delay:0.075s}#items.lin>:nth-child(5){animation-delay:0.100s}#items.lin>:nth-child(6){animation-delay:0.125s}#items.lin>:nth-child(7){animation-delay:0.150s}#items.lin>:nth-child(8){animation-delay:0.175s}#items.lin>:nth-child(9){animation-delay:0.200s}#items.lin>:nth-child(10){animation-delay:0.225s}#items.lin>:nth-child(11){animation-delay:0.250s}#items.lin>:nth-child(12){animation-delay:0.275s}#items.lin>:nth-child(13){animation-delay:0.300s}#items.lin>:nth-child(14){animation-delay:0.325s}#items.lin>:nth-child(n+15){animation-delay:.33s}
+.ewb{display:flex;align-items:center;gap:12px;width:calc(100% - 24px);margin:14px 12px;padding:14px 16px;border-radius:14px;border:1px dashed rgba(240,160,75,.5);background:rgba(240,160,75,.06);color:var(--fg);text-align:left;animation:itin .3s var(--ease) both}
+.ewb svg{flex:none;width:26px;height:26px;fill:none;stroke:var(--acct);stroke-width:1.6}
+.ewb span{min-width:0}.ewb b{display:block;font-weight:700;color:var(--acct)}.ewb small{display:block;margin-top:2px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ewb:active{transform:scale(.98);background:rgba(240,160,75,.12)}
+#spx,#qx,#vsx{position:relative}#spx::after,#qx::after,#vsx::after{content:'';position:absolute;inset:-8px -6px}
+#secbar button{position:relative}#secbar button::after{content:'';position:absolute;inset:-7px -2px}
+@media(prefers-reduced-motion:reduce){#items.lin>*,.ewb{animation:none!important}}
 </style>
 </head>
 <body>
@@ -774,7 +784,7 @@ body.touring #tsv{display:none!important}
   <div id="wstep3" hidden><p class="sub">Signing you in…</p></div>
   <div id="wstep2" hidden><h3>Choose a username</h3><p class="sub">Friends find you by this name. You can change it later in your profile.</p><div class="wu"><span>@</span><input id="wun" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="username" aria-label="Username"></div><div class="err" id="wuerr" role="alert"></div><button class="pill wgo" id="wusave" type="button" disabled>Continue</button><button class="lnk" id="wout" type="button">Use a different account</button></div>
 </div></section>
-<div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><p class="priv credit">Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p></div></div>
+<div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><p class="priv credit" hidden>Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p><!-- v152: hidden while tempo is not in use --></div></div>
 <div id="note" role="status" aria-live="polite"></div>
 <button id="ntf" type="button" role="status" aria-live="polite" hidden></button>
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
@@ -944,7 +954,7 @@ function catList(){
   const box=$('#items');box.textContent='';const q=($('#q').value||'').trim().toLowerCase();
   const cmp=catSorter(),F=cats.filter(c=>c.name.toLowerCase().includes(q)),L=[...F.filter(c=>c.pin).sort(cmp),...F.filter(c=>!c.pin).sort(cmp)]; /* pinned categories first */
   L.forEach(c=>{const b=E('button','it'),t=E('b'),n=c.ids.length,nm=E('span','',c.name);if(c.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;nm.prepend(pi)}t.append(nm,E('span','key',n+(n===1?' song':' songs')));b.append(t);
-    press(b,()=>{lib.v='cat';lib.id=c.id;$('#q').value='';refresh()},()=>ctxCat(c));box.append(b)});
+    press(b,()=>{lib.v='cat';lib.id=c.id;$('#q').value='';refresh();listIn()},()=>ctxCat(c));box.append(b)});
   if(!L.length)box.append(E('p','mut',cats.length?'No matching categories.':'No categories yet. Create one to organize your songs.'))}
 function refresh(){
   if(lib.v==='cat'&&!curCat())lib.v='cats';
@@ -956,8 +966,15 @@ function refresh(){
   $('#actrow').hidden=lib.v==='all'||lib.v==='recent';$('#act').textContent=cat?'Add Songs to '+cat.name:'+ New Category';
   if(lib.v==='cats')catList();
   else if(lib.v==='recent')items($('#items'),$('#q').value,s=>openSong(s),true,recSongs(),null,'Songs you open will show up here (the last 15 are kept).',true);
-  else items($('#items'),$('#q').value,s=>openSong(s),true,cat?poolFor(cat.id):songs,cat,cat&&!$('#q').value.trim()?'No songs in this category yet. Tap “Add Songs to '+cat.name+'”.':'No songs.')}
-$('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh()};
+  else items($('#items'),$('#q').value,s=>openSong(s),true,cat?poolFor(cat.id):songs,cat,cat&&!$('#q').value.trim()?'No songs in this category yet. Tap “Add Songs to '+cat.name+'”.':'No songs.');
+  emptyWeb()}
+/* v152: nothing in the Library for what was typed -> one tap to look for it on the internet (same as the globe button) */
+function emptyWeb(){const q=$('#q').value.trim(),box=$('#items');if(lib.v!=='all'||!q||box.querySelector('.it'))return;
+  const b=E('button','ewb');b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>';
+  const t=E('span');t.append(E('b','',L('Search the internet','Cari di internet')));const qq=E('small','',q);qq.setAttribute('data-nt','');t.append(qq);b.append(t);b.onclick=()=>wlGo(q,$('#goog'));box.append(b)}
+/* v152: the list slides in when you switch tab or open a category */
+function listIn(){const b=$('#items');b.classList.remove('lin');void b.offsetWidth;b.classList.add('lin');clearTimeout(listIn.t);listIn.t=setTimeout(()=>b.classList.remove('lin'),900)}
+$('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh();listIn()};
 $('#cBack').onclick=()=>{lib.v='cats';lib.id=null;$('#q').value='';refresh()};
 const csh=()=>{const c=$('#csheet');c.textContent='';c.classList.remove('wl');return c};
 function ctxOpen(s,cat){
@@ -1145,7 +1162,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='151';
+const APP_VER='152';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1227,7 +1244,7 @@ function tr(s){if(PREF.lang!=='id'||!s)return s;const m=/^(\s*)([\s\S]*?)(\s*)$/
   let r=idCache.get(k);if(r===undefined){r=ID[k];if(r===undefined)for(const [re,t] of IDP){if(re.test(k)){r=k.replace(re,t);break}}if(r===undefined)r=k;idCache.set(k,r)}
   return m[1]+r+m[3]}
 const I18N_ATTR=['placeholder','title','aria-label','alt'];
-const i18nSkip=n=>{for(let e=n.nodeType===1?n:n.parentElement;e;e=e.parentElement){const t=e.tagName;if(t==='SCRIPT'||t==='STYLE'||t==='TEXTAREA'||t==='CODE'||e.id==='txt'||e.hasAttribute('data-nt'))return true}return false};
+const i18nSkip=n=>{for(let e=n.nodeType===1?n:n.parentElement;e;e=e.parentElement){const t=e.tagName;if(t==='SCRIPT'||t==='STYLE'||(t==='TEXTAREA'&&e!==n)||t==='CODE'||e.id==='txt'||e.hasAttribute('data-nt'))return true}return false};
 const I18N_EN=new WeakMap(); /* node/attr -> original English */
 function trNode(n){if(i18nSkip(n))return;
   if(n.nodeType===3){let o=I18N_EN.get(n);const cur=n.nodeValue;
@@ -1237,6 +1254,7 @@ function trNode(n){if(i18nSkip(n))return;
   if(n.nodeType!==1)return;
   for(const a of I18N_ATTR){if(!n.hasAttribute(a))continue;const key=a;let M=I18N_EN.get(n);if(!M){M={};I18N_EN.set(n,M)}const cur=n.getAttribute(a);let o=M[key];if(!o||o.t!==cur)o={e:cur,t:cur};
     if(PREF.lang==='id'){const t=tr(o.e);o.t=t;if(t!==cur)n.setAttribute(a,t)}else if(o.e!==cur){n.setAttribute(a,o.e);o.t=o.e}M[key]=o}
+  if(n.tagName==='TEXTAREA')return; /* v152: its placeholder / label are translated, never what is typed in it */
   for(let c=n.firstChild;c;c=c.nextSibling)trNode(c)}
 let i18nBusy=0;
 const i18nMO=new MutationObserver(ms=>{if(i18nBusy)return;i18nBusy=1;try{for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trNode);else if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target)}}finally{i18nBusy=0;i18nMO.takeRecords()}});
@@ -1272,7 +1290,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gm.hidden){gmOpen(
 /* small builders */
 const sRow=(label,o={})=>{const r=E(o.go?'button':'div','srow');if(o.go){r.type='button';r.onclick=o.go}
   const l=E('div','lbl',label);if(o.sub)l.append(E('small','',o.sub));r.append(l);
-  if(o.val!=null)r.append(E('span','val',o.val));if(o.right)r.append(o.right);if(o.go&&!o.right)r.append(E('span','chev','›'));return r};
+  if(o.val!=null)r.append(E('span','val',o.val));if(o.right){if(o.right.classList&&o.right.classList.contains('swt')&&!o.right.hasAttribute('aria-label'))o.right.setAttribute('aria-label',label);r.append(o.right)}if(o.go&&!o.right)r.append(E('span','chev','›'));return r};
 const sCard=(...rows)=>{const c=E('div','scard');c.append(...rows);return c};
 function sSeg(opts,cur,fn){const g=E('div','sseg');g.setAttribute('role','radiogroup');opts.forEach(([v,t])=>{const b=E('button',v===cur?'on':'',t);b.type='button';b.setAttribute('role','radio');b.setAttribute('aria-checked',v===cur?'true':'false');b.onclick=()=>{[...g.children].forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-checked',x===b?'true':'false')});fn(v)};g.append(b)});return g}
 function sSwitch(on,fn){const b=E('button','swt');b.type='button';b.setAttribute('role','switch');b.setAttribute('aria-checked',on?'true':'false');b.onclick=()=>{const n=b.getAttribute('aria-checked')!=='true';b.setAttribute('aria-checked',n?'true':'false');fn(n)};return b}

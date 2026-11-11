@@ -233,20 +233,43 @@ test('Versions: after picking from the LRCLIB list, the speed corner shows a ver
   /* after Save the song is a library song: Speed comes back */
   await p.evaluate(()=>saveTemp());await p.waitForTimeout(150);
   eq(await vis2(p),{vsb:'none',spb:'flex'},'speed back after saving');eq(t.errors,[],'no page errors');await t.close()});
-test('Versions: not shown for library songs, a single LRCLIB match, or lyrics pasted from Google',async()=>{
+test('Versions: shown for every LRCLIB pick (one version too); not for library songs or lyrics pasted from Google',async()=>{
   const t=await open(),p=t.page;await p.evaluate(()=>openSong(songs[0]));await p.waitForTimeout(300);
   eq(await vis2(p),{vsb:'none',spb:'flex'},'library song');
   await p.evaluate(()=>openTemp({title:'x',lyrics:'Satu\nDua',src:'lrclib',vers:[{id:1,title:'x',lyrics:'Satu\nDua'}],srcId:1}));await p.waitForTimeout(300);
-  eq(await vis2(p),{vsb:'none',spb:'flex'},'one version only');
+  eq(await vis2(p),{vsb:'flex',spb:'none'},'one LRCLIB version: the panel still offers More version');
   await p.evaluate(()=>openTemp({title:'y',lyrics:'Satu\nDua',src:'google'}));await p.waitForTimeout(300);
   eq(await vis2(p),{vsb:'none',spb:'flex'},'from Google');
   await p.evaluate(()=>vsOpen(true));eq(await p.evaluate(()=>$('#vsp').classList.contains('open')),false,'panel cannot open without versions');await t.close()});
 test('Versions: a tap outside or Back closes the panel; going Home clears it; Indonesian labels',async()=>{
   const t=await open({lang:'id'}),p=t.page;
   await p.evaluate(()=>{const v=[{id:1,title:'A',artist:'X',lyrics:'Satu\nDua',dur:200},{id:2,title:'A',artist:'Y',lyrics:'Tiga\nEmpat',dur:210}];wlOpen(v[0],v)});await p.waitForTimeout(300);
-  eq(await p.evaluate(()=>[$('#vsb small').textContent,$('#vsb').getAttribute('aria-label')]),['versi','Versi'],'ID');
+  eq(await p.evaluate(()=>[$('#vsb small').textContent,$('#vsb').getAttribute('aria-label'),$('#vsg').textContent]),['versi','Versi','Lebih banyak'],'ID');
   await p.click('#vsb');await p.waitForTimeout(200);await p.mouse.click(150,400);await p.waitForTimeout(200);
   eq(await p.evaluate(()=>[$('#vsp').classList.contains('open'),playing]),[false,false],'outside tap closes without starting playback');
   await p.click('#vsb');await p.waitForTimeout(200);await p.evaluate(()=>leavePlay());
   eq(await p.evaluate(()=>[$('#vsp').classList.contains('open'),$('#play').classList.contains('lrc')]),[false,false],'cleared on Home');await t.close()});
+
+/* ---------- v142: More version + Reload app ---------- */
+test('Versions: More version opens Google for the title; coming back asks Show lyrics / Back',async()=>{
+  const t=await open(),p=t.page;
+  await p.evaluate(()=>{window.__q=[];webSearch=q=>window.__q.push(q);const v=[{id:1,title:'Lagu Uji',artist:'X',lyrics:'Satu\nDua'}];wlOpen(v[0],v)});await p.waitForTimeout(300);
+  await p.click('#vsb');await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>$('#vsg').textContent),'More version','button label');
+  eq(await p.evaluate(()=>$('#vsg').parentElement.className),'vsh','in the panel header (top right)');
+  await p.click('#vsg');await p.waitForTimeout(100);
+  eq(await p.evaluate(()=>[window.__q,$('#vsp').classList.contains('open')]),[['Lagu Uji'],false],'Google searched for the title, panel closed');
+  await vis(p,true);await vis(p,false);await p.waitForTimeout(500);
+  const sh=await sheet(p);eq([sh[0],sh[2],sh[3]],['Copied the lyrics?','Show lyrics','Back'],'return question');
+  await p.click('#csheet button:has-text("Back")');await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>[isTemp(cur),cur.title,$('#play').classList.contains('on')]),[true,'Lagu Uji',true],'Back keeps the LRCLIB lyrics on screen');
+  await t.close()});
+test('Reload app: in the gear menu (ID: Muat ulang aplikasi); it reloads the page',async()=>{
+  const t=await open({lang:'id'}),p=t.page;
+  await p.click('#gear');await p.waitForTimeout(200);
+  const items=await p.evaluate(()=>[...document.querySelectorAll('#gmenu .mi')].map(b=>b.textContent));
+  eq(items,['Preferensi','Bantuan','Muat ulang aplikasi'],'menu items');
+  await p.evaluate(()=>{window.__mark=1});
+  await Promise.all([p.waitForNavigation({timeout:15000}),p.click('#gmenu .mi >> nth=2')]);await p.waitForTimeout(300);
+  eq(await p.evaluate(()=>window.__mark),undefined,'page was reloaded');await t.close()});
 };

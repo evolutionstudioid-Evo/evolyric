@@ -139,6 +139,6 @@ npx cap sync
 ## Catatan
 
 - Langganan belum tersedia dan tidak ada pembayaran di aplikasi ini.
-- Lirik dari tombol globe berasal dari [LRCLIB](https://lrclib.net) (database lirik terbuka) atau dari yang kamu salin sendiri di Google. Data tempo dari [GetSongBPM.com](https://getsongbpm.com).
+- Lirik dari tombol globe berasal dari [LRCLIB](https://lrclib.net) (database lirik terbuka) atau dari yang kamu salin sendiri di Google.
 - Lirik umumnya dilindungi hak cipta. EvoLyric dirancang untuk pemakaian pribadi atau kelompok; jangan menjadikannya basis data lirik publik.
 - Data tersimpan di perangkat dan, saat masuk, di akun cloud milikmu. Alamat email tidak ditampilkan kepada pengguna lain.

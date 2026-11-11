@@ -569,13 +569,14 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 :root[data-theme="light"] #tsv{background:rgba(255,255,255,.86);border-color:rgba(200,110,30,.5)}
 /* ===== v138: Web Lyric – version list, return-from-Google question, busy globe ===== */
 #csheet.wl{width:min(92vw,380px);max-height:80vh;overflow:auto}
-#csheet.wl .wlh{display:flex;align-items:center;gap:8px}#csheet.wl .wlh h3{flex:1;min-width:0;margin:0}
+#csheet.wl .wlh{display:flex;align-items:center;gap:8px;padding:2px 2px 4px 12px}#csheet.wl .wlh h3{flex:1;min-width:0;margin:0}
 #csheet.wl .wlg{flex:none;display:flex;align-items:center;gap:6px;height:30px;padding:0 11px 0 9px;border-radius:15px;border:1px solid rgba(240,160,75,.5);color:var(--acct);font-weight:700;font-size:13px;white-space:nowrap}#csheet.wl .wlg svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7}#csheet.wl .wlg:active{background:var(--ln)}
+#csheet.wl .wlx{display:block;width:calc(100% - 12px);margin:8px 6px 4px;padding:12px;text-align:center;font-weight:700;border:1px solid var(--ln);background:var(--card);border-radius:12px} /* v151: Cancel is a framed button */
 #csheet.wl h3{white-space:normal;color:var(--fg);font-weight:700;font-size:16px}
 .wlv b{display:block;font-size:15.5px;font-weight:700;line-height:1.25}
 .wlv small{display:block;margin-top:3px;color:var(--mut);font-size:12.5px;line-height:1.3}
 .wlv small i{font-style:normal;margin-left:6px;padding:1px 6px;border-radius:6px;border:1px solid var(--ln);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
-.wlsrc{margin:4px 12px 6px;color:var(--mut);font-size:11.5px}
+.wlsrc{display:none;margin:4px 12px 6px;color:var(--mut);font-size:11.5px} /* v151: hidden – LRCLIB is credited in Help → Credit */
 .wlp{margin:0 12px 8px;font-size:14px;line-height:1.4}
 #csheet .wlok{color:var(--acct);font-weight:800}
 .wlta{margin:0 6px 8px;min-height:120px;resize:vertical;background:var(--bg);color:var(--fg);border:1px solid var(--ln);border-radius:10px;padding:10px;font:15px/1.4 'Atkinson Hyperlegible',system-ui,sans-serif}
@@ -1072,7 +1073,7 @@ function wlPick(items,q){const c=csh();c.classList.add('wl');const hd=E('div','w
   c.append(hd);
   items.forEach(it=>{const b=E('button','wlv');b.type='button';b.append(E('b','',it.title));
     const m=[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · ');const sm=E('small','',m);if(it.variant)sm.append(E('i','',it.variant));b.append(sm);b.onclick=()=>wlOpen(it,items);c.append(b)});
-  const x=E('button','','Cancel');x.type='button';x.onclick=ctxClose;c.append(x,E('p','wlsrc','Lyrics from LRCLIB'));$('#ctx').classList.add('on')}
+  const x=E('button','wlx','Cancel');x.type='button';x.onclick=ctxClose;c.append(x,E('p','wlsrc','Lyrics from LRCLIB'));$('#ctx').classList.add('on')}
 function wlUse(q,r,inTap){
   if(r.state==='ok')return r.items.length===1?wlOpen(r.items[0],r.items):wlPick(r.items,q);
   if(r.state==='offline')return note('You are offline. Lyrics search needs an internet connection.',true);
@@ -1144,7 +1145,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='150';
+const APP_VER='151';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1450,7 +1451,8 @@ function creditRoll(b){const tok=++crTok;if(window.matchMedia&&matchMedia('(pref
   requestAnimationFrame(step)}
 
 function docCredit(b){b.className='sbody doc';
-  b.append(dH(L('Tempo data','Data tempo')));const p=E('p');p.append(L('Song tempo data by ','Data tempo lagu oleh '),dA('GetSongBPM.com','https://getsongbpm.com'));b.append(p);
+  /* v151: tempo is not in use yet – its credit returns with the feature:
+  b.append(dH(L('Tempo data','Data tempo')));const p=E('p');p.append(L('Song tempo data by ','Data tempo lagu oleh '),dA('GetSongBPM.com','https://getsongbpm.com'));b.append(p); */
   b.append(dH(L('Lyrics search','Pencarian lirik')));const q=E('p');q.append(L('Lyrics found with the globe button come from','Lirik yang dicari lewat tombol globe berasal dari')+' ',dA('LRCLIB','https://lrclib.net'),L(', a free, open lyrics database. When nothing is found there, the search continues on Google.',', database lirik gratis dan terbuka. Jika tidak ditemukan di sana, pencarian dilanjutkan ke Google.'));b.append(q);
   b.append(dH(L('Fonts','Font')),dUl(['Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)','Figtree (Open Font License)']));
   b.append(dH(L('Services','Layanan')),dUl([L('Sign-in and cloud sync: Supabase','Masuk dan sinkron cloud: Supabase'),L('Hosting: Cloudflare','Hosting: Cloudflare')]))}
@@ -2564,7 +2566,8 @@ function buildMenu(u){const m=$('#amenu');m.textContent='';
   it('Profile Settings',profOpen); /* v149: replaces My Library; the name card above is no longer a button */
   it('Account Settings',acctOpen);
   m.append(E('hr'));it('Sign Out',signOut,{out:1});
-  const cr=E('div','credit');cr.append('Tempo data by ');const ca=E('a','','GetSongBPM.com');ca.href='https://getsongbpm.com';ca.target='_blank';ca.rel='noopener';cr.append(ca);m.append(cr)}
+  /* v151: tempo is not in use yet – the 'Tempo data by GetSongBPM.com' line returns with the feature:
+  const cr=E('div','credit');cr.append('Tempo data by ');const ca=E('a','','GetSongBPM.com');ca.href='https://getsongbpm.com';ca.target='_blank';ca.rel='noopener';cr.append(ca);m.append(cr) */}
 function toggleMenu(){$('#amenu').hidden?openMenu():closeMenu()}
 function openMenu(){const u=user||getHint();if(!u)return;if(!$('#gmenu').hidden)gmOpen(false); /* v149: never two menus at once */buildMenu(u);$('#amenu').hidden=false;const b=$('#avb');b&&b.setAttribute('aria-expanded','true');const f=$('#amenu .mi:not(:disabled)');f&&f.focus({preventScroll:true})}
 function closeMenu(){$('#amenu').hidden=true;const b=$('#avb');b&&b.setAttribute('aria-expanded','false')}

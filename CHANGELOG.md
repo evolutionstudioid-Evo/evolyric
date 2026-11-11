@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v137 – Web Lyric, phases 2 + 3: Save to Library, Edit in Editor, LRCLIB lookup (behind the scenes)
+- Still nothing new for users to see: no button opens a temporary song yet (phase 4 wires the globe button).
+- **Save to Library**: a temporary song shows a **Save** button in the lyrics header (bookmark icon, between the title and ⋮) and the same action in ⋮. It turns the song into a normal library song right where you are – same screen, same scroll position, speed and zoom kept – and adds it to Recent and the **L** button. If a song with the same title (and artist) is already in the Library, it asks first (“Save a copy”). The button fades with the other floating buttons while auto-scroll runs.
+- **Edit in Editor** (⋮): opens the editor filled with the title, artist and lyrics. Closing it takes one tap and goes back to the temporary lyrics; Save in the editor creates the library song.
+- **LRCLIB lookup engine** (`lrcFind`, `lrcPeek`, `lrcPrefetch`): searches lrclib.net directly from the browser (free, no key, nothing scraped, worker unchanged). Keeps only results whose title matches, drops instrumentals and versions with identical lyrics, lists originals before live / remix / acoustic versions (max 8), uses plain lyrics and strips time stamps from synced-only ones. Separate answers for no match, server error and offline; good answers are cached for 10 minutes so the globe button can decide instantly. Not called anywhere yet.
+- Indonesian: Simpan / Simpan ke Library / Edit di Editor.
+- Tests: 10 new (LRCLIB replaced by a stub), 74 in total.
+
 ## v136 – Web Lyric, phase 1: temporary lyrics (behind the scenes)
 - Foundation for Web Lyric. The lyrics screen can now show a **temporary song**: lyrics that are not in the Library. Nothing a user can see changes yet – there is no button that opens one (that comes in phase 4).
 - A temporary song is never put in the Library, so it is never saved, backed up or synced. It is not added to Recent and the Home **L** button never points at it. Speed and zoom changes on it do not touch the Library.

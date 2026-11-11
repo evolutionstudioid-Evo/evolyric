@@ -33,7 +33,8 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio** dan saat ini masih dalam
 - **Impor `.txt`**: satu atau banyak file. File dari Shortcut Apple Notes (lagu dipisah `===EVONOTE===`) langsung menjadi banyak lagu.
 
 **Web Lyric (cari lirik di internet)**
-- Tombol **globe** (Home dan panel samping) mencari judul yang diketik di [LRCLIB](https://lrclib.net). Satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih (dengan tombol **Lebih banyak** ke Google); tidak ada hasil membuka Google. Pencarian juga tahan salah ketik.
+- Ketik judul di kolom cari (Home atau panel samping). Kalau tidak ada di Library, muncul kartu **Cari di internet** yang mencari di [LRCLIB](https://lrclib.net): satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih (dengan tombol **Lebih banyak** ke Google); tidak ada hasil membuka Google. Pencarian juga tahan salah ketik.
+- Tahan sebuah lagu di Home → **Cari di internet** untuk mencari versi lain atau penyanyi lain dengan judul yang sama.
 - Di layar lirik, pojok kecepatan berganti menjadi tombol **Versi** untuk berpindah ke versi lain atau ke Google (**Lebih banyak**).
 - Kembali dari Google: **Tampilkan lirik** memakai lirik yang kamu copy, **Kembali** tidak mengubah apa pun.
 - Lirik dari internet bersifat **sementara**: tidak masuk Library, Terbaru, cadangan, atau sinkron cloud, dan hilang saat kembali ke Home. Tombol **Simpan** (atau ⋮ → Simpan ke Library / Edit di Editor) untuk menyimpannya. Rincian teknis: [`docs/WEB_LYRIC_AUDIT.md`](docs/WEB_LYRIC_AUDIT.md).
@@ -139,6 +140,6 @@ npx cap sync
 ## Catatan
 
 - Langganan belum tersedia dan tidak ada pembayaran di aplikasi ini.
-- Lirik dari tombol globe berasal dari [LRCLIB](https://lrclib.net) (database lirik terbuka) atau dari yang kamu salin sendiri di Google.
+- Lirik dari Cari di internet berasal dari [LRCLIB](https://lrclib.net) (database lirik terbuka) atau dari yang kamu salin sendiri di Google.
 - Lirik umumnya dilindungi hak cipta. EvoLyric dirancang untuk pemakaian pribadi atau kelompok; jangan menjadikannya basis data lirik publik.
 - Data tersimpan di perangkat dan, saat masuk, di akun cloud milikmu. Alamat email tidak ditampilkan kepada pengguna lain.

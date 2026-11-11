@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v155 – Shorter About
+- Help → About EvoLyric is now one short paragraph about what EvoLyric does for vocalists, followed by the credits and the closing line. The About Us / Vision / Mission / Ecosystem / Philosophy sections were removed.
+
 ## v154 – Search the internet without the globe button
 - The globe buttons next to the search boxes (Home and side panel) are gone; the search boxes use the full width.
 - **Search the internet** card: when the search box finds nothing in All Songs (Home or side panel), one tap searches LRCLIB, then Google, as the globe did.

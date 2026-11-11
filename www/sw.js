@@ -1,4 +1,4 @@
-const V='evolyric-app-154',F='evolyric-fonts';
+const V='evolyric-app-155',F='evolyric-fonts';
 const TUTIMG=['g_home','g_add','g_edit2','g_play','g_queue','g_temp','g_prefs','g_gear'].flatMap(n=>['id','en'].map(l=>'man/'+n+'_'+l+'.webp'));
 const SHELL=['./','index.html','manifest.webmanifest','config.js','cloud.js','tutorial.js',...TUTIMG,'vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});

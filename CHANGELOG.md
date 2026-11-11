@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v135 – Aurora glow while scrolling
+- While auto-scroll runs, a soft aurora light glows around the edges of the lyrics screen, slowly changing colour: magenta → purple → teal. It fades in when you tap to play and fades out when you pause. Only the screen frame glows; the middle stays clear, the glow sits under the lyrics and never catches a tap.
+- Light on the battery: only fade and slow drift are animated (handled by the graphics chip), and the animation stops completely while paused. With “Reduce motion” on, the glow stays still.
+- New switch in Preferences → Screen: “Aurora glow while scrolling” (on by default). ID/EN translated.
+- Tests: 1 new automatic test.
+
 ## v134 – Hotfix: offline service worker restored
 - v132 and v133 shipped an empty `sw.js` (a release-script mistake). Phones that picked it up lost offline start-up: the app would not open without internet. The full service worker is back (cache `evolyric-app-134`); it installs and takes over immediately, so the next online visit repairs it.
 - A debug script (`_a.js`) that was committed by mistake in v131 is removed.

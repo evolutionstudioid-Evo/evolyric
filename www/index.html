@@ -539,6 +539,26 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 .wu{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:0 14px;margin:0 0 4px}.wu:focus-within{border-color:var(--acc)}.wu span{color:var(--mut);font-weight:700}.wu input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--fg);font:600 17px/1 'Atkinson Hyperlegible',system-ui,sans-serif;padding:15px 0}
 .wgo{width:100%;min-height:48px;margin-top:12px;font-size:16px}.wgo:disabled{opacity:.45}
 #goog,#dgoog{color:var(--acct)}
+/* ===== v135: aurora glow – a soft magenta / purple / teal light around the screen edges while auto-scroll runs.
+   Only opacity and transform are animated (GPU-composited), the layer never takes touches, and it sits under the lyrics. ===== */
+#aura{display:none}
+#play.fs #aura{display:block;position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.2s var(--ease);
+  -webkit-mask-image:linear-gradient(to right,#000,rgba(0,0,0,.35) 26px,transparent 72px,transparent calc(100% - 72px),rgba(0,0,0,.35) calc(100% - 26px),#000),linear-gradient(to bottom,#000,rgba(0,0,0,.35) 26px,transparent 72px,transparent calc(100% - 72px),rgba(0,0,0,.35) calc(100% - 26px),#000);
+  mask-image:linear-gradient(to right,#000,rgba(0,0,0,.35) 26px,transparent 72px,transparent calc(100% - 72px),rgba(0,0,0,.35) calc(100% - 26px),#000),linear-gradient(to bottom,#000,rgba(0,0,0,.35) 26px,transparent 72px,transparent calc(100% - 72px),rgba(0,0,0,.35) calc(100% - 26px),#000)}
+#play.fs.run #aura{opacity:1}
+#play.noaura #aura{display:none!important}
+#aura i{position:absolute;inset:-30px;opacity:0;will-change:opacity,transform;animation:auraFade 15s linear infinite,auraDrift 11s ease-in-out infinite alternate;animation-play-state:paused}
+#play.run #aura i{animation-play-state:running}
+#aura i:nth-child(1){--c:255,43,214;animation-delay:0s,-3s}
+#aura i:nth-child(2){--c:139,92,255;animation-delay:-10s,-8s;animation-duration:15s,13s}
+#aura i:nth-child(3){--c:32,227,200;animation-delay:-5s,-5s;animation-duration:15s,9s}
+#aura i{background:radial-gradient(60% 30% at 18% 0%,rgba(var(--c),.85),transparent 70%),radial-gradient(30% 50% at 100% 72%,rgba(var(--c),.7),transparent 70%),radial-gradient(55% 28% at 70% 100%,rgba(var(--c),.75),transparent 70%),radial-gradient(28% 45% at 0% 40%,rgba(var(--c),.6),transparent 70%);box-shadow:inset 0 0 46px 34px rgba(var(--c),.5)}
+#aura i:nth-child(2){transform-origin:30% 70%}
+#aura i:nth-child(3){transform-origin:70% 30%}
+@keyframes auraFade{0%{opacity:0}16%{opacity:1}33%{opacity:.9}50%{opacity:0}100%{opacity:0}}
+@keyframes auraDrift{0%{transform:translate3d(-12px,8px,0) scale(1.01)}100%{transform:translate3d(12px,-10px,0) scale(1.04)}}
+:root[data-theme="light"] #play.fs.run #aura{opacity:.75}
+@media(prefers-reduced-motion:reduce){#aura i{animation:none!important;transform:none!important;opacity:.4}}
 </style>
 </head>
 <body>
@@ -564,6 +584,7 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 </section>
 
 <section id="play" class="v">
+  <div id="aura" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="hd">
     <button class="ic" id="dr" type="button" aria-label="Song list">☰</button><div id="ptit" class="grow"></div><button class="ic" id="mn" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false">⋮</button>
   </div>
@@ -922,8 +943,8 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='134';
-const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
+const APP_VER='135';
+const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
 const L=(en,id)=>{if(PREF.lang!=='id')return en;(Array.isArray(id)?id:[id]).forEach(x=>LID.add(x));return id};
@@ -936,6 +957,7 @@ const defFont=()=>Math.max(20,Math.min(60,+PREF.font||32));
 function setFscrPref(on){PREF.fscr=on?1:0;prefSave();if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
 function setAwakePref(on){PREF.awake=on?1:0;prefSave();if(!on){try{wl&&wl.release&&wl.release()}catch(e){}wl=null;try{nsV&&nsV.pause()}catch(e){}nsOn=0}else if(typeof playing!=='undefined'&&playing)keepAwake()}
 function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('nodim',!on)}
+function setAuraPref(on){PREF.aura=on?1:0;prefSave();$('#play').classList.toggle('noaura',!on)}
 /* ---------- v76: language (English / Indonesia) ----------
    HOW IT WORKS: every piece of visible text is written in English in the code. When the language is Indonesia,
    a translator swaps exact English strings for the Indonesian ones in ID below (and patterns in IDP for text that
@@ -1051,6 +1073,7 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
   b.append(E('div','sgrp',L('Screen','Layar')),sCard(
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
     sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
+    sRow(L('Aurora glow while scrolling','Cahaya aurora saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
     sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})))}
 /* v102: Tutorial = portrait slide deck (tutorial.js, cached for offline) */
@@ -1147,7 +1170,7 @@ function docBackup(b){b.className='sbody doc';
   const ta2=E('textarea','dta');ta2.placeholder=L('Or paste backup text here','Atau tempel teks cadangan di sini');
   b.append(dH(L('Restore','Pulihkan')),fi,btn(L('Restore from file','Pulihkan dari file'),()=>fi.click()),ta2,
     btn(L('Restore from pasted text','Pulihkan dari teks tempelan'),()=>{const x=ta2.value.trim();if(!x)return;if(restoreBackup(x))ta2.value='';else note(L('This is not an EvoLyric backup','Ini bukan teks cadangan EvoLyric'),1)}))}
-$('#play').classList.toggle('nodim',!PREF.dim);
+$('#play').classList.toggle('nodim',!PREF.dim);$('#play').classList.toggle('noaura',!PREF.aura);
 /* back buttons */
 $('#prX').onclick=$('#hpX').onclick=$('#acX').onclick=()=>show('list');
 $('#dcX').onclick=()=>{show(docFrom);if(docFrom==='help')helpRender();else acctRender()};

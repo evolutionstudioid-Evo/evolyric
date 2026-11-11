@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v150 – Simpler Backup & restore, clearer names, updated credits
+- **Backup & restore** is now three buttons:
+  - **Backup** saves all songs and categories (with sections, colours and notes) in one **`.evolyric`** file. On iPhone/iPad it opens the share sheet (Save to Files / iCloud Drive).
+  - **Restore** picks that file and brings everything back; songs already on the device are skipped, nothing is overwritten. Old `.txt` backups still work.
+  - **Export .txt** saves all lyrics in the Apple Notes Shortcut format (`===EVONOTE===`); + → Import .txt brings them back.
+  - Removed: Copy backup to clipboard and the paste box.
+- Preferences: the **Colour** slider no longer shows "Left = monochrome" under it; "Aurora glow while scrolling" is now **Visual effect while scrolling** (ID: Efek visual saat menggulir).
+- Credit adds **LRCLIB** (lyrics search) and the Figtree font. README updated; new `docs/ROADMAP.md` with the next steps (privacy policy & terms, error reports, web help, EvoImport, Android import).
+- Quick guide: preferences picture updated.
+
 ## v149 – Menu fixes and More version in the first version list
 - Opening the account menu (profile photo) now closes the ⚙ menu, so two menus are never open at once.
 - Account menu: **My Library** is replaced by **Profile Settings**; the name / email / username card at the top is information only.

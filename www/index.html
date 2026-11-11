@@ -1136,12 +1136,6 @@ $('#file').onchange=async e=>{const cc=lib.v==='cat'&&curCat(),r={n:0,skip:0};le
     if(EVONOTE.test(x)){const q=evoImport(x,cc);r.n+=q.n;r.skip+=q.skip;multi=true;continue}
     const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:defFont(),cr:Date.now()};songs.push(ns);if(cc)cc.ids.push(ns.id);r.n++}
   save();refresh();e.target.value='';if(multi)evoNote(r);else toast('Impor selesai')};
-/* Not shown on Home any more; kept for a future Account > Backup & restore screen. */
-function copyBackup(){
-  const t=backupText();
-  const ok=()=>note('Backup copied. Paste it on the Home page to restore.');
-  const fb=()=>{const a=E('textarea');a.value=t;document.body.append(a);a.select();try{document.execCommand('copy');ok()}catch(_){toast('Gagal menyalin')}a.remove()};
-  navigator.clipboard?.writeText(t).then(ok).catch(fb)||fb()}
 document.addEventListener('paste',e=>{
   if(!$('#list').classList.contains('on')||/INPUT|TEXTAREA/.test(e.target.tagName))return;
   const x=e.clipboardData.getData('text');if(!x.trim())return;e.preventDefault();
@@ -1150,7 +1144,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='149';
+const APP_VER='150';
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1181,7 +1175,7 @@ const ID={'Replace the existing section labels? Undo brings them back.':'Ganti l
 'After an update, close the app completely and open it again.':'Setelah pembaruan, tutup aplikasi sepenuhnya lalu buka lagi.','After the first open, your songs work without internet.':'Setelah dibuka sekali, lagumu tetap bisa dipakai tanpa internet.',
 'All':'Semua','All Songs':'Semua Lagu','All songs':'Semua lagu','Annotate':'Anotasi','App language':'Bahasa aplikasi','Appearance':'Tampilan','Artist':'Artis','Atkinson Hyperlegible (Braille Institute)':'Atkinson Hyperlegible (Braille Institute)',
 'Auto':'Otomatis','Auto-scroll keeps going through this section':'Auto-scroll terus berjalan di bagian ini','Auto-scroll pauses at this section':'Auto-scroll berhenti di bagian ini',
-'Back':'Kembali','Back to top':'Kembali ke atas','Back up':'Cadangkan','Backup & restore':'Cadangkan & pulihkan','Backup copied. Paste it on the Home page to restore.':'Cadangan disalin. Tempel di halaman Home untuk memulihkan.','Backup could not be read':'Cadangan tidak terbaca','Backup file saved':'File cadangan disimpan',
+'Back':'Kembali','Back to top':'Kembali ke atas','Back up':'Cadangkan','Backup & restore':'Backup & restore','Backup copied. Paste it on the Home page to restore.':'Cadangan disalin. Tempel di halaman Home untuk memulihkan.','Backup could not be read':'Cadangan tidak terbaca','Backup file saved':'File cadangan disimpan',
 'A backup contains all your songs and categories. Songs that already exist on this device are skipped when you restore.':'Cadangan berisi semua lagu dan kategorimu. Lagu yang sudah ada di perangkat ini dilewati saat memulihkan.',
 'A lyric teleprompter for live performers: auto-scroll, section jumps, pauses, notes and annotations, a song library with setlists, and sending songs to friends.':'Teleprompter lirik untuk musisi panggung: auto-scroll, loncat antar bagian, jeda, catatan dan anotasi, library lagu dengan setlist, dan kirim lagu ke teman.',
 'Base key':'Nada dasar','Beats per lyric line':'Ketukan per baris lirik','Bio':'Bio','Bio is not enabled on the server yet. Run supabase/008_bio.sql in the Supabase SQL Editor.':'Bio belum aktif di server. Jalankan supabase/008_bio.sql di Supabase SQL Editor.','Bold':'Tebal','Box':'Kotak','Bricolage Grotesque (Open Font License)':'Bricolage Grotesque (Open Font License)',
@@ -1250,7 +1244,7 @@ i18nMO.observe(document.body,{childList:true,subtree:true,characterData:true,att
 function setLang(v){PREF.lang=v==='id'?'id':'en';prefSave();idCache.clear();i18nRun();if(typeof prefRender==='function'&&$('#prefs').classList.contains('on'))prefRender()}
 /* for tools/i18n-audit.js: visible text that has no Indonesian version */
 /* text that must stay as is: brand, musical terms, names, numbers, text already written in Indonesian via L() */
-const I18N_KEEP=new Set(['Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
+const I18N_KEEP=new Set(['LRCLIB','Figtree (Open Font License)','Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
 const i18nKeep=e=>!/[A-Za-z]{3}/.test(e)||I18N_KEEP.has(e)||LID.has(e)||tr(e)!==e||/^#[0-9a-f]{6}$/i.test(e)||/@[\w.-]+/.test(e)||/^Versi \d+$/.test(e)||/^\[/.test(e)||/^(Intro|Verse|Pre-Chorus|Chorus|Interlude|Bridge|Coda|Outro|Male|Female)\b/.test(e)||(user&&(e===user.name||e===user.email));
 window.i18nMissing=()=>{const out=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);for(let n;n=w.nextNode();){if(i18nSkip(n))continue;const o=I18N_EN.get(n),e=(o?o.e:n.nodeValue).trim();if(i18nKeep(e))continue;if(getComputedStyle(n.parentElement).display!=='none')out.add(e)}
   document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>I18N_ATTR.forEach(a=>{if(!el.hasAttribute(a))return;const M=I18N_EN.get(el),e=((M&&M[a])?M[a].e:el.getAttribute(a)).trim();if(!i18nKeep(e))out.add(a+': '+e)}));return [...out]};
@@ -1292,7 +1286,7 @@ function sRng(label,sub,key,min,max,def){const r=E('div','srow srng');const l=E(
   r.append(l,i);return r}
 function prefRender(){const b=$('#prefbody');b.textContent='';
   b.append(E('div','sgrp',L('Appearance','Tampilan')),sCard(sRow(L('Theme','Tema'),{right:sSeg([['auto',L('Auto','Otomatis')],['light',L('Light','Terang')],['dark',L('Dark','Gelap')]],PREF.theme,v=>{PREF.theme=v;prefSave();applyTheme()})}),
-    sRng(L('Colour','Warna'),L('Left = monochrome','Kiri = monokrom'),'sat',0,100,100),
+    sRng(L('Colour','Warna'),'','sat',0,100,100),
     sRng(L('Background brightness','Kecerahan latar'),null,'bri',-100,100,0),
     sRng(L('Contrast','Kontras'),null,'con',-100,100,0),
     sRow(L('Keep highlight colours','Highlight tetap berwarna'),{sub:L('Coloured marks in the lyrics keep their colour in monochrome','Tanda warna di lirik tetap berwarna saat monokrom'),right:sSwitch(PREF.hlc!==0,on=>{PREF.hlc=on?1:0;prefSave();toneApply()})}),
@@ -1301,7 +1295,7 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
   b.append(E('div','sgrp',L('Screen','Layar')),sCard(
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
     sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
-    sRow(L('Aurora glow while scrolling','Cahaya aurora saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
+    sRow(L('Visual effect while scrolling','Efek visual saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
     sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})))}
 /* v102: Tutorial = portrait slide deck (tutorial.js, cached for offline) */
@@ -1409,7 +1403,7 @@ function acctRender(){const b=$('#acctbody');b.textContent='';const u=user||{};
   b.append(E('div','sgrp',L('Account','Akun')),sCard(
     sRow('Email',{sub:L('Used to sign in with Google','Dipakai untuk masuk dengan Google'),val:u.email||''}),
     sRow(L('Subscription','Langganan'),{go:()=>docOpen('acct',L('Subscription','Langganan'),docSub)})),
-  E('div','sgrp',L('Data','Data')),sCard(sRow(L('Backup & restore','Cadangkan & pulihkan'),{sub:L('Your songs and categories','Lagu dan kategori kamu'),go:()=>docOpen('acct',L('Backup & restore','Cadangkan & pulihkan'),docBackup)})))}
+  E('div','sgrp',L('Data','Data')),sCard(sRow(L('Backup & restore','Backup & restore'),{sub:L('Your songs and categories','Lagu dan kategori kamu'),go:()=>docOpen('acct',L('Backup & restore','Backup & restore'),docBackup)})))}
 /* generic document page */
 let docFrom='help';
 function docOpen(from,title,build){docFrom=from;$('#doctitle').textContent=title;const b=$('#docbody');b.textContent='';b.scrollTop=0;build(b);show('doc')}
@@ -1457,13 +1451,14 @@ function creditRoll(b){const tok=++crTok;if(window.matchMedia&&matchMedia('(pref
 
 function docCredit(b){b.className='sbody doc';
   b.append(dH(L('Tempo data','Data tempo')));const p=E('p');p.append(L('Song tempo data by ','Data tempo lagu oleh '),dA('GetSongBPM.com','https://getsongbpm.com'));b.append(p);
-  b.append(dH(L('Fonts','Font')),dUl(['Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']));
+  b.append(dH(L('Lyrics search','Pencarian lirik')));const q=E('p');q.append(L('Lyrics found with the globe button come from','Lirik yang dicari lewat tombol globe berasal dari')+' ',dA('LRCLIB','https://lrclib.net'),L(', a free, open lyrics database. When nothing is found there, the search continues on Google.',', database lirik gratis dan terbuka. Jika tidak ditemukan di sana, pencarian dilanjutkan ke Google.'));b.append(q);
+  b.append(dH(L('Fonts','Font')),dUl(['Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)','Figtree (Open Font License)']));
   b.append(dH(L('Services','Layanan')),dUl([L('Sign-in and cloud sync: Supabase','Masuk dan sinkron cloud: Supabase'),L('Hosting: Cloudflare','Hosting: Cloudflare')]))}
 function docSub(b){b.className='sbody doc';
   const pl=($('#tier')||{}).textContent||'';
   b.append(dH(L('Your plan','Paketmu')),dP(pl||'—'),dP(L('Subscription options are not available yet. Nothing is charged.','Pilihan langganan belum tersedia. Tidak ada tagihan.')))}
 /* backup & restore */
-function backupText(){return 'EVOLYRIC2'+JSON.stringify({songs,cats})}
+function backupText(){return 'EVOLYRIC2'+JSON.stringify({app:'EvoLyric',ver:APP_VER,date:new Date().toISOString(),songs,cats})}
 function restoreBackup(x){const m=x.match(/^(GULIRLIRIK1|EVOLYRIC1|EVOLYRIC2)\s*/);if(!m)return false;
   try{const raw=JSON.parse(x.slice(m[0].length)),old=Array.isArray(raw),a=old?raw:raw.songs,ca=old?[]:(raw.cats||[]);let n=0;const fresh=[];
     a.forEach(s=>{if(!songs.some(o=>o.id===s.id)){songs.push(s);fresh.push(s);n++}});
@@ -1472,16 +1467,27 @@ function restoreBackup(x){const m=x.match(/^(GULIRLIRIK1|EVOLYRIC1|EVOLYRIC2)\s*
     if(old){const f=fresh.filter(o=>o.fav).map(o=>o.id);if(f.length){const c=gc(null,'Favorites');f.forEach(i=>{if(!c.ids.includes(i))c.ids.push(i)})}}
     save();refresh();note(L(n+' songs restored',n+' lagu dipulihkan'));return true}
   catch(_){note(L('Backup could not be read','Cadangan tidak terbaca'),1);return true}}
+/* v150: Backup = one .evolyric file with everything; Restore = pick that file; Export .txt = all lyrics in the Apple Notes Shortcut format */
+const ymd=()=>{const d=new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')};
+const IOS=(()=>{try{return/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}catch(e){return false}})();
+/* iPhone/iPad: the share sheet (Save to Files) is the reliable way out of an installed web app; elsewhere a normal download */
+async function saveFile(name,text,type,done){const blob=new Blob([text],{type});
+  if(IOS&&navigator.canShare&&window.File){try{const f=new File([blob],name,{type});if(navigator.canShare({files:[f]})){await navigator.share({files:[f]});done&&done();return}}catch(e){if(e&&e.name==='AbortError')return}}
+  const u=URL.createObjectURL(blob),a=E('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);done&&done()}
+function exportText(){return songs.map(s=>{const t=String(s.title||'Untitled').trim(),l=String(s.lyrics||'').replace(/\s+$/,'');return t+'\n'+l}).join('\n===EVONOTE===\n')+'\n'}
+function restoreFile(x){x=String(x||'').replace(/^﻿/,'').trim();if(restoreBackup(x))return true;
+  if(EVONOTE.test(x)){const r=evoImport(x,null);save();refresh();evoNote(r);return true}return false}
 function docBackup(b){b.className='sbody doc';
-  b.append(dP(L('A backup contains all your songs and categories. Songs that already exist on this device are skipped when you restore.','Cadangan berisi semua lagu dan kategorimu. Lagu yang sudah ada di perangkat ini dilewati saat memulihkan.')));
-  const btn=(t,f,pri)=>{const x=E('button','dbtn'+(pri?' pri':''),t);x.type='button';x.onclick=f;return x};
-  b.append(dH(L('Back up','Cadangkan')),
-    btn(L('Copy backup to clipboard','Salin cadangan ke clipboard'),()=>copyBackup(),1),
-    btn(L('Download backup file','Unduh file cadangan'),()=>{const d=new Date(),n='evolyric-backup-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'.txt',u=URL.createObjectURL(new Blob([backupText()],{type:'text/plain'})),a=E('a');a.href=u;a.download=n;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);note(L('Backup file saved','File cadangan disimpan'))}));
-  const fi=E('input');fi.type='file';fi.accept='.txt,text/plain';fi.hidden=true;fi.onchange=async()=>{const f=fi.files&&fi.files[0];fi.value='';if(!f)return;const x=await f.text();if(!restoreBackup(x.trim()))note(L('This is not an EvoLyric backup','Ini bukan file cadangan EvoLyric'),1)};
-  const ta2=E('textarea','dta');ta2.placeholder=L('Or paste backup text here','Atau tempel teks cadangan di sini');
-  b.append(dH(L('Restore','Pulihkan')),fi,btn(L('Restore from file','Pulihkan dari file'),()=>fi.click()),ta2,
-    btn(L('Restore from pasted text','Pulihkan dari teks tempelan'),()=>{const x=ta2.value.trim();if(!x)return;if(restoreBackup(x))ta2.value='';else note(L('This is not an EvoLyric backup','Ini bukan teks cadangan EvoLyric'),1)}))}
+  const btn=(t,f,pri)=>{const x=E('button','dbtn'+(pri?' pri':''),t);x.type='button';x.onclick=f;if(t==='Backup'||t==='Restore')x.setAttribute('data-nt','');return x}; /* the names stay Backup / Restore in both languages */
+  const fi=E('input');fi.type='file';fi.hidden=true; /* no accept filter: iPhone greys out file types it does not know, such as .evolyric */
+  fi.onchange=async()=>{const f=fi.files&&fi.files[0];fi.value='';if(!f)return;let x='';try{x=await f.text()}catch(e){}if(!restoreFile(x))note(L('This is not an EvoLyric backup','Ini bukan file cadangan EvoLyric'),1)};
+  b.append(dP(L('Backup saves all your songs and categories, with their sections, colours and notes, in one .evolyric file. Keep it in Files, iCloud Drive or Google Drive.','Backup menyimpan semua lagu dan kategorimu, lengkap dengan section, warna, dan catatan, dalam satu file .evolyric. Simpan di Files, iCloud Drive, atau Google Drive.')),
+    btn(L('Backup','Backup'),()=>saveFile('evolyric-backup-'+ymd()+'.evolyric',backupText(),'application/octet-stream',()=>note(L('Backup file saved','File cadangan disimpan'))),1),
+    dP(L('Restore reads a .evolyric file back. Songs that are already on this device are skipped, nothing is overwritten.','Restore membaca kembali file .evolyric. Lagu yang sudah ada di perangkat ini dilewati, tidak ada yang ditimpa.')),
+    fi,btn(L('Restore','Restore'),()=>fi.click()),
+    dH(L('Export','Ekspor')),
+    dP(L('All lyrics as one text file, in the same format as the Apple Notes Shortcut (songs separated by ===EVONOTE===). Open it in any text app, or bring it back with + → Import .txt.','Semua lirik dalam satu file teks, dengan format yang sama seperti Shortcut Apple Notes (lagu dipisah ===EVONOTE===). Bisa dibuka di aplikasi teks apa pun, atau dimasukkan lagi lewat + → Impor .txt.')),
+    btn(L('Export .txt','Ekspor .txt'),()=>{if(!songs.length)return note(L('No songs to export','Belum ada lagu untuk diekspor'),1);saveFile('evolyric-lyrics-'+ymd()+'.txt',exportText(),'text/plain',()=>note(L(songs.length+' songs exported',songs.length+' lagu diekspor')))}))}
 $('#play').classList.toggle('nodim',!PREF.dim);$('#play').classList.toggle('noaura',!PREF.aura);
 /* back buttons */
 $('#prX').onclick=$('#hpX').onclick=$('#acX').onclick=()=>show('list');

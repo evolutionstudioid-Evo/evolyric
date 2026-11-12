@@ -1281,7 +1281,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='167',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='168',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

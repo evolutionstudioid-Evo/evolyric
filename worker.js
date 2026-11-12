@@ -31,4 +31,9 @@ export default{async fetch(req,env,ctx){
   const p=new URL(req.url).pathname;
   if(p==='/api/tempo')return tempo(req,env,ctx);
   if(p.startsWith('/api/'))return J({error:'not_found'},404);
+  /* v168: the asset host redirects /index.html → / and /x.html → /x. Older service workers cached that redirected answer and
+     Safari refuses it ("Response served by service worker has redirections"). Serve these pages directly, no redirect. */
+  if(/^\/(index|privacy|terms)\.html$/.test(p)){const u=new URL(req.url);u.pathname=p==='/index.html'?'/':p.slice(0,-5);
+    const r=await env.ASSETS.fetch(new Request(u.toString(),{method:req.method,headers:req.headers}));
+    if(r.status>=300&&r.status<400)return env.ASSETS.fetch(req);return new Response(r.body,{status:r.status,headers:r.headers})}
   return env.ASSETS.fetch(req)}};

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v168 – Fix for phones still stuck on the Safari redirect error
+- `worker.js` now serves `/index.html`, `/privacy.html` and `/terms.html` directly (no redirect). A phone still running the old service worker gets a normal page from the network, which also replaces the bad cached copy, so it recovers on the next open without waiting for the new service worker.
+
 ## v167 – Fix: Safari “Response served by service worker has redirections”
 - The host redirects `/index.html` to `/`. The service worker pre-cached `index.html`, so its cached copy was a *redirected* response; whenever the network was slow (over 2.5 s) or offline, the worker answered with it and Safari refused to open the app.
 - The shell is now cached as `./` only, any redirected response is rebuilt before it is served, and other pages (privacy, terms) never replace the cached app shell.

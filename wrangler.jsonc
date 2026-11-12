@@ -7,7 +7,7 @@
     { "pattern": "evolyric.com", "custom_domain": true },
     { "pattern": "www.evolyric.com", "custom_domain": true }
   ],
-  "assets": { "directory": "./www", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "assets": { "directory": "./www", "binding": "ASSETS", "run_worker_first": ["/api/*", "/index.html", "/privacy.html", "/terms.html"] },
   "vars": {
     "SUPABASE_URL": "https://lbebaykxuucpiowrzezf.supabase.co",
     "SUPABASE_ANON_KEY": "sb_publishable_YRoSRIHbRhXyLvDFBSZ0yg_DD58W4Xo"

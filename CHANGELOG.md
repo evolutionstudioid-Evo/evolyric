@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v167 – Fix: Safari “Response served by service worker has redirections”
+- The host redirects `/index.html` to `/`. The service worker pre-cached `index.html`, so its cached copy was a *redirected* response; whenever the network was slow (over 2.5 s) or offline, the worker answered with it and Safari refused to open the app.
+- The shell is now cached as `./` only, any redirected response is rebuilt before it is served, and other pages (privacy, terms) never replace the cached app shell.
+- Test in `tests/pwa.test.js`.
+
 ## v166 – ColorNote 9.x backups (work in progress)
 - A real ColorNote v9.1 backup decrypted but held no readable records. The reader now drops empty objects, unpacks zip / gzip / zlib / raw-deflate payloads (including a single JSON list of notes) and, when it still finds nothing, shows the payload type and its first bytes so the format can be identified.
 

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v160 – Guest mode, Privacy Policy and Terms of Service
+- **Continue as guest** on the first screen: EvoLyric works without signing in; songs are saved on this device only. **Sign In** stays at the top right. Signing in syncs and enables Friends; guest songs on the device are merged into the account once. Guests find **Backup & restore** in Preferences.
+- **Privacy Policy** and **Terms of Service** (Indonesian and English) in Help → Legal, linked under *Continue with Google* on the welcome screen and the sign-in card, and public at `/privacy.html` and `/terms.html`.
+  - Text written from the owner's draft and checked against what the app really does: guest mode, who can see a profile (exact-username search), operator access, Block/Report/limits/suspension, LRCLIB / Google Search / Google Fonts, support email contents, self-service account deletion with no recovery period, report anonymisation, minimum age via Google.
+  - Source: `docs/legal/*.md`; `node tools/legal-build.js` builds `www/legal.js`, `privacy.html`, `terms.html` (a test fails if they are out of date).
+- `supabase/012_delete_account_reports.sql`: deleting an account also removes its username and content excerpts from moderation reports.
+
 ## v159 – Safety: block, report, daily limits, suspension; Support page
 - **Block** (friend menu, or ⋯ on a request / delivery): ends the friendship, deletes waiting songs both ways; the person can no longer find you, send requests or songs. Not told. **Friends → Blocked** lists them with **Unblock**.
 - **Report** (same places): Spam / Inappropriate content / Harassment / Something else, optional details, optional "Also block". A report on a delivery includes what was sent. Reports go to the `reports` table for review.

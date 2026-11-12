@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v169 – Old address keeps working quietly
+- The “EvoLyric has moved to evolyric.com” banner on the workers.dev address is paused (`MOVED_PAUSE`), because some Indonesian mobile networks could not reach the brand-new evolyric.com on the evening of 12 Nov 2026 (no requests from those networks reached Cloudflare; the domain is not blocked by TrustPositif). Turn it back on once evolyric.com is reachable everywhere.
+
 ## v168 – Fix for phones still stuck on the Safari redirect error
 - `worker.js` now serves `/index.html`, `/privacy.html` and `/terms.html` directly (no redirect). A phone still running the old service worker gets a normal page from the network, which also replaces the bad cached copy, so it recovers on the next open without waiting for the new service worker.
 

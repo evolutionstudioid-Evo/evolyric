@@ -41,12 +41,14 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio**. Versi saat ini: **1.0**
 
 **Teman dan berbagi**
 - Cari teman lewat username, kirim dan terima permintaan pertemanan.
+- **Keamanan:** Blokir dan Laporkan (menu teman, dan ⋯ pada permintaan atau kiriman), batas harian (20 permintaan pertemanan, 30 kiriman), dan suspend akun oleh admin. Panduan admin: [`docs/ADMIN.md`](docs/ADMIN.md). Butuh `supabase/011_safety.sql`.
 - Kirim lagu atau satu kategori utuh (hingga 300 lagu sekali kirim). Saat menerima kategori, setiap lagu ditandai baru atau sudah ada, dan kamu memilih per lagu: simpan salinan, pakai milikku, atau lewati. Tidak ada lagu yang ditimpa.
 
 **Akun dan data**
 - Masuk dengan Google (Supabase Auth). Lagu dan kategori tersimpan ke cloud selama kamu masuk, sehingga muncul di perangkat lain dengan akun yang sama.
 - **Backup & restore** (Akun → Pengaturan Akun): **Backup** menyimpan semua lagu dan kategori dalam satu file `.evolyric`; **Restore** membacanya kembali tanpa menimpa lagu yang sudah ada. **Ekspor .txt** menyimpan semua lirik dalam format Shortcut Apple Notes. Cadangan lama (SETLY `GULIRLIRIK1`, `EVOLYRIC1/2` dalam `.txt`) tetap dikenali.
 - **Hapus akun** (Pengaturan Akun → Zona berbahaya): peringatan keras, tombol Backup dulu, lalu ketik **HAPUS** (EN: **DELETE**) untuk membuka tombol hapus. Menghapus akun, lagu dan kategori di cloud, profil, teman, dan lagu kiriman, serta salinan library di perangkat itu. Butuh `supabase/010_delete_account.sql`.
+- **Bantuan → Hubungi dukungan**: email ke evolution.studio.id@gmail.com (versi aplikasi dan perangkat otomatis disertakan).
 - Menu akun: Teman, **Pengaturan Profil**, Pengaturan Akun, Keluar. Menu ⚙: Preferensi, Bantuan, **Muat ulang aplikasi** (mengambil versi terbaru setelah data disimpan).
 - Antarmuka dua bahasa, Indonesia dan Inggris, yang berganti seketika.
 
@@ -68,12 +70,13 @@ www/                 Aplikasi yang dipublikasikan
   sw.js              Service worker dan versi cache
   cloud.js           Sinkronisasi cloud
   tutorial.js, man/  Panduan singkat dalam aplikasi (dihasilkan) dan tangkapan layarnya
-supabase/            Skrip SQL, dijalankan berurutan (001 sampai 010)
+supabase/            Skrip SQL, dijalankan berurutan (001 sampai 011)
 worker.js            Worker tepi: /api/tempo (data tempo, khusus pengguna yang masuk)
 wrangler.jsonc       Konfigurasi Cloudflare Workers
 tools/i18n-audit.js  Pemeriksa terjemahan
 CHANGELOG.md         Riwayat perubahan per versi
 docs/ROADMAP.md      Rencana berikutnya
+docs/ADMIN.md        Moderasi: laporan, suspend, batas
 docs/WEB_LYRIC_AUDIT.md  Rincian teknis Web Lyric
 CONTRIBUTING.md      Aturan pengembangan
 SETUP-AUTH.md        Langkah mengaktifkan Google Sign-In
@@ -83,7 +86,7 @@ SETUP-AUTH.md        Langkah mengaktifkan Google Sign-In
 
 ### 1. Supabase
 1. Buat project di Supabase, salin **Project URL** dan **anon public key** (jangan memakai `service_role`).
-2. Di SQL Editor, jalankan berkas `supabase/001_…` sampai `supabase/010_…` **secara berurutan**. Setiap berkas dijalankan satu kali.
+2. Di SQL Editor, jalankan berkas `supabase/001_…` sampai `supabase/011_…` **secara berurutan**. Setiap berkas dijalankan satu kali.
 3. Aktifkan login Google mengikuti [`SETUP-AUTH.md`](SETUP-AUTH.md).
 4. Isi `www/config.js` dengan URL dan anon key tersebut.
 

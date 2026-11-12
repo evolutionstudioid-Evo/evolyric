@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v165 – ColorNote: sturdier reading, clear reason when nothing imports
+- ColorNote records are read as framed records (4-byte length + JSON) with the brace scan as fallback; a compressed payload is unpacked first.
+- When a backup yields no songs, the message says why without showing any note text: header version, record count, how many were system/folder/locked/trash entries, the field names of an unknown record, and the file size.
+- Locked notes are recognised when `encrypted` is `true` as well as `1`.
+
 ## v164 – ColorNote backups
 - **Import from file** also reads a **ColorNote backup** (Android: Settings → Backup; `.backup`, `.dat`, `.db`). Decrypted on the device (AES-128-CBC, OpenSSL MD5 key derivation with ColorNote's fixed salt, 28-byte header). Default password 0000; a backup with its own password asks for it (wrong password is reported). Trashed, deleted, locked and folder entries are left out; checklists lose their tick marks; ColorNote highlights become EvoLyric highlights.
 - Help → Move from another notes app: ColorNote steps. Tests in `tests/import.test.js`.

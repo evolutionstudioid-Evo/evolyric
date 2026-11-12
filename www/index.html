@@ -1227,7 +1227,7 @@ document.addEventListener('paste',e=>{
    Google Keep Takeout, Simplenote, Evernote, Word, Pages exported as text/Word…). Plain .txt keeps the direct import above.
    A preview (tick the songs, split a document holding many songs) shows only when there is a choice to make. */
 const IP_WHY={big:['file too large','file terlalu besar'],bad:['could not be read','tidak bisa dibaca'],badzip:['this .zip could not be opened','file .zip ini tidak bisa dibuka'],nozip:['this device cannot open .zip or Word files – update the system or use .txt','perangkat ini belum bisa membuka file .zip atau Word – perbarui sistemnya atau pakai .txt'],pages:['open it in Pages, then Share → Export → Plain Text or Word','buka di Pages, lalu Bagikan → Ekspor → Teks Biasa atau Word'],doc:['save it as .docx or .txt first','simpan dulu sebagai .docx atau .txt'],unknown:['this file type is not supported','jenis file ini belum didukung'],cnpw:['wrong backup password','kata sandi backup salah'],empty:['no notes found','tidak ada catatan']};
-const ipErrText=errs=>errs.slice(0,4).map(x=>x.name.split('/').pop()+': '+L(...(IP_WHY[x.why]||IP_WHY.bad))).join('\n')+(errs.length>4?'\n+'+(errs.length-4):'');
+const ipErrText=errs=>errs.slice(0,4).map(x=>x.name.split('/').pop()+': '+L(...(IP_WHY[x.why]||IP_WHY.bad))+(x.info?' ('+x.info+')':'')).join('\n')+(errs.length>4?'\n+'+(errs.length-4):'');
 const ipKey=(t,l)=>normT(t||'Untitled')+'\u0000'+String(l||'').trim();
 let ip=null;
 async function fileIn(fs){if(!window.EvoImport)return note(L('Import is not available. Reload the app.','Impor tidak tersedia. Muat ulang aplikasi.'),1);
@@ -1281,7 +1281,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='164',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='165',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

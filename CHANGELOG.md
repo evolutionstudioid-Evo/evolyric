@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v166 – ColorNote 9.x backups (work in progress)
+- A real ColorNote v9.1 backup decrypted but held no readable records. The reader now drops empty objects, unpacks zip / gzip / zlib / raw-deflate payloads (including a single JSON list of notes) and, when it still finds nothing, shows the payload type and its first bytes so the format can be identified.
+
 ## v165 – ColorNote: sturdier reading, clear reason when nothing imports
 - ColorNote records are read as framed records (4-byte length + JSON) with the brace scan as fallback; a compressed payload is unpacked first.
 - When a backup yields no songs, the message says why without showing any note text: header version, record count, how many were system/folder/locked/trash entries, the field names of an unknown record, and the file size.

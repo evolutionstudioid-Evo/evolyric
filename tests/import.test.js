@@ -13,10 +13,10 @@ const para=runs=>'<w:p>'+runs.map(r=>typeof r==='string'?'<w:r><w:t xml:space="p
 const docx=paras=>zip([['[Content_Types].xml','<Types/>',true],['word/document.xml','<?xml version="1.0"?><w:document '+W+'><w:body>'+paras.map(para).join('')+'</w:body></w:document>',true]]);
 /* a ColorNote backup as the Android app writes it: 28-byte header + AES-128-CBC (OpenSSL MD5 key derivation, fixed salt) */
 const crypto=require('crypto');
-function colornote(objs,pw){const P=Buffer.from(pw),S=Buffer.from('ColorNote Fixed Salt'),md5=b=>crypto.createHash('md5').update(b).digest();
+function colornote(objs,pw,raw){const P=Buffer.from(pw),S=Buffer.from('ColorNote Fixed Salt'),md5=b=>crypto.createHash('md5').update(b).digest();
   const key=md5(Buffer.concat([P,S])),iv=md5(Buffer.concat([key,P,S])),c=crypto.createCipheriv('aes-128-cbc',key,iv);
   const plain=Buffer.concat([Buffer.from([0,0,0,3,1,2,3]),...objs.map(o=>{const j=Buffer.from(JSON.stringify(o)),l=Buffer.alloc(4);l.writeUInt32BE(j.length);return Buffer.concat([l,j])})]);
-  const head=Buffer.alloc(28);Buffer.from([0,78,0,79,0,84,0,69]).copy(head);head.writeUInt32BE(8,8);head.writeUInt32BE(2,12);head.writeUInt32BE(objs.length,24);return Buffer.concat([head,c.update(plain),c.final()])}
+  const body=raw||plain;const head=Buffer.alloc(28);Buffer.from([0,78,0,79,0,84,0,69]).copy(head);head.writeUInt32BE(8,8);head.writeUInt32BE(2,12);head.writeUInt32BE(objs.length,24);return Buffer.concat([head,c.update(body),c.final()])}
 const CN=[{_id:1,title:'Pulang Malam',note:'Lampu jalan redup\nAku pulang sendiri',note_ext:JSON.stringify({format_list:[{format:'bg_color',start:6,end:11,attribute:'highlight_purple'}]}),type:0,encrypted:0,active_state:0,created_date:1,modified_date:2},
   {title:'Sampah',note:'dibuang',type:0,encrypted:0,active_state:16,created_date:1,modified_date:2},{title:'Folder',note:'{}',type:128,encrypted:0,active_state:0},
   {title:'Rahasia',note:'xxx',type:0,encrypted:1,active_state:0},{title:'Daftar',note:'[ ] Gitar\n[V] Kabel',type:16,encrypted:0,active_state:0,created_date:1,modified_date:2}];
@@ -86,6 +86,10 @@ test('Import: a ColorNote backup with its own password asks for it; a wrong pass
 test('Import: a ColorNote backup without importable notes says why (version, record counts) instead of a bare message',async()=>{
   const t=await open(),p=t.page;await up(p,[['colornote-x.backup',colornote([{_id:1,title:'Kunci',note:'zz',encrypted:1,type:0},{_id:2,title:'Baru',body:'{a}',type:0},{_id:3,title:'syncable_settings',note:'{}',type:256}],'0000')]]);await p.waitForTimeout(600);
   const m=await p.evaluate(()=>$('#note').textContent);for(const x of['colornote-x.backup: no notes found (ColorNote v8.2','3 rec','sys 1','locked 1','other 1','keys _id,title,body,type'])assert(m.includes(x),x+' in '+m);await t.close()});
+test('Import: a ColorNote backup whose content is compressed (gzip JSON list) is unpacked',async()=>{
+  const t=await open(),p=t.page;const raw=Buffer.concat([Buffer.from([0,0,0,9]),zlib.gzipSync(Buffer.from(JSON.stringify([CN[0],CN[4]])))]);
+  await up(p,[['colornote-v9.backup',colornote([],'0000',raw)]]);await p.waitForTimeout(700);
+  eq(await p.evaluate(()=>[...document.querySelectorAll('#ipItems .arow b')].map(b=>b.textContent)),['Pulang Malam','Daftar'],'notes');await t.close()});
 test('Paste as new song: the clipboard note opens in the editor with its first line as the title',async()=>{
   const t=await open(),p=t.page;await t.ctx.grantPermissions(['clipboard-read','clipboard-write']);
   await p.evaluate(()=>navigator.clipboard.writeText('Hujan Reda Lagi\n[Verse]\nRintik turun pelan'));

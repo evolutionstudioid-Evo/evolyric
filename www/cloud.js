@@ -391,6 +391,15 @@
       uid = null; S = null; deferred = false; pending = false;
       H.useKeys(null); var g = H.readLib(null); H.put(g.songs, g.cats); H.render(); setSt('guest');
     },
+    /* v158: the account was deleted on the server – drop everything of it on this device, push nothing */
+    forget: function () {
+      if (!H) return;
+      var had = uid || H.activeUid();
+      stopRealtime(); clearTimeout(tmr); clearTimeout(retryT);
+      if (had) { LS.del(SK + had); LS.del(MK + had); H.dropUser(had); }
+      uid = null; S = null; deferred = false; pending = false;
+      H.useKeys(null); var g = H.readLib(null); H.put(g.songs, g.cats); H.render(); setSt('guest');
+    },
     /* push whatever is pending (used before sign-out) */
     flush: function (ms) {
       if (!uid) return Promise.resolve();

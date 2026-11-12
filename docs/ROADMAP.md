@@ -3,7 +3,7 @@
 Fitur inti EvoLyric sudah lengkap (v150). Daftar ini mencatat pekerjaan yang sengaja ditunda, urut dari yang paling penting.
 
 ## Sebelum dibuka untuk umum
-1. **Kebijakan Privasi dan Syarat Layanan.** Login Google untuk publik (verifikasi OAuth consent screen) biasanya meminta tautan ke kedua halaman ini. Isi minimal: data apa yang disimpan (lagu, kategori, profil, email untuk login), di mana (perangkat dan Supabase), siapa yang bisa melihatnya (email tidak pernah ditampilkan ke pengguna lain), cara menghapus akun dan data, serta catatan bahwa lirik adalah tanggung jawab pengguna. Tautkan dari Bantuan dan dari layar masuk.
+1. **Kebijakan Privasi dan Syarat Layanan.** Login Google untuk publik (verifikasi OAuth consent screen) biasanya meminta tautan ke kedua halaman ini. Isi minimal: data apa yang disimpan (lagu, kategori, profil, email untuk login), di mana (perangkat dan Supabase), siapa yang bisa melihatnya (email tidak pernah ditampilkan ke pengguna lain), cara menghapus akun dan data (sudah ada: Pengaturan Akun → Hapus akun, v158), serta catatan bahwa lirik adalah tanggung jawab pengguna. Tautkan dari Bantuan dan dari layar masuk.
 2. **Laporan error.** Saat ini error di perangkat pengguna lain tidak terlihat. Rencana: tabel kecil di Supabase (versi app, perangkat, pesan error, waktu; tanpa isi lirik), diisi dari `window.onerror` / `unhandledrejection`, dibatasi beberapa laporan per sesi, dan bisa dimatikan di Preferensi.
 
 ## Ditunda atas permintaan

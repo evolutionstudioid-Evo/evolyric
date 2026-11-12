@@ -681,6 +681,13 @@ body.touring #tsv{display:none!important}
 .ewb.busy svg{animation:wlspin 1s linear infinite}
 .sheet button.wsr{display:flex;align-items:center;gap:10px}.sheet button.wsr svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--acct);stroke-width:1.7}
 .doc .lgw .rel{font-size:14px;font-weight:600;color:var(--acct);letter-spacing:.02em}
+/* v158: delete account */
+.srow.danger .lbl{color:var(--f)}
+.dzw{display:flex;flex-direction:column;gap:4px;padding:14px 16px;margin:4px 0 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--f) 55%,transparent);background:color-mix(in srgb,var(--f) 12%,transparent)}
+.dzw b{color:var(--f);font-size:16px}.dzw span{font-size:14px;line-height:1.45}
+.dzword{color:var(--f);letter-spacing:.08em}
+.dzin{display:block;width:100%;margin:0 0 12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.dbtn.danger{background:var(--f);border-color:var(--f);color:#fff}.dbtn.danger:disabled{opacity:.35}
 </style>
 </head>
 <body>
@@ -1189,7 +1196,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='157',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='158',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1449,7 +1456,30 @@ function acctRender(){const b=$('#acctbody');b.textContent='';const u=user||{};
   b.append(E('div','sgrp',L('Account','Akun')),sCard(
     sRow('Email',{sub:L('Used to sign in with Google','Dipakai untuk masuk dengan Google'),val:u.email||''}),
     sRow(L('Subscription','Langganan'),{go:()=>docOpen('acct',L('Subscription','Langganan'),docSub)})),
-  E('div','sgrp',L('Data','Data')),sCard(sRow(L('Backup & restore','Backup & restore'),{sub:L('Your songs and categories','Lagu dan kategori kamu'),go:()=>docOpen('acct',L('Backup & restore','Backup & restore'),docBackup)})))}
+  E('div','sgrp',L('Data','Data')),sCard(sRow(L('Backup & restore','Backup & restore'),{sub:L('Your songs and categories','Lagu dan kategori kamu'),go:()=>docOpen('acct',L('Backup & restore','Backup & restore'),docBackup)})),
+  E('div','sgrp',L('Danger zone','Zona berbahaya')),sCard((()=>{const r=sRow(L('Delete account','Hapus akun'),{sub:L('Permanently delete your account and all its data','Hapus akun dan semua datanya secara permanen'),go:()=>docOpen('acct',L('Delete account','Hapus akun'),docDelete)});r.classList.add('danger');return r})()))}
+/* v158: delete account – strong warning, Backup first, type a word to unlock the button */
+function docDelete(b){b.className='sbody doc';const word=PREF.lang==='id'?'HAPUS':'DELETE';
+  const w=E('div','dzw');w.append(E('b','',L('This cannot be undone','Tindakan ini tidak bisa dibatalkan')),E('span','',L('Your EvoLyric account and everything in it will be deleted permanently. Nobody, not even Evolution Digital Studio, can bring it back.','Akun EvoLyric dan semua isinya akan dihapus permanen. Tidak ada yang bisa mengembalikannya, termasuk Evolution Digital Studio.')));b.append(w);
+  b.append(dH(L('What is deleted','Yang dihapus')),dUl([L('All your songs and categories in the cloud and on this device','Semua lagu dan kategorimu di cloud dan di perangkat ini'),L('Your profile, username and bio','Profil, username, dan bio'),L('Your friends, friend requests and songs waiting to be received','Daftar teman, permintaan pertemanan, dan lagu kiriman yang belum diterima'),L('Your sign-in with this Google account','Login EvoLyric dengan akun Google ini')]));
+  b.append(dH(L('Keep your songs?','Mau menyimpan lagumu?')),dP(L('Make a Backup first. You can restore it later on any device.','Buat Backup dulu. Nanti bisa di-restore di perangkat mana pun.')));
+  const bk=E('button','dbtn',L('Backup first','Backup dulu'));bk.type='button';bk.onclick=()=>saveFile('evolyric-backup-'+ymd()+'.evolyric',backupText(),'application/octet-stream',()=>note(L('Backup file saved','File cadangan disimpan')));b.append(bk);
+  b.append(dH(L('Confirm','Konfirmasi')));const p=E('p');p.append(L('Type','Ketik')+' ');const wb=E('b','dzword',word);wb.setAttribute('data-nt','');p.append(wb,' '+L('to confirm.','untuk konfirmasi.'));b.append(p);
+  const inp=E('input','fld dzin');inp.type='text';inp.autocomplete='off';inp.setAttribute('autocapitalize','characters');inp.setAttribute('autocorrect','off');inp.spellcheck=false;inp.setAttribute('aria-label',L('Type the word to confirm','Ketik kata konfirmasi'));inp.placeholder=word;inp.setAttribute('data-nt','');b.append(inp);
+  const go=E('button','dbtn danger',L('Delete my account permanently','Hapus akun saya permanen'));go.type='button';go.disabled=true;b.append(go);
+  inp.oninput=()=>{go.disabled=inp.value.trim().toUpperCase()!==word};inp.onkeydown=e=>{if(e.key==='Enter'&&!go.disabled)go.click()};go.onclick=()=>acctDelete(go)}
+/* removes this device's copy of the library and the account's local data (preferences such as theme and language stay) */
+function wipeLocal(){const keep=new Set(['evo.prefs','evo.tour','evo.bklog']);try{const ks=[];for(let i=0;i<localStorage.length;i++)ks.push(localStorage.key(i));
+  ks.forEach(k=>{if(keep.has(k))return;if(/^(evolyric-(v1|cats-v1|recent-v1|queue-v1|sync-v1|mig-v1|seen|uname|bio|auth-hint))|^evo\.lastsong$|^sb-.+-auth-token$/.test(k))localStorage.removeItem(k)})}catch(e){}
+  songs.length=0;cats.length=0;recent.length=0;queue.length=0;try{dropTemp()}catch(e){}}
+async function acctDelete(go){if(!user||!sb)return note(L('Please sign in again first.','Silakan masuk lagi dulu.'),1);go.disabled=true;go.classList.add('ld');
+  try{const{error}=await sb.rpc('delete_my_account');if(error)throw error}
+  catch(e){go.disabled=false;go.classList.remove('ld');const m=String((e&&e.message)||''),miss=e&&(e.code==='PGRST202'||e.code==='42883'||/could not find|does not exist/i.test(m));
+    return note(miss?L('Account deletion is not switched on on the server yet. Nothing was deleted.','Hapus akun belum diaktifkan di server. Tidak ada yang dihapus.'):L('Your account could not be deleted. Check your connection and try again. Nothing was deleted.','Akun tidak bisa dihapus. Periksa koneksi lalu coba lagi. Tidak ada yang dihapus.'),1)}
+  wipeLocal();if(window.Cloud&&Cloud.forget)Cloud.forget();
+  uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;setHint(null);user=null;profSynced=null;
+  try{await sb.auth.signOut({scope:'local'})}catch(e){}
+  renderAuth();refresh();show('list');gateCheck();note(L('Your account has been deleted.','Akunmu sudah dihapus.'))}
 /* generic document page */
 let docFrom='help';
 function docOpen(from,title,build){docFrom=from;$('#doctitle').textContent=title;const b=$('#docbody');b.textContent='';b.scrollTop=0;build(b);show('doc')}

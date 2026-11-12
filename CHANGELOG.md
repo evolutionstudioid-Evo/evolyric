@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v158 – Delete account
+- **Account Settings → Danger zone → Delete account.** A red warning ("This cannot be undone"), a list of what is deleted, a **Backup first** button, and the delete button stays locked until you type **DELETE** (ID: **HAPUS**).
+- Deletes on the server: the sign-in account, cloud songs and categories, profile/username/bio, friendships and pending sends. Then this device's copy of the library, Recent, queue and last song are removed and the app returns to the sign-in screen. Theme and language stay.
+- If the server cannot do it (offline, or the SQL not installed yet) nothing is deleted and the app says why.
+- **Server setup:** run `supabase/010_delete_account.sql` once in the Supabase SQL Editor.
+
 ## v157 – Empty library for new users
 - A first visit starts with a truly empty library: the demo song "Contoh Lagu" is no longer added.
 - Cloud: an untouched demo song left on an older device is never uploaded, also not into an empty account.

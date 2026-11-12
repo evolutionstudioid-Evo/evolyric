@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v164 – ColorNote backups
+- **Import from file** also reads a **ColorNote backup** (Android: Settings → Backup; `.backup`, `.dat`, `.db`). Decrypted on the device (AES-128-CBC, OpenSSL MD5 key derivation with ColorNote's fixed salt, 28-byte header). Default password 0000; a backup with its own password asks for it (wrong password is reported). Trashed, deleted, locked and folder entries are left out; checklists lose their tick marks; ColorNote highlights become EvoLyric highlights.
+- Help → Move from another notes app: ColorNote steps. Tests in `tests/import.test.js`.
+
 ## v163 – Bring your notes from any app
 - **Import from file** (+ menu, was *Import .txt*) now reads `.txt .md .html .rtf .docx .enex .json .zip`: Google Keep Takeout, Simplenote export, Evernote, Word, Pages exported as text/Word, a zip of lyric files. All on the device (`www/import.js`). Highlighted and coloured text become EvoLyric highlights. Plain `.txt` (and the Apple Notes Shortcut file) import exactly as before.
 - **Preview** when there is a choice: tick the songs (songs already in the Library are shown unticked), split one document holding many songs at two blank lines, optional Auto Section, the category it goes into, and why a file was skipped (Pages/.doc get export steps).

@@ -167,11 +167,24 @@ function cat(){var l=0,i;for(i=0;i<arguments.length;i++)l+=arguments[i].length;v
 function cnDecrypt(u8,pw){if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error('nocrypto'));if(u8.length<44)return Promise.reject(new Error('bad'));
   var P=new TextEncoder().encode(pw),Sl=new TextEncoder().encode('ColorNote Fixed Salt'),key=md5(cat(P,Sl)),iv=md5(cat(key,P,Sl));
   return crypto.subtle.importKey('raw',key,{name:'AES-CBC'},false,['decrypt']).then(function(k){return crypto.subtle.decrypt({name:'AES-CBC',iv:iv},k,u8.subarray(28))})
-    .then(function(b){return new TextDecoder('utf-8').decode(b)},function(){throw new Error('cnpw')})}
+    .then(function(b){return new Uint8Array(b)},function(){throw new Error('cnpw')})}
 function jsonObjects(t){var out=[],i=0,n=t.length;while(i<n){var s0=t.indexOf('{',i);if(s0<0)break;var bal=0,q=false,esc=false,e=-1;
     for(var j=s0;j<n;j++){var c=t[j];if(esc){esc=false;continue}if(c==='\\'){esc=true;continue}if(c==='"'){q=!q;continue}if(q)continue;if(c==='{')bal++;else if(c==='}'&&--bal===0){e=j;break}}
-    if(e<0){i=s0+1;continue}try{out.push(JSON.parse(t.slice(s0,e+1)));i=e+1}catch(x){i=s0+1}}return out}
-function cnNotes(text){return jsonObjects(text).filter(function(o){return o&&typeof o.note==='string'&&o.type!==128&&o.type!==256&&!o.encrypted&&o.active_state!==16&&o.active_state!==32}).map(function(o){
+    if(e<0){i=s0+1;continue}try{var o=JSON.parse(t.slice(s0,e+1));if(o&&typeof o==='object'&&!Array.isArray(o))out.push(o);i=e+1}catch(x){i=s0+1}}return out}
+/* records are framed: 4-byte big-endian length + UTF-8 JSON, after an opaque prefix; a brace scan is the fallback */
+function cnRecords(b){var out=[],mk=new TextEncoder().encode('{"'),utf=new TextDecoder('utf-8'),st=-1,i,k;
+  for(i=4;i<=b.length-2;i++){if(b[i]===mk[0]&&b[i+1]===mk[1]){var L=(b[i-4]<<24|b[i-3]<<16|b[i-2]<<8|b[i-1])>>>0;if(L>1&&L<=b.length-i){try{JSON.parse(utf.decode(b.subarray(i,i+L)));st=i-4;break}catch(x){}}}}
+  if(st>=0){var off=st;while(off+4<=b.length){var len=(b[off]<<24|b[off+1]<<16|b[off+2]<<8|b[off+3])>>>0;off+=4;if(!len||len>b.length-off)break;
+    try{var o=JSON.parse(utf.decode(b.subarray(off,off+len)));if(o&&typeof o==='object'&&!Array.isArray(o))out.push(o)}catch(x){break}off+=len}}
+  if(!out.length)out=jsonObjects(utf.decode(b));return out}
+function gunz(b,fmt){if(typeof DecompressionStream!=='function')return Promise.reject(new Error('no'));return new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream(fmt))).arrayBuffer().then(function(a){return new Uint8Array(a)})}
+function cnUnpack(b){var recs=cnRecords(b);if(recs.length)return Promise.resolve(recs);
+  var tries=[];for(var o=0;o<Math.min(64,b.length-2);o++){if(b[o]===0x1f&&b[o+1]===0x8b)tries.push([o,'gzip']);else if(b[o]===0x78&&/^(1|94|156|218)$/.test(String(b[o+1])))tries.push([o,'deflate'])}
+  return tries.reduce(function(p,t){return p.then(function(r){if(r.length)return r;return gunz(b.subarray(t[0]),t[1]).then(cnRecords,function(){return[]})})},Promise.resolve([]))}
+function cnInfo(u8,recs,st){var v=u8[1]===78&&u8[3]===79&&u8[5]===84&&u8[7]===69?((u8[8]<<24|u8[9]<<16|u8[10]<<8|u8[11])>>>0)+'.'+((u8[12]<<24|u8[13]<<16|u8[14]<<8|u8[15])>>>0):'?';
+  return 'ColorNote v'+v+' · '+recs.length+' rec'+(st?Object.keys(st).filter(function(k){return st[k]}).map(function(k){return ' · '+k+' '+st[k]}).join(''):'')+' · '+u8.length+'B'}
+function cnNotes(recs,st){return recs.filter(function(o){var why=o.type===256||o.title==='syncable_settings'||o.title==='name_master_password'?'sys':o.type===128?'folder':(o.encrypted===true||o.encrypted===1)?'locked':(o.active_state===16||o.active_state===32)?'trash':typeof o.note!=='string'?'other':'';
+    if(why&&st){st[why]=(st[why]||0)+1;if(why==='other'&&!st.keys)st.keys=Object.keys(o).slice(0,14).join(',')}return !why}).map(function(o){
   var t=clean(o.note),c=new Array(t.length).fill('');
   try{var ext=o.note_ext?JSON.parse(o.note_ext):null;(ext&&ext.format_list||[]).forEach(function(f){if(f.format!=='bg_color'||!f.attribute)return;var h=hue(String(f.attribute).replace(/^highlight_/,''),0.2);if(!h)return;for(var k=Math.max(0,f.start);k<Math.min(t.length,f.end);k++)c[k]=h})}catch(x){}
   var runs=[];for(var k=0;k<t.length;k++){if(runs.length&&runs[runs.length-1].c===c[k])runs[runs.length-1].t+=t[k];else runs.push({t:t[k],c:c[k]})}
@@ -191,9 +204,10 @@ function readEntry(name,u8,depth,res){var x=ext(name);
   if(x==='docx'){var es2;try{es2=unzip(u8)}catch(e){res.errors.push({name:name,why:'bad'});return Promise.resolve()}
     var doc=es2.filter(function(e){return e.name==='word/document.xml'})[0];if(!doc){res.errors.push({name:name,why:'bad'});return Promise.resolve()}
     return doc.read().then(function(d){add(res,docText(docxText(decode(d)),name,'Word'))},function(err){res.errors.push({name:name,why:err&&err.message==='nozip'?'nozip':'bad'})})}
-  if(isColorNote(name,u8)&&depth===0){var tryPw=function(pw,left){return cnDecrypt(u8,pw).then(function(t){var ns=cnNotes(t);if(!ns.length)throw new Error('empty');add(res,ns)},function(err){
+  if(isColorNote(name,u8)&&depth===0){var tryPw=function(pw,left){return cnDecrypt(u8,pw).then(function(b){return cnUnpack(b).then(function(recs){var st={},ns=cnNotes(recs,st);
+        if(!ns.length){var e=new Error('empty');e.info=cnInfo(u8,recs,st);throw e}add(res,ns)})},function(err){
       if(err&&err.message==='cnpw'&&left>0&&res.ask)return Promise.resolve(res.ask(name,pw!=='0000')).then(function(p2){if(p2==null||p2==='')throw new Error('cnpw');return tryPw(String(p2),left-1)});throw err})};
-    return tryPw('0000',3).catch(function(err){res.errors.push({name:name,why:err&&/^(cnpw|empty)$/.test(err.message)?err.message:err&&err.message==='nocrypto'?'nozip':'bad'})})}
+    return tryPw('0000',3).catch(function(err){res.errors.push({name:name,info:err&&err.info||'',why:err&&/^(cnpw|empty)$/.test(err.message)?err.message:err&&err.message==='nocrypto'?'nozip':'bad'})})}
   if(/^(pages|key|numbers)$/.test(x)){res.errors.push({name:name,why:'pages'});return Promise.resolve()}
   if(x==='doc'){res.errors.push({name:name,why:'doc'});return Promise.resolve()}
   var t=decode(u8);

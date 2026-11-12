@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v157 – Empty library for new users
+- A first visit starts with a truly empty library: the demo song "Contoh Lagu" is no longer added.
+- Cloud: an untouched demo song left on an older device is never uploaded, also not into an empty account.
+- Existing libraries are not changed.
+
 ## EvoLyric 1.0 (build v156)
 - First release. Help → About EvoLyric shows **Version 1.0** (ID: Versi 1.0) under the logo.
 - Build numbers (v1…v156, the service-worker cache) keep counting as before; the version people see is set by `APP_REL` in `www/index.html`.

@@ -271,7 +271,7 @@
       songs.forEach(function (s) { sigC[sig(s)] = s.id; byId[s.id] = s; taken[s.id] = 1; });
       G.songs.forEach(function (g) {
         if (!g || !g.id) return;
-        if (nonEmpty && H.isSample(g)) { idMap[g.id] = byId[g.id] ? g.id : null; return; } /* never resurrect the demo song */
+        if (H.isSample(g)) { idMap[g.id] = byId[g.id] ? g.id : null; return; } /* v157: the old demo song is never uploaded, also not into an empty account */
         if (taken[g.id]) {
           if (sig(g) === sig(byId[g.id])) { idMap[g.id] = g.id; return; }
           var o = clone(g); o.id = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); songs.push(o); taken[o.id] = 1; idMap[g.id] = o.id; return;

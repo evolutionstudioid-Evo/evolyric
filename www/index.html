@@ -818,12 +818,13 @@ const SPEED_BONUS=3,BOOST1=15+SPEED_BONUS,BOOST2=20+SPEED_BONUS; /* every speed 
 const FMIN=12,FMAX=120;
 const SPEED_SCALE=.8; /* actual px/s = (speed+3) x SPEED_SCALE x font x .12. v21: 1 -> .8 (= 20% slower on every setting; stored speeds are unchanged, so no migration) */
 const E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e};
+/* v157: the old demo song – no longer added to new libraries; kept only to recognise (and never upload) an untouched copy on older devices */
 const SAMPLE={id:'s1',title:'Contoh Lagu',artist:'EvoLyric',speed:5,font:32,lyrics:
 '[Intro]\n(petik pelan)\n\n[Verse 1]\nLampu panggung mulai menyala\nSuara kita mengisi ruang\nSatu per satu baris mengalir\nTanpa kertas yang berserakan\n\n[Chorus]\nGulir saja, biar lirik berjalan\nKita bernyanyi sampai selesai\n\n[Male 1]\nBagian ini milik dia\n\n[Female 1]\nBagian ini milik aku\n\n[All]\nSatu suara, satu panggung\n\n[Interlude]\n(solo gitar)\n\n[Verse 2]\nSetelah lagu ini usai\nTepuk tangan jadi penutup\n\n[Rit]\nPelan… dan selesai'};
 let songs=[],cur=null,ed=null,playing=false,boostSp=0,bst=0,frac=0,last=0,fs=false,wl=null,skip=new Set(),g=null,delArm=0,t0,waiting=false,lastT=0,startEl=null,lastA=null,cats=[];
 const SAMPLE_J=JSON.stringify(SAMPLE);let LK=K,LKC='evolyric-cats-v1'; /* active storage keys: guest = K/KC, signed-in = per-account cache (see cloud.js) */
 try{const h=JSON.parse(localStorage.getItem('evolyric-auth-hint')||'null');if(h&&h.id&&localStorage.getItem(K+':u:'+h.id)!=null){LK=K+':u:'+h.id;LKC='evolyric-cats-v1:u:'+h.id}}catch(e){}
-try{const r=localStorage.getItem(LK);songs=r?JSON.parse(r):[SAMPLE];if(!Array.isArray(songs))throw 0}catch(e){try{localStorage.setItem(LK+'-corrupt',localStorage.getItem(LK)||'')}catch(_){}songs=[SAMPLE]}
+try{const r=localStorage.getItem(LK);songs=r?JSON.parse(r):[]; /* v157: a new library starts empty (no demo song) */if(!Array.isArray(songs))throw 0}catch(e){try{localStorage.setItem(LK+'-corrupt',localStorage.getItem(LK)||'')}catch(_){}songs=[]}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}
 let saveBad=0;const KC='evolyric-cats-v1';
 const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify(songs));localStorage.setItem(LKC,JSON.stringify(cats));if(saveBad){saveBad=0;$('#svw').hidden=true}}catch(e){saveBad=1;$('#svw').hidden=false}};
@@ -1188,7 +1189,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='156',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='157',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -2782,7 +2783,7 @@ $('#frX').onclick=()=>{show('list')};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user&&sb)frLoad()});
 
 /* ---------- Cloud sync hooks (logic lives in cloud.js) ---------- */
-function readLib(u){const a=u?K+':u:'+u:K,b=u?KC+':u:'+u:KC;let ex=false,s=[JSON.parse(SAMPLE_J)],c=[];
+function readLib(u){const a=u?K+':u:'+u:K,b=u?KC+':u:'+u:KC;let ex=false,s=[],c=[];
   try{const r=localStorage.getItem(a);if(r!=null){ex=true;const p=JSON.parse(r);if(Array.isArray(p))s=p.filter(x=>x&&x.id)}}catch(e){}
   try{const r=localStorage.getItem(b);if(r){const p=JSON.parse(r);if(Array.isArray(p))c=p.filter(x=>x&&x.id&&x.name).map(x=>({...x,ids:Array.isArray(x.ids)?x.ids:[]}))}}catch(e){}
   const ok=new Set(s.map(x=>x.id));c.forEach(x=>x.ids=[...new Set(x.ids)].filter(i=>ok.has(i)));return{songs:s,cats:c,exists:ex}}

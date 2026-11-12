@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v159 – Safety: block, report, daily limits, suspension; Support page
+- **Block** (friend menu, or ⋯ on a request / delivery): ends the friendship, deletes waiting songs both ways; the person can no longer find you, send requests or songs. Not told. **Friends → Blocked** lists them with **Unblock**.
+- **Report** (same places): Spam / Inappropriate content / Harassment / Something else, optional details, optional "Also block". A report on a delivery includes what was sent. Reports go to the `reports` table for review.
+- **Daily limits** on the server: 20 friend requests, 30 deliveries, 10 reports per 24 hours.
+- **Suspension** by the admin (`admin_suspend` in the SQL Editor): *social* = no sending / friend requests (notice in Friends); *full* = the app is locked with Contact support / Sign out. Temporary or permanent.
+- **Help → Contact support**: email button to evolution.studio.id@gmail.com, with app version, device and @username filled in.
+- New: `supabase/011_safety.sql` (run once), `docs/ADMIN.md` (how to read reports, suspend, lift). The SQL was tested on Postgres 16 with every rule (block, limits, suspension, permissions, delete account).
+- Fixed: "from @…" under a delivery is now translated.
+
 ## v158 – Delete account
 - **Account Settings → Danger zone → Delete account.** A red warning ("This cannot be undone"), a list of what is deleted, a **Backup first** button, and the delete button stays locked until you type **DELETE** (ID: **HAPUS**).
 - Deletes on the server: the sign-in account, cloud songs and categories, profile/username/bio, friendships and pending sends. Then this device's copy of the library, Recent, queue and last song are removed and the app returns to the sign-in screen. Theme and language stay.

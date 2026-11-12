@@ -688,6 +688,16 @@ body.touring #tsv{display:none!important}
 .dzword{color:var(--f);letter-spacing:.08em}
 .dzin{display:block;width:100%;margin:0 0 12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
 .dbtn.danger{background:var(--f);border-color:var(--f);color:#fff}.dbtn.danger:disabled{opacity:.35}
+/* v159: safety + support */
+.fr button.frm{min-width:38px;padding:0 8px;font-size:18px;line-height:1}
+.sheet button.rr i,.sheet button.rpb i{font-style:normal;color:var(--acct);margin-left:auto}
+.sheet button.rr,.sheet button.rpb{display:flex;gap:12px;align-items:center}
+.sheet textarea.rpt{margin:6px 6px 8px;min-height:72px;resize:vertical;background:var(--bg);color:var(--fg);border:1px solid var(--ln);border-radius:10px;padding:10px;font:15px/1.4 'Atkinson Hyperlegible',system-ui,sans-serif}
+.susb{display:flex;flex-direction:column;gap:4px;margin:4px 0 12px;padding:12px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--f) 55%,transparent);background:color-mix(in srgb,var(--f) 12%,transparent)}
+.susb b{color:var(--f)}.susb span{font-size:14px;line-height:1.4}.susb a{color:var(--acct);font-weight:700;font-size:14px}
+#susp{position:fixed;inset:0;z-index:2500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+#susp .spc2{max-width:360px;text-align:center}#susp h2{color:var(--f);margin:0 0 10px}#susp p{margin:0 0 12px;line-height:1.45}#susp .dbtn{margin-top:8px}
+.doc a.dbtn,#susp a.dbtn{text-decoration:none;color:#15110e}.supm{text-align:center;color:var(--mut);margin-top:-2px}
 </style>
 </head>
 <body>
@@ -1196,7 +1206,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='158',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='159',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1366,7 +1376,18 @@ function helpRender(){const b=$('#helpbody');b.textContent='';
     sRow(L('Interactive tour','Tur interaktif'),{go:()=>tourStart()}),
     sRow(L('Quick guide','Panduan singkat'),{go:tutOpen}),
     sRow(L('About EvoLyric','Tentang EvoLyric'),{go:()=>docOpen('help',L('About','Tentang'),docAbout)}),
-    sRow(L('Credit','Kredit'),{go:()=>docOpen('help',L('Credit','Kredit'),docCredit)})))}
+    sRow(L('Credit','Kredit'),{go:()=>docOpen('help',L('Credit','Kredit'),docCredit)})),
+  E('div','sgrp',L('Support','Dukungan')),sCard(sRow(L('Contact support','Hubungi dukungan'),{sub:SUPPORT_EMAIL,go:()=>docOpen('help',L('Support','Dukungan'),docSupport)})))}
+/* v159: Support – one place to reach Evolution Digital Studio by email */
+const SUPPORT_EMAIL='evolution.studio.id@gmail.com';
+function supportMail(subject,extra){const body=[extra||'','','—','EvoLyric '+APP_REL+' (build '+APP_VER+')',user&&user.username?'@'+user.username:(uname&&uname.v?'@'+uname.v:''),navigator.userAgent].filter((x,i)=>x||i<2).join('\n');
+  return 'mailto:'+SUPPORT_EMAIL+'?subject='+encodeURIComponent(subject||'EvoLyric support')+'&body='+encodeURIComponent(body)}
+function docSupport(b){b.className='sbody doc';
+  b.append(dP(L('Questions, a problem, an idea, or something that is not right with another user? Send us an email. We read every message.','Ada pertanyaan, masalah, ide, atau hal yang tidak beres dengan pengguna lain? Kirim email ke kami. Setiap pesan kami baca.')));
+  const a=E('a','dbtn pri',L('Email support','Kirim email ke dukungan'));a.href=supportMail('EvoLyric support');a.target='_blank';a.rel='noopener';b.append(a);
+  const m=E('p','supm',SUPPORT_EMAIL);m.setAttribute('data-nt','');b.append(m);
+  b.append(dH(L('Helpful to include','Sebaiknya sertakan')),dUl([L('What you were doing and what went wrong','Apa yang sedang kamu lakukan dan apa yang salah'),L('A screenshot, if you can','Screenshot, kalau bisa'),L('For a problem with another user: their @username','Untuk masalah dengan pengguna lain: @username-nya')]));
+  b.append(dP(L('Your app version and device are added to the email for you.','Versi aplikasi dan jenis perangkatmu otomatis ditambahkan ke email.')))}
 /* ---------- v148: interactive tour. A hand shows the gesture, a spotlight marks the place, a card explains it.
    Runs once for new users (empty or sample library) and any time from Help → Interactive tour. It uses a fictional demo song
    that is never saved: the editor is closed without saving and the lyrics screen shows it as a temporary song. ---------- */
@@ -2670,16 +2691,16 @@ function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
 function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);renderAuth();
   if(n){if($('#welcome').classList.contains('on')&&$('#wstep2').hidden)wStep(3)}
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
-  if(n&&was!==n.id)unameLoad(n.id);
+  if(n&&was!==n.id){unameLoad(n.id);setTimeout(susCheck,900)}
   if(n||was)gateCheck();
   if(n&&profSynced!==n.id){profSynced=n.id;setTimeout(()=>syncProfile(n).then(()=>{unameFetch(n);frLoad(true)}),0)}
   if(window.Cloud){if(n)Cloud.signedIn(n);else Cloud.signedOut()}}
 async function syncProfile(n){ /* refresh display fields only; row + email are created/owned by the DB trigger, identity comes from the JWT via RLS */
   try{const{error}=await sb.from('profiles').update({display_name:n.name,avatar_url:n.avatar||null}).eq('id',n.id);if(error)console.warn('profile sync:',error.message)}catch(e){console.warn('profile sync failed',e)}}
-async function signOut(){closeMenu();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;renderAuth();gateCheck();
+async function signOut(){closeMenu();susp.on=false;susLock();uname.v='';uname.state=null;fr.list=[];fr.state=null;fr.t=0;if($('#friends').classList.contains('on'))show('list');const had=user;setHint(null);user=null;profSynced=null;renderAuth();gateCheck();
   try{if(sb){if(window.Cloud)await Cloud.flush(4000);await sb.auth.signOut()}note('Signed out')}catch(e){note('Signed out on this device')}}
 /* ---------- v34: Friends (all rules enforced server-side by supabase/003_friends.sql; the app only calls its functions) ---------- */
-const fr={list:[],inbox:[],state:null,t:0,res:null,msg:''};
+const fr={list:[],inbox:[],blocked:[],state:null,t:0,res:null,msg:''};
 const frIn=()=>fr.list.filter(f=>f.status==='pending'&&f.incoming),frAlerts=()=>frIn().length+fr.inbox.length;
 function frBadge(){const n=frAlerts(),b=$('#auth');b&&b.classList.toggle('bd',n>0&&!!user);try{if(navigator.setAppBadge){if(n>0&&user)navigator.setAppBadge(n).catch(()=>{});else navigator.clearAppBadge().catch(()=>{})}}catch(e){}if(!$('#amenu').hidden&&user)buildMenu(user)}
 const frMissing=e=>e&&(e.code==='PGRST202'||e.code==='42883'||e.code==='42P01'||/could not find|does not exist/i.test(e.message||''));
@@ -2689,10 +2710,21 @@ async function frLoad(force,render){if(!user||!sb)return;if(!force&&Date.now()-f
   try{const{data,error}=await sb.rpc('list_friends');
     if(error){if(frMissing(error))fr.state='nosql';else if(!fr.state)fr.state='err';frRender();return}
     fr.list=Array.isArray(data)?data:[];fr.state='ok';fr.t=Date.now();
-    const ib=await sb.rpc('list_inbox');if(!ib.error)fr.inbox=Array.isArray(ib.data)?ib.data:[]}catch(e){if(!fr.state)fr.state='err'}
+    const ib=await sb.rpc('list_inbox');if(!ib.error)fr.inbox=Array.isArray(ib.data)?ib.data:[];
+    const bk=await sb.rpc('list_blocked');fr.blocked=!bk.error&&Array.isArray(bk.data)?bk.data:[];await susCheck()}catch(e){if(!fr.state)fr.state='err'}
   frBadge();if(render||frSig()!==before)frRender();frNotify()}
 /* v38: in-app notifications. New friend requests / songs from friends show a banner (and the red dot + app badge).
    Never while a song is playing (live safety): it waits until you are back on Home. Polled every 25 s while the app is open and visible. */
+/* v159: suspension (set by the admin with admin_suspend in the SQL Editor). social = no sending / requests; full = the app is locked */
+const susp={on:false,mode:null,until:null,reason:null};
+const susText=()=>(susp.until?L('Until ','Sampai ')+new Date(susp.until).toLocaleDateString(PREF.lang==='id'?'id-ID':'en-GB',{day:'numeric',month:'long',year:'numeric'})+'.':L('Until further notice.','Sampai pemberitahuan berikutnya.'))+(susp.reason?' '+L('Reason: ','Alasan: ')+susp.reason:'');
+async function susCheck(){if(!user||!sb)return;try{const{data,error}=await sb.rpc('my_status');if(error)return;const d=Array.isArray(data)?data[0]:data;
+  susp.on=!!(d&&d.suspended);susp.mode=susp.on?d.mode:null;susp.until=susp.on?d.until:null;susp.reason=susp.on?d.reason:null}catch(e){return}susLock()}
+function susLock(){let o=$('#susp');const lock=susp.on&&susp.mode==='full'&&!!user;if(!lock){if(o)o.remove();return}
+  if(!o){o=E('div');o.id='susp';o.setAttribute('role','alertdialog');o.setAttribute('aria-modal','true');document.body.append(o)}o.textContent='';
+  const c=E('div','spc2');c.append(E('h2','',L('Your account is suspended','Akunmu sedang dibekukan')),E('p','',L('This account cannot use EvoLyric right now.','Akun ini tidak bisa memakai EvoLyric untuk saat ini.')),(()=>{const q=E('p','mut',susText());q.setAttribute('data-nt','');return q})());
+  const a=E('a','dbtn pri',L('Contact support','Hubungi dukungan'));a.href=supportMail('EvoLyric: suspended account');a.target='_blank';a.rel='noopener';
+  const so=E('button','dbtn',L('Sign out','Keluar'));so.type='button';so.onclick=()=>{o.remove();signOut()};c.append(a,so);o.append(c)}
 const SEENK='evolyric-seen:';
 function seenLoad(){try{return new Set(JSON.parse(localStorage.getItem(SEENK+(user&&user.id))||'[]'))}catch(e){return new Set()}}
 function seenSave(set){try{localStorage.setItem(SEENK+user.id,JSON.stringify([...set].slice(-200)))}catch(e){}}
@@ -2711,7 +2743,9 @@ let ntfT;function ntfShow(m){const n=$('#ntf');n.textContent=m;n.hidden=false;re
 function ntfHide(){const n=$('#ntf');n.classList.remove('on');setTimeout(()=>{if(!n.classList.contains('on'))n.hidden=true},260)}
 $('#ntf').onclick=()=>{ntfHide();if(document.querySelector('#play.on'))return;frOpen()};
 setInterval(()=>{if(!document.hidden&&user&&sb&&navigator.onLine)frLoad(true)},25000);
-async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(navigator.onLine?'Something went wrong. Try again.':'You are offline',true);return null}
+/* v159: messages for the safety rules in supabase/011_safety.sql */
+const safeErr=e=>!e?null:e.code==='EV001'?L('Your account is suspended. Sending and friend requests are off.','Akunmu sedang dibekukan. Kirim lagu dan permintaan pertemanan tidak bisa dipakai.'):e.code==='EV002'?L('You cannot do this with this person.','Kamu tidak bisa melakukan ini dengan orang ini.'):e.code==='EV003'?L('Daily limit reached. Try again tomorrow.','Batas harian tercapai. Coba lagi besok.'):null;
+async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(safeErr(error)||(navigator.onLine?'Something went wrong. Try again.':'You are offline'),true);return null}
   if(okMsg)note(okMsg);await frLoad(true,true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
 function frAvatar(f){return avatarEl({name:f.display_name||f.username||'?',avatar:f.avatar_url||''})}
 function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(E('b','',f.display_name||f.username),E('small','','@'+f.username));if(f.bio)n.append(E('small','fb',f.bio));r.append(frAvatar(f),n);
@@ -2739,12 +2773,16 @@ function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains
   const sec=(t,n)=>{const h=E('div','fh',t);if(n)h.append(E('em','',String(n)));body.append(h)};
   if(fr.inbox.length){sec('Songs from friends',fr.inbox.length);fr.inbox.forEach(m=>{const n=m.song_count||1;
     const isC=!!m.cat,r=frRow({display_name:isC?m.cat:n>1?n+' songs':(m.title||'Untitled'),username:m.username,avatar_url:m.avatar_url},[[isC?'Open':'Save'+(n>1?' all':''),isC?()=>catImport(m):()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
-    const sm=r.querySelector('small');sm.textContent='from @'+m.username+(isC?' · category · '+n+(n===1?' song':' songs'):n>1?(m.preview?' · '+m.preview+(n>3?'…':''):''):(m.artist?' · '+m.artist:''));body.append(r)})}
-  if(inc.length){sec('Requests',inc.length);inc.forEach(f=>body.append(frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]])))}
+    {const mo=E('button','frm','⋯');mo.type='button';mo.setAttribute('aria-label',L('More','Lainnya'));mo.onclick=()=>frMore({id:m.sender_id,username:m.username},m.id);r.append(mo)}
+    const sm=r.querySelector('small');sm.textContent=L('from @','dari @')+m.username+(isC?' · category · '+n+(n===1?' song':' songs'):n>1?(m.preview?' · '+m.preview+(n>3?'…':''):''):(m.artist?' · '+m.artist:''));body.append(r)})}
+  if(inc.length){sec('Requests',inc.length);inc.forEach(f=>{const r=frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]]);
+    const mo=E('button','frm','⋯');mo.type='button';mo.setAttribute('aria-label',L('More','Lainnya'));mo.onclick=()=>frMore({id:f.other_id,username:f.username});r.append(mo);body.append(r)})}
   if(out.length){sec('Sent');out.forEach(f=>body.append(frRow(f,[['Cancel',()=>frCall('remove_friendship',{p_id:f.id},'Request cancelled')]])))}
   sec('Friends',ok.length);
   if(!ok.length)body.append(E('p','mut','No friends yet. Search a username above to send a request.'));
-  ok.forEach(f=>{const r=frRow(f,[]);r.classList.add('tap');r.setAttribute('role','button');r.tabIndex=0;r.append(E('span','chev','›'));r.onclick=()=>frFriendMenu(f);r.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();frFriendMenu(f)}};body.append(r)})}
+  ok.forEach(f=>{const r=frRow(f,[]);r.classList.add('tap');r.setAttribute('role','button');r.tabIndex=0;r.append(E('span','chev','›'));r.onclick=()=>frFriendMenu(f);r.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();frFriendMenu(f)}};body.append(r)});
+  if(fr.blocked.length){sec(L('Blocked','Diblokir'),fr.blocked.length);fr.blocked.forEach(u=>{const r=frRow({display_name:u.display_name||u.username||'—',username:u.username||'—',avatar_url:u.avatar_url},[[L('Unblock','Buka blokir'),()=>frCall('unblock_user',{p_user:u.id},L('Unblocked','Blokir dibuka'))]]);body.append(r)})}
+  if(susp.on){const w=E('div','susb');{const st=E('span','',susText());st.setAttribute('data-nt','');w.append(E('b','',L('Your account is suspended','Akunmu sedang dibekukan')),st)}const a=E('a','',L('Contact support','Hubungi dukungan'));a.href=supportMail('EvoLyric: suspended account');a.target='_blank';a.rel='noopener';w.append(a);body.prepend(w)}}
 async function frSaveSong(m){let d=null;
   try{const{data,error}=await sb.rpc('get_inbox_item',{p_id:m.id});if(error||!data)throw 0;d=data}catch(e){note(navigator.onLine?'Could not open this delivery. Try again.':'You are offline',true);frRender();return}
   const arr=Array.isArray(d.songs)?d.songs:[d],t=Date.now();let n=0;
@@ -2776,7 +2814,7 @@ async function catImport(m){let d=null;
     if(!ids.length)return;cats.push({id:cid(),name:n,ids:[...new Set(ids)]});save();refresh();$('#imbox').classList.remove('on');
     frCall('clear_inbox_song',{p_id:m.id},'Category “'+n+'” saved')}}
 const SEND_MAX=300,songPayload=s=>({title:s.title||'',artist:s.artist||'',lyrics:s.lyrics||'',key:s.key||'',colors:s.colors||{}});
-const sendErr=(e,f)=>e.code==='54000'?'@'+f.username+' already has 20 deliveries waiting from you':e.code==='42501'?'You are no longer friends':e.code==='23514'?'Too much text to send at once. Send fewer songs.':navigator.onLine?'Could not send. Try again.':'You are offline';
+const sendErr=(e,f)=>safeErr(e)||(e.code==='54000'?'@'+f.username+' already has 20 deliveries waiting from you':e.code==='42501'?'You are no longer friends':e.code==='23514'?'Too much text to send at once. Send fewer songs.':navigator.onLine?'Could not send. Try again.':'You are offline');
 function sendOpen(f){if(!songs.length)return void note('Your library is empty',true);aMode='send';aTo=f;aSel=new Set();$('#aT').textContent='Send to @'+f.username;$('#aq').value='';addItems();aCount();$('#addbox').classList.add('on')}
 async function sendBatch(){const f=aTo;if(!f||!aSel.size||!sb)return;const b=$('#aOK');if(b.disabled)return;b.disabled=true;
   const pick=songs.filter(x=>aSel.has(x.id)).sort((x,y)=>(x.title||'').localeCompare(y.title||'','id')).map(songPayload);
@@ -2787,7 +2825,24 @@ async function sendBatch(){const f=aTo;if(!f||!aSel.size||!sb)return;const b=$('
 function frFriendMenu(f){const c=csh();c.append(E('h3','',(f.display_name||f.username)+'  @'+f.username));
   const a=E('button','','Send songs');a.onclick=()=>{ctxClose();sendOpen(f)};
   const d=E('button','del','Unfriend');d.onclick=()=>ask('Unfriend '+(f.display_name||f.username)+'?','They will no longer be your friend. Songs already saved stay in each library, and songs still waiting are deleted.','Unfriend',()=>frCall('remove_friendship',{p_id:f.id},'Friend removed'));
-  const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,d,x);$('#ctx').classList.add('on')}
+  const rp=E('button','',L('Report','Laporkan'));rp.onclick=()=>reportOpen({id:f.other_id,username:f.username});
+  const bl=E('button','del',L('Block','Blokir'));bl.onclick=()=>blockAsk({id:f.other_id,username:f.username});
+  const x=E('button','','Cancel');x.onclick=ctxClose;c.append(a,d,rp,bl,x);$('#ctx').classList.add('on')}
+/* v159: Block – ends the friendship, deletes waiting songs both ways, and stops new requests and songs from this person */
+function blockAsk(u){ask(L('Block @','Blokir @')+u.username+'?',L('You will no longer be friends. Songs waiting in both directions are deleted, and this person cannot find you, send you a request or send you songs. They are not told. You can unblock in Friends → Blocked.','Pertemanan berakhir. Lagu kiriman yang masih menunggu di kedua arah dihapus, dan orang ini tidak bisa menemukanmu, mengirim permintaan, atau mengirim lagu. Dia tidak diberi tahu. Kamu bisa membuka blokir di Teman → Diblokir.'),L('Block','Blokir'),()=>frCall('block_user',{p_user:u.id},L('Blocked','Diblokir')))}
+/* v159: Report – goes to Evolution Digital Studio for review; you can also block at the same time */
+function reportOpen(u,delivery){const c=csh();c.append(E('h3','',L('Report @','Laporkan @')+u.username));
+  const R=[['spam',L('Spam','Spam')],['inappropriate',L('Inappropriate content','Konten tidak pantas')],['harassment',L('Harassment','Pelecehan')],['other',L('Something else','Lainnya')]];let pick=null;
+  const go=E('button','fgo',L('Send report','Kirim laporan'));go.type='button';go.disabled=true;
+  R.forEach(([v,t])=>{const b=E('button','ck rr',t);b.type='button';b.setAttribute('role','radio');b.setAttribute('aria-checked','false');b.append(E('i','','○'));b.onclick=()=>{pick=v;c.querySelectorAll('.rr').forEach(x=>{const on=x===b;x.setAttribute('aria-checked',on?'true':'false');x.querySelector('i').textContent=on?'●':'○'});go.disabled=false};c.append(b)});
+  const t=E('textarea','rpt');t.maxLength=500;t.rows=3;t.placeholder=L('What happened? (optional)','Apa yang terjadi? (opsional)');c.append(t);
+  const bl=E('button','ck rpb',L('Also block @','Sekalian blokir @')+u.username);bl.type='button';bl.setAttribute('role','checkbox');bl.setAttribute('aria-checked','false');bl.append(E('i','','☐'));bl.onclick=()=>{const on=bl.getAttribute('aria-checked')!=='true';bl.setAttribute('aria-checked',on?'true':'false');bl.querySelector('i').textContent=on?'☑':'☐'};c.append(bl);
+  go.onclick=async()=>{if(!pick)return;go.disabled=true;const r=await frCall('report_user',{p_user:u.id,p_reason:pick,p_details:t.value.trim()||null,p_delivery:delivery||null},null);if(r===null){go.disabled=false;return}
+    ctxClose();if(bl.getAttribute('aria-checked')==='true')await frCall('block_user',{p_user:u.id},null);note(L('Thank you. Your report was sent.','Terima kasih. Laporanmu sudah dikirim.'))};
+  const x=E('button','',L('Cancel','Batal'));x.onclick=ctxClose;c.append(go,x);$('#ctx').classList.add('on')}
+/* ⋯ on a request or a delivery: Report / Block */
+function frMore(u,delivery){const c=csh();c.append(E('h3','','@'+u.username));const rp=E('button','',L('Report','Laporkan'));rp.onclick=()=>reportOpen(u,delivery);
+  const bl=E('button','del',L('Block','Blokir'));bl.onclick=()=>blockAsk(u);const x=E('button','',L('Cancel','Batal'));x.onclick=ctxClose;c.append(rp,bl,x);$('#ctx').classList.add('on')}
 const catPayload=c=>c.ids.map(id=>songs.find(x=>x.id===id)).filter(Boolean).map(songPayload);
 function sendCat(c){const pl=catPayload(c);if(!pl.length)return void note('This category has no songs yet',true);if(pl.length>SEND_MAX)return void note('A category can send up to '+SEND_MAX+' songs',true);sendPick(null,c)}
 function sendPick(s,cat){if(!user||!sb)return void note('Sign in to send songs to friends',true);const pl=cat?catPayload(cat):[songPayload(s)];

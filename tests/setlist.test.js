@@ -1,10 +1,10 @@
 const rows=p=>p.evaluate(()=>[...document.querySelectorAll('#slBody .arow')].map(b=>b.querySelector('.chk').textContent+'|'+b.querySelector('div').textContent+'|'+(b.disabled?'off':'on')));
 const side=p=>p.evaluate(()=>[...document.querySelectorAll('#slSide .slit span')].map(e=>e.textContent));
 module.exports=({test,assert,eq,open})=>{
-test('Setlist: + menu offers New song, Create setlist and Import .txt',async()=>{
+test('Setlist: + menu offers New song, Create setlist, Import from file and Paste as new song',async()=>{
   const t=await open(),p=t.page;await p.click('#fab');await p.waitForTimeout(300);
   const items=await p.evaluate(()=>[...document.querySelectorAll('#fabm button')].map(b=>b.textContent.trim()));
-  eq(items,['New song','Create setlist','Import .txt'],'menu');await t.close()});
+  eq(items,['New song','Create setlist','Import from file','Paste as new song'],'menu');await t.close()});
 test('Setlist: starts by choosing All Songs or Categories; the right-hand box is always open',async()=>{
   const t=await open(),p=t.page;await p.evaluate(()=>slOpen());
   eq(await p.evaluate(()=>[...document.querySelectorAll('.slsrc b')].map(b=>b.textContent)),['All Songs','Categories'],'sources');

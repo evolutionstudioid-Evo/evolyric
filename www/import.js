@@ -152,6 +152,33 @@ function fromJson(text,name){var j;try{j=JSON.parse(text)}catch(e){return null}
     return[{title:title.slice(0,120),lyrics:trimLines(ls).join('\n'),src:'Google Keep'}]}
   return null}
 
+/* ---------- ColorNote backup (Android): AES-128-CBC, key/iv = OpenSSL MD5 key derivation of the password with
+   the fixed salt "ColorNote Fixed Salt", 28-byte header; default password 0000. Inside: JSON note objects. ---------- */
+function md5(bytes){var K=[],S=[7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
+  for(var i=0;i<64;i++)K[i]=Math.floor(Math.abs(Math.sin(i+1))*4294967296)>>>0;
+  var n=bytes.length,len=((n+8>>6)+1)*64,m=new Uint8Array(len);m.set(bytes);m[n]=0x80;var bits=n*8;for(i=0;i<8;i++)m[len-8+i]=Math.floor(bits/Math.pow(2,8*i))&255;
+  var a0=0x67452301,b0=0xefcdab89,c0=0x98badcfe,d0=0x10325476;
+  for(var o=0;o<len;o+=64){var M=[];for(i=0;i<16;i++)M[i]=m[o+i*4]|m[o+i*4+1]<<8|m[o+i*4+2]<<16|m[o+i*4+3]<<24;
+    var A=a0,B=b0,C=c0,D=d0;for(i=0;i<64;i++){var F,g;if(i<16){F=(B&C)|(~B&D);g=i}else if(i<32){F=(D&B)|(~D&C);g=(5*i+1)%16}else if(i<48){F=B^C^D;g=(3*i+5)%16}else{F=C^(B|~D);g=(7*i)%16}
+      F=(F+A+K[i]+M[g])>>>0;A=D;D=C;C=B;B=(B+((F<<S[i])|(F>>>(32-S[i]))))>>>0}
+    a0=(a0+A)>>>0;b0=(b0+B)>>>0;c0=(c0+C)>>>0;d0=(d0+D)>>>0}
+  var out=new Uint8Array(16);[a0,b0,c0,d0].forEach(function(v,j){for(var k=0;k<4;k++)out[j*4+k]=v>>>(8*k)&255});return out}
+function cat(){var l=0,i;for(i=0;i<arguments.length;i++)l+=arguments[i].length;var o=new Uint8Array(l),p=0;for(i=0;i<arguments.length;i++){o.set(arguments[i],p);p+=arguments[i].length}return o}
+function cnDecrypt(u8,pw){if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error('nocrypto'));if(u8.length<44)return Promise.reject(new Error('bad'));
+  var P=new TextEncoder().encode(pw),Sl=new TextEncoder().encode('ColorNote Fixed Salt'),key=md5(cat(P,Sl)),iv=md5(cat(key,P,Sl));
+  return crypto.subtle.importKey('raw',key,{name:'AES-CBC'},false,['decrypt']).then(function(k){return crypto.subtle.decrypt({name:'AES-CBC',iv:iv},k,u8.subarray(28))})
+    .then(function(b){return new TextDecoder('utf-8').decode(b)},function(){throw new Error('cnpw')})}
+function jsonObjects(t){var out=[],i=0,n=t.length;while(i<n){var s0=t.indexOf('{',i);if(s0<0)break;var bal=0,q=false,esc=false,e=-1;
+    for(var j=s0;j<n;j++){var c=t[j];if(esc){esc=false;continue}if(c==='\\'){esc=true;continue}if(c==='"'){q=!q;continue}if(q)continue;if(c==='{')bal++;else if(c==='}'&&--bal===0){e=j;break}}
+    if(e<0){i=s0+1;continue}try{out.push(JSON.parse(t.slice(s0,e+1)));i=e+1}catch(x){i=s0+1}}return out}
+function cnNotes(text){return jsonObjects(text).filter(function(o){return o&&typeof o.note==='string'&&o.type!==128&&o.type!==256&&!o.encrypted&&o.active_state!==16&&o.active_state!==32}).map(function(o){
+  var t=clean(o.note),c=new Array(t.length).fill('');
+  try{var ext=o.note_ext?JSON.parse(o.note_ext):null;(ext&&ext.format_list||[]).forEach(function(f){if(f.format!=='bg_color'||!f.attribute)return;var h=hue(String(f.attribute).replace(/^highlight_/,''),0.2);if(!h)return;for(var k=Math.max(0,f.start);k<Math.min(t.length,f.end);k++)c[k]=h})}catch(x){}
+  var runs=[];for(var k=0;k<t.length;k++){if(runs.length&&runs[runs.length-1].c===c[k])runs[runs.length-1].t+=t[k];else runs.push({t:t[k],c:c[k]})}
+  var body=runsToText(runs);if(o.type===16)body=body.split('\n').map(function(l){return l.replace(/^\s*\[[ vVxX]?\]\s*/,'')}).join('\n');
+  var ls=trimLines(body.split('\n')),title=String(o.title||'').trim();if(!title&&ls.length&&!isLabel(ls[0]))title=ls.shift().trim();else if(ls.length&&norm(ls[0])===norm(title))ls.shift();
+  return{title:title.slice(0,120),lyrics:trimLines(ls).join('\n'),src:'ColorNote'}})}
+function isColorNote(name,u8){var x=ext(name);if(/^(backup|dat|db)$/.test(x))return true;if(/colornote/i.test(name))return true;return x==='doc'&&!(u8[0]===0xd0&&u8[1]===0xcf)}
 /* ---------- one file ---------- */
 var SKIP=/(^|\/)(__MACOSX|\.[^/]*)(\/|$)|(^|\/)(desktop\.ini|thumbs\.db)$/i;
 function readEntry(name,u8,depth,res){var x=ext(name);
@@ -164,6 +191,9 @@ function readEntry(name,u8,depth,res){var x=ext(name);
   if(x==='docx'){var es2;try{es2=unzip(u8)}catch(e){res.errors.push({name:name,why:'bad'});return Promise.resolve()}
     var doc=es2.filter(function(e){return e.name==='word/document.xml'})[0];if(!doc){res.errors.push({name:name,why:'bad'});return Promise.resolve()}
     return doc.read().then(function(d){add(res,docText(docxText(decode(d)),name,'Word'))},function(err){res.errors.push({name:name,why:err&&err.message==='nozip'?'nozip':'bad'})})}
+  if(isColorNote(name,u8)&&depth===0){var tryPw=function(pw,left){return cnDecrypt(u8,pw).then(function(t){var ns=cnNotes(t);if(!ns.length)throw new Error('empty');add(res,ns)},function(err){
+      if(err&&err.message==='cnpw'&&left>0&&res.ask)return Promise.resolve(res.ask(name,pw!=='0000')).then(function(p2){if(p2==null||p2==='')throw new Error('cnpw');return tryPw(String(p2),left-1)});throw err})};
+    return tryPw('0000',3).catch(function(err){res.errors.push({name:name,why:err&&/^(cnpw|empty)$/.test(err.message)?err.message:err&&err.message==='nocrypto'?'nozip':'bad'})})}
   if(/^(pages|key|numbers)$/.test(x)){res.errors.push({name:name,why:'pages'});return Promise.resolve()}
   if(x==='doc'){res.errors.push({name:name,why:'doc'});return Promise.resolve()}
   var t=decode(u8);
@@ -176,8 +206,8 @@ function readEntry(name,u8,depth,res){var x=ext(name);
 /* a whole document: ===EVONOTE=== splits it; otherwise one song (the preview can split it further) */
 function docText(t,name,src){if(SEP.test(t))return splitEvo(t).map(function(p){p.src=src;return p});var r=fromText(t,name);r.src=src;r.doc=true;return[r]}
 function add(res,list){list.forEach(function(it){if(!it)return;it.title=String(it.title||'').trim();it.lyrics=String(it.lyrics||'');if(!it.title&&!it.lyrics.trim())return;res.items.push(it)})}
-function read(files){var res={items:[],errors:[]};files=Array.prototype.slice.call(files||[]);
+function read(files,opt){var res={items:[],errors:[],ask:opt&&opt.password};files=Array.prototype.slice.call(files||[]);
   return files.reduce(function(p,f){return p.then(function(){if(f.size>MAXFILE){res.errors.push({name:f.name,why:'big'});return}
-    return f.arrayBuffer().then(function(a){return readEntry(f.name,new Uint8Array(a),0,res)}).catch(function(){res.errors.push({name:f.name,why:'bad'})})})},Promise.resolve()).then(function(){return res})}
+    return f.arrayBuffer().then(function(a){return readEntry(f.name,new Uint8Array(a),0,res)}).catch(function(){res.errors.push({name:f.name,why:'bad'})})})},Promise.resolve()).then(function(){delete res.ask;return res})}
 window.EvoImport={read:read,fromText:fromText,splitDoc:splitDoc,canZip:canZip,_t:{rtfToText:rtfToText,htmlToText:htmlToText,hue:hue,unzip:unzip}};
 })();

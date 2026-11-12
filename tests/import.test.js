@@ -11,6 +11,14 @@ function zip(entries){const parts=[],cd=[];let off=0;
 const W='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
 const para=runs=>'<w:p>'+runs.map(r=>typeof r==='string'?'<w:r><w:t xml:space="preserve">'+r+'</w:t></w:r>':'<w:r><w:rPr>'+r[1]+'</w:rPr><w:t xml:space="preserve">'+r[0]+'</w:t></w:r>').join('')+'</w:p>';
 const docx=paras=>zip([['[Content_Types].xml','<Types/>',true],['word/document.xml','<?xml version="1.0"?><w:document '+W+'><w:body>'+paras.map(para).join('')+'</w:body></w:document>',true]]);
+/* a ColorNote backup as the Android app writes it: 28-byte header + AES-128-CBC (OpenSSL MD5 key derivation, fixed salt) */
+const crypto=require('crypto');
+function colornote(objs,pw){const P=Buffer.from(pw),S=Buffer.from('ColorNote Fixed Salt'),md5=b=>crypto.createHash('md5').update(b).digest();
+  const key=md5(Buffer.concat([P,S])),iv=md5(Buffer.concat([key,P,S])),c=crypto.createCipheriv('aes-128-cbc',key,iv);
+  const plain=Buffer.from('\u0000\u0001x'+objs.map(o=>'\u0000\u0002'+JSON.stringify(o)).join(''));return Buffer.concat([crypto.randomBytes(28),c.update(plain),c.final()])}
+const CN=[{title:'Pulang Malam',note:'Lampu jalan redup\nAku pulang sendiri',note_ext:JSON.stringify({format_list:[{format:'bg_color',start:6,end:11,attribute:'highlight_purple'}]}),type:0,encrypted:0,active_state:0,created_date:1,modified_date:2},
+  {title:'Sampah',note:'dibuang',type:0,encrypted:0,active_state:16,created_date:1,modified_date:2},{title:'Folder',note:'{}',type:128,encrypted:0,active_state:0},
+  {title:'Rahasia',note:'xxx',type:0,encrypted:1,active_state:0},{title:'Daftar',note:'[ ] Gitar\n[V] Kabel',type:16,encrypted:0,active_state:0,created_date:1,modified_date:2}];
 const up=(p,files)=>p.setInputFiles('#file',files.map(([name,buffer])=>({name,mimeType:'application/octet-stream',buffer:Buffer.from(buffer)})));
 const added=p=>p.evaluate(()=>songs.slice(5).map(s=>[s.title,s.lyrics]));
 module.exports=({test,assert,eq,open})=>{
@@ -62,6 +70,18 @@ test('Import: songs already in the Library are shown but not ticked; an unsuppor
   eq(await p.evaluate(()=>[$('#ipC').textContent,$('#ipOK').disabled,[...document.querySelectorAll('#ipItems em')].length]),['0 songs',true,2],'duplicates unticked');
   await p.click('#ipX');await up(p,[['x.pages','PK']]);await p.waitForTimeout(300);
   assert(/open it in Pages/.test(await p.evaluate(()=>$('#note').textContent)),'message');eq(await p.evaluate(()=>songs.length),7,'nothing added');await t.close()});
+test('Import: ColorNote backup (default password 0000) – trashed, encrypted and folder entries left out, highlight kept',async()=>{
+  const t=await open(),p=t.page;await up(p,[['colornote-backup.backup',colornote(CN,'0000')]]);await p.waitForTimeout(600);
+  eq(await p.evaluate(()=>[...document.querySelectorAll('#ipItems .arow b')].map(b=>b.textContent)),['Pulang Malam','Daftar'],'notes');
+  await p.click('#ipOK');await p.waitForTimeout(300);
+  eq(await added(p),[['Pulang Malam','Lampu {v:jalan} redup\nAku pulang sendiri'],['Daftar','Gitar\nKabel']],'contents');eq(t.errors,[],'no page errors');await t.close()});
+test('Import: a ColorNote backup with its own password asks for it; a wrong password is reported',async()=>{
+  const t=await open(),p=t.page;const asks=[];p.on('dialog',d=>{asks.push(d.message());d.accept(asks.length===1?'salah':'rahasia')});
+  await up(p,[['cn.backup',colornote(CN.slice(0,1),'rahasia')]]);await p.waitForTimeout(800);
+  eq(asks,['This ColorNote backup has a password. Enter it:','Wrong password. Enter the ColorNote backup password:'],'asked twice');
+  eq(await added(p),[['Pulang Malam','Lampu {v:jalan} redup\nAku pulang sendiri']],'imported');
+  p.removeAllListeners('dialog');p.on('dialog',d=>d.dismiss());await up(p,[['lain.backup',colornote(CN.slice(0,1),'beda')]]);await p.waitForTimeout(600);
+  assert(/lain\.backup: wrong backup password/.test(await p.evaluate(()=>$('#note').textContent)),'reported');await t.close()});
 test('Paste as new song: the clipboard note opens in the editor with its first line as the title',async()=>{
   const t=await open(),p=t.page;await t.ctx.grantPermissions(['clipboard-read','clipboard-write']);
   await p.evaluate(()=>navigator.clipboard.writeText('Hujan Reda Lagi\n[Verse]\nRintik turun pelan'));

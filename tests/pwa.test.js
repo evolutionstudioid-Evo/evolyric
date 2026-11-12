@@ -6,6 +6,11 @@ test('PWA: sw.js is a real service worker whose cache version matches the app ve
   assert(/addEventListener\('fetch'/.test(sw)&&/addEventListener\('install'/.test(sw),'sw.js has install and fetch handlers');
   const v=(sw.match(/evolyric-app-(\d+)/)||[])[1],a=(html.match(/const APP_VER='(\d+)'/)||[])[1];
   eq(v,a,'cache version = APP_VER');new Function(sw)});
+test('PWA: Safari-safe shell – index.html (redirected to / by the host) is not pre-cached, redirected responses are rebuilt, other pages never replace the shell',async()=>{
+  const sw=fs.readFileSync(path.join(ROOT,'www/sw.js'),'utf8'),shell=(sw.match(/const SHELL=\[([^\]]*)\]/)||[])[1];
+  assert(!/'index\.html'/.test(shell),'index.html not in SHELL');assert(/'\.\/'/.test(shell),'./ in SHELL');
+  assert(/const clean=async x=>x&&x\.redirected\?new Response/.test(sw),'clean() rebuilds redirected responses');
+  assert(/r\.mode==='navigate'&&!shell/.test(sw),'privacy/terms pages are not stored as the shell')});
 test('PWA: every file the service worker pre-caches exists',async()=>{
   const sw=fs.readFileSync(path.join(ROOT,'www/sw.js'),'utf8');
   const tut=JSON.parse((sw.match(/const TUTIMG=(\[[^\]]*\])/)||[])[1].replace(/'/g,'"'));

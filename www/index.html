@@ -703,6 +703,10 @@ body.touring #tsv{display:none!important}
 .wguest:active{background:var(--ln)}
 .legal-ok{font-size:12.5px;line-height:1.45;color:var(--mut);text-align:center;margin:12px 0 0}.legal-ok .lnk{display:inline;padding:0;font:inherit;color:var(--acct);text-decoration:underline;background:none;border:0}
 .doc.legal h1{display:none}.doc.legal h2{margin-top:22px}.doc.legal h3{font-size:15px;margin:14px 0 4px}.doc.legal ol,.doc.legal ul{padding-left:22px}.doc.legal a{color:var(--acct)}
+/* v161: notice on the old address */
+#moved{margin:0 12px 10px;padding:12px 14px;border-radius:14px;border:1px solid rgba(240,160,75,.55);background:rgba(240,160,75,.1);display:flex;flex-direction:column;gap:10px}
+#moved .mvt b{display:block;color:var(--acct);margin-bottom:2px}#moved .mvt span{font-size:13.5px;line-height:1.4;color:var(--fg)}
+#moved .mvb{display:flex;gap:8px;flex-wrap:wrap}#moved .pill{text-decoration:none}
 </style>
 </head>
 <body>
@@ -1212,7 +1216,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='160',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='161',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1394,6 +1398,7 @@ function legalOpen(kind,from){const t=kind==='privacy'?L('Privacy Policy','Kebij
     if(D)d.innerHTML=D[PREF.lang==='id'?'id':'en'];else d.append(E('p','',L('Open ','Buka ')+location.origin+'/'+kind+'.html'));b.append(d)})}
 document.addEventListener('click',e=>{const b=e.target.closest('.lg-t,.lg-p');if(!b)return;const inAuth=!!b.closest('#authbox');legalOpen(b.classList.contains('lg-p')?'privacy':'terms',inAuth?'auth':'welcome')});
 $('#wguest').onclick=guestGo;
+setTimeout(movedBanner,600);
 const SUPPORT_EMAIL='evolution.studio.id@gmail.com';
 function supportMail(subject,extra){const body=[extra||'','','—','EvoLyric '+APP_REL+' (build '+APP_VER+')',user&&user.username?'@'+user.username:(uname&&uname.v?'@'+uname.v:''),navigator.userAgent].filter((x,i)=>x||i<2).join('\n');
   return 'mailto:'+SUPPORT_EMAIL+'?subject='+encodeURIComponent(subject||'EvoLyric support')+'&body='+encodeURIComponent(body)}
@@ -2703,7 +2708,7 @@ function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
     if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='USER_UPDATED'||ev==='TOKEN_REFRESHED'){if(ses&&ses.user)applyUser(ses.user);else if(ev==='INITIAL_SESSION'){if(hasStoredSession())return;applyUser(null)}}
     else if(ev==='SIGNED_OUT')applyUser(null)});
   return sb}).catch(e=>{clientP=null;throw e}))}
-function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);if(n)setGuest(false);renderAuth();
+function applyUser(u){const was=user&&user.id,n=mapUser(u);authPending=false;user=n;setHint(n);if(n)setGuest(false);renderAuth();movedRefresh();
   if(n){if($('#welcome').classList.contains('on')&&$('#wstep2').hidden)wStep(3)}
   if(n&&was!==n.id&&$('#authbox').classList.contains('on'))closeAuth();
   if(n&&was!==n.id){unameLoad(n.id);setTimeout(susCheck,900)}
@@ -2905,6 +2910,14 @@ if(window.Cloud)Cloud.init({
 /* ---------- v83: welcome / first sign-in, username step, and staying signed in ---------- */
 const GK='evolyric-guest';
 /* v160: guest mode is back – the app can be used without signing in; songs stay on this device (sign in to sync and use Friends) */
+/* v161: EvoLyric moved to evolyric.com. On the old address, Home shows how to bring your songs along (data on a phone belongs to one web address). */
+const NEW_HOME='https://evolyric.com',OLD_HOST=/\.workers\.dev$/i.test(location.hostname);
+function movedBanner(){if(!(OLD_HOST||window.__evoOldHost)||$('#moved'))return;const w=E('div');w.id='moved';w.setAttribute('role','status');
+  const t=E('div','mvt');t.append(E('b','',L('EvoLyric has moved to evolyric.com','EvoLyric pindah ke evolyric.com')),E('span','',user?L('Open evolyric.com and sign in with the same Google account: your songs come along from the cloud.','Buka evolyric.com lalu masuk dengan akun Google yang sama: lagumu ikut dari cloud.'):L('Guest songs stay on this address. Make a Backup here, then Restore it on evolyric.com.','Lagu tamu tertinggal di alamat ini. Buat Backup di sini, lalu Restore di evolyric.com.')));
+  const a=E('a','pill',L('Open evolyric.com','Buka evolyric.com'));a.href=NEW_HOME;a.target='_blank';a.rel='noopener';const r=E('div','mvb');r.append(a);
+  if(!user&&songs.length){const bk=E('button','pill',L('Backup','Backup'));bk.type='button';bk.setAttribute('data-nt','');bk.onclick=()=>saveFile('evolyric-backup-'+ymd()+'.evolyric',backupText(),'application/octet-stream',()=>note(L('Backup file saved','File cadangan disimpan')));r.append(bk)}
+  w.append(t,r);const tabs=$('#tabs');tabs.parentNode.insertBefore(w,tabs)}
+function movedRefresh(){const m=$('#moved');if(m)m.remove();movedBanner()}
 const isGuest=()=>{try{return localStorage.getItem(GK)==='1'}catch(e){return false}},setGuest=on=>{try{on?localStorage.setItem(GK,'1'):localStorage.removeItem(GK)}catch(e){}};
 function guestGo(){setGuest(true);refresh();show('list');note(L('Guest mode: your songs are saved on this device only. Sign in any time to sync.','Mode tamu: lagumu tersimpan di perangkat ini saja. Masuk kapan saja untuk sinkron.'))}
 const hasStoredSession=()=>{try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^sb-.+-auth-token$/.test(k)&&localStorage.getItem(k))return true}}catch(e){}return false};

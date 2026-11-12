@@ -6,7 +6,7 @@ EvoLyric berupa *Progressive Web App* (PWA): berjalan di peramban, dapat dipasan
 
 Aplikasi dikembangkan oleh **Evolution Digital Studio**. Versi saat ini: **1.0** (build v156).
 
-- Aplikasi: <https://evolyric.evolution-studio-id.workers.dev/>
+- Aplikasi: <https://evolyric.com> (alamat lama <https://evolyric.evolution-studio-id.workers.dev/> masih jalan sementara dan menampilkan petunjuk pindah)
 - Panduan pengguna: di dalam aplikasi, **⚙ → Bantuan → Tur interaktif** (tur dengan animasi tangan) dan **Panduan singkat** (10 slide), Indonesia dan Inggris
 - Rencana berikutnya: [`docs/ROADMAP.md`](docs/ROADMAP.md)
 - Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md)
@@ -61,7 +61,7 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio**. Versi saat ini: **1.0**
 | Aplikasi | HTML, CSS, dan JavaScript murni dalam satu berkas (`www/index.html`), tanpa framework |
 | Offline | Service worker (`www/sw.js`) dengan cache versi |
 | Backend | Supabase (Auth, Postgres, RPC) |
-| Hosting | Cloudflare Workers (aset statis dari `www/`, `worker.js` untuk `/api/*`) |
+| Hosting | Cloudflare Workers (aset statis dari `www/`, `worker.js` untuk `/api/*`), domain `evolyric.com` (+ `www` dialihkan ke `evolyric.com`) |
 | Native (opsional) | Capacitor (Android dan iOS) |
 
 ## Struktur repositori

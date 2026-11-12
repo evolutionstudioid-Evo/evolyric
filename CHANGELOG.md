@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v161 – evolyric.com
+- EvoLyric now runs on **https://evolyric.com** (Cloudflare; `www.evolyric.com` redirects to it, HTTPS always on). `wrangler.jsonc` declares both custom domains and keeps the old `workers.dev` address.
+- On the old address, Home shows **EvoLyric has moved to evolyric.com** with *Open evolyric.com*; guests also get a **Backup** button (songs on a phone belong to one web address: Backup there, Restore on evolyric.com). Signed-in users just sign in on evolyric.com.
+
 ## v160 – Guest mode, Privacy Policy and Terms of Service
 - **Continue as guest** on the first screen: EvoLyric works without signing in; songs are saved on this device only. **Sign In** stays at the top right. Signing in syncs and enables Friends; guest songs on the device are merged into the account once. Guests find **Backup & restore** in Preferences.
 - **Privacy Policy** and **Terms of Service** (Indonesian and English) in Help → Legal, linked under *Continue with Google* on the welcome screen and the sign-in card, and public at `/privacy.html` and `/terms.html`.

@@ -9,8 +9,8 @@ Fitur inti EvoLyric sudah lengkap (v150). Daftar ini mencatat pekerjaan yang sen
 
 ## Ditunda atas permintaan
 4. **Web help / FAQ** terpisah dari aplikasi (panduan lengkap, tanya jawab). Bisa sekalian menampung halaman Kebijakan Privasi dan Syarat Layanan.
-5. **EvoImport**: aplikasi pendamping untuk memindahkan banyak lirik dari aplikasi catatan sekaligus. Desain sudah ada; jalur Shortcut Apple Notes → Impor .txt sudah berjalan di aplikasi.
-6. **Impor dari Android**: padanan Shortcut untuk Android (misalnya ekspor Google Keep / share target).
+5. **EvoImport**: sebagian besar sudah masuk ke aplikasi sejak v163 (impor universal, Tempel sebagai lagu baru, Bagikan → EvoLyric). Sisa ide: pembaca Apple Notes lewat Mac, alat untuk Mi Cloud (i.mi.com).
+6. ~~**Impor dari Android**~~: selesai di v163 (Google Keep Takeout, Samsung Notes file teks, Bagikan → EvoLyric).
 
 ## Catatan kecil
 - Pengguna lama yang masuk di perangkat baru bisa melihat tur interaktif sekali bila lagunya belum selesai tersinkron saat Home pertama terbuka. Tidak berbahaya (bisa dilewati).

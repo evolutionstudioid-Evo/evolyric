@@ -105,8 +105,9 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height
 .crumb{display:flex;align-items:center;gap:10px;padding:0 12px 8px}.crumb button{color:var(--acct);font-weight:700;padding:6px 0;white-space:nowrap}.crumb b{flex:1;min-width:0;font:800 20px/1.2 'Bricolage Grotesque',system-ui,sans-serif;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 #dcat{max-width:118px}
 .catsel{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-#nbox,#catbox,#addbox,#imbox,#slbox{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
-#nbox.on,#catbox.on,#addbox.on,#imbox.on,#slbox.on{display:flex}
+#nbox,#catbox,#addbox,#imbox,#slbox,#ipbox{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
+#nbox.on,#catbox.on,#addbox.on,#imbox.on,#slbox.on,#ipbox.on{display:flex}
+#ipItems{flex:1;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain}#ipOpt{padding:0 12px 6px;display:flex;flex-direction:column;gap:2px}#ipOpt .ipo{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:7px 2px;font-size:14px}#ipOpt .ipo .chk{width:20px;height:20px}#ipOpt .ipo.sel .chk{background:var(--acc);border-color:var(--acc)}#ipOpt .ipn{font-size:12px;color:var(--mut);padding:2px 2px 0}#ipOpt .iperr{font-size:12px;color:#ff9a7a;padding:2px 2px 0;white-space:pre-line}#ipItems .arow small{display:block;color:var(--mut);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#ipItems .arow b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #slbox .asheet{position:relative}#slRow{flex:1;display:flex;min-height:0}#slSide{flex:0 0 36%;max-width:210px;min-width:118px;border-left:1px solid var(--ln);overflow:auto;padding:4px 8px 10px;overscroll-behavior:contain}#slSide .fh{padding:6px 2px}.slempty{font-size:12px;padding:0 2px}.slit{display:flex;align-items:flex-start;gap:4px;padding:6px 2px;font-size:13px;line-height:1.25;border-bottom:1px solid var(--ln)}.slit span{flex:1;min-width:0;word-break:break-word}.slit button{flex:0 0 auto;width:24px;height:24px;border-radius:50%;font-size:16px;line-height:1;color:var(--mut)}
 #slBody{flex:1;min-width:0;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain;display:flex;flex-direction:column;min-height:0}#slList{flex:1;overflow:auto;overscroll-behavior:contain}.slhint{padding:0 4px 10px}.slbar{display:flex;gap:8px;align-items:center;padding:0 0 8px}.slbar .sfield{flex:1;min-width:0}.slbar .sfield input{width:100%;min-width:0}.slbar .pill{flex:none;padding:8px 12px;font-size:14px}
 .slsrc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:14px;margin-bottom:8px;border:1px solid var(--ln);border-radius:12px;background:var(--bg)}.slsrc b{font-family:'Bricolage Grotesque',sans-serif;font-size:16px}
@@ -232,7 +233,7 @@ button,select,.it{touch-action:manipulation}
 /* motion polish */
 .v.on{animation:vin .3s var(--ease)}@keyframes vin{from{opacity:0}}
 #ctx.on,#cbox.on,#nbox.on,#catbox.on,#addbox.on{animation:ofade .2s ease-out}
-#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet,#imbox.on .asheet,#slbox.on .asheet{animation:sheetin .32s var(--spring)}
+#ctx.on .sheet,#cbox.on .sheet,#nbox.on .sheet,#catbox.on .sheet,#addbox.on .asheet,#imbox.on .asheet,#slbox.on .asheet,#ipbox.on .asheet{animation:sheetin .32s var(--spring)}
 @keyframes ofade{from{opacity:0}}@keyframes sheetin{from{opacity:0;transform:translateY(16px) scale(.96)}}
 #drawer{transition:transform .38s var(--ease),visibility 0s .38s}#drawer.open{transition:transform .38s var(--ease),visibility 0s}
 #scrim{transition:opacity .38s var(--ease),visibility 0s .38s}#scrim.open{transition:opacity .38s var(--ease),visibility 0s}
@@ -321,6 +322,7 @@ html:has(#play.on){background:#0d0a08}
 #items{padding-bottom:92px}
 #fab{position:absolute;right:16px;bottom:16px;z-index:21;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--acc);color:#15110e;box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .3s var(--spring)}
 #lastb{position:absolute;right:20px;bottom:84px;z-index:21;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--acc);background:transparent;color:var(--acc);display:flex;align-items:center;justify-content:center;font:normal 400 30px/1 'Instrument Serif',Georgia,serif;padding:0 2px 3px 0;-webkit-tap-highlight-color:transparent;transition:transform .2s var(--ease),background .2s}
+#fabm.on~#lastb{opacity:0;pointer-events:none;transform:scale(.6)} /* v163: the + menu is taller; the L button steps aside while it is open */
 #lastb:active{transform:scale(.9);background:rgba(255,255,255,.06)}
 @media(max-height:480px){#lastb{bottom:76px;right:16px;width:40px;height:40px;font-size:25px}}
 #fab svg{width:26px;height:26px;transition:transform .32s var(--spring)}
@@ -724,11 +726,12 @@ body.touring #tsv{display:none!important}
   <div id="fabm" role="menu">
     <button id="nw" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>New song</button>
     <button id="slb" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 5.5H16M7.5 10H16M7.5 14.5H16"/><path d="M3.5 5.5h.01M3.5 10h.01M3.5 14.5h.01" stroke-width="2.4"/></svg>Create setlist</button>
-    <button id="imp" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5v9M6.5 9.5 10 13l3.5-3.5M4 16h12"/></svg>Import .txt</button>
+    <button id="imp" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5v9M6.5 9.5 10 13l3.5-3.5M4 16h12"/></svg>Import from file</button>
+    <button id="pst" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="2"/><path d="M8 4V3h4v1M8 9h4M8 12h4"/></svg>Paste as new song</button>
   </div>
   <button id="lastb" type="button" aria-label="Open lyrics"><span aria-hidden="true">L</span></button>
   <button id="fab" type="button" aria-label="Add song" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><path d="M10 3.5v13M3.5 10h13"/></svg></button>
-  <input type="file" id="file" accept=".txt,text/plain" multiple hidden>
+  <input type="file" id="file" accept=".txt,.text,.md,.markdown,.html,.htm,.rtf,.docx,.doc,.enex,.json,.zip,.pages,text/plain,text/html,text/rtf,application/rtf,application/json,application/zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden>
 </section>
 
 <section id="play" class="v">
@@ -825,6 +828,7 @@ body.touring #tsv{display:none!important}
 <div id="catbox"><div class="sheet"><h3>Categories</h3><div id="catl"></div><div class="nrow"><input id="cnew" maxlength="30" placeholder="+ Create new category" autocomplete="off"><button id="cadd">Create</button></div><div class="err" id="cerr"></div><button id="cdone">Done</button></div></div>
 <div id="addbox"><div class="asheet"><div class="ah"><button id="aX">Cancel</button><div><b id="aT">Add Songs</b><small id="aC">0 selected</small></div><button class="pill" id="aOK" disabled>Add</button></div><div class="sb"><span class="sfield"><input id="aq" placeholder="Search Master Library…" aria-label="Search Master Library"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div><div id="aItems"></div></div></div>
 <div id="slbox"><div class="asheet"><div class="ah"><button id="slX">Cancel</button><div><b id="slT">Create setlist</b><small id="slC"></small></div><button class="pill" id="slDone">Set</button></div><div id="slRow"><div id="slBody"></div><aside id="slSide" aria-label="Setlist"></aside></div></div></div>
+<div id="ipbox"><div class="asheet"><div class="ah"><button id="ipX">Cancel</button><div><b id="ipT">Import</b><small id="ipC"></small></div><button class="pill" id="ipOK">Import</button></div><div id="ipOpt"></div><div id="ipItems"></div></div></div>
 <div id="imbox"><div class="asheet"><div class="ah"><button id="imX">Cancel</button><div><b id="imT">Category</b><small id="imC"></small></div><button class="pill" id="imOK">Save</button></div><div class="imn"><input id="imName" maxlength="30" aria-label="Category name" placeholder="Category name"><small id="imErr" class="mut"></small></div><div id="imItems"></div></div></div>
 <section id="welcome" class="v"><div class="wc"><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg3)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2>Evo<i>Lyric</i></h2>
   <div id="wstep1"><p class="sub">A lyric teleprompter for live performers.</p><button class="gbtn" id="wgbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="werr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><button class="wguest" id="wguest" type="button">Continue as guest</button><p class="priv">As a guest your songs are saved on this device only. Sign in any time to sync them and use Friends.</p><p class="legal-ok">By continuing you agree to the <button type="button" class="lnk lg-t">Terms of Service</button> and <button type="button" class="lnk lg-p">Privacy Policy</button>.</p></div>
@@ -839,6 +843,7 @@ body.touring #tsv{display:none!important}
 <script src="config.js"></script>
 <script src="cloud.js"></script>
 <script src="legal.js"></script>
+<script src="import.js"></script>
 <script>
 const K='evolyric-v1',$=s=>document.querySelector(s);
 const SPEED_BONUS=3,BOOST1=15+SPEED_BONUS,BOOST2=20+SPEED_BONUS; /* every speed value runs +3 faster */
@@ -1185,6 +1190,7 @@ $('#fab').onclick=()=>fabOpen(!$('#fabm').classList.contains('on'));
 $('#fbg').onclick=()=>fabOpen(false); /* tap outside closes the popup */
 $('#nw').onclick=()=>{fabOpen(false);openEdit(null,'','',null,lib.v==='cat'?[lib.id]:[])};
 $('#imp').onclick=()=>{fabOpen(false);$('#file').click()};
+$('#pst').onclick=()=>pasteNew();
 $('#slb').onclick=()=>{fabOpen(false);slOpen()};
 /* v140: a text file (or pasted text) made by the Apple Notes shortcut holds many notes separated by ===EVONOTE===.
    Each part becomes its own song: title = its first line (Apple Notes uses the first line as the note title), lyrics = the rest,
@@ -1205,8 +1211,8 @@ function evoImport(x,cc){const parts=evoParts(x),now=Date.now();let n=0,skip=0;
     songs.push(ns);if(cc)cc.ids.push(ns.id);n++});
   return{n,skip}}
 const evoNote=r=>{const m=r.n+(r.n===1?' song':' songs')+' imported';note(r.skip?m+', '+r.skip+' already in your Library':m)};
-$('#file').onchange=async e=>{const cc=lib.v==='cat'&&curCat(),r={n:0,skip:0};let multi=false;
-  for(const f of e.target.files){const x=await f.text();
+$('#file').onchange=async e=>{const fs=[...e.target.files];if(fs.length&&!fs.every(f=>/\.(txt|text)$/i.test(f.name))){e.target.value='';return fileIn(fs)}const cc=lib.v==='cat'&&curCat(),r={n:0,skip:0};let multi=false;
+  for(const f of fs){const x=await f.text();
     if(EVONOTE.test(x)){const q=evoImport(x,cc);r.n+=q.n;r.skip+=q.skip;multi=true;continue}
     const ns={id:'s'+Date.now()+Math.random().toString(36).slice(2,5),title:f.name.replace(/\.txt$/i,''),artist:'',lyrics:x,speed:5,font:defFont(),cr:Date.now()};songs.push(ns);if(cc)cc.ids.push(ns.id);r.n++}
   save();refresh();e.target.value='';if(multi)evoNote(r);else toast('Impor selesai')};
@@ -1217,8 +1223,65 @@ document.addEventListener('paste',e=>{
   if(EVONOTE.test(x)){const r=evoImport(x,lib.v==='cat'&&curCat());save();refresh();evoNote(r);return}
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
+/* v163: universal import. Any file a notes app can export (import.js reads .txt .md .html .rtf .docx .enex .json .zip:
+   Google Keep Takeout, Simplenote, Evernote, Word, Pages exported as text/Word…). Plain .txt keeps the direct import above.
+   A preview (tick the songs, split a document holding many songs) shows only when there is a choice to make. */
+const IP_WHY={big:['file too large','file terlalu besar'],bad:['could not be read','tidak bisa dibaca'],badzip:['this .zip could not be opened','file .zip ini tidak bisa dibuka'],nozip:['this device cannot open .zip or Word files – update the system or use .txt','perangkat ini belum bisa membuka file .zip atau Word – perbarui sistemnya atau pakai .txt'],pages:['open it in Pages, then Share → Export → Plain Text or Word','buka di Pages, lalu Bagikan → Ekspor → Teks Biasa atau Word'],doc:['save it as .docx or .txt first','simpan dulu sebagai .docx atau .txt'],unknown:['this file type is not supported','jenis file ini belum didukung']};
+const ipErrText=errs=>errs.slice(0,4).map(x=>x.name.split('/').pop()+': '+L(...(IP_WHY[x.why]||IP_WHY.bad))).join('\n')+(errs.length>4?'\n+'+(errs.length-4):'');
+const ipKey=(t,l)=>normT(t||'Untitled')+'\u0000'+String(l||'').trim();
+let ip=null;
+async function fileIn(fs){if(!window.EvoImport)return note(L('Import is not available. Reload the app.','Impor tidak tersedia. Muat ulang aplikasi.'),1);
+  const cc=lib.v==='cat'&&curCat();let r;try{r=await EvoImport.read(fs)}catch(x){r={items:[],errors:fs.map(f=>({name:f.name,why:'bad'}))}}
+  if(!r.items.length)return note(r.errors.length?ipErrText(r.errors):L('No lyrics found in this file','Tidak ada lirik di file ini'),1);
+  const one=r.items.length===1&&!r.errors.length&&!(r.items[0].doc&&EvoImport.splitDoc(r.items[0].lyrics).length>1);
+  ip={items:r.items,errors:r.errors,cat:cc||null,split:false,auto:false,sel:null};ipBuild();
+  if(one){if(ip.view[0].dup)return evoNote({n:0,skip:1});return ipSave()}
+  ipDraw();$('#ipbox').classList.add('on')}
+function ipBuild(){const have=new Set(songs.map(s=>ipKey(s.title,s.lyrics))),seen=new Set();
+  ip.view=[];ip.items.forEach(it=>{const parts=ip.split&&it.doc?EvoImport.splitDoc(it.lyrics).map((p,i)=>i===0&&!p.title?{...p,title:it.title}:p):[it];
+    parts.forEach(p=>{const k=ipKey(p.title,p.lyrics),dup=have.has(k)||seen.has(k);seen.add(k);ip.view.push({title:p.title,lyrics:p.lyrics,src:it.src,dup,on:!dup})})})}
+function ipCount(){const n=ip.view.filter(x=>x.on).length;$('#ipC').textContent=n+(n===1?' song':' songs');$('#ipOK').disabled=!n}
+function ipDraw(){$('#ipT').textContent='Import';const o=$('#ipOpt'),box=$('#ipItems');o.textContent='';box.textContent='';
+  const opt=(on,txt,fn)=>{const b=E('button','ipo'+(on?' sel':''));b.type='button';b.append(E('span','chk',on?'✓':''),E('span','',txt));b.onclick=fn;o.append(b)};
+  const all=ip.view.length&&ip.view.every(x=>x.on);opt(all,L('Select all','Pilih semua'),()=>{ip.view.forEach(x=>x.on=!all);ipDraw()});
+  if(ip.items.some(it=>it.doc&&EvoImport.splitDoc(it.lyrics).length>1))opt(ip.split,L('One file holds many songs (split at 2 blank lines)','Satu file berisi banyak lagu (pisah di 2 baris kosong)'),()=>{ip.split=!ip.split;ipBuild();ipDraw()});
+  opt(ip.auto,L('Auto Section for lyrics without labels','Auto Section untuk lirik tanpa label'),()=>{ip.auto=!ip.auto;ipDraw()});
+  if(ip.cat){const c=E('div','ipn');c.append(L('Into category: ','Masuk ke kategori: '),UE('b','',ip.cat.name));o.append(c)}
+  if(ip.errors.length){const e=E('div','iperr',L('Skipped – ','Dilewati – ')+ipErrText(ip.errors));e.setAttribute('data-nt','');o.append(e)}
+  ip.view.forEach(it=>{const b=E('button','arow'+(it.on?' sel':''));b.type='button';const m=E('span');
+    const sn=it.lyrics.split('\n').filter(l=>l.trim()&&!/^\s*\[.+\]\s*$/.test(l)).slice(0,2).join(' / ').replace(/\{[roygbiv]:([^{}]*)\}/g,'$1');
+    m.append(UE('b','',it.title,'Untitled'),UE('small','',sn.slice(0,90),'—'));b.append(E('span','chk',it.on?'✓':''),m);
+    if(it.dup)b.append(E('em','','In Library'));b.onclick=()=>{it.on=!it.on;b.classList.toggle('sel',it.on);b.firstChild.textContent=it.on?'✓':'';ipCount();const a=$('#ipOpt .ipo');if(a){const al=ip.view.every(x=>x.on);a.classList.toggle('sel',al);a.firstChild.textContent=al?'✓':''}};box.append(b)});
+  ipCount()}
+function ipSave(){const now=Date.now(),cc=ip.cat&&cats.includes(ip.cat)?ip.cat:null;let n=0;const skip=ip.view.filter(x=>!x.on&&x.dup).length;
+  ip.view.forEach((p,i)=>{if(!p.on)return;let ly=p.lyrics;if(ip.auto&&!ly.split('\n').some(secLbl)){try{const a=autoSec(ly);if(a)ly=a}catch(e){}}
+    const ns={id:'s'+now.toString(36)+i+Math.random().toString(36).slice(2,5),title:p.title||'Untitled',artist:'',lyrics:ly,speed:5,font:defFont(),fav:false,cr:now+i,md:now+i};
+    songs.push(ns);if(cc)cc.ids.push(ns.id);n++});
+  save();refresh();$('#ipbox').classList.remove('on');ip=null;evoNote({n,skip});if(n)listIn&&listIn()}
+$('#ipOK').onclick=()=>{if(ip)ipSave()};$('#ipX').onclick=()=>{ip=null;$('#ipbox').classList.remove('on')};
+$('#ipbox').onclick=e=>{if(e.target.id==='ipbox')$('#ipX').onclick()};
+/* v163: Paste as new song – copy a note in any app, then one tap here (title = its first line) */
+function textIn(x,pre){x=String(x||'');if(!x.trim())return false;if(restoreBackup(x))return true;
+  if(EVONOTE.test(x)){const r=evoImport(x,lib.v==='cat'&&curCat());save();refresh();evoNote(r);return true}
+  const n=EvoImport.fromText(x);openEdit(null,n.lyrics,n.title,null,pre||[]);return true}
+async function pasteNew(){fabOpen(false);const pre=lib.v==='cat'?[lib.id]:[];let x=null;
+  try{if(navigator.clipboard&&navigator.clipboard.readText)x=await navigator.clipboard.readText()}catch(e){x=null}
+  if(x==null){openEdit(null,'','',null,pre);pasteFail();return note(L('Paste the lyrics here','Tempel liriknya di sini'))}
+  if(!x.trim())return note(L('Nothing to paste. Copy a note first.','Tidak ada yang bisa ditempel. Salin catatannya dulu.'));
+  textIn(x,pre)}
+/* v163: Android share target (manifest share_target, GET ./?title=…&text=…&url=…): Share → EvoLyric opens the editor with the note */
+const SHK='evo.share';
+(()=>{let q;try{q=new URLSearchParams(location.search)}catch(e){return}if(!q.has('text')&&!q.has('title')&&!q.has('url'))return;
+  const d={title:q.get('title')||'',text:q.get('text')||'',url:q.get('url')||''};try{sessionStorage.setItem(SHK,JSON.stringify(d))}catch(e){window.__evoShare=d}
+  try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}})();
+function sharePending(){try{if(sessionStorage.getItem(SHK))return true}catch(e){}return !!window.__evoShare}
+function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.getItem(SHK);if(v)d=JSON.parse(v);sessionStorage.removeItem(SHK)}catch(e){}window.__evoShare=null;if(!d)return false;
+  const t=String(d.title||'').trim();let x=String(d.text||'');if(d.url&&!x.includes(d.url))x=(x?x+'\n':'')+d.url;
+  if(t&&!x.trim().startsWith(t))x=t+'\n'+x;if(!x.trim())return false;return textIn(x,[])}
+{const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
+
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='162',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='163',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1263,7 +1326,7 @@ const ID={'Replace the existing section labels? Undo brings them back.':'Ganti l
 'Friends and people who find you by your username can read your bio. Your email is never shown.':'Teman dan orang yang menemukanmu lewat username bisa membaca bio-mu. Emailmu tidak pernah ditampilkan.','Friends and sending songs':'Teman dan kirim lagu','Friends are not enabled on the server yet.':'Fitur teman belum aktif di server.','Friends are not enabled on the server yet. Run supabase/003_friends.sql in the Supabase SQL Editor, then reopen the app.':'Fitur teman belum aktif di server. Jalankan supabase/003_friends.sql di Supabase SQL Editor, lalu buka ulang aplikasi.',
 'Google sign-in is not configured yet.':'Masuk dengan Google belum dikonfigurasi.','Green':'Hijau','Hand':'Tangan','Help':'Bantuan','Hide queue':'Sembunyikan antrean','Highlight':'Sorot','Highlight colours mark important lines. Section buttons on the right insert labels.':'Warna sorot menandai baris penting. Tombol bagian di kanan menyisipkan label.',
 'Hold a note by its handle (⋮⋮) and drag it to any line. Tap Done to apply.':'Tahan catatan pada pegangannya (⋮⋮) lalu seret ke baris mana pun. Ketuk Selesai untuk menerapkan.','Hold still for 1 second while playing: fast-forward (speed 30) until you let go.':'Tahan diam 1 detik saat berjalan: maju cepat (kecepatan 30) sampai dilepas.','Home':'Home','Hosting: Cloudflare':'Hosting: Cloudflare',
-'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
+'Image':'Gambar','Image could not be read':'Gambar tidak bisa dibaca','Image is too large':'Gambar terlalu besar','Import .txt':'Impor .txt','Import from file':'Impor dari file','Paste as new song':'Tempel sebagai lagu baru','In Library':'Sudah ada','Import':'Impor','Increase':'Tambah','Increase speed':'Tambah kecepatan','Insert':'Sisipkan','Install and offline':'Pasang dan offline','Italic':'Miring',
 'iPhone and iPad: Share, then Add to Home Screen. Android: Install app from the browser menu.':'iPhone dan iPad: Share, lalu Add to Home Screen. Android: Install app dari menu browser.',
 'Keep screen awake':'Layar tetap menyala','Keep tapping to the beat…':'Terus ketuk mengikuti ketukan…','Key':'Nada','Keyboard':'Keyboard','Label name':'Nama label','Language':'Bahasa','Left':'Kiri','Library, categories and queue':'Library, kategori, dan antrean','Light':'Terang','Line':'Garis','Lyrics':'Lirik','Looking up tempo… (up to 20 s)':'Mencari tempo… (maks. 20 detik)',
 'Made by Evolution Studio ID.':'Dibuat oleh Evolution Studio ID.','Make New Version':'Buat Versi Baru','Continue as guest':'Lanjut sebagai tamu','and':'dan','As a guest your songs are saved on this device only. Sign in any time to sync them and use Friends.':'Sebagai tamu, lagumu tersimpan di perangkat ini saja. Masuk kapan saja untuk sinkron dan memakai fitur Teman.','By continuing you agree to the':'Dengan melanjutkan, kamu menyetujui','Terms of Service':'Ketentuan Penggunaan','Privacy Policy':'Kebijakan Privasi','Search online':'Cari di internet','Profile Settings':'Pengaturan Profil','Male 1':'Pria 1','Male 2':'Pria 2','Maximum 20 characters':'Maksimal 20 karakter','Maximum 30 characters':'Maksimal 30 karakter','Maximum 8 images per song':'Maksimal 8 gambar per lagu','Menu':'Menu','Mid':'Tengah','Mono':'Mono','Move':'Geser','Move notes':'Pindahkan catatan','My Library':'Library Saya',
@@ -1319,7 +1382,7 @@ i18nMO.observe(document.body,{childList:true,subtree:true,characterData:true,att
 function setLang(v){PREF.lang=v==='id'?'id':'en';prefSave();idCache.clear();i18nRun();if(typeof prefRender==='function'&&$('#prefs').classList.contains('on'))prefRender()}
 /* for tools/i18n-audit.js: visible text that has no Indonesian version */
 /* text that must stay as is: brand, musical terms, names, numbers, text already written in Indonesian via L() */
-const I18N_KEEP=new Set(['LRCLIB','Figtree (Open Font License)','Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
+const I18N_KEEP=new Set(['LRCLIB','Apple Notes','Samsung Notes','Google Keep','Simplenote','Evernote','Figtree (Open Font License)','Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
 const i18nKeep=e=>!/[A-Za-z]{3}/.test(e)||I18N_KEEP.has(e)||LID.has(e)||tr(e)!==e||/^#[0-9a-f]{6}$/i.test(e)||/@[\w.-]+/.test(e)||/^Versi \d+$/.test(e)||/^\[/.test(e)||/^(Intro|Verse|Pre-Chorus|Chorus|Interlude|Bridge|Coda|Outro|Male|Female)\b/.test(e)||(user&&(e===user.name||e===user.email));
 window.i18nMissing=()=>{const out=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);for(let n;n=w.nextNode();){if(i18nSkip(n))continue;const o=I18N_EN.get(n),e=(o?o.e:n.nodeValue).trim();if(i18nKeep(e))continue;if(getComputedStyle(n.parentElement).display!=='none')out.add(e)}
   document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>I18N_ATTR.forEach(a=>{if(!el.hasAttribute(a))return;const M=I18N_EN.get(el),e=((M&&M[a])?M[a].e:el.getAttribute(a)).trim();if(!i18nKeep(e))out.add(a+': '+e)}));return [...out]};
@@ -1388,10 +1451,30 @@ function helpRender(){const b=$('#helpbody');b.textContent='';
   b.append(E('div','sgrp',L('Help','Bantuan')),sCard(
     sRow(L('Interactive tour','Tur interaktif'),{go:()=>tourStart()}),
     sRow(L('Quick guide','Panduan singkat'),{go:tutOpen}),
+    sRow(L('Move from another notes app','Pindah dari aplikasi catatan lain'),{go:()=>docOpen('help',L('Move your notes','Pindahkan catatanmu'),docMove)}),
     sRow(L('About EvoLyric','Tentang EvoLyric'),{go:()=>docOpen('help',L('About','Tentang'),docAbout)}),
     sRow(L('Credit','Kredit'),{go:()=>docOpen('help',L('Credit','Kredit'),docCredit)})),
   E('div','sgrp',L('Legal','Legal')),sCard(sRow(L('Privacy Policy','Kebijakan Privasi'),{go:()=>legalOpen('privacy','help')}),sRow(L('Terms of Service','Ketentuan Penggunaan'),{go:()=>legalOpen('terms','help')})),
   E('div','sgrp',L('Support','Dukungan')),sCard(sRow(L('Contact support','Hubungi dukungan'),{sub:SUPPORT_EMAIL,go:()=>docOpen('help',L('Support','Dukungan'),docSupport)})))}
+/* v163: how to bring notes over from other apps (any phone) */
+function docMove(b){b.className='sbody doc';
+  b.append(dP(L('Phones keep every app’s notes private, so no app can read another app’s notes. Take your notes out of the old app in any form it offers, then bring them in with + → Import from file, or + → Paste as new song.','HP menyimpan catatan setiap aplikasi secara tertutup, jadi tidak ada aplikasi yang bisa membaca catatan aplikasi lain. Keluarkan catatanmu dari aplikasi lama dalam bentuk apa pun yang tersedia, lalu masukkan lewat + → Impor dari file, atau + → Tempel sebagai lagu baru.')));
+  const sec=(h,items)=>{b.append(dH(h),dUl(items))};
+  sec(L('Any app, one note at a time','Aplikasi apa pun, satu per satu'),[
+    L('Copy the whole note, come back to EvoLyric, then + → Paste as new song. The first line becomes the title.','Salin seluruh isi catatan, kembali ke EvoLyric, lalu + → Tempel sebagai lagu baru. Baris pertama menjadi judul.'),
+    L('Android: open the note → Share → EvoLyric. EvoLyric must be installed from Chrome (⋮ → Install app).','Android: buka catatan → Bagikan → EvoLyric. EvoLyric harus dipasang dari Chrome (⋮ → Instal aplikasi).')]);
+  sec('Apple Notes',[L('Run the EvoNote Shortcut: it makes one .txt file with your notes. Then + → Import from file.','Jalankan Shortcut EvoNote: hasilnya satu file .txt berisi catatanmu. Lalu + → Impor dari file.')]);
+  sec('Samsung Notes',[L('Hold a note, tick the others, then More → Save as file → Text file. Then + → Import from file and pick all the files.','Tahan satu catatan, centang yang lain, lalu Lainnya → Simpan sebagai file → File teks. Lalu + → Impor dari file dan pilih semua filenya.')]);
+  sec(L('Xiaomi, Oppo, Vivo, Realme and other phones','Xiaomi, Oppo, Vivo, Realme, dan HP lain'),[L('Open the note → Share → share as text → EvoLyric. Or copy it and use Paste as new song.','Buka catatan → Bagikan → bagikan sebagai teks → EvoLyric. Atau salin lalu pakai Tempel sebagai lagu baru.')]);
+  sec('Google Keep',[L('Go to takeout.google.com, choose only Keep and download the .zip. Then + → Import from file and pick the .zip.','Buka takeout.google.com, pilih Keep saja, lalu unduh file .zip-nya. Lalu + → Impor dari file dan pilih file .zip itu.')]);
+  sec('Simplenote',[L('On app.simplenote.com: Settings → Tools → Export notes. Import the .zip.','Di app.simplenote.com: Settings → Tools → Export notes. Impor file .zip-nya.')]);
+  sec('Evernote',[L('Export the notes as .enex, then import that file.','Ekspor catatan sebagai .enex, lalu impor file itu.')]);
+  sec(L('Pages, Word, Google Docs','Pages, Word, Google Docs'),[
+    L('Export as Plain Text or Word (.docx), then import it.','Ekspor sebagai Teks Biasa atau Word (.docx), lalu impor.'),
+    L('One document with many songs: leave two blank lines between songs and tick “One file holds many songs” in the preview.','Satu dokumen berisi banyak lagu: beri dua baris kosong di antara lagu, lalu centang “Satu file berisi banyak lagu” di layar pratinjau.')]);
+  sec(L('Good to know','Perlu diketahui'),[
+    L('Highlighted or coloured text becomes an EvoLyric highlight.','Teks yang distabilo atau berwarna menjadi stabilo EvoLyric.'),
+    L('Untick notes that are not lyrics in the preview. Songs already in your Library are not added twice.','Hilangkan centang catatan yang bukan lirik di layar pratinjau. Lagu yang sudah ada di Library tidak ditambahkan dua kali.')])}
 /* v159: Support – one place to reach Evolution Digital Studio by email */
 /* v160: Privacy Policy and Terms of Service (text from docs/legal/*.md, built into legal.js by tools/legal-build.js) */
 function legalOpen(kind,from){const t=kind==='privacy'?L('Privacy Policy','Kebijakan Privasi'):L('Terms of Service','Ketentuan Penggunaan');
@@ -1421,7 +1504,7 @@ const tourOn=()=>!!tour;
 const tHome=()=>{fabOpen(false);if(!$('#list').classList.contains('on')){refresh();show('list')}};
 const TOUR=[
  {h:['Welcome to EvoLyric','Selamat datang di EvoLyric'],d:['A one-minute tour: make a song, tidy it up, then sing it.','Tur satu menit: membuat lagu, merapikannya, lalu menyanyikannya.'],go:tHome},
- {t:'#fab',g:'tap',h:['Add a song','Tambah lagu'],d:['Tap + for New song, Create setlist or Import .txt.','Ketuk + untuk Lagu baru, Buat setlist, atau Impor .txt.'],go:tHome},
+ {t:'#fab',g:'tap',h:['Add a song','Tambah lagu'],d:['Tap + for New song, Create setlist, Import from file or Paste as new song.','Ketuk + untuk Lagu baru, Buat setlist, Impor dari file, atau Tempel sebagai lagu baru.'],go:tHome},
  {t:'#q',g:'tap',h:['Lyrics from the internet','Lirik dari internet'],d:['Type a title in the search box. Not in your Library? Tap Search the internet: EvoLyric looks on LRCLIB, then Google. Hold a song for Search online to find other versions.','Ketik judul di kolom cari. Tidak ada di Library? Ketuk Cari di internet: EvoLyric mencari di LRCLIB, lalu Google. Tahan sebuah lagu untuk Cari di internet versi lain.'],go:tHome},
  {t:'#ta',g:'tap',p:r=>[r.left+r.width*.45,r.top+Math.min(r.height*.3,120)],h:['The editor','Editor'],d:['Type or paste lyrics here. We use a demo song; it is not saved.','Ketik atau tempel lirik di sini. Kita pakai lagu contoh; lagu ini tidak disimpan.'],
   go:()=>{if(!$('#edit').classList.contains('on')||!tour.ed){openEdit(null,TOUR_LY,TOUR_T);$('#ea').value=TOUR_A;tour.ed=1;if(tour.i>=5)edAuto()}}},
@@ -1488,7 +1571,7 @@ function tourEnd(){if(!tour)return;const o=tour.o;tour=null;removeEventListener(
   fabOpen(false)}
 /* first run: only for a new user (empty or sample library), once, when Home is free */
 function tourAuto(){if(tour)return;let seen='1';try{seen=localStorage.getItem(TOURK)}catch(e){}if(seen)return;
-  if(!$('#list').classList.contains('on')||document.querySelector('#authbox.on,#tut.on,#ctx.on,#addbox.on,#slbox.on,#imbox.on,#csheet.on'))return;
+  if(!$('#list').classList.contains('on')||document.querySelector('#authbox.on,#tut.on,#ctx.on,#addbox.on,#slbox.on,#imbox.on,#ipbox.on,#csheet.on'))return;
   if(AUTH_ON&&!user&&!isGuest())return;
   const fresh=!songs.length||(songs.length===1&&JSON.stringify(songs[0])===SAMPLE_J);
   if(!fresh){try{localStorage.setItem(TOURK,'0')}catch(e){}return}
@@ -1596,7 +1679,7 @@ function docBackup(b){b.className='sbody doc';
     dP(L('Restore reads a .evolyric file back. Songs that are already on this device are skipped, nothing is overwritten.','Restore membaca kembali file .evolyric. Lagu yang sudah ada di perangkat ini dilewati, tidak ada yang ditimpa.')),
     fi,btn(L('Restore','Restore'),()=>fi.click()),
     dH(L('Export','Ekspor')),
-    dP(L('All lyrics as one text file, in the same format as the Apple Notes Shortcut (songs separated by ===EVONOTE===). Open it in any text app, or bring it back with + → Import .txt.','Semua lirik dalam satu file teks, dengan format yang sama seperti Shortcut Apple Notes (lagu dipisah ===EVONOTE===). Bisa dibuka di aplikasi teks apa pun, atau dimasukkan lagi lewat + → Impor .txt.')),
+    dP(L('All lyrics as one text file, in the same format as the Apple Notes Shortcut (songs separated by ===EVONOTE===). Open it in any text app, or bring it back with + → Import from file.','Semua lirik dalam satu file teks, dengan format yang sama seperti Shortcut Apple Notes (lagu dipisah ===EVONOTE===). Bisa dibuka di aplikasi teks apa pun, atau dimasukkan lagi lewat + → Impor dari file.')),
     btn(L('Export .txt','Ekspor .txt'),()=>{if(!songs.length)return note(L('No songs to export','Belum ada lagu untuk diekspor'),1);saveFile('evolyric-lyrics-'+ymd()+'.txt',exportText(),'text/plain',()=>note(L(songs.length+' songs exported',songs.length+' lagu diekspor')))}))}
 $('#play').classList.toggle('nodim',!PREF.dim);$('#play').classList.toggle('noaura',!PREF.aura);
 /* back buttons */
@@ -2987,6 +3070,7 @@ async function initAuth(){
     if(isOn('#ctx')){ctxClose();return true}
     if(isOn('#notebox')){closeNote();return true}
     if(isOn('#arr')){arClose();return true}
+    if(isOn('#ipbox')){$('#ipX').onclick();return true}
     if(isOn('#nbox')){$('#nbox').classList.remove('on');return true}
     if(isOn('#cbox')){$('#cbox').classList.remove('on');return true}
     if(isOn('#addbox')){$('#aX').onclick();return true}

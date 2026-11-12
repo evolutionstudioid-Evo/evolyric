@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v163 – Bring your notes from any app
+- **Import from file** (+ menu, was *Import .txt*) now reads `.txt .md .html .rtf .docx .enex .json .zip`: Google Keep Takeout, Simplenote export, Evernote, Word, Pages exported as text/Word, a zip of lyric files. All on the device (`www/import.js`). Highlighted and coloured text become EvoLyric highlights. Plain `.txt` (and the Apple Notes Shortcut file) import exactly as before.
+- **Preview** when there is a choice: tick the songs (songs already in the Library are shown unticked), split one document holding many songs at two blank lines, optional Auto Section, the category it goes into, and why a file was skipped (Pages/.doc get export steps).
+- **Paste as new song** (+ menu): copy a note anywhere, one tap; the first line becomes the title.
+- **Share → EvoLyric** on Android (`share_target` in the manifest; EvoLyric installed from Chrome). On the welcome screen the shared note waits until the person continues.
+- **Help → Move from another notes app**: steps per app.
+- Tests `tests/import.test.js`.
+
 ## v162 – Your text is never translated
 - Strict rule: with the app in Indonesian, the user's own text stays exactly as written – lyrics, section names, song titles, artists, category names, notes, names and usernames – even when it is exactly an interface word (a song called *Close*, a lyric line *Back*, a section *[Next]*). Before, such text could be swapped for its Indonesian interface translation (for example in the song list, the section buttons, the title above the lyrics and the annotation view).
 - How: user text is marked `data-nt` (helper `UE()`), the containers that only hold user text (`#secs`, `#ptit`, `#antx`, `#cName`, `#qpt`, `#sn`) are marked too; interface fallbacks such as *Untitled* are still translated.

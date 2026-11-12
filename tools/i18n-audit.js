@@ -22,7 +22,7 @@ await step('gear menu',()=>p.click('#gear'));
 await step('preferences',()=>p.click('#gmenu .mi:nth-child(1)'));await p.click('#prX');
 await step('tour',async()=>{await p.evaluate(()=>tourStart());for(let k=0;k<16;k++){await p.waitForTimeout(450);await scan('tour '+k);await p.click('#tour .tnx')}});
 for(const [i,n] of [[2,'help'],]){await p.click('#gear');await p.click('#gmenu .mi:nth-child(2)');await scan('help');
-  for(let r=3;r<=4;r++){await step('help doc '+r,()=>p.click('#helpbody .srow:nth-child('+r+')'));await p.click('#dcX')}await p.click('#hpX')}
+  for(let r=3;r<=5;r++){await step('help doc '+r,()=>p.click('#helpbody .srow:nth-child('+r+')'));await p.click('#dcX')}await p.click('#hpX')}
 await step('account settings',async()=>{await p.click('#avb');await p.click('#amenu .mi:has-text("Pengaturan Akun")')});
 await step('subscription',()=>p.click('#acctbody button.srow >> nth=0'));await p.click('#dcX');
 await step('backup',()=>p.click('#acctbody button.srow >> nth=1'));await p.click('#dcX');await p.click('#acX');
@@ -44,6 +44,7 @@ await step('profile',async()=>{await p.evaluate(()=>profOpen())});
 await step('friend menu',async()=>{await p.evaluate(()=>frFriendMenu({username:'budi',display_name:'Budi'}))});
 await step('confirm dialog',async()=>{await p.evaluate(()=>ask('Delete category','Only the category is deleted. The songs stay in All Songs and in their other categories.','Delete',()=>{}))});
 await step('toasts',async()=>{await p.evaluate(()=>{['Category created','You are offline','Sent to @budi','Maximum 20 songs per group','Removed from Gig A'].forEach(t=>note(t))})});
+await step('import preview',async()=>{await p.evaluate(()=>{show('list');ip={items:[{title:'Lagu Uji',lyrics:'Baris satu\n\n\nLagu Dua\nBaris',doc:true,src:'Word'},{title:'Lagu Uji',lyrics:'Baris satu\n\n\nLagu Dua\nBaris',src:'Word'}],errors:[{name:'a.pages',why:'pages'},{name:'b.doc',why:'doc'}],cat:cats[0]||null,split:false,auto:false};ipBuild();ipDraw();$('#ipbox').classList.add('on')})});await p.evaluate(()=>$('#ipX').click());
 await step('song context menu',async()=>{await p.evaluate(()=>{show('list');ctxOpen(songs[0],null)})});
 await step('send picker',async()=>{await p.evaluate(()=>sendOpen({username:'budi'}))});
 console.log(err.length?'JS errors: '+err.join(' | '):'no JS errors');

@@ -30,7 +30,11 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio**. Versi saat ini: **1.0**
 - Tombol **L** di Home membawa kembali ke lirik terakhir yang dibuka.
 - Kategori untuk mengelompokkan lagu (misalnya satu per acara), dengan sematkan di atas dan pengurutan. Satu lagu dapat berada di banyak kategori.
 - Daftar lagu dengan tampilan lebar atau ringkas, pencarian yang tahan salah ketik 1–2 huruf, pengurutan, dan tab Terbaru.
-- **Impor `.txt`**: satu atau banyak file. File dari Shortcut Apple Notes (lagu dipisah `===EVONOTE===`) langsung menjadi banyak lagu.
+- **Impor dari file**: satu atau banyak file. File dari Shortcut Apple Notes (lagu dipisah `===EVONOTE===`) langsung menjadi banyak lagu.
+- **Impor universal** (`www/import.js`, semua diproses di perangkat): `.txt` `.md` `.html` `.rtf` `.docx` `.enex` `.json` dan `.zip` (Google Keep Takeout, ekspor Simplenote, folder berisi file lirik). Stabilo dan teks berwarna menjadi stabilo EvoLyric. Bila ada pilihan (banyak catatan, dokumen berisi banyak lagu, file yang dilewati), muncul pratinjau untuk mencentang lagu, memecah dokumen di 2 baris kosong, dan Auto Section. File Pages/.doc mendapat petunjuk cara ekspor. Lagu yang sudah ada tidak ditambahkan dua kali.
+- **Tempel sebagai lagu baru** (menu +): salin catatan di aplikasi apa pun, lalu satu ketukan; baris pertama menjadi judul.
+- **Bagikan → EvoLyric** (Android, EvoLyric dipasang lewat Chrome → Instal aplikasi): `share_target` di manifest membuka editor berisi catatan yang dibagikan.
+- **Bantuan → Pindah dari aplikasi catatan lain**: langkah untuk Apple Notes, Samsung Notes, Xiaomi/Oppo/Vivo/Realme, Google Keep, Simplenote, Evernote, Pages/Word.
 
 **Web Lyric (cari lirik di internet)**
 - Ketik judul di kolom cari (Home atau panel samping). Kalau tidak ada di Library, muncul kartu **Cari di internet** yang mencari di [LRCLIB](https://lrclib.net): satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih (dengan tombol **Lebih banyak** ke Google); tidak ada hasil membuka Google. Pencarian juga tahan salah ketik.

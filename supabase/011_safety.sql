@@ -223,4 +223,8 @@ end $$;
 
 revoke all on function public.admin_suspend(text, int, text, text), public.admin_unsuspend(text) from public, anon, authenticated;
 
+-- internal helpers and trigger functions are never called by the app (they would reveal who blocked whom)
+revoke all on function public.ev_suspended(uuid), public.ev_blocked(uuid, uuid), public.ev_count(uuid, text),
+  public.ev_guard_friendship(), public.ev_guard_delivery(), public.ev_guard_accept() from public, anon, authenticated;
+
 notify pgrst, 'reload schema';

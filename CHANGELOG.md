@@ -6,6 +6,7 @@
 - **Daily limits** on the server: 20 friend requests, 30 deliveries, 10 reports per 24 hours.
 - **Suspension** by the admin (`admin_suspend` in the SQL Editor): *social* = no sending / friend requests (notice in Friends); *full* = the app is locked with Contact support / Sign out. Temporary or permanent.
 - **Help → Contact support**: email button to evolution.studio.id@gmail.com, with app version, device and @username filled in.
+- Server: `010` and `011` are installed on the EvoLyric Supabase project (12 Nov 2026); internal helper/trigger functions are not callable by users.
 - New: `supabase/011_safety.sql` (run once), `docs/ADMIN.md` (how to read reports, suspend, lift). The SQL was tested on Postgres 16 with every rule (block, limits, suspension, permissions, delete account).
 - Fixed: "from @…" under a delivery is now translated.
 

@@ -715,7 +715,7 @@ body.touring #tsv{display:none!important}
   <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span><b class="tier" id="tier" data-tier="pro">Pro</b></span></h1><span id="svw" hidden>⚠ Not saved</span><button class="ic" id="gear" type="button" aria-label="Settings" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button><div id="auth"></div></div>
   <div id="amenu" role="menu" hidden></div><div id="gmenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button></div>
-  <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName"></b></div>
+  <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName" data-nt></b></div>
   <div class="sb"><span class="sfield"><button class="mg" id="find" type="button" aria-label="Search" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button><input id="q" placeholder="Search title or artist…" aria-label="Search"><button class="clr" type="button" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button></span></div>
   <div class="sb" id="actrow" hidden><button class="pill" id="act" style="flex:1"></button></div>
   <div id="hvrow"><button id="hView" type="button" aria-label="Compact list" aria-pressed="false"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="hvi" d="M3 5h14M3 10h14M3 15h14"/></svg></button><button id="sortb" type="button" aria-label="Sort songs" aria-haspopup="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V4M3 7l3-3 3 3M14 4v12M11 13l3 3 3-3"/></svg></button></div>
@@ -738,13 +738,13 @@ body.touring #tsv{display:none!important}
   </div>
   <div id="mbg"></div>
   <div id="menu" role="menu"><button id="mE" type="button" role="menuitem">Edit song</button><button id="mR" type="button" role="menuitem">Restart</button><button id="mS" type="button" role="menuitem" hidden>Send to friend</button><button id="mV" type="button" role="menuitem" hidden>Save to Library</button><button id="mT" type="button" role="menuitem" hidden>Edit in Editor</button></div>
-  <div id="secs"></div>
+  <div id="secs" data-nt></div>
   <div id="lyr"><div id="txt"></div></div>
   <button id="nxt" type="button" aria-label="Next song" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5"/></svg></button>
   <button id="qtg" type="button" aria-label="Queue" aria-expanded="false" aria-controls="qp"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5h10M3 10h10M3 15h6"/><path d="M14.5 12.5l3 2.5-3 2.5z" fill="currentColor" stroke="none"/></svg><b id="qn"></b></button>
   <div id="qp" role="region" aria-label="Song queue"><div class="qh0"><span>Queue</span><button id="qx" type="button" aria-label="Hide queue"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div id="ql"></div><button id="qclr" type="button" hidden>Clear queue</button></div>
   <div id="qbg"></div>
-  <div id="qpop" role="menu"><h4 id="qpt"></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
+  <div id="qpop" role="menu"><h4 id="qpt" data-nt></h4><button id="qpa" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h9M3 10h6M3 15h6M15 9v6M12 12h6"/></svg>Add to Queue</button><button id="qpo" type="button" role="menuitem"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>Open</button></div>
   <div id="shud" aria-hidden="true"><span>Speed</span><div class="trk"><i></i><u></u></div><b></b></div>
   <div id="spc">
     <div id="spp" role="group" aria-label="Speed"><div class="sph"><span>Speed</span><b id="spv"></b><button id="spx" type="button" aria-label="Close speed"><svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button></div><div class="spr"><button class="step" id="spMinus" type="button" aria-label="Decrease speed">−</button><input type="range" id="sp" min="1" max="25" step="any" aria-label="Scroll speed"><button class="step" id="spPlus" type="button" aria-label="Increase speed">+</button></div><div class="spm"><span>1</span><span>25</span></div></div>
@@ -767,7 +767,7 @@ body.touring #tsv{display:none!important}
   </div>
   <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button id="hx" type="button">Remove</button></div>
   <div class="tb" id="notebar" hidden><b id="nbn"></b><button id="nbEdit">Edit</button><button id="nbMove">Move</button><button id="nbRm">Delete</button></div>
-  <div class="tb" id="secbar" hidden><b id="sn"></b><button id="sstop" type="button" hidden></button><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
+  <div class="tb" id="secbar" hidden><b id="sn" data-nt></b><button id="sstop" type="button" hidden></button><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
   <div class="ed"><textarea id="ta" inputmode="none" spellcheck="false" aria-label="Lyrics"></textarea><div id="side"></div></div>
 </section>
 
@@ -803,7 +803,7 @@ body.touring #tsv{display:none!important}
 
 <section id="ann" class="v">
   <div class="hd"><button class="ic" id="anX" aria-label="Cancel">✕</button><h1 style="font-size:20px">Annotate</h1><button class="pill" id="anOK">Done</button></div>
-  <div id="anl"><div id="antx"></div></div>
+  <div id="anl"><div id="antx" data-nt></div></div>
   <div id="antools">
     <div class="tb" id="anSel" hidden><b>Selected</b><button id="anEd">Edit text</button><button id="anDel">Delete</button></div>
     <div class="tb" id="anShape" hidden><button data-s="r" aria-label="Rectangle">▭</button><button data-s="o" aria-label="Ellipse">◯</button><button data-s="t" aria-label="Triangle">△</button><button data-s="n" aria-label="Line">╱</button></div>
@@ -845,6 +845,8 @@ const SPEED_BONUS=3,BOOST1=15+SPEED_BONUS,BOOST2=20+SPEED_BONUS; /* every speed 
 const FMIN=12,FMAX=120;
 const SPEED_SCALE=.8; /* actual px/s = (speed+3) x SPEED_SCALE x font x .12. v21: 1 -> .8 (= 20% slower on every setting; stored speeds are unchanged, so no migration) */
 const E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e};
+/* v162: user content (titles, artists, lyrics, section and category names, notes, people) is never translated: UE marks it data-nt; fb is the interface fallback, which is translated */
+const UE=(t,c,v,fb)=>{const e=E(t,c,v||fb||'');if(v)e.setAttribute('data-nt','');return e};
 /* v157: the old demo song – no longer added to new libraries; kept only to recognise (and never upload) an untouched copy on older devices */
 const SAMPLE={id:'s1',title:'Contoh Lagu',artist:'EvoLyric',speed:5,font:32,lyrics:
 '[Intro]\n(petik pelan)\n\n[Verse 1]\nLampu panggung mulai menyala\nSuara kita mengisi ruang\nSatu per satu baris mengalir\nTanpa kertas yang berserakan\n\n[Chorus]\nGulir saja, biar lirik berjalan\nKita bernyanyi sampai selesai\n\n[Male 1]\nBagian ini milik dia\n\n[Female 1]\nBagian ini milik aku\n\n[All]\nSatu suara, satu panggung\n\n[Interlude]\n(solo gitar)\n\n[Verse 2]\nSetelah lagu ini usai\nTepuk tangan jadi penutup\n\n[Rit]\nPelan… dan selesai'};
@@ -984,11 +986,11 @@ function items(box,q,pick,menu,pool,cat,empty,keep){
     cmpR=T.length&&!keep?(a,b)=>rank(a)-rank(b)||cmp(a,b):cmp;
   const pins=keep?[]:hit.filter(s=>s.pin).sort(cmpR),rest=keep?hit:hit.filter(s=>!s.pin).sort(cmpR); /* keep = keep the given order (Recent) */
   const row=s=>{
-      const b=E('button','it'),t=E('b'),n=E('span','',s.title||'Untitled');
+      const b=E('button','it'),t=E('b'),n=UE('span','',s.title,'Untitled');
       if(s.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;n.prepend(pi)}
       t.append(n);
       if(s.key)t.append(E('span','key',s.key));
-      b.append(t,E('small','',s.artist||''));
+      b.append(t,UE('small','',s.artist));
       if(menu)press(b,()=>pick(s),()=>ctxOpen(s,cat));else b.onclick=()=>pick(s,b);
       box.append(b)};
   if(pins.length){const h=E('div','ltr pn');h.innerHTML=PIN_SVG;h.append(E('span','','Pinned'));box.append(h);pins.forEach(row);
@@ -1005,7 +1007,7 @@ const catSorter=()=>catSortBy==='new'?(a,b)=>cTime(b)-cTime(a)||byName(a,b):catS
 function catList(){
   const box=$('#items');box.textContent='';const q=($('#q').value||'').trim().toLowerCase();
   const cmp=catSorter(),F=cats.filter(c=>c.name.toLowerCase().includes(q)),L=[...F.filter(c=>c.pin).sort(cmp),...F.filter(c=>!c.pin).sort(cmp)]; /* pinned categories first */
-  L.forEach(c=>{const b=E('button','it'),t=E('b'),n=c.ids.length,nm=E('span','',c.name);if(c.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;nm.prepend(pi)}t.append(nm,E('span','key',n+(n===1?' song':' songs')));b.append(t);
+  L.forEach(c=>{const b=E('button','it'),t=E('b'),n=c.ids.length,nm=UE('span','',c.name);if(c.pin){const pi=E('span','pinic');pi.innerHTML=PIN_SVG;nm.prepend(pi)}t.append(nm,E('span','key',n+(n===1?' song':' songs')));b.append(t);
     press(b,()=>{lib.v='cat';lib.id=c.id;$('#q').value='';refresh();listIn()},()=>ctxCat(c));box.append(b)});
   if(!L.length)box.append(E('p','mut',cats.length?'No matching categories.':'No categories yet. Create one to organize your songs.'))}
 function refresh(){
@@ -1033,7 +1035,7 @@ $('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;l
 $('#cBack').onclick=()=>{lib.v='cats';lib.id=null;$('#q').value='';refresh()};
 const csh=()=>{const c=$('#csheet');c.textContent='';c.classList.remove('wl');return c};
 function ctxOpen(s,cat){
-  const c=csh();c.append(E('h3','',s.title||'Untitled'));
+  const c=csh();c.append(UE('h3','',s.title,'Untitled'));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;c.append(b);return b};
   if(user)add('Send to friend',()=>{ctxClose();sendPick(s)});
   add(s.pin?'Unpin':'Pin to top',()=>{if(s.pin)delete s.pin;else s.pin=Date.now();save();ctxClose();refresh();note(s.pin?'Pinned to top':'Unpinned')});
@@ -1043,7 +1045,7 @@ function ctxOpen(s,cat){
   else add('Delete Song',()=>ask('Delete “'+(s.title||'Untitled')+'”?','This deletes the song from your Master Library and from all of its categories. This cannot be undone.','Delete Song',()=>{delSong(s);refresh();note('Song deleted')}),'del');
   $('#ctx').classList.add('on')}
 function ctxCat(c){
-  const k=csh();k.append(E('h3','',c.name));
+  const k=csh();k.append(UE('h3','',c.name));
   const add=(t,f,cl)=>{const b=E('button',cl||'',t);b.onclick=f;k.append(b)};
   if(user&&sb)add('Send category',()=>{ctxClose();sendCat(c)});
   add(c.pin?'Unpin':'Pin to top',()=>{if(c.pin)delete c.pin;else c.pin=Date.now();save();ctxClose();refresh()});
@@ -1068,7 +1070,7 @@ function addItems(){
   const cat=aMode==='send'?null:curCat(),box=$('#aItems'),T=$('#aq').value.toLowerCase().split(/\s+/).filter(Boolean);box.textContent='';let L='';
   songs.filter(s=>{const h=((s.title||'')+' '+(s.artist||'')).toLowerCase();return T.every(w=>h.includes(w))}).sort((a,b)=>a.title.localeCompare(b.title,'id')).forEach(s=>{
     const has=!!cat&&cat.ids.includes(s.id),b=E('button','arow'+(aSel.has(s.id)?' sel':''));b.disabled=has;
-    const m=E('span');m.append(E('div','',s.title||'Untitled'),E('small','mut',s.artist||''));
+    const m=E('span');m.append(UE('div','',s.title,'Untitled'),UE('small','mut',s.artist));
     b.append(E('span','chk',has?'✓':aSel.has(s.id)?'✓':''),m);if(has)b.append(E('em','','Already added'));
     b.onclick=()=>{if(aSel.has(s.id))aSel.delete(s.id);else{if(aMode==='send'&&aSel.size>=SEND_MAX)return void note('Maximum '+SEND_MAX+' songs per group',true);aSel.add(s.id)}b.classList.toggle('sel',aSel.has(s.id));b.firstChild.textContent=aSel.has(s.id)?'✓':'';aCount()};
     box.append(b)});
@@ -1080,7 +1082,7 @@ const slSongs=()=>{const c=slSrc&&slSrc!=='all'?cats.find(x=>x.id===slSrc):null;
 function slOpen(){if(!songs.length)return void note('Your library is empty',true);slList=[];slSel=new Set();slView='root';slSrc=null;slQ='';slDraw();$('#slbox').classList.add('on')}
 function slSideDraw(){const S=$('#slSide'),k=S.scrollTop;S.textContent='';S.append(E('div','fh','Setlist'));
   if(!slList.length)S.append(E('p','mut slempty','Songs you add appear here, in order.'));
-  slList.forEach((id,i)=>{const x=songs.find(o=>o.id===id);if(!x)return;const r=E('div','slit'),t=E('span','',(i+1)+'. '+(x.title||'Untitled')),rm=E('button','','×');rm.type='button';rm.setAttribute('aria-label','Remove');rm.onclick=()=>{slList.splice(i,1);slDraw()};r.append(t,rm);S.append(r)});S.scrollTop=k}
+  slList.forEach((id,i)=>{const x=songs.find(o=>o.id===id);if(!x)return;const r=E('div','slit'),t=UE('span','',x.title&&(i+1)+'. '+x.title,(i+1)+'. Untitled'),rm=E('button','','×');rm.type='button';rm.setAttribute('aria-label','Remove');rm.onclick=()=>{slList.splice(i,1);slDraw()};r.append(t,rm);S.append(r)});S.scrollTop=k}
 function slDraw(){slSideDraw();const B=$('#slBody'),keep=B.querySelector('#slList')?B.querySelector('#slList').scrollTop:0;B.textContent='';
   $('#slX').textContent=slView==='root'?'Cancel':'Back';
   $('#slC').textContent=slList.length+(slList.length===1?' song in setlist':' songs in setlist');
@@ -1091,7 +1093,7 @@ function slDraw(){slSideDraw();const B=$('#slBody'),keep=B.querySelector('#slLis
       mk('All Songs',songs.length+(songs.length===1?' song':' songs'),()=>{slView='songs';slSrc='all';slQ='';slDraw()}),
       mk('Categories',cats.length+(cats.length===1?' category':' categories'),()=>{slView='cats';slDraw()}));}
   else if(slView==='cats'){const L=E('div');L.id='slList';L.style.cssText='padding:0 10px 10px';
-    [...cats].sort(byName).forEach(c=>{const b=E('button','arow');b.type='button';const m=E('span');m.append(E('div','',c.name),E('small','mut',c.ids.length+(c.ids.length===1?' song':' songs')));b.append(m,E('em','','›'));b.onclick=()=>{slView='songs';slSrc=c.id;slQ='';slDraw()};L.append(b)});
+    [...cats].sort(byName).forEach(c=>{const b=E('button','arow');b.type='button';const m=E('span');m.append(UE('div','',c.name),E('small','mut',c.ids.length+(c.ids.length===1?' song':' songs')));b.append(m,E('em','','›'));b.onclick=()=>{slView='songs';slSrc=c.id;slQ='';slDraw()};L.append(b)});
     if(!cats.length)L.append(E('p','mut','No categories yet. Create one below.'));B.append(L)}
   else{const bar=E('div','slbar'),f=E('span','sfield'),i=E('input');i.placeholder='Search songs…';i.value=slQ;i.setAttribute('aria-label','Search songs');f.append(i);
     bar.append(f);B.append(bar);
@@ -1099,7 +1101,7 @@ function slDraw(){slSideDraw();const B=$('#slBody'),keep=B.querySelector('#slLis
     const fill=()=>{L.textContent='';const T=slQ.toLowerCase().split(/\s+/).filter(Boolean);
       slSongs().filter(x=>{const h=((x.title||'')+' '+(x.artist||'')).toLowerCase();return T.every(w=>h.includes(w))}).forEach(x=>{
         const inL=slList.indexOf(x.id),b=E('button','arow');b.type='button';b.disabled=inL>=0;
-        const m=E('span');m.append(E('div','',x.title||'Untitled'),E('small','mut',x.artist||''));
+        const m=E('span');m.append(UE('div','',x.title,'Untitled'),UE('small','mut',x.artist));
         b.append(E('span','chk',inL>=0?String(inL+1):''),m);
         b.onclick=()=>{if(!slList.includes(x.id))slList.push(x.id);slDraw()};L.append(b)});
       if(!L.children.length)L.append(E('p','mut','No songs.'))};
@@ -1137,15 +1139,15 @@ function wlOpen(it,items,keep){ctxClose();return openTemp({title:it.title,artist
    Switching keeps speed and zoom; the song stays temporary (Save works as before). */
 function vsRender(){const l=$('#vsl');l.textContent='';const t=cur;if(!isTemp(t)||!t.vers)return;$('#vsbv').textContent=t.vers.length;
   t.vers.forEach(it=>{const b=E('button','wlv'+(it.id===t.srcId?' cur':''));b.type='button';if(it.id===t.srcId)b.setAttribute('aria-current','true');
-    b.append(E('b','',it.title));const sm=E('small','',[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · '));if(it.variant)sm.append(E('i','',it.variant));b.append(sm);
+    b.append(UE('b','',it.title));const sm=E('small');sm.append(UE('span','',[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · ')));if(it.variant)sm.append(E('i','',it.variant));b.append(sm);
     b.onclick=()=>{if(it.id===t.srcId)return vsOpen(false);vsOpen(false);wlOpen(it,t.vers,{speed:t.speed,font:t.font})};l.append(b)})}
 function vsOpen(on){const p=$('#vsp'),b=$('#vsb');if(!p)return;if(on==null)on=!p.classList.contains('open');if(on&&!(isTemp(cur)&&cur.src==='lrclib'&&cur.vers&&cur.vers.length))on=false;
   if(on)vsRender();p.classList.toggle('open',on);b.classList.toggle('hid',on);b.setAttribute('aria-expanded',on?'true':'false')}
 function wlPick(items,q){const c=csh();c.classList.add('wl');const hd=E('div','wlh');hd.append(E('h3','','Choose a version'));
   if(q){const g=E('button','wlg');g.type='button';g.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>';g.append('More version');g.onclick=()=>{ctxClose();wlGoogle(q,true)};hd.append(g)} /* v149: same Google button as the versions panel */
   c.append(hd);
-  items.forEach(it=>{const b=E('button','wlv');b.type='button';b.append(E('b','',it.title));
-    const m=[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · ');const sm=E('small','',m);if(it.variant)sm.append(E('i','',it.variant));b.append(sm);b.onclick=()=>wlOpen(it,items);c.append(b)});
+  items.forEach(it=>{const b=E('button','wlv');b.type='button';b.append(UE('b','',it.title));
+    const m=[it.artist,it.album,wlDur(it.dur)].filter(Boolean).join(' · ');const sm=E('small');sm.append(UE('span','',m));if(it.variant)sm.append(E('i','',it.variant));b.append(sm);b.onclick=()=>wlOpen(it,items);c.append(b)});
   const x=E('button','wlx','Cancel');x.type='button';x.onclick=ctxClose;c.append(x,E('p','wlsrc','Lyrics from LRCLIB'));$('#ctx').classList.add('on')}
 function wlUse(q,r,inTap){
   if(r.state==='ok')return r.items.length===1?wlOpen(r.items[0],r.items):wlPick(r.items,q);
@@ -1216,7 +1218,7 @@ document.addEventListener('paste',e=>{
   openEdit(null,x,'',null,lib.v==='cat'?[lib.id]:[])});
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='161',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='162',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1775,7 +1777,7 @@ function lineEl(ln,col){
   while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);tc(k,HC[m[1]],'background');d.append(k);i=m.index+m[0].length}
   if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';if(col)d.style.color=col;return d}
 function render(){
-  const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
+  const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').toggleAttribute('data-nt',!!cur.title);$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
   t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
   t.append(E('div','end'));t.append(E('div','nxl'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=stopOf(cur,d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
 function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr');$('#txt').style.paddingTop='12px';SO=null;fitTitle()}
@@ -1914,7 +1916,7 @@ $('#mR').onclick=()=>{menuOpen(false);setPlay(false);skip.clear();$('#lyr').scro
 /* laci */
 const dw=$('#drawer'),sc=$('#scrim');
 function drawer(on){if(on)menuOpen(false);if(!on||on)$('#dTop').classList.remove('on');dw.classList.toggle('open',on);sc.classList.toggle('open',on);if(!on)qpClose();if(on){$('#dq').value='';dFill();drawerItems();const di=$('#dItems');di.classList.add('stg');clearTimeout(drawer._t);drawer._t=setTimeout(()=>di.classList.remove('stg'),750)}}
-function dFill(){const e=$('#dcat');e.textContent='';const o=E('option','','All Songs');o.value='';e.append(o);[...cats].sort(byName).forEach(c=>{const o=E('option','',c.name);o.value=c.id;e.append(o)});e.value=lib.v==='cat'?lib.id:''}
+function dFill(){const e=$('#dcat');e.textContent='';const o=E('option','','All Songs');o.value='';e.append(o);[...cats].sort(byName).forEach(c=>{const o=UE('option','',c.name);o.value=c.id;e.append(o)});e.value=lib.v==='cat'?lib.id:''}
 const drawerItems=()=>{items($('#dItems'),$('#dq').value,(s,b)=>qPop(s,b),false,poolFor($('#dcat').value||null));dEmptyWeb()}; /* single tap -> Add to Queue / Open popup (never opens directly) */
 $('#dcat').onchange=drawerItems;
 /* sidebar view: wide (default) or compact (title + key only, tighter rows); remembered on this device */
@@ -1963,7 +1965,7 @@ function qRender(){
     const r=E('div','qi'+(s.id===qFresh?' new':''));r.dataset.id=s.id;
     const g=E('button','qg');g.type='button';g.innerHTML=GRIP;g.setAttribute('aria-label','Reorder '+(s.title||'song'));
     g.addEventListener('pointerdown',e=>qDrag(e,r));g.addEventListener('keydown',e=>qKey_(e,s.id));
-    const t=E('div','qt'),num=E('i','',String(i+1)),nm=E('span','',s.title||'Untitled');t.append(num,nm);t.title=s.title||'';
+    const t=E('div','qt'),num=E('i','',String(i+1)),nm=UE('span','',s.title,'Untitled');t.append(num,nm);t.title=s.title||'';if(s.title)t.setAttribute('data-nt','');
     const d=E('button','qd');d.type='button';d.innerHTML=XI;d.setAttribute('aria-label','Remove '+(s.title||'song'));d.onclick=()=>qRemove(s.id,r);
     r.append(g,t,d);L.append(r)});
   if(!n)L.append(E('div','qe','Queue is empty'));
@@ -2025,7 +2027,7 @@ function qOpen(on){const p=$('#qp');if(on==null)on=!p.classList.contains('open')
 $('#qtg').onclick=()=>qOpen();$('#qx').onclick=()=>qOpen(false);
 /* sidebar popup */
 function qPop(s,el){
-  qpS=s;qpR=el.getBoundingClientRect();const p=$('#qpop');$('#qpt').textContent=s.title||'Untitled';
+  qpS=s;qpR=el.getBoundingClientRect();const p=$('#qpop');$('#qpt').textContent=s.title||tr('Untitled');
   const r=el.getBoundingClientRect(),w=p.offsetWidth,h=p.offsetHeight;
   const x=clamp(r.left+r.width/2-w/2,8,innerWidth-w-8);let y=r.bottom+2,up=false;
   if(y+h>innerHeight-8){y=r.top-h-2;up=true}y=Math.max(8,y);
@@ -2354,7 +2356,7 @@ $('#eK').onclick=()=>{
   const on=ta.inputMode==='none',a=ta.selectionStart,z=ta.selectionEnd;setKb(on);
   ta.blur();ta.focus({preventScroll:true});try{ta.setSelectionRange(a,z)}catch(_){}
   if(on)setTimeout(()=>{if(document.activeElement!==ta)ta.focus({preventScroll:true})},80)};
-function catSummary(){const n=[...ed.cats].map(id=>(cats.find(c=>c.id===id)||{}).name).filter(Boolean),b=$('#ec'),t=n.join(', ');b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>';const sp=E('span',n.length?'':'mut',n.length?t:'Category');b.append(sp);b.setAttribute('aria-label','Categories: '+(n.length?t:'none'));b.title=n.length?t:'Choose categories'}
+function catSummary(){const n=[...ed.cats].map(id=>(cats.find(c=>c.id===id)||{}).name).filter(Boolean),b=$('#ec'),t=n.join(', ');b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>';b.toggleAttribute('data-nt',!!n.length);const sp=E('span',n.length?'':'mut',n.length?t:'Category');b.append(sp);b.setAttribute('aria-label',n.length?L('Categories: ','Kategori: ')+t:'Categories: none');b.title=n.length?t:'Choose categories'}
 function catPick(){const L=$('#catl');L.textContent='';
   [...cats].sort(byName).forEach(c=>{const on=ed.cats.has(c.id),b=E('button','arow'+(on?' sel':''));b.append(E('span','chk',on?'✓':''),E('span','',c.name));
     b.onclick=()=>{if(ed.cats.has(c.id))ed.cats.delete(c.id);else ed.cats.add(c.id);const o=ed.cats.has(c.id);b.classList.toggle('sel',o);b.firstChild.textContent=o?'✓':'';ed.dirty=true;catSummary()};L.append(b)});
@@ -2538,10 +2540,10 @@ function anBack(){if(!an){show('edit');return}if(JSON.stringify(an.items)===an.s
 const lineIdx=()=>ta.value.slice(0,ta.selectionStart).split('\n').length-1;
 function setLines(L,ci){ta.value=L.join('\n');ci=Math.max(0,Math.min(ci,L.length-1));const pos=L.slice(0,ci).join('\n').length+(ci>0?1:0);ta.setSelectionRange(pos,pos);snap();ed.dirty=true;secInfo()}
 function noteInfo(){const bar=$('#notebar');if(!bar)return;const o=noteParse(ta.value.split('\n')[lineIdx()]);
-  if(!o){bar.hidden=true;return}bar.hidden=false;const n=$('#nbn');n.textContent='Note: '+(o.t.length>24?o.t.slice(0,24)+'…':o.t);n.style.color=NC[o.c]||NC.w}
+  if(!o){bar.hidden=true;return}bar.hidden=false;const n=$('#nbn');n.setAttribute('data-nt','');n.textContent=L('Note: ','Catatan: ')+(o.t.length>24?o.t.slice(0,24)+'…':o.t);n.style.color=NC[o.c]||NC.w}
 let nbCur=null;
 const NGROUPS=[['s','Size',[['1','S'],['2','M'],['3','L'],['4','XL']]],['w','Weight',[['l','Light'],['r','Regular'],['b','Bold']]],['f','Font',[['','Same'],['s','Serif'],['m','Mono'],['h','Hand']]],['a','Align',[['l','Left'],['c','Center'],['r','Right']]]];
-function nbPrev(){const p=$('#nbprev');p.textContent='';const d=E('div','note',$('#nbtx').value.trim()||'Your note');noteStyle(d,nbCur.o);p.append(d)}
+function nbPrev(){const p=$('#nbprev');p.textContent='';const d=UE('div','note',$('#nbtx').value.trim(),'Your note');noteStyle(d,nbCur.o);p.append(d)}
 function nbBuild(){const box=$('#nbseg');box.textContent='';const o=nbCur.o;
   const row=(label,fill)=>{const r=E('div','nrow2'),g=E('div','nseg');r.append(E('span','',label),g);fill(g);box.append(r)};
   NGROUPS.forEach(([k,label,opts])=>row(label,g=>opts.forEach(([v,t])=>{const b=E('button',o[k]===v?'on':'',t);b.type='button';b.onclick=()=>{o[k]=v;[...g.children].forEach(x=>x.classList.toggle('on',x===b));nbPrev()};g.append(b)})));
@@ -2631,7 +2633,7 @@ const BIO_MAX=300;
 function profOpen(){if(!user)return;closeMenu();show('profile');profRender()}
 function profRender(){const body=$('#pfbody');if(!body)return;body.textContent='';
   if(!user){body.append(E('p','mut','Sign in to edit your profile.'));return}
-  const top=E('div','pfh'),av=avatarEl(user);top.append(av,E('b','',user.name),E('small','mut',user.email));body.append(top);
+  const top=E('div','pfh'),av=avatarEl(user);top.append(av,UE('b','',user.name),UE('small','mut',user.email));body.append(top);
   const card=E('div','fcard'),nsql=uname.state==='nosql',bsql=uname.bioState==='nosql';
   const l1=E('label','pfl','Username');l1.htmlFor='pfu';const w=E('div','pfu');w.append(E('span','at','@'));
   const iu=E('input');iu.id='pfu';iu.value=uname.v;iu.maxLength=20;iu.placeholder='username';iu.autocapitalize='none';iu.setAttribute('autocorrect','off');iu.spellcheck=false;iu.disabled=nsql;w.append(iu);
@@ -2670,7 +2672,7 @@ function renderAuth(){
   else{const b=E('button','avb');b.id='avb';b.setAttribute('aria-haspopup','menu');b.setAttribute('aria-expanded','false');b.setAttribute('aria-label','Account menu: '+u.name);b.append(avatarEl(u));b.onclick=e=>{e.stopPropagation();toggleMenu()};box.append(b)}
   if(!u)closeMenu();frBadge()}
 function buildMenu(u){const m=$('#amenu');m.textContent='';
-  const h=E('div','mh'),t=E('div');t.append(E('b','',u.name),E('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
+  const h=E('div','mh'),t=E('div');t.append(UE('b','',u.name),UE('small','',u.email));if(uname.v)t.append(E('small','','@'+uname.v));if(window.Cloud&&user){const cs=Cloud.statusText();if(cs)t.append(E('small','cst',cs))}h.append(avatarEl(u),t);m.append(h);
   const it=(l,f,o)=>{const b=E('button','mi'+(o&&o.out?' out':''),l);b.setAttribute('role','menuitem');if(o&&(o.soon||o.lock)){b.disabled=true;b.append(E('em','',o.lock||'Soon'))}else{b.onclick=f;if(o&&o.sub)b.append(E('em','',o.sub))}m.append(b)};
   it('Friends',frOpen,{sub:frAlerts()?String(frAlerts()):''});
   it('Profile Settings',profOpen); /* v149: replaces My Library; the name card above is no longer a button */
@@ -2768,7 +2770,7 @@ const safeErr=e=>!e?null:e.code==='EV001'?L('Your account is suspended. Sending 
 async function frCall(fn,args,okMsg){try{const{data,error}=await sb.rpc(fn,args);if(error){note(safeErr(error)||(navigator.onLine?'Something went wrong. Try again.':'You are offline'),true);return null}
   if(okMsg)note(okMsg);await frLoad(true,true);return data==null?'':data}catch(e){note('Something went wrong. Try again.',true);return null}}
 function frAvatar(f){return avatarEl({name:f.display_name||f.username||'?',avatar:f.avatar_url||''})}
-function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(E('b','',f.display_name||f.username),E('small','','@'+f.username));if(f.bio)n.append(E('small','fb',f.bio));r.append(frAvatar(f),n);
+function frRow(f,btns){const r=E('div','fr'),n=E('div','fn');n.append(f.ui?E('b','',f.display_name):UE('b','',f.display_name||f.username),UE('small','','@'+f.username));if(f.bio)n.append(UE('small','fb',f.bio));r.append(frAvatar(f),n);
   btns.forEach(([t,fn,pri])=>{const b=E('button',pri?'pri':'',t);b.type='button';b.onclick=()=>{b.disabled=true;fn()};r.append(b)});return r}
 async function frFind(){const box=$('#frres');const q=$('#frq').value.trim().toLowerCase().replace(/^@/,'');box.textContent='';fr.res=null;
   const er=unameErr(q);if(er){box.append(E('p','err',er));return}
@@ -2792,7 +2794,7 @@ function frRender(){const body=$('#frbody');if(!$('#friends').classList.contains
   const inc=frIn(),out=fr.list.filter(f=>f.status==='pending'&&!f.incoming),ok=fr.list.filter(f=>f.status==='accepted').sort((a,b)=>(a.display_name||a.username).localeCompare(b.display_name||b.username,'id'));
   const sec=(t,n)=>{const h=E('div','fh',t);if(n)h.append(E('em','',String(n)));body.append(h)};
   if(fr.inbox.length){sec('Songs from friends',fr.inbox.length);fr.inbox.forEach(m=>{const n=m.song_count||1;
-    const isC=!!m.cat,r=frRow({display_name:isC?m.cat:n>1?n+' songs':(m.title||'Untitled'),username:m.username,avatar_url:m.avatar_url},[[isC?'Open':'Save'+(n>1?' all':''),isC?()=>catImport(m):()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
+    const isC=!!m.cat,r=frRow({ui:!isC&&(n>1||!m.title),display_name:isC?m.cat:n>1?n+' songs':(m.title||'Untitled'),username:m.username,avatar_url:m.avatar_url},[[isC?'Open':'Save'+(n>1?' all':''),isC?()=>catImport(m):()=>frSaveSong(m),1],['Dismiss',()=>frCall('clear_inbox_song',{p_id:m.id},'Dismissed')]]);
     {const mo=E('button','frm','⋯');mo.type='button';mo.setAttribute('aria-label',L('More','Lainnya'));mo.onclick=()=>frMore({id:m.sender_id,username:m.username},m.id);r.append(mo)}
     const sm=r.querySelector('small');sm.textContent=L('from @','dari @')+m.username+(isC?' · category · '+n+(n===1?' song':' songs'):n>1?(m.preview?' · '+m.preview+(n>3?'…':''):''):(m.artist?' · '+m.artist:''));body.append(r)})}
   if(inc.length){sec('Requests',inc.length);inc.forEach(f=>{const r=frRow(f,[['Accept',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:true},'Friend added'),1],['Decline',()=>frCall('respond_friend_request',{p_id:f.id,p_accept:false},'Request declined')]]);
@@ -2822,7 +2824,7 @@ async function catImport(m){let d=null;
   const lab={save:'Save a copy',use:'Use mine',skip:'Skip'};
   nm.oninput=()=>{$('#imErr').textContent=''};const upd=()=>{const n=rows.filter(r=>r.ch!=='skip').length;$('#imC').textContent=n+' of '+rows.length+' songs will be added';$('#imOK').disabled=!n;$('#imOK').textContent='Save'};
   const draw=()=>{box.textContent='';rows.forEach(r=>{const row=E('div','imr'),t=E('div'),b=E('button','cyc s'+(r.ch==='skip'?2:r.ch==='use'?1:0),lab[r.ch]);b.type='button';
-      t.append(E('b','',r.x.title||'Untitled'),E('small','',r.x.artist||''));if(r.mine)t.append(E('small','tag','You already have this song'));else t.append(E('small','tag','New'));
+      t.append(UE('b','',r.x.title,'Untitled'),UE('small','',r.x.artist));if(r.mine)t.append(E('small','tag','You already have this song'));else t.append(E('small','tag','New'));
       b.onclick=()=>{const o=r.mine?['use','save','skip']:['save','skip'];r.ch=o[(o.indexOf(r.ch)+1)%o.length];draw();upd()};row.append(t,b);box.append(row)})};
   draw();upd();$('#imbox').classList.add('on');
   $('#imX').onclick=()=>$('#imbox').classList.remove('on');$('#imbox').onclick=e=>{if(e.target.id==='imbox')$('#imX').onclick()};

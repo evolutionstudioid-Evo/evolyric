@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v162 – Your text is never translated
+- Strict rule: with the app in Indonesian, the user's own text stays exactly as written – lyrics, section names, song titles, artists, category names, notes, names and usernames – even when it is exactly an interface word (a song called *Close*, a lyric line *Back*, a section *[Next]*). Before, such text could be swapped for its Indonesian interface translation (for example in the song list, the section buttons, the title above the lyrics and the annotation view).
+- How: user text is marked `data-nt` (helper `UE()`), the containers that only hold user text (`#secs`, `#ptit`, `#antx`, `#cName`, `#qpt`, `#sn`) are marked too; interface fallbacks such as *Untitled* are still translated.
+- Test `tests/usercontent.test.js`.
+
 ## v161 – evolyric.com
 - EvoLyric now runs on **https://evolyric.com** (Cloudflare; `www.evolyric.com` redirects to it, HTTPS always on). `wrangler.jsonc` declares both custom domains and keeps the old `workers.dev` address.
 - On the old address, Home shows **EvoLyric has moved to evolyric.com** with *Open evolyric.com*; guests also get a **Backup** button (songs on a phone belong to one web address: Backup there, Restore on evolyric.com). Signed-in users just sign in on evolyric.com.

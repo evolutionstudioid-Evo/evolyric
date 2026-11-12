@@ -110,8 +110,9 @@ Setiap fitur atau layar baru **wajib punya terjemahan Indonesia dan Inggris**. R
 
 1. Tulis teks yang terlihat dalam bahasa Inggris di kode.
 2. Tambahkan padanan Indonesia ke `ID` (teks persis) atau `IDP` (teks yang memuat nama atau angka) di `www/index.html`.
-3. Jalankan `node tools/i18n-audit.js`. Hasilnya harus `OK – nothing untranslated`.
-4. Naikkan cache di `www/sw.js` dan tambahkan entri di `CHANGELOG.md`.
+3. **Aturan ketat:** teks milik pengguna (lirik, nama section, judul, artis, nama kategori, catatan, nama orang) tidak boleh ikut diterjemahkan. Tampilkan dengan `UE(tag, kelas, teks, cadangan)` atau beri atribut `data-nt` pada wadahnya. Diuji oleh `tests/usercontent.test.js`.
+4. Jalankan `node tools/i18n-audit.js`. Hasilnya harus `OK – nothing untranslated`.
+5. Naikkan cache di `www/sw.js` dan tambahkan entri di `CHANGELOG.md`.
 
 Detail ada di [`CONTRIBUTING.md`](CONTRIBUTING.md). Pemeriksa terjemahan memerlukan Playwright (`npm i playwright`).
 

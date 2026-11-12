@@ -9,6 +9,8 @@ await p.addInitScript(()=>localStorage.setItem('evo.tour','1'));
 await p.addInitScript(()=>localStorage.setItem('evo.prefs',JSON.stringify({theme:'light',lang:'id',awake:1,dim:1,font:32})));
 await p.goto('file://'+path.resolve(__dirname,'../www/index.html'));await p.waitForTimeout(900);
 await p.evaluate(()=>{user={id:'u',name:'Rani Putri',email:'rani@example.com',username:'rani'};renderAuth()});
+/* v157: new libraries start empty – add one fictional song so the song screens can be scanned */
+await p.evaluate(()=>{songs.push({id:'a1',title:'Pulang ke Panggung',artist:'Nada Band',key:'G',lyrics:'[Intro]\n(petik gitar)\n\n[Verse 1]\nLampu panggung mulai menyala\n\n[Chorus]\nPulang, pulang ke panggung',speed:5,font:32,cr:1,md:1});save();refresh()});
 const found=new Map(),scan=async n=>{(await p.evaluate(()=>window.i18nMissing())).forEach(t=>{if(!found.has(t))found.set(t,n)})};
 const step=async(n,fn)=>{try{await fn();await p.waitForTimeout(300);await scan(n)}catch(e){console.log('! skipped',n,e.message.split('\n')[0])}};
 const back=async()=>{await p.keyboard.press('Escape');await p.mouse.click(5,840).catch(()=>{})};

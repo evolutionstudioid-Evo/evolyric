@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v170 – Help tidied
+- Removed *Help → Move from another notes app* (the per-app guide). Import itself is unchanged.
+- Privacy Policy and Terms of Service moved from their own *Legal* group to small links at the bottom of Help.
+
 ## v169 – Old address keeps working quietly
 - The “EvoLyric has moved to evolyric.com” banner on the workers.dev address is paused (`MOVED_PAUSE`), because some Indonesian mobile networks could not reach the brand-new evolyric.com on the evening of 12 Nov 2026 (no requests from those networks reached Cloudflare; the domain is not blocked by TrustPositif). Turn it back on once evolyric.com is reachable everywhere.
 

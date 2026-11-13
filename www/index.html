@@ -487,6 +487,7 @@ button.mh{width:100%;text-align:left;border-radius:9px;background:none}button.mh
 #gmenu .mi{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 10px;border-radius:9px}#gmenu .mi:hover,#gmenu .mi:focus-visible{background:var(--ln)}#gmenu .mi svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--mut)}
 #gear svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}#gear{margin-right:2px}#gear[aria-expanded=true]{color:var(--acct)}
 .sbody{flex:1;min-height:0;overflow-y:auto;padding:2px 14px 36px;max-width:640px;width:100%;margin:0 auto;overscroll-behavior:contain}
+#helpbody{display:flex;flex-direction:column}#helpbody>*{flex-shrink:0}.hfoot{margin:auto 4px 0;padding-top:30px;text-align:center;font-size:12px;color:var(--mut)}.hfoot button{font:inherit;color:inherit;text-decoration:underline;text-underline-offset:2px;padding:6px 2px}
 .sgrp{margin:20px 4px 8px;color:var(--mut);font:700 12px/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
 .scard{background:var(--card);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
 .srow{display:flex;align-items:center;gap:12px;min-height:54px;padding:10px 14px;width:100%;text-align:left}.srow+.srow{border-top:1px solid var(--ln)}
@@ -1281,7 +1282,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='169',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='170',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1451,31 +1452,12 @@ function helpRender(){const b=$('#helpbody');b.textContent='';
   b.append(E('div','sgrp',L('Help','Bantuan')),sCard(
     sRow(L('Interactive tour','Tur interaktif'),{go:()=>tourStart()}),
     sRow(L('Quick guide','Panduan singkat'),{go:tutOpen}),
-    sRow(L('Move from another notes app','Pindah dari aplikasi catatan lain'),{go:()=>docOpen('help',L('Move your notes','Pindahkan catatanmu'),docMove)}),
     sRow(L('About EvoLyric','Tentang EvoLyric'),{go:()=>docOpen('help',L('About','Tentang'),docAbout)}),
     sRow(L('Credit','Kredit'),{go:()=>docOpen('help',L('Credit','Kredit'),docCredit)})),
-  E('div','sgrp',L('Legal','Legal')),sCard(sRow(L('Privacy Policy','Kebijakan Privasi'),{go:()=>legalOpen('privacy','help')}),sRow(L('Terms of Service','Ketentuan Penggunaan'),{go:()=>legalOpen('terms','help')})),
-  E('div','sgrp',L('Support','Dukungan')),sCard(sRow(L('Contact support','Hubungi dukungan'),{sub:SUPPORT_EMAIL,go:()=>docOpen('help',L('Support','Dukungan'),docSupport)})))}
-/* v163: how to bring notes over from other apps (any phone) */
-function docMove(b){b.className='sbody doc';
-  b.append(dP(L('Phones keep every app’s notes private, so no app can read another app’s notes. Take your notes out of the old app in any form it offers, then bring them in with + → Import from file, or + → Paste as new song.','HP menyimpan catatan setiap aplikasi secara tertutup, jadi tidak ada aplikasi yang bisa membaca catatan aplikasi lain. Keluarkan catatanmu dari aplikasi lama dalam bentuk apa pun yang tersedia, lalu masukkan lewat + → Impor dari file, atau + → Tempel sebagai lagu baru.')));
-  const sec=(h,items)=>{b.append(dH(h),dUl(items))};
-  sec(L('Any app, one note at a time','Aplikasi apa pun, satu per satu'),[
-    L('Copy the whole note, come back to EvoLyric, then + → Paste as new song. The first line becomes the title.','Salin seluruh isi catatan, kembali ke EvoLyric, lalu + → Tempel sebagai lagu baru. Baris pertama menjadi judul.'),
-    L('Android: open the note → Share → EvoLyric. EvoLyric must be installed from Chrome (⋮ → Install app).','Android: buka catatan → Bagikan → EvoLyric. EvoLyric harus dipasang dari Chrome (⋮ → Instal aplikasi).')]);
-  sec('Apple Notes',[L('Run the EvoNote Shortcut: it makes one .txt file with your notes. Then + → Import from file.','Jalankan Shortcut EvoNote: hasilnya satu file .txt berisi catatanmu. Lalu + → Impor dari file.')]);
-  sec('Samsung Notes',[L('Hold a note, tick the others, then More → Save as file → Text file. Then + → Import from file and pick all the files.','Tahan satu catatan, centang yang lain, lalu Lainnya → Simpan sebagai file → File teks. Lalu + → Impor dari file dan pilih semua filenya.')]);
-  sec(L('Xiaomi, Oppo, Vivo, Realme and other phones','Xiaomi, Oppo, Vivo, Realme, dan HP lain'),[L('Open the note → Share → share as text → EvoLyric. Or copy it and use Paste as new song.','Buka catatan → Bagikan → bagikan sebagai teks → EvoLyric. Atau salin lalu pakai Tempel sebagai lagu baru.')]);
-  sec('ColorNote',[L('In ColorNote: Settings → Backup → back up to the device (remember the password; without one it is 0000). Then + → Import from file and pick that backup file.','Di ColorNote: Pengaturan → Backup → backup ke perangkat (ingat kata sandinya; tanpa kata sandi berarti 0000). Lalu + → Impor dari file dan pilih file backup itu.')]);
-  sec('Google Keep',[L('Go to takeout.google.com, choose only Keep and download the .zip. Then + → Import from file and pick the .zip.','Buka takeout.google.com, pilih Keep saja, lalu unduh file .zip-nya. Lalu + → Impor dari file dan pilih file .zip itu.')]);
-  sec('Simplenote',[L('On app.simplenote.com: Settings → Tools → Export notes. Import the .zip.','Di app.simplenote.com: Settings → Tools → Export notes. Impor file .zip-nya.')]);
-  sec('Evernote',[L('Export the notes as .enex, then import that file.','Ekspor catatan sebagai .enex, lalu impor file itu.')]);
-  sec(L('Pages, Word, Google Docs','Pages, Word, Google Docs'),[
-    L('Export as Plain Text or Word (.docx), then import it.','Ekspor sebagai Teks Biasa atau Word (.docx), lalu impor.'),
-    L('One document with many songs: leave two blank lines between songs and tick “One file holds many songs” in the preview.','Satu dokumen berisi banyak lagu: beri dua baris kosong di antara lagu, lalu centang “Satu file berisi banyak lagu” di layar pratinjau.')]);
-  sec(L('Good to know','Perlu diketahui'),[
-    L('Highlighted or coloured text becomes an EvoLyric highlight.','Teks yang distabilo atau berwarna menjadi stabilo EvoLyric.'),
-    L('Untick notes that are not lyrics in the preview. Songs already in your Library are not added twice.','Hilangkan centang catatan yang bukan lirik di layar pratinjau. Lagu yang sudah ada di Library tidak ditambahkan dua kali.')])}
+  E('div','sgrp',L('Support','Dukungan')),sCard(sRow(L('Contact support','Hubungi dukungan'),{sub:SUPPORT_EMAIL,go:()=>docOpen('help',L('Support','Dukungan'),docSupport)})));
+  /* v170: Privacy Policy and Terms of Service as small links at the bottom of Help */
+  const f=E('div','hfoot'),lk=(t,k)=>{const x=E('button','',t);x.type='button';x.onclick=()=>legalOpen(k,'help');return x};
+  f.append(lk(L('Privacy Policy','Kebijakan Privasi'),'privacy'),E('span','',' · '),lk(L('Terms of Service','Ketentuan Penggunaan'),'terms'));b.append(f)}
 /* v159: Support – one place to reach Evolution Digital Studio by email */
 /* v160: Privacy Policy and Terms of Service (text from docs/legal/*.md, built into legal.js by tools/legal-build.js) */
 function legalOpen(kind,from){const t=kind==='privacy'?L('Privacy Policy','Kebijakan Privasi'):L('Terms of Service','Ketentuan Penggunaan');

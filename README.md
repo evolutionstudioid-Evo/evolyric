@@ -34,7 +34,6 @@ Aplikasi dikembangkan oleh **Evolution Digital Studio**. Versi saat ini: **1.0**
 - **Impor universal** (`www/import.js`, semua diproses di perangkat): `.txt` `.md` `.html` `.rtf` `.docx` `.enex` `.json`, `.zip` (Google Keep Takeout, ekspor Simplenote, folder berisi file lirik), dan backup ColorNote (`.backup`, didekripsi di perangkat; kata sandi bawaan 0000). Stabilo dan teks berwarna menjadi stabilo EvoLyric. Bila ada pilihan (banyak catatan, dokumen berisi banyak lagu, file yang dilewati), muncul pratinjau untuk mencentang lagu, memecah dokumen di 2 baris kosong, dan Auto Section. File Pages/.doc mendapat petunjuk cara ekspor. Lagu yang sudah ada tidak ditambahkan dua kali.
 - **Tempel sebagai lagu baru** (menu +): salin catatan di aplikasi apa pun, lalu satu ketukan; baris pertama menjadi judul.
 - **Bagikan → EvoLyric** (Android, EvoLyric dipasang lewat Chrome → Instal aplikasi): `share_target` di manifest membuka editor berisi catatan yang dibagikan.
-- **Bantuan → Pindah dari aplikasi catatan lain**: langkah untuk Apple Notes, Samsung Notes, Xiaomi/Oppo/Vivo/Realme, Google Keep, Simplenote, Evernote, Pages/Word.
 
 **Web Lyric (cari lirik di internet)**
 - Ketik judul di kolom cari (Home atau panel samping). Kalau tidak ada di Library, muncul kartu **Cari di internet** yang mencari di [LRCLIB](https://lrclib.net): satu hasil langsung tampil di layar lirik; beberapa versi muncul sebagai daftar singkat untuk dipilih (dengan tombol **Lebih banyak** ke Google); tidak ada hasil membuka Google. Pencarian juga tahan salah ketik.

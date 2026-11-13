@@ -23,13 +23,14 @@ test('Guest: signing in ends guest mode; Backup & restore is in Preferences for 
   eq(await p.evaluate(()=>isGuest()),false,'guest flag cleared on sign-in');
   await p.evaluate(()=>prefRender());eq(await p.evaluate(()=>[...document.querySelectorAll('#prefbody .srow')].some(r=>/Backup & restore/.test(r.textContent))),false,'signed in: it lives in Account Settings');
   await t.close()});
-test('Legal: Help has Privacy Policy and Terms of Service, in the app language',async()=>{
+test('Legal: small links at the bottom of Help open Privacy Policy and Terms of Service, in the app language',async()=>{
   for(const [lang,pp,tos,h2] of [['en','Privacy Policy','Terms of Service','1. Introduction'],['id','Kebijakan Privasi','Ketentuan Penggunaan','1. Pendahuluan']]){
     const t=await open({lang}),p=t.page;await p.evaluate(()=>helpOpen());await p.waitForTimeout(200);
-    await p.click('#helpbody .srow:has-text("'+pp+'")');await p.waitForTimeout(300);
+    eq(await p.evaluate(()=>[...document.querySelectorAll('#helpbody .sgrp')].map(g=>g.textContent).includes('Legal')),false,'no Legal group');
+    await p.click('#helpbody .hfoot button:has-text("'+pp+'")');await p.waitForTimeout(300);
     eq(await p.evaluate(()=>[$('#doctitle').textContent,$('#docbody h2').textContent]),[pp,h2],lang+' privacy');
     assert(/Tokyo/.test(await p.evaluate(()=>$('#docbody').textContent)),'mentions the Supabase region');
-    await p.click('#dcX');await p.waitForTimeout(200);await p.click('#helpbody .srow:has-text("'+tos+'")');await p.waitForTimeout(300);
+    await p.click('#dcX');await p.waitForTimeout(200);await p.click('#helpbody .hfoot button:has-text("'+tos+'")');await p.waitForTimeout(300);
     eq(await p.evaluate(()=>$('#doctitle').textContent),tos,lang+' terms');
     assert(/20/.test(await p.evaluate(()=>$('#docbody').textContent)),'daily limits written down');await t.close()}});
 test('Legal: the links under Continue with Google open the documents and come back',async()=>{

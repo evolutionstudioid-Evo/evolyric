@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v171 – Studio byline
+- The *Pro* badge next to the EvoLyric title is gone (kept hidden in the page for a future plan); a small *Evolution Digital Studio* line now sits under the title.
+
 ## v170 – Help tidied
 - Removed *Help → Move from another notes app* (the per-app guide). Import itself is unchanged.
 - Privacy Policy and Terms of Service moved from their own *Legal* group to small links at the bottom of Help.

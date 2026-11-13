@@ -38,7 +38,9 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .hd{display:flex;align-items:center;gap:6px;padding:10px 12px;min-height:52px}
 .hd h1{margin:0;flex:1;display:flex;align-items:center;gap:11px;font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .lg{width:34px;height:34px;flex:none;filter:drop-shadow(0 2px 8px rgba(240,160,75,.28))}
-.wm{display:flex;flex-direction:row;align-items:flex-end;gap:6px;line-height:1}
+.wm{display:flex;flex-direction:column;align-items:flex-start;gap:4px;line-height:1}
+.wm .by{font:600 9.5px/1 'Atkinson Hyperlegible',system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);padding-left:2px;white-space:nowrap} /* v171: studio byline replaces the Pro badge (badge kept hidden for a future plan) */
+@media (max-width:360px){.wm .by{font-size:8px;letter-spacing:.1em}}
 .tier{font:800 10.5px/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;padding:3px 6px 3px 7px;margin-bottom:5px;border-radius:7px;color:#f0a04b;border:1px solid rgba(240,160,75,.55);background:linear-gradient(145deg,rgba(240,160,75,.20),rgba(240,160,75,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
 .tier[data-tier=demo]{color:var(--mut);border-color:var(--ln);background:var(--card);box-shadow:none}
 .wm span{font-size:31px;font-weight:800;letter-spacing:-1px;color:var(--fg);line-height:1;padding-bottom:2px}
@@ -715,7 +717,7 @@ body.touring #tsv{display:none!important}
 <body>
 
 <section id="list" class="v on">
-  <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span><b class="tier" id="tier" data-tier="pro">Pro</b></span></h1><span id="svw" hidden>⚠ Not saved</span><button class="ic" id="gear" type="button" aria-label="Settings" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button><div id="auth"></div></div>
+  <div class="hd"><h1><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffbe6b"/><stop offset="1" stop-color="#e8812a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><span class="wm"><span>Evo<i>Lyric</i></span><small class="by" data-nt>Evolution Digital Studio</small><b class="tier" id="tier" data-tier="pro" hidden>Pro</b></span></h1><span id="svw" hidden>⚠ Not saved</span><button class="ic" id="gear" type="button" aria-label="Settings" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button><div id="auth"></div></div>
   <div id="amenu" role="menu" hidden></div><div id="gmenu" role="menu" hidden></div>
   <div class="tabs" id="tabs"><button data-v="all">All Songs</button><button data-v="cats">Categories</button><button data-v="recent" title="Open recent">Recent</button></div>
   <div class="crumb" id="crumb" hidden><button id="cBack">‹ My Categories</button><b id="cName" data-nt></b></div>
@@ -1282,7 +1284,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='170',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='171',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

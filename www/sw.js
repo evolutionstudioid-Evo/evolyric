@@ -1,4 +1,4 @@
-const V='evolyric-app-170',F='evolyric-fonts';
+const V='evolyric-app-171',F='evolyric-fonts';
 const TUTIMG=['g_home','g_add','g_edit2','g_play','g_queue','g_temp','g_prefs','g_gear'].flatMap(n=>['id','en'].map(l=>'man/'+n+'_'+l+'.webp'));
 const SHELL=['./','manifest.webmanifest','config.js','cloud.js','legal.js','import.js','tutorial.js',...TUTIMG,'vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
 /* v167: Safari refuses a page the service worker answers with a redirected response ("Response served by service worker has

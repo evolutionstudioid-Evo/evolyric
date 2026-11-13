@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v172 – Tap the logo
+- Tapping the EvoLyric logo on Home plays one of nine short animations (equalizer, spin, hop, stretch, collapse, wave, fly, jelly, flip) or, about one tap in three, shows a hidden-feature tip (14 tips, no repeats until all were shown). The first tap is always an animation.
+- A rare **golden EvoLyric** (letters burst and come back, sparks, “Rare!” note): about 1 in 60 animations, guaranteed by the 80th (`evo.egg` in localStorage).
+- Five quick taps: two soft stage lights sweep across the screen once.
+- Home only, never during the tour, silent, changes no data; with Reduce Motion only a gentle fade and the tips. Tests `tests/egg.test.js`.
+
 ## v171 – Studio byline
 - The *Pro* badge next to the EvoLyric title is gone (kept hidden in the page for a future plan); a small *Evolution Digital Studio* line now sits under the title.
 

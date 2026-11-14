@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v173 – Smart PWA installation
+- Choosing **Continue with Google** or **Continue as guest** on the welcome screen first offers optional installation; dismissing it immediately continues the original sign-in or guest path.
+- Android uses the browser’s native install prompt when available. iPhone/iPad (Safari and Chrome) show **Share → Add to Home Screen → Add** steps instead, with a Continue button so login is never trapped behind the guide.
+- Installed copies are not prompted. A declined welcome prompt is remembered on the device; **Preferences → App → Install EvoLyric** remains available for a later manual attempt. Tests in `tests/guest.test.js`.
+
 ## v172 – Tap the logo
 - Tapping the EvoLyric logo on Home plays one of nine short animations (equalizer, spin, hop, stretch, collapse, wave, fly, jelly, flip) or, about one tap in three, shows a hidden-feature tip (14 tips, no repeats until all were shown). The first tap is always an animation.
 - A rare **golden EvoLyric** (letters burst and come back, sparks, “Rare!” note): about 1 in 60 animations, guaranteed by the 80th (`evo.egg` in localStorage).
@@ -771,3 +776,5 @@ Behaviour
 - Sign-out switches back to the guest library; the account cache is removed unless it still has unsynced changes.
 
 Unchanged: Google login, Guest Demo, editor, playback, auto-scroll, categories UI, import/export/backup, PWA, Cloudflare config.
+
+

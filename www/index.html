@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 103132)
-Total output lines: 3198
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1368,7 +1365,92 @@ const IDP=[
 [/^(\d+) of (\d+) songs will be added$/,'$1 dari $2 lagu akan ditambahkan'],[/^Category “(.+)” saved$/,'Kategori “$1” disimpan'],[/^from @(\S+) · category · (\d+) songs?$/,'dari @$1 · kategori · $2 lagu'],
 [/^Search in (.+)…$/,'Cari di $1…'],[/^Add Songs to (.+)$/,'Tambah Lagu ke $1'],[/^No songs in this category yet\. Tap “Add Songs to (.+)”\.$/,'Belum ada lagu di kategori ini. Ketuk “Tambah Lagu ke $1”.'],
 [/^Remove from (.+)$/,'Hapus dari $1'],[/^Removed from (.+)$/,'Dihapus dari $1'],[/^Maximum (\d+) songs per group$/,'Maksimal $1 lagu per kelompok'],[/^(\d+) songs? added to (.+)$/,'$1 lagu ditambahkan ke $2'],
-[/^Send to @…3132 tokens truncated…'sgrp',L('App','Aplikasi')),sCard(sRow(L('Install EvoLyric','Pasang EvoLyric'),{sub:L('Add EvoLyric to your Home Screen','Tambahkan EvoLyric ke Layar Utama'),go:()=>pwaOffer(null,true)})));
+[/^Send to @(.+)$/,'Kirim ke @$1'],[/^Sent to @(.+)$/,'Terkirim ke @$1'],[/^Sent (\d+) songs to @(.+)$/,'$1 lagu terkirim ke @$2'],[/^Send to (\d+) friends?$/,'Kirim ke $1 teman'],[/^Sent to (\d+) friends?(.*)$/,'Terkirim ke $1 teman$2'],
+[/^@(.+) sent you a friend request$/,'@$1 mengirimimu permintaan pertemanan'],[/^@(.+) sent you (\d+) songs$/,'@$1 mengirimimu $2 lagu'],[/^@(.+) sent you a song$/,'@$1 mengirimimu sebuah lagu'],
+[/^@(.+) already has 20 deliveries waiting from you$/,'@$1 sudah punya 20 kiriman darimu yang menunggu'],[/^(.+) already has 20 songs waiting$/,'$1 sudah punya 20 lagu yang menunggu'],[/^(\d+) no longer a friend$/,'$1 bukan teman lagi'],[/^(\d+) failed$/,'$1 gagal'],
+[/^Account menu: (.+)$/,'Menu akun: $1'],[/^Remove (.+)$/,'Hapus $1'],[/^Delete “(.+)”\?$/,'Hapus “$1”?'],[/^Send “(.+)”$/,'Kirim “$1”'],[/^Add Songs to (.+)$/,'Tambah Lagu ke $1'],[/^(\d+) selected$/,'$1 dipilih'],
+[/^(.+) BPM \(could also be (\d+)\)\. Check it against the song, then save\. Tempo by $/,'$1 BPM (bisa juga $2). Periksa dengan lagunya, lalu simpan. Tempo oleh '],[/^(\d+) BPM\. Check it against the song, then save\. Tempo by $/,'$1 BPM. Periksa dengan lagunya, lalu simpan. Tempo oleh '],
+[/^Categories: none$/,'Kategori: tidak ada'],[/^Categories: (.+)$/,'Kategori: $1'],[/^(\d+) beats\/line$/,'$1 ketukan/baris']
+];
+const idCache=new Map();
+function tr(s){if(PREF.lang!=='id'||!s)return s;const m=/^(\s*)([\s\S]*?)(\s*)$/.exec(s),k=m[2];if(!k)return s;
+  let r=idCache.get(k);if(r===undefined){r=ID[k];if(r===undefined)for(const [re,t] of IDP){if(re.test(k)){r=k.replace(re,t);break}}if(r===undefined)r=k;idCache.set(k,r)}
+  return m[1]+r+m[3]}
+const I18N_ATTR=['placeholder','title','aria-label','alt'];
+const i18nSkip=n=>{for(let e=n.nodeType===1?n:n.parentElement;e;e=e.parentElement){const t=e.tagName;if(t==='SCRIPT'||t==='STYLE'||(t==='TEXTAREA'&&e!==n)||t==='CODE'||e.id==='txt'||e.hasAttribute('data-nt'))return true}return false};
+const I18N_EN=new WeakMap(); /* node/attr -> original English */
+function trNode(n){if(i18nSkip(n))return;
+  if(n.nodeType===3){let o=I18N_EN.get(n);const cur=n.nodeValue;
+    if(o&&cur===o.t){/* already translated, unchanged */}else o={e:cur,t:cur};
+    if(PREF.lang==='id'){const t=tr(o.e);o.t=t;if(t!==cur)n.nodeValue=t}else if(o.e!==cur&&I18N_EN.has(n)&&cur===o.t){n.nodeValue=o.e;o.t=o.e}
+    I18N_EN.set(n,o);return}
+  if(n.nodeType!==1)return;
+  for(const a of I18N_ATTR){if(!n.hasAttribute(a))continue;const key=a;let M=I18N_EN.get(n);if(!M){M={};I18N_EN.set(n,M)}const cur=n.getAttribute(a);let o=M[key];if(!o||o.t!==cur)o={e:cur,t:cur};
+    if(PREF.lang==='id'){const t=tr(o.e);o.t=t;if(t!==cur)n.setAttribute(a,t)}else if(o.e!==cur){n.setAttribute(a,o.e);o.t=o.e}M[key]=o}
+  if(n.tagName==='TEXTAREA')return; /* v152: its placeholder / label are translated, never what is typed in it */
+  for(let c=n.firstChild;c;c=c.nextSibling)trNode(c)}
+let i18nBusy=0;
+const i18nMO=new MutationObserver(ms=>{if(i18nBusy)return;i18nBusy=1;try{for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trNode);else if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target)}}finally{i18nBusy=0;i18nMO.takeRecords()}});
+function i18nRun(){i18nBusy=1;try{trNode(document.body);document.documentElement.lang=PREF.lang==='id'?'id':'en';document.title=document.title}finally{i18nBusy=0;i18nMO.takeRecords()}}
+i18nMO.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:I18N_ATTR});
+function setLang(v){PREF.lang=v==='id'?'id':'en';prefSave();idCache.clear();i18nRun();if(typeof prefRender==='function'&&$('#prefs').classList.contains('on'))prefRender()}
+/* for tools/i18n-audit.js: visible text that has no Indonesian version */
+/* text that must stay as is: brand, musical terms, names, numbers, text already written in Indonesian via L() */
+const I18N_KEEP=new Set(['LRCLIB','ColorNote','Apple Notes','Samsung Notes','Google Keep','Simplenote','Evernote','Figtree (Open Font License)','Set','Setlist','Section','About Us','Evolution Digital Studio','Building Digital Solutions for the Music Industry.','Our Vision','Our Mission','Our Ecosystem','Our Philosophy','Technology Should Empower Creativity.','Innovation for Musicians. Technology for Creativity.','Evo','Lyric','EvoLyric','Pro','Home','BPM','Keyboard','Menu','Intro','Verse','Pre-Chorus','Chorus','Interlude','Bridge','Coda','Sing Along','Free Style','Medley','Vocal 1','Vocal 2','Vocal 3','Vocal 4','Vocal 5','Rit','Rall','Custom…','GetSongBPM.com','Contoh Lagu','Instrumental','Outro','Tag','English','Indonesia','Email','Username','Bio','username','Font','Fonts','Demo','Mono','Serif','Control','Alt','Shift','Tab','Enter','Escape','Data tempo lagu oleh','Atkinson Hyperlegible (Braille Institute)','Bricolage Grotesque (Open Font License)']);
+const i18nKeep=e=>!/[A-Za-z]{3}/.test(e)||I18N_KEEP.has(e)||LID.has(e)||tr(e)!==e||/^#[0-9a-f]{6}$/i.test(e)||/@[\w.-]+/.test(e)||/^Versi \d+$/.test(e)||/^\[/.test(e)||/^(Intro|Verse|Pre-Chorus|Chorus|Interlude|Bridge|Coda|Outro|Male|Female)\b/.test(e)||(user&&(e===user.name||e===user.email));
+window.i18nMissing=()=>{const out=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);for(let n;n=w.nextNode();){if(i18nSkip(n))continue;const o=I18N_EN.get(n),e=(o?o.e:n.nodeValue).trim();if(i18nKeep(e))continue;if(getComputedStyle(n.parentElement).display!=='none')out.add(e)}
+  document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>I18N_ATTR.forEach(a=>{if(!el.hasAttribute(a))return;const M=I18N_EN.get(el),e=((M&&M[a])?M[a].e:el.getAttribute(a)).trim();if(!i18nKeep(e))out.add(a+': '+e)}));return [...out]};
+/* gear menu on Home */
+const gm=$('#gmenu');
+function gmOpen(on){gm.hidden=!on;$('#gear').setAttribute('aria-expanded',on?'true':'false');if(on){if(typeof closeMenu==='function')closeMenu();buildGm();const f=gm.querySelector('.mi');f&&f.focus({preventScroll:true})}}
+function buildGm(){gm.textContent='';
+  const it=(ic,l,f)=>{const b=E('button','mi');b.type='button';b.setAttribute('role','menuitem');b.innerHTML=ic;b.append(l);b.onclick=()=>{gmOpen(false);f()};gm.append(b)};
+  it('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>',L('Preferences','Preferensi'),prefOpen);
+  it('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2 1-1.2 1.8M12 17h.01"/></svg>',L('Help','Bantuan'),helpOpen);
+  it('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>',L('Reload app','Muat ulang aplikasi'),appReload)}
+/* v142: Reload app – picks up a new version without closing the app. Unsaved cloud changes are sent first, the service worker
+   checks for a new version (it installs and takes over by itself), then the page reloads; index.html is network-first, so online
+   you get the newest page, offline the saved one opens again. */
+async function appReload(){note('Loading the latest version…');
+  try{if(window.Cloud&&Cloud.flush)await Promise.race([Cloud.flush(3000),new Promise(z=>setTimeout(z,3500))])}catch(e){}
+  try{const r=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();
+    if(r){await Promise.race([r.update(),new Promise(z=>setTimeout(z,4000))]);const w=r.installing||r.waiting;
+      if(w)await Promise.race([new Promise(z=>{const f=()=>{if(w.state==='activated'||w.state==='redundant')z()};w.addEventListener('statechange',f);f()}),new Promise(z=>setTimeout(z,6000))])}}catch(e){}
+  location.reload()}
+$('#gear').onclick=e=>{e.stopPropagation();gmOpen(gm.hidden)};
+document.addEventListener('click',e=>{if(!gm.hidden&&!e.target.closest('#gmenu'))gmOpen(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gm.hidden){gmOpen(false);$('#gear').focus()}});
+/* small builders */
+const sRow=(label,o={})=>{const r=E(o.go?'button':'div','srow');if(o.go){r.type='button';r.onclick=o.go}
+  const l=E('div','lbl',label);if(o.sub)l.append(E('small','',o.sub));r.append(l);
+  if(o.val!=null)r.append(E('span','val',o.val));if(o.right){if(o.right.classList&&o.right.classList.contains('swt')&&!o.right.hasAttribute('aria-label'))o.right.setAttribute('aria-label',label);r.append(o.right)}if(o.go&&!o.right)r.append(E('span','chev','›'));return r};
+const sCard=(...rows)=>{const c=E('div','scard');c.append(...rows);return c};
+function sSeg(opts,cur,fn){const g=E('div','sseg');g.setAttribute('role','radiogroup');opts.forEach(([v,t])=>{const b=E('button',v===cur?'on':'',t);b.type='button';b.setAttribute('role','radio');b.setAttribute('aria-checked',v===cur?'true':'false');b.onclick=()=>{[...g.children].forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-checked',x===b?'true':'false')});fn(v)};g.append(b)});return g}
+function sSwitch(on,fn){const b=E('button','swt');b.type='button';b.setAttribute('role','switch');b.setAttribute('aria-checked',on?'true':'false');b.onclick=()=>{const n=b.getAttribute('aria-checked')!=='true';b.setAttribute('aria-checked',n?'true':'false');fn(n)};return b}
+function sStep(v,min,max,step,fn){const w=E('div','sstep'),m=E('button','','−'),n=E('b','',String(v)),p=E('button','','+');m.type=p.type='button';m.setAttribute('aria-label','Decrease');p.setAttribute('aria-label','Increase');
+  const set=x=>{v=Math.max(min,Math.min(max,x));n.textContent=v;fn(v)};m.onclick=()=>set(v-step);p.onclick=()=>set(v+step);w.append(m,n,p);return w}
+/* Preferences */
+function prefOpen(){show('prefs');prefRender()}
+/* v146: a slider row for the colour tone; the screen recolours while you drag */
+function sRng(label,sub,key,min,max,def){const r=E('div','srow srng');const l=E('div','lbl',label);if(sub)l.append(E('small','',sub));
+  const v=PREF[key]==null?def:+PREF[key],i=document.createElement('input');i.type='range';i.min=min;i.max=max;i.step=5;i.value=v;i.setAttribute('aria-label',label);
+  let raf=0;i.oninput=()=>{PREF[key]=+i.value;if(!raf)raf=requestAnimationFrame(()=>{raf=0;toneApply()})};i.onchange=()=>{prefSave();toneApply();try{refresh()}catch(e){}};
+  r.append(l,i);return r}
+function prefRender(){const b=$('#prefbody');b.textContent='';
+  b.append(E('div','sgrp',L('Appearance','Tampilan')),sCard(sRow(L('Theme','Tema'),{right:sSeg([['auto',L('Auto','Otomatis')],['light',L('Light','Terang')],['dark',L('Dark','Gelap')]],PREF.theme,v=>{PREF.theme=v;prefSave();applyTheme()})}),
+    sRng(L('Colour','Warna'),'','sat',0,100,100),
+    sRng(L('Background brightness','Kecerahan latar'),null,'bri',-100,100,0),
+    sRng(L('Contrast','Kontras'),null,'con',-100,100,0),
+    sRow(L('Keep highlight colours','Highlight tetap berwarna'),{sub:L('Coloured marks in the lyrics keep their colour in monochrome','Tanda warna di lirik tetap berwarna saat monokrom'),right:sSwitch(PREF.hlc!==0,on=>{PREF.hlc=on?1:0;prefSave();toneApply()})}),
+    sRow(L('Reset colours','Kembalikan warna awal'),{go:()=>{delete PREF.sat;delete PREF.bri;delete PREF.con;delete PREF.hlc;prefSave();toneApply();prefRender()}})));
+  b.append(E('div','sgrp',L('Language','Bahasa')),sCard(sRow(L('App language','Bahasa aplikasi'),{right:sSeg([['en','English'],['id','Indonesia']],PREF.lang,v=>{setLang(v)})})));
+  b.append(E('div','sgrp',L('Screen','Layar')),sCard(
+    sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
+    sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
+    sRow(L('Visual effect while scrolling','Efek visual saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
+    sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
+    sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})));
+  if(!pwaInstalled())b.append(E('div','sgrp',L('App','Aplikasi')),sCard(sRow(L('Install EvoLyric','Pasang EvoLyric'),{sub:L('Add EvoLyric to your Home Screen','Tambahkan EvoLyric ke Layar Utama'),go:()=>pwaOffer(null,true)})));
   if(!user)b.append(E('div','sgrp',L('Data','Data')),sCard(sRow(L('Backup & restore','Backup & restore'),{sub:L('Guest: songs are saved on this device only','Tamu: lagu tersimpan di perangkat ini saja'),go:()=>docOpen('prefs',L('Backup & restore','Backup & restore'),docBackup)})))}
 /* v102: Tutorial = portrait slide deck (tutorial.js, cached for offline) */
 /* the deck (tutorial.js, cached for offline) is shown in a srcdoc iframe; a fresh iframe each time so it adds no Back-history entries */
@@ -3112,5 +3194,3 @@ refresh();
 </script>
 </body>
 </html>
-
-

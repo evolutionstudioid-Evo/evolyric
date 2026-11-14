@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v174 – Audit fixes: safer sync, install offer for signed-in users
+- **Sync safety:** a sync can no longer delete most of an account silently. If one push would remove 5+ songs that are at least half the library (or 3+ categories, at least half), the app asks first; without an explicit yes the local deletion is forgotten and the songs come back from the cloud. Found while auditing a case where a scripted session emptied a real account.
+- **Server safety:** `supabase/013_song_trash.sql` (already applied to the EvoLyric project) copies every deleted song into `song_trash` for 30 days, never for an account being deleted, with restore SQL inside.
+- **PWA install:** signed-in and returning people are now offered the install quietly on Home (once per visit, never over the tour/lyrics). “Not now” is remembered for 14 days instead of forever. Manifest got an `id`.
+- Fixed: the v173 install test wrongly assumed Google sign-in was unconfigured and navigated to Google; the install dialog text is now filled at open time so Indonesian is never skipped (i18n audit clean again).
+
+## v173 – Smart PWA installation
+- Choosing **Continue with Google** or **Continue as guest** on the welcome screen first offers optional installation; dismissing it immediately continues the original sign-in or guest path.
+- Android uses the browser’s native install prompt when available. iPhone/iPad (Safari and Chrome) show **Share → Add to Home Screen → Add** steps instead, with a Continue button so login is never trapped behind the guide.
+- Installed copies are not prompted. A declined welcome prompt is remembered on the device; **Preferences → App → Install EvoLyric** remains available for a later manual attempt. Tests in `tests/guest.test.js`.
+
 ## v172 – Tap the logo
 - Tapping the EvoLyric logo on Home plays one of nine short animations (equalizer, spin, hop, stretch, collapse, wave, fly, jelly, flip) or, about one tap in three, shows a hidden-feature tip (14 tips, no repeats until all were shown). The first tap is always an animation.
 - A rare **golden EvoLyric** (letters burst and come back, sparks, “Rare!” note): about 1 in 60 animations, guaranteed by the 80th (`evo.egg` in localStorage).
@@ -771,3 +782,5 @@ Behaviour
 - Sign-out switches back to the guest library; the account cache is removed unless it still has unsynced changes.
 
 Unchanged: Google login, Guest Demo, editor, playback, auto-scroll, categories UI, import/export/backup, PWA, Cloudflare config.
+
+

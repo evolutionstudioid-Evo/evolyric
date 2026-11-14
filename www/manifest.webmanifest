@@ -2,6 +2,7 @@
   "name": "EvoLyric",
   "short_name": "EvoLyric",
   "description": "Lyric teleprompter for stage",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

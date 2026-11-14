@@ -152,6 +152,8 @@ select.fld{flex:none;width:auto}#txt{max-width:960px;margin:0 auto}.start{height
 .gbtn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;background:#fff;color:#1f1f1f;border:1px solid #747775;border-radius:12px;font:600 15px/1 'Atkinson Hyperlegible',system-ui,sans-serif;transition:background .15s,box-shadow .15s}.gbtn svg{width:20px;height:20px;flex:none}.gbtn:hover:not(:disabled){background:#f6f6f6;box-shadow:0 1px 3px rgba(0,0,0,.3)}.gbtn:disabled{opacity:.75;cursor:progress}
 .gbtn.ld svg{display:none}.gbtn.ld::before{content:"";width:18px;height:18px;border-radius:50%;border:2.5px solid #cfcfcf;border-top-color:#4285F4;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .acard .err{margin:12px 0 0;font-size:14px}.priv{margin:16px 4px 6px;color:var(--mut);font-size:12.5px;line-height:1.45}.lnk{color:var(--acct);font-weight:700;padding:8px;font-size:14px}
+#pwabox{position:fixed;inset:0;z-index:85;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.58);padding:16px;visibility:hidden;opacity:0;transition:opacity .18s,visibility 0s .18s}#pwabox.on{visibility:visible;opacity:1;transition:opacity .18s}
+#pwabox .acard{max-height:calc(100dvh - 32px);overflow:auto}#pwabox .pwa-steps{margin:0 0 18px;padding-left:22px;text-align:left;color:var(--fg);line-height:1.55}#pwabox .pwa-steps b{color:var(--acct)}#pwabox .pwa-actions{display:grid;gap:9px}#pwabox .pwa-no{color:var(--mut)}
 @media(prefers-reduced-motion:reduce){#amenu,.acard,#authbox{animation:none!important;transition:none!important}}
 /* Stable immersive fullscreen: keep original DOM hierarchy so every control remains clickable. */
 #play.fs{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;min-height:0;z-index:1000;display:flex;flex-direction:column;overflow:hidden;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
@@ -847,6 +849,7 @@ body.touring #tsv{display:none!important}
   <div id="wstep2" hidden><h3>Choose a username</h3><p class="sub">Friends find you by this name. You can change it later in your profile.</p><div class="wu"><span>@</span><input id="wun" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="username" aria-label="Username"></div><div class="err" id="wuerr" role="alert"></div><button class="pill wgo" id="wusave" type="button" disabled>Continue</button><button class="lnk" id="wout" type="button">Use a different account</button></div>
 </div></section>
 <div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><p class="legal-ok">By continuing you agree to the <button type="button" class="lnk lg-t">Terms of Service</button> and <button type="button" class="lnk lg-p">Privacy Policy</button>.</p><p class="priv credit" hidden>Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p><!-- v152: hidden while tempo is not in use --></div></div>
+<div id="pwabox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="pwaT"><h2 id="pwaT"></h2><p class="sub" id="pwaM"></p><ol class="pwa-steps" id="pwaSteps" hidden></ol><div class="pwa-actions"><button class="dbtn pri" id="pwaYes" type="button"></button><button class="dbtn pwa-no" id="pwaNo" type="button"></button></div></div></div>
 <div id="note" role="status" aria-live="polite"></div>
 <button id="ntf" type="button" role="status" aria-live="polite" hidden></button>
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
@@ -1292,7 +1295,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='172',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='174',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1447,6 +1450,7 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
     sRow(L('Visual effect while scrolling','Efek visual saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
     sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})));
+  if(!pwaInstalled())b.append(E('div','sgrp',L('App','Aplikasi')),sCard(sRow(L('Install EvoLyric','Pasang EvoLyric'),{sub:L('Add EvoLyric to your Home Screen','Tambahkan EvoLyric ke Layar Utama'),go:()=>pwaOffer(null,true)})));
   if(!user)b.append(E('div','sgrp',L('Data','Data')),sCard(sRow(L('Backup & restore','Backup & restore'),{sub:L('Guest: songs are saved on this device only','Tamu: lagu tersimpan di perangkat ini saja'),go:()=>docOpen('prefs',L('Backup & restore','Backup & restore'),docBackup)})))}
 /* v102: Tutorial = portrait slide deck (tutorial.js, cached for offline) */
 /* the deck (tutorial.js, cached for offline) is shown in a srcdoc iframe; a fresh iframe each time so it adds no Back-history entries */
@@ -1546,7 +1550,7 @@ function legalOpen(kind,from){const t=kind==='privacy'?L('Privacy Policy','Kebij
   docOpen(from,t,b=>{b.className='sbody doc legal';const d=E('div');d.setAttribute('data-nt','');const D=window.EVO_LEGAL&&window.EVO_LEGAL[kind];
     if(D)d.innerHTML=D[PREF.lang==='id'?'id':'en'];else d.append(E('p','',L('Open ','Buka ')+location.origin+'/'+kind+'.html'));b.append(d)})}
 document.addEventListener('click',e=>{const b=e.target.closest('.lg-t,.lg-p');if(!b)return;const inAuth=!!b.closest('#authbox');legalOpen(b.classList.contains('lg-p')?'privacy':'terms',inAuth?'auth':'welcome')});
-$('#wguest').onclick=guestGo;
+$('#wguest').onclick=()=>pwaOffer(guestGo);
 setTimeout(movedBanner,600);
 const SUPPORT_EMAIL='evolution.studio.id@gmail.com';
 function supportMail(subject,extra){const body=[extra||'','','—','EvoLyric '+APP_REL+' (build '+APP_VER+')',user&&user.username?'@'+user.username:(uname&&uname.v?'@'+uname.v:''),navigator.userAgent].filter((x,i)=>x||i<2).join('\n');
@@ -2832,6 +2836,36 @@ function openMenu(){const u=user||getHint();if(!u)return;if(!$('#gmenu').hidden)
 function closeMenu(){$('#amenu').hidden=true;const b=$('#avb');b&&b.setAttribute('aria-expanded','false')}
 document.addEventListener('click',e=>{if(!$('#amenu').hidden&&!e.target.closest('#amenu'))closeMenu()});
 let authFrom=null;
+/* v173: optional PWA install is offered before either welcome-screen path begins.
+   The pending action is deliberately resumed on every exit so install guidance never blocks Guest or Google sign-in. */
+const PWAK='evolyric-pwa-install-declined';
+let pwaPrompt=null,pwaNext=null,pwaManual=false,pwaGuide=false;
+const pwaIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const pwaInstalled=()=>{try{return !!((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone)}catch(e){return false}};
+/* v174: "Not now" is remembered for 14 days (not forever), so people who said no once are asked again later */
+const PWA_WAIT=14*864e5;
+const pwaDeclined=()=>{try{const t=+localStorage.getItem(PWAK)||0;return t>1&&Date.now()-t<PWA_WAIT}catch(e){return false}};
+const pwaSetDeclined=()=>{try{localStorage.setItem(PWAK,String(Date.now()))}catch(e){}};
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();pwaPrompt=e});
+addEventListener('appinstalled',()=>{pwaPrompt=null;try{localStorage.removeItem(PWAK)}catch(e){}pwaClose()});
+function pwaCopy(){return{title:L('Install EvoLyric?','Pasang EvoLyric?'),intro:L('Add EvoLyric to your Home Screen for faster access.','Tambahkan EvoLyric ke Layar Utama agar lebih cepat dibuka.'),yes:L('YES, INSTALL','YA, PASANG'),no:L('Not now','Nanti saja'),continue:L('Continue','Lanjutkan'),ios:[L('Tap the <b>Share</b> button in Safari or Chrome.','Ketuk tombol <b>Bagikan</b> di Safari atau Chrome.'),L('Choose <b>Add to Home Screen</b>.','Pilih <b>Tambahkan ke Layar Utama</b>.'),L('Tap <b>Add</b> to finish.','Ketuk <b>Tambah</b> untuk selesai.')],other:[L('Open your browser menu.','Buka menu browser.'),L('Choose <b>Install app</b> or <b>Add to Home Screen</b>.','Pilih <b>Install app</b> atau <b>Tambahkan ke Layar Utama</b>.')]}}
+function pwaRender(guide){const c=pwaCopy(),s=$('#pwaSteps');$('#pwaT').textContent=c.title;$('#pwaM').textContent=guide?L('Follow these steps, then continue to EvoLyric.','Ikuti langkah ini, lalu lanjutkan ke EvoLyric.'):c.intro;$('#pwaYes').textContent=guide?c.continue:c.yes;$('#pwaNo').textContent=c.no;s.hidden=!guide;s.innerHTML='';if(guide)(pwaIOS()?c.ios:c.other).forEach(x=>{const li=document.createElement('li');li.innerHTML=x;s.append(li)})}
+function pwaOpen(guide){pwaGuide=!!guide;pwaRender(guide);const b=$('#pwabox');b.classList.add('on');b.setAttribute('aria-hidden','false');setTimeout(()=>$('#pwaYes').focus({preventScroll:true}),30)}
+function pwaResume(){const f=pwaNext;pwaNext=null;if(f)f()}
+function pwaClose(){const b=$('#pwabox');b.classList.remove('on');b.setAttribute('aria-hidden','true');pwaManual=false;pwaGuide=false;pwaResume()}
+function pwaOffer(next,manual){if(pwaInstalled()){if(next)next();return}if(!manual&&pwaDeclined()){if(next)next();return}pwaNext=next||null;pwaManual=!!manual;pwaOpen(false)}
+async function pwaYes(){if(pwaGuide){pwaClose();return}if(pwaIOS()){pwaOpen(true);return}if(pwaPrompt){const e=pwaPrompt;pwaPrompt=null;try{await e.prompt();await e.userChoice}catch(x){}pwaClose();return}pwaOpen(true)}
+function pwaNo(){if(!pwaManual)pwaSetDeclined();pwaClose()}
+/* v174: signed-in and returning people are offered the install too (before, only the welcome screen did). Quietly, once per visit,
+   only on Home, never over the tour, a dialog or the lyrics, and only where the browser can really install (native prompt or iOS). */
+let pwaAutoN=0,pwaAutoDone=false;
+function pwaAuto(){if(pwaAutoDone||++pwaAutoN>40)return clearInterval(pwaAutoT);
+  if(pwaInstalled()||pwaDeclined())return clearInterval(pwaAutoT);
+  if(!(pwaPrompt||pwaIOS()))return;
+  if(!$('#list').classList.contains('on')||$('#welcome').classList.contains('on')||$('#pwabox').classList.contains('on')||document.querySelector('#authbox.on')||document.body.classList.contains('touring'))return;
+  pwaAutoDone=true;clearInterval(pwaAutoT);pwaOffer(null)}
+const pwaAutoT=setInterval(pwaAuto,3000);
+$('#pwaYes').onclick=pwaYes;$('#pwaNo').onclick=pwaNo;$('#pwabox').onclick=e=>{if(e.target.id==='pwabox')pwaNo()};
 function openAuth(err){authFrom=document.activeElement;setBusy(false);$('#aerr').textContent=err||'';const a=$('#authbox');a.classList.add('on');a.setAttribute('aria-hidden','false');setTimeout(()=>$('#gbtn').focus({preventScroll:true}),30)}
 function closeAuth(){const a=$('#authbox');a.classList.remove('on');a.setAttribute('aria-hidden','true');authFrom&&authFrom.focus&&authFrom.focus({preventScroll:true})}
 function setBusy(on,btn){const g=btn||$('#gbtn');g.disabled=on;g.classList.toggle('ld',on);g.querySelector('span').textContent=on?'Connecting to Google…':'Continue with Google'}
@@ -2848,7 +2882,7 @@ async function googleGo(btn,errEl,gone){
     setTimeout(()=>{if(gone())setBusy(false,btn)},8000) /* if the redirect never happens */
   }catch(e){setBusy(false,btn);errEl.textContent='Sign-in could not start. '+(e&&e.message?e.message:'Please try again.')}}
 $('#gbtn').onclick=()=>googleGo($('#gbtn'),$('#aerr'),()=>$('#authbox').classList.contains('on'));
-$('#wgbtn').onclick=()=>googleGo($('#wgbtn'),$('#werr'),()=>$('#welcome').classList.contains('on'));
+$('#wgbtn').onclick=()=>pwaOffer(()=>googleGo($('#wgbtn'),$('#werr'),()=>$('#welcome').classList.contains('on')));
 function loadSDK(){return new Promise((ok,no)=>{if(window.supabase)return ok();const s=document.createElement('script');s.src='vendor/supabase.js';s.onload=ok;s.onerror=()=>no(new Error('Could not load the sign-in module.'));document.head.append(s)})}
 let clientP=null;
 function ensureClient(){return clientP||(clientP=loadSDK().then(()=>{
@@ -3049,6 +3083,7 @@ if(window.Cloud)Cloud.init({
   render:()=>refresh(),
   busy:()=>!$('#list').classList.contains('on'),
   notify:note,
+  confirmMass:(n,c,t)=>Promise.resolve(confirm(L('Delete '+n+' of '+t+' songs from your account on every device? Cancel keeps your songs.','Hapus '+n+' dari '+t+' lagu dari akunmu di semua perangkat? Batal = lagumu tetap aman.'))),
   readLib,
   isSample:g=>JSON.stringify(g)===SAMPLE_J,
   useKeys:u=>{LK=u?K+':u:'+u:K;LKC=u?KC+':u:'+u:KC},

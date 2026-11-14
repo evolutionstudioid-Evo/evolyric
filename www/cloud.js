@@ -131,6 +131,22 @@
   async function push(sb) {
     var L = snap(H.get()), B = S.base, d = diff(L, B);
     if (isEmptyDiff(d)) return false;
+    /* v174: mass-delete guard. A single sync must never silently wipe most of an account (a script, a test run or a corrupt local
+       cache can empty the local library). Ask first; if the answer is not an explicit yes, forget the local deletion so the next
+       pull brings the songs/categories back from the cloud. */
+    var nS = Object.keys(B.s).length, nC = Object.keys(B.c).length, bigS = d.sDel.length >= 5 && d.sDel.length * 2 >= nS, bigC = d.cDel.length >= 3 && d.cDel.length * 2 >= nC;
+    if (bigS || bigC) {
+      var yes = false;
+      try { yes = H.confirmMass ? !!(await H.confirmMass(d.sDel.length, d.cDel.length, nS)) : false; } catch (e) { yes = false; }
+      if (!yes) {
+        if (bigS) d.sDel.forEach(function (x) { delete B.s[x]; });
+        if (bigC) d.cDel.forEach(function (x) { delete B.c[x]; delete B.r[x]; });
+        var gone = {}; if (bigS) d.sDel.forEach(function (x) { gone[x] = 1; });
+        Object.keys(B.r).forEach(function (c) { B.r[c] = (B.r[c] || []).filter(function (x) { return !gone[x]; }); });
+        saveS(); toastOnce('mass', 'Large delete not sent to the cloud. Your songs are being restored from your account.', true);
+        d = diff(L, B); if (isEmptyDiff(d)) { rerun = true; return false; }
+      }
+    }
     var M = S.map, now = new Date().toISOString(), lib = H.get(), k;
     var sById = {}, cById = {};
     lib.songs.forEach(function (x) { sById[x.id] = x; });
@@ -418,5 +434,7 @@
       return lastOk ? 'Cloud synced' : 'Connecting…';
     }
   };
+  /* test-only seam: lets the test-suite drive push() with a fake client; not used by the app */
+  Cloud.__test = { push: function (sb, u, state, hooks) { uid = u; S = state; H = hooks; return push(sb).then(function (r) { return { r: r, S: S }; }); } };
   window.Cloud = Cloud;
 })();

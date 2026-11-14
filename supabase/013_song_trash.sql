@@ -11,15 +11,33 @@ create table if not exists public.song_trash (
 alter table public.song_trash enable row level security;
 create index if not exists song_trash_user_idx on public.song_trash (user_id, deleted_at desc);
 
+create index if not exists song_trash_at_idx on public.song_trash (deleted_at);
+
+-- Archives a deleted song for 30 days. Not archived when the whole account is being deleted (the person asked for their data to go).
 create or replace function public.song_to_trash() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.song_trash (user_id, song_id, row_data) values (old.user_id, old.id::text, to_jsonb(old));
+  if exists (select 1 from auth.users where id = old.user_id) then
+    insert into public.song_trash (user_id, song_id, row_data) values (old.user_id, old.id::text, to_jsonb(old));
+  end if;
+  delete from public.song_trash where deleted_at < now() - interval '30 days';
   return old;
 end $$;
+revoke all on function public.song_to_trash() from public, anon, authenticated;
 
 drop trigger if exists songs_to_trash on public.songs;
 create trigger songs_to_trash before delete on public.songs for each row execute function public.song_to_trash();
+
+-- When an account is deleted (Account Settings > Delete account), its trash goes too, whatever the order of the cascades.
+create or replace function public.song_trash_purge_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  delete from public.song_trash where user_id = old.id;
+  return old;
+end $$;
+revoke all on function public.song_trash_purge_user() from public, anon, authenticated;
+drop trigger if exists song_trash_purge on auth.users;
+create trigger song_trash_purge after delete on auth.users for each row execute function public.song_trash_purge_user();
 
 -- ---------- RESTORE (run by hand when needed; replace the e-mail) ----------
 -- See what is in the trash for one person:

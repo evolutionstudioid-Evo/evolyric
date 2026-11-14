@@ -849,7 +849,7 @@ body.touring #tsv{display:none!important}
   <div id="wstep2" hidden><h3>Choose a username</h3><p class="sub">Friends find you by this name. You can change it later in your profile.</p><div class="wu"><span>@</span><input id="wun" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="username" aria-label="Username"></div><div class="err" id="wuerr" role="alert"></div><button class="pill wgo" id="wusave" type="button" disabled>Continue</button><button class="lnk" id="wout" type="button">Use a different account</button></div>
 </div></section>
 <div id="authbox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="atT"><button class="ic xb" id="atX" aria-label="Close">✕</button><svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="url(#lgg)"/><g stroke="#15110e" stroke-width="3.2" stroke-linecap="round"><path d="M13 12.5h14" opacity=".45"/><path d="M10 20h20"/><path d="M15 27.5h10" opacity=".45"/></g></svg><h2 id="atT">Welcome to EvoLyric</h2><p class="sub">Sign in to access your personal song library.</p><button class="gbtn" id="gbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Continue with Google</span></button><div class="err" id="aerr" role="alert"></div><p class="priv">We only use your name, email and photo to set up your account. Your Google password is never shared with EvoLyric.</p><p class="legal-ok">By continuing you agree to the <button type="button" class="lnk lg-t">Terms of Service</button> and <button type="button" class="lnk lg-p">Privacy Policy</button>.</p><p class="priv credit" hidden>Song tempo data by <a href="https://getsongbpm.com" target="_blank" rel="noopener">GetSongBPM.com</a></p><!-- v152: hidden while tempo is not in use --></div></div>
-<div id="pwabox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="pwaT"><h2 id="pwaT">Install EvoLyric?</h2><p class="sub" id="pwaM">Add EvoLyric to your Home Screen for faster access.</p><ol class="pwa-steps" id="pwaSteps" hidden></ol><div class="pwa-actions"><button class="dbtn pri" id="pwaYes" type="button">YES, INSTALL</button><button class="dbtn pwa-no" id="pwaNo" type="button">Not now</button></div></div></div>
+<div id="pwabox" aria-hidden="true"><div class="acard" role="dialog" aria-modal="true" aria-labelledby="pwaT"><h2 id="pwaT"></h2><p class="sub" id="pwaM"></p><ol class="pwa-steps" id="pwaSteps" hidden></ol><div class="pwa-actions"><button class="dbtn pri" id="pwaYes" type="button"></button><button class="dbtn pwa-no" id="pwaNo" type="button"></button></div></div></div>
 <div id="note" role="status" aria-live="polite"></div>
 <button id="ntf" type="button" role="status" aria-live="polite" hidden></button>
 <div id="cbox"><div class="sheet"><h3>Custom label</h3><input id="cn" placeholder="Label name" maxlength="24"><div class="sws" id="sws"></div><button id="cok">Insert</button></div></div>
@@ -1295,7 +1295,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='173',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='174',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -2842,8 +2842,10 @@ const PWAK='evolyric-pwa-install-declined';
 let pwaPrompt=null,pwaNext=null,pwaManual=false,pwaGuide=false;
 const pwaIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const pwaInstalled=()=>{try{return !!((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone)}catch(e){return false}};
-const pwaDeclined=()=>{try{return localStorage.getItem(PWAK)==='1'}catch(e){return false}};
-const pwaSetDeclined=()=>{try{localStorage.setItem(PWAK,'1')}catch(e){}};
+/* v174: "Not now" is remembered for 14 days (not forever), so people who said no once are asked again later */
+const PWA_WAIT=14*864e5;
+const pwaDeclined=()=>{try{const t=+localStorage.getItem(PWAK)||0;return t>1&&Date.now()-t<PWA_WAIT}catch(e){return false}};
+const pwaSetDeclined=()=>{try{localStorage.setItem(PWAK,String(Date.now()))}catch(e){}};
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();pwaPrompt=e});
 addEventListener('appinstalled',()=>{pwaPrompt=null;try{localStorage.removeItem(PWAK)}catch(e){}pwaClose()});
 function pwaCopy(){return{title:L('Install EvoLyric?','Pasang EvoLyric?'),intro:L('Add EvoLyric to your Home Screen for faster access.','Tambahkan EvoLyric ke Layar Utama agar lebih cepat dibuka.'),yes:L('YES, INSTALL','YA, PASANG'),no:L('Not now','Nanti saja'),continue:L('Continue','Lanjutkan'),ios:[L('Tap the <b>Share</b> button in Safari or Chrome.','Ketuk tombol <b>Bagikan</b> di Safari atau Chrome.'),L('Choose <b>Add to Home Screen</b>.','Pilih <b>Tambahkan ke Layar Utama</b>.'),L('Tap <b>Add</b> to finish.','Ketuk <b>Tambah</b> untuk selesai.')],other:[L('Open your browser menu.','Buka menu browser.'),L('Choose <b>Install app</b> or <b>Add to Home Screen</b>.','Pilih <b>Install app</b> atau <b>Tambahkan ke Layar Utama</b>.')]}}
@@ -2854,6 +2856,15 @@ function pwaClose(){const b=$('#pwabox');b.classList.remove('on');b.setAttribute
 function pwaOffer(next,manual){if(pwaInstalled()){if(next)next();return}if(!manual&&pwaDeclined()){if(next)next();return}pwaNext=next||null;pwaManual=!!manual;pwaOpen(false)}
 async function pwaYes(){if(pwaGuide){pwaClose();return}if(pwaIOS()){pwaOpen(true);return}if(pwaPrompt){const e=pwaPrompt;pwaPrompt=null;try{await e.prompt();await e.userChoice}catch(x){}pwaClose();return}pwaOpen(true)}
 function pwaNo(){if(!pwaManual)pwaSetDeclined();pwaClose()}
+/* v174: signed-in and returning people are offered the install too (before, only the welcome screen did). Quietly, once per visit,
+   only on Home, never over the tour, a dialog or the lyrics, and only where the browser can really install (native prompt or iOS). */
+let pwaAutoN=0,pwaAutoDone=false;
+function pwaAuto(){if(pwaAutoDone||++pwaAutoN>40)return clearInterval(pwaAutoT);
+  if(pwaInstalled()||pwaDeclined())return clearInterval(pwaAutoT);
+  if(!(pwaPrompt||pwaIOS()))return;
+  if(!$('#list').classList.contains('on')||$('#welcome').classList.contains('on')||$('#pwabox').classList.contains('on')||document.querySelector('#authbox.on')||document.body.classList.contains('touring'))return;
+  pwaAutoDone=true;clearInterval(pwaAutoT);pwaOffer(null)}
+const pwaAutoT=setInterval(pwaAuto,3000);
 $('#pwaYes').onclick=pwaYes;$('#pwaNo').onclick=pwaNo;$('#pwabox').onclick=e=>{if(e.target.id==='pwabox')pwaNo()};
 function openAuth(err){authFrom=document.activeElement;setBusy(false);$('#aerr').textContent=err||'';const a=$('#authbox');a.classList.add('on');a.setAttribute('aria-hidden','false');setTimeout(()=>$('#gbtn').focus({preventScroll:true}),30)}
 function closeAuth(){const a=$('#authbox');a.classList.remove('on');a.setAttribute('aria-hidden','true');authFrom&&authFrom.focus&&authFrom.focus({preventScroll:true})}
@@ -3072,6 +3083,7 @@ if(window.Cloud)Cloud.init({
   render:()=>refresh(),
   busy:()=>!$('#list').classList.contains('on'),
   notify:note,
+  confirmMass:(n,c,t)=>Promise.resolve(confirm(L('Delete '+n+' of '+t+' songs from your account on every device? Cancel keeps your songs.','Hapus '+n+' dari '+t+' lagu dari akunmu di semua perangkat? Batal = lagumu tetap aman.'))),
   readLib,
   isSample:g=>JSON.stringify(g)===SAMPLE_J,
   useKeys:u=>{LK=u?K+':u:'+u:K;LKC=u?KC+':u:'+u:KC},

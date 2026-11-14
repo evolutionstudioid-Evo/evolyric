@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v174 – Audit fixes: safer sync, install offer for signed-in users
+- **Sync safety:** a sync can no longer delete most of an account silently. If one push would remove 5+ songs that are at least half the library (or 3+ categories, at least half), the app asks first; without an explicit yes the local deletion is forgotten and the songs come back from the cloud. Found while auditing a case where a scripted session emptied a real account.
+- **Server safety:** `supabase/013_song_trash.sql` (run once in the SQL Editor) copies every deleted song into `song_trash`, with restore SQL inside.
+- **PWA install:** signed-in and returning people are now offered the install quietly on Home (once per visit, never over the tour/lyrics). “Not now” is remembered for 14 days instead of forever. Manifest got an `id`.
+- Fixed: the v173 install test wrongly assumed Google sign-in was unconfigured and navigated to Google; the install dialog text is now filled at open time so Indonesian is never skipped (i18n audit clean again).
+
 ## v173 – Smart PWA installation
 - Choosing **Continue with Google** or **Continue as guest** on the welcome screen first offers optional installation; dismissing it immediately continues the original sign-in or guest path.
 - Android uses the browser’s native install prompt when available. iPhone/iPad (Safari and Chrome) show **Share → Add to Home Screen → Add** steps instead, with a Continue button so login is never trapped behind the guide.

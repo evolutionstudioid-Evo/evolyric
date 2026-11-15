@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v175 – Clear Sections in the editor
+- New **Clear Sections** button under **Auto Section** in the editor's Section panel. It removes every section label (`[Verse]`, `[Chorus]`…) after asking, so songs opened from LRCLIB (which still get Auto Section labels by themselves) can be labelled again by hand once saved. The lyrics themselves are untouched, **Undo** brings the labels back, and nothing changes in the Library until **Save**. Tests in `tests/autosec.test.js`.
+
 ## v174 – Audit fixes: safer sync, install offer for signed-in users
 - **Sync safety:** a sync can no longer delete most of an account silently. If one push would remove 5+ songs that are at least half the library (or 3+ categories, at least half), the app asks first; without an explicit yes the local deletion is forgotten and the songs come back from the cloud. Found while auditing a case where a scripted session emptied a real account.
 - **Server safety:** `supabase/013_song_trash.sql` (already applied to the EvoLyric project) copies every deleted song into `song_trash` for 30 days, never for an account being deleted, with restore SQL inside.

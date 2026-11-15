@@ -44,6 +44,22 @@ test('Auto Section: library songs only change from the editor button; existing l
   eq(labels(await p.evaluate(()=>$('#ta').value)),['[Intro]'],'Undo restores');
   eq(t.errors,[],'no page errors');await t.close()});
 
+test('Clear Sections: removes every label after asking, lyrics stay, Undo restores, not saved until Save',async()=>{
+  const t=await open(),p=t.page;
+  await p.evaluate(x=>{songs.push({id:'c1',title:'Uji',artist:'',lyrics:x,speed:5,font:30,cr:1,md:1});openSong(songs.find(s=>s.id==='c1'))},'[Verse 1]\n'+V1+'\n\n[Chorus]\n'+CH);await p.waitForTimeout(300);
+  await p.evaluate(()=>openEdit(cur));await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>{const a=$('#eA'),c=$('#eC');return !!c&&a.nextElementSibling===c}),true,'button sits right under Auto Section');
+  await p.click('#eC');await p.waitForTimeout(150);
+  eq(await p.evaluate(()=>$('#ctx').classList.contains('on')),true,'asks first');
+  await p.click('#ctx button.del');await p.waitForTimeout(150);
+  eq(await p.evaluate(()=>$('#ta').value),V1+'\n\n'+CH,'labels gone, lyrics unchanged');
+  eq(await p.evaluate(()=>songs.find(s=>s.id==='c1').lyrics.includes('[Chorus]')),true,'not saved until Save');
+  await p.click('#eU');await p.waitForTimeout(100);
+  eq(labels(await p.evaluate(()=>$('#ta').value)),['[Verse 1]','[Chorus]'],'Undo restores');
+  await p.evaluate(()=>{$('#ta').value='no labels here';snap()});
+  await p.click('#eC');await p.waitForTimeout(150);
+  eq(await p.evaluate(()=>$('#ctx').classList.contains('on')),false,'no question when there is nothing to clear');
+  eq(t.errors,[],'no page errors');await t.close()});
 test('Auto Section: verse and chorus written in one paragraph, and lyrics with no blank lines at all',async()=>{
   const t=await open(),p=t.page;
   eq(labels(await p.evaluate(x=>autoSec(x),P(V1+'\n'+CH,V2+'\n'+CH,BR,CH))),['[Verse 1]','[Chorus]','[Verse 2]','[Chorus]','[Bridge]','[Chorus]'],'one paragraph per verse+chorus');

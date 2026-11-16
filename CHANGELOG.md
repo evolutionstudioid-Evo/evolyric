@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v176 (beta) – Tempo mode
+- **Tempo is back, now as Tempo mode.** A song with a BPM (editor: type it, **Tap**, or **Find**) is played by the clock instead of a scroll speed.
+- **Tap the first lyric line** when you start singing: that is beat 0. Each lyric line lasts the song's **beats/line** (1–16); any section can have its own beats/line in the editor's section bar.
+- **Time signature per song** (4/4, 3/4, 6/8) for counting bars.
+- A section that pauses (Intro, Interlude, or **Pause here**) can last **N bars**: the lyrics stop, the aurora keeps running, a countdown shows the bars left, then the next line goes on by itself. Leave bars empty to wait for a tap, as before.
+- **Tap any lyric line** to re-sync ("I am here now"). Tap beside the lyrics to pause / go on.
+- New setting **Tempo highlight**: Karaoke (letters fill left to right), Line, or Word.
+- Songs without a BPM scroll exactly as before. Tests in `tests/tempo.test.js`.
+
 ## v175 – Clear Sections in the editor
 - New **Clear Sections** button under **Auto Section** in the editor's Section panel. It removes every section label (`[Verse]`, `[Chorus]`…) after asking, so songs opened from LRCLIB (which still get Auto Section labels by themselves) can be labelled again by hand once saved. The lyrics themselves are untouched, **Undo** brings the labels back, and nothing changes in the Library until **Save**. Tests in `tests/autosec.test.js`.
 

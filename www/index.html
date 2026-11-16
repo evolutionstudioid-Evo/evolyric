@@ -554,6 +554,14 @@ button.srow:active{background:var(--ln)}.srow .lbl{flex:1;min-width:0}.srow .lbl
 .wu{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:0 14px;margin:0 0 4px}.wu:focus-within{border-color:var(--acc)}.wu span{color:var(--mut);font-weight:700}.wu input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--fg);font:600 17px/1 'Atkinson Hyperlegible',system-ui,sans-serif;padding:15px 0}
 .wgo{width:100%;min-height:48px;margin-top:12px;font-size:16px}.wgo:disabled{opacity:.45}
 #goog,#dgoog{color:var(--acct)}
+/* ===== v176 (beta): Tempo mode – the line being sung, finished lines, and the bar countdown of a pausing section ===== */
+:root{--thl:#4dd2ff}
+#txt .ln.tdone{opacity:.5;transition:opacity .4s var(--ease)}
+#txt[data-thl="l"] .ln.tnow{color:var(--thl)}
+#txt[data-thl="k"] .ln.tnow{background:linear-gradient(90deg,var(--thl) var(--p,0%),currentColor var(--p,0%));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#txt[data-thl="k"] .ln.tnow mark{-webkit-text-fill-color:currentColor}
+#txt[data-thl="w"] .ln .tw.lit{color:var(--thl)}
+#txt .sec.tpause::after{content:'· ' attr(data-left);margin-left:.45em;font-variant-numeric:tabular-nums;opacity:.9}
 /* ===== v135: aurora glow – a soft magenta / purple / teal light around the screen edges while auto-scroll runs.
    Only opacity and transform are animated (GPU-composited), the layer never takes touches, and it sits under the lyrics. ===== */
 #aura{display:none}
@@ -777,7 +785,7 @@ body.touring #tsv{display:none!important}
 <section id="edit" class="v">
   <div class="hd"><button class="ic" id="eX" aria-label="Exit">✕</button><input class="fld" id="et" placeholder="Title"><button class="pill" id="eS">Save</button></div>
   <div class="sb" id="emeta"><input class="fld" id="ea" placeholder="Artist"><button type="button" class="fld catsel" id="ec" aria-label="Categories"></button><select class="fld" id="ek" aria-label="Base key"></select></div>
-  <div class="sb" id="etm"><input class="fld" id="eb" type="number" inputmode="numeric" min="30" max="300" placeholder="BPM" aria-label="Tempo in BPM"><select class="fld" id="ebl" aria-label="Beats per lyric line"><option value="2">2 beats/line</option><option value="4">4 beats/line</option><option value="8">8 beats/line</option></select><button type="button" class="fld" id="ebt" aria-label="Tap tempo">Tap</button><button type="button" class="fld" id="ebf" aria-label="Find tempo online">Find</button></div><div class="mut" id="ebn" hidden></div>
+  <div class="sb" id="etm"><input class="fld" id="eb" type="number" inputmode="numeric" min="30" max="300" placeholder="BPM" aria-label="Tempo in BPM"><select class="fld" id="ebl" aria-label="Beats per lyric line"><option value="1">1 beat/line</option><option value="2">2 beats/line</option><option value="3">3 beats/line</option><option value="4">4 beats/line</option><option value="6">6 beats/line</option><option value="8">8 beats/line</option><option value="12">12 beats/line</option><option value="16">16 beats/line</option></select><select class="fld" id="ets" aria-label="Time signature"><option value="4/4">4/4</option><option value="3/4">3/4</option><option value="6/8">6/8</option></select><button type="button" class="fld" id="ebt" aria-label="Tap tempo">Tap</button><button type="button" class="fld" id="ebf" aria-label="Find tempo online">Find</button></div><div class="mut" id="ebn" hidden></div>
   <div class="tb" id="etools" role="toolbar" aria-label="Editor tools">
     <button id="eU" type="button" aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button><button id="eR" type="button" aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20v-7a4 4 0 0 1 4-4h16"/></svg></button><i class="tsep"></i>
     <button id="eP" type="button" aria-label="Paste" title="Paste"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></button><button id="eK" type="button" aria-label="Keyboard" title="Keyboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/></svg></button><i class="tsep"></i>
@@ -785,7 +793,7 @@ body.touring #tsv{display:none!important}
   </div>
   <div class="tb" id="hlbar" hidden><span class="mut">Color</span><button id="hx" type="button">Remove</button></div>
   <div class="tb" id="notebar" hidden><b id="nbn"></b><button id="nbEdit">Edit</button><button id="nbMove">Move</button><button id="nbRm">Delete</button></div>
-  <div class="tb" id="secbar" hidden><b id="sn" data-nt></b><button id="sstop" type="button" hidden></button><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
+  <div class="tb" id="secbar" hidden><b id="sn" data-nt></b><button id="sstop" type="button" hidden></button><label id="sbarsw" class="mut" hidden><input class="fld" id="sbars" type="number" inputmode="numeric" min="0" max="64" placeholder="tap" aria-label="Bars to pause"> bars</label><select class="fld" id="sbpl" hidden aria-label="Beats per line in this section"><option value="">Song beats/line</option><option value="1">1 beat/line</option><option value="2">2 beats/line</option><option value="3">3 beats/line</option><option value="4">4 beats/line</option><option value="6">6 beats/line</option><option value="8">8 beats/line</option><option value="12">12 beats/line</option><option value="16">16 beats/line</option></select><button id="rl">Remove label</button><button id="ds">Delete section</button></div>
   <div class="ed"><textarea id="ta" inputmode="none" spellcheck="false" aria-label="Lyrics"></textarea><div id="side"></div></div>
 </section>
 
@@ -1297,7 +1305,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='175',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='176',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1319,7 +1327,7 @@ function setAuraPref(on){PREF.aura=on?1:0;prefSave();$('#play').classList.toggle
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Clear Sections':'Hapus Section','Remove all section labels? The lyrics stay. Undo brings them back.':'Hapus semua label section? Liriknya tetap. Undo bisa mengembalikannya.','No section labels to clear':'Tidak ada label section untuk dihapus','Replace the existing section labels? Undo brings them back.':'Ganti label section yang sudah ada? Undo bisa mengembalikannya.','Replace':'Ganti','No sections recognised':'Tidak ada section yang dikenali','More version':'Lebih banyak','Loading the latest version…':'Memuat versi terbaru…','Versions':'Versi','versions':'versi','Close versions':'Tutup versi','Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCLIB','Copied the lyrics?':'Sudah copy liriknya?','Copy the lyrics on the Google page, then tap Show lyrics.':'Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Show lyrics':'Tampilkan lirik','Not found on LRCLIB':'Tidak ditemukan di LRCLIB','Search Google':'Cari di Google','Paste the lyrics':'Tempel liriknya','Paste the lyrics here':'Tempel lirik di sini','No lyrics copied yet. Copy the lyrics first, then try again.':'Belum ada lirik yang di-copy. Copy liriknya dulu, lalu coba lagi.','You are offline. Lyrics search needs an internet connection.':'Kamu sedang offline. Pencarian lirik butuh koneksi internet.','Save to Library':'Simpan ke Library','Edit in Editor':'Edit di Editor','A song with this title is already in your Library. Save another copy?':'Lagu dengan judul ini sudah ada di Library-mu. Simpan salinan lain?','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'1 beat/line':'1 ketukan/baris','Song beats/line':'Ketukan/baris lagu','Time signature':'Birama','tap':'ketuk','Bars to pause':'Jumlah birama jeda','Beats per line in this section':'Ketukan per baris di bagian ini','Clear Sections':'Hapus Section','Remove all section labels? The lyrics stay. Undo brings them back.':'Hapus semua label section? Liriknya tetap. Undo bisa mengembalikannya.','No section labels to clear':'Tidak ada label section untuk dihapus','Replace the existing section labels? Undo brings them back.':'Ganti label section yang sudah ada? Undo bisa mengembalikannya.','Replace':'Ganti','No sections recognised':'Tidak ada section yang dikenali','More version':'Lebih banyak','Loading the latest version…':'Memuat versi terbaru…','Versions':'Versi','versions':'versi','Close versions':'Tutup versi','Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCLIB','Copied the lyrics?':'Sudah copy liriknya?','Copy the lyrics on the Google page, then tap Show lyrics.':'Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Show lyrics':'Tampilkan lirik','Not found on LRCLIB':'Tidak ditemukan di LRCLIB','Search Google':'Cari di Google','Paste the lyrics':'Tempel liriknya','Paste the lyrics here':'Tempel lirik di sini','No lyrics copied yet. Copy the lyrics first, then try again.':'Belum ada lirik yang di-copy. Copy liriknya dulu, lalu coba lagi.','You are offline. Lyrics search needs an internet connection.':'Kamu sedang offline. Pencarian lirik butuh koneksi internet.','Save to Library':'Simpan ke Library','Edit in Editor':'Edit di Editor','A song with this title is already in your Library. Save another copy?':'Lagu dengan judul ini sudah ada di Library-mu. Simpan salinan lain?','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -1450,6 +1458,7 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
     sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
     sRow(L('Visual effect while scrolling','Efek visual saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
+    sRow(L('Tempo highlight','Sorotan tempo'),{sub:L('How the line being sung is marked in songs that have a BPM','Cara baris yang sedang dinyanyikan ditandai di lagu yang punya BPM'),right:sSeg([['k',L('Karaoke','Karaoke')],['l',L('Line','Baris')],['w',L('Word','Kata')]],PREF.thl||'k',v=>{PREF.thl=v;prefSave();const t=$('#txt');if(t)t.dataset.thl=v})}),
     sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})));
   if(!pwaInstalled())b.append(E('div','sgrp',L('App','Aplikasi')),sCard(sRow(L('Install EvoLyric','Pasang EvoLyric'),{sub:L('Add EvoLyric to your Home Screen','Tambahkan EvoLyric ke Layar Utama'),go:()=>pwaOffer(null,true)})));
@@ -1915,7 +1924,7 @@ function openSong(s,keep){
   const f=secEls()[0];startEl=f&&f._stop?f:null;
   setPlay(false); /* a newly opened song is always paused, even if the previous one was auto-scrolling */
   waiting=!!startEl;
-  if(waiting)toast('Ketuk layar atau tekan play untuk mulai');hl()}
+  if(tmOn())toast(L('Tempo: tap the first line when you start singing','Tempo: ketuk baris pertama saat mulai bernyanyi'));else if(waiting)toast('Ketuk layar atau tekan play untuk mulai');hl()}
 /* v42: notes. A note is one line of the lyrics text: {n:text} or {n|s=3|w=b|f=s|c=s|a=c|i=1|x=1:text}. Only non-default options are written.
    s size 1-4 (x lyric font), w weight l/r/b, f font ''/s/m/h, c colour a/s/r/g/w/p, a align l/c/r, i italic, x box. */
 const NOTE_RE=/^\s*\{n((?:\|[a-z]=[^|:{}]*)*):(.*)\}\s*$/,NOTE_DEF={s:'2',w:'r',f:'',c:'w',a:'c',i:'',x:''};
@@ -1932,7 +1941,7 @@ function lineEl(ln,col){
 function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').toggleAttribute('data-nt',!!cur.title);$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
   t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
-  t.append(E('div','end'));t.append(E('div','nxl'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=stopOf(cur,d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
+  t.append(E('div','end'));t.append(E('div','nxl'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=stopOf(cur,d.dataset.k));SO=null;fixPad();watchEnd();qRender();tmPrep()}
 function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr');$('#txt').style.paddingTop='12px';SO=null;fitTitle()}
 /* v52: the song title lives in the header above the section selector (fixed, centred) and shrinks to fit */
 function fitTitle(){const e=$('#ptit');if(!e||!e.textContent)return;let f=20;e.style.fontSize=f+'px';while(e.scrollWidth>e.clientWidth+1&&f>11){f-=.5;e.style.fontSize=f+'px'}}
@@ -1972,7 +1981,7 @@ function setPlay(on){
     last=0;frac=0;bst=0;pos=L.scrollTop;cancelAnimationFrame(playRaf);playRaf=requestAnimationFrame(tick);
     acquireWL();
   }else{
-    cancelAnimationFrame(playRaf);playRaf=0;
+    cancelAnimationFrame(playRaf);playRaf=0;if(TMS)TMS.stale=1;
     if(txtEl.style.transform){const L=$('#lyr');L.scrollTop=Math.round(pos);txtEl.style.transform='';pos=L.scrollTop}
   }
 }
@@ -1997,8 +2006,71 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){nsOn=nsV&
 ['focus','pageshow','online','fullscreenchange'].forEach(v=>addEventListener(v,keepAwake));
 setInterval(keepAwake,15000);
 keepAwake();
+/* ---------- v176 (beta): Tempo mode ----------
+   A song with a BPM is played by the clock instead of a scroll speed. The vocalist taps the first lyric line when singing
+   starts: that is beat 0. Every lyric line lasts beats-per-line (per song, or per section in song.tsec). A section that pauses
+   (Intro, Interlude, or Pause here in the editor) lasts its bars and then goes on by itself, while the aurora keeps running;
+   without bars it waits for a tap, like before. Tap any lyric line = "I am here now" (re-sync). Tap beside the lyrics = pause.
+   Highlight style is a setting (PREF.thl): k karaoke fill (default), l whole line, w word by word. */
+const TS_BEATS={'4/4':4,'3/4':3,'6/8':6};
+let TM=null,TMS=null; /* TM: timeline of the open song, built in render(); TMS: the running clock */
+const tmOn=()=>TEMPO_UI&&!!cur&&cur.bpm>0&&!!TM&&TM.it.length>0;
+function tmPrep(){TM=null;TMS=null;const t=$('#txt');t.dataset.thl=PREF.thl||'k';if(!TEMPO_UI||!cur||!(cur.bpm>0))return;
+  const bpb=TS_BEATS[cur.ts]||4,def=+cur.bpl||4,ts=cur.tsec||{},it=[];let stop=false,sb=def;
+  for(const d of (t._le||[])){
+    if(d.classList.contains('sec')){const o=ts[d.dataset.k||'']||{};stop=!!d._stop;sb=+o.bpl>0?+o.bpl:def;
+      if(stop){const bars=+o.bars>0?Math.round(+o.bars):0;it.push({el:d,k:bars?'p':'w',b:bars*bpb,bars})}
+      continue}
+    if(stop||!d.classList.contains('ln')||!d.textContent.trim())continue; /* lines inside a pausing section are part of its bars */
+    it.push({el:d,k:'l',b:sb})}
+  let c=0;for(const x of it){x.c=c;c+=x.b}
+  TM={it,bpb,ms:60000/cur.bpm,at:-1}}
+const tmFirstLine=k=>{for(let j=Math.max(0,k);j<TM.it.length;j++)if(TM.it[j].k==='l')return j;return Math.max(0,Math.min(k,TM.it.length-1))};
+function tmFromView(){const L=$('#lyr'),rl=L.scrollTop+RLP(L)-4,k=TM.it.findIndex(x=>x.el.offsetTop>=rl);return k<0?0:k}
+function tmMark(j,done){const x=TM.it[j];if(!x)return;const el=x.el;
+  if(x.k==='l'){el.classList.toggle('tdone',!!done);el.classList.remove('tnow');el.style.removeProperty('--p');if(x.w)x.w.forEach(s=>s.classList.toggle('lit',!!done))}
+  else{el.classList.remove('tpause');delete el.dataset.left}}
+function tmWords(el){if(el._w)return el._w;const w=[];
+  const walk=n=>{for(const c of [...n.childNodes]){if(c.nodeType===3){const f=document.createDocumentFragment();
+      c.data.split(/(\s+)/).forEach(q=>{if(!q)return;if(/^\s+$/.test(q))f.append(q);else{const sp=E('span','tw',q);w.push(sp);f.append(sp)}});c.replaceWith(f)}
+    else if(c.nodeType===1)walk(c)}};
+  walk(el);return el._w=w}
+/* start (or re-sync) the clock at timeline item k */
+function tmStart(k){if(!TM)return;k=Math.max(0,Math.min(TM.it.length-1,k));
+  TMS={t0:performance.now(),b0:TM.it[k].c,i:k};
+  for(let j=0;j<TM.it.length;j++)tmMark(j,j<k);TM.at=-1;txtEl.style.transform='';
+  if(!playing)setPlay(true);else{cancelAnimationFrame(playRaf);last=0;playRaf=requestAnimationFrame(tick)}}
+/* play pressed some other way (or after a pause): go on from where the song stands */
+function tmResume(){const w=TMS&&TMS.wait!=null?TMS.wait:null,k=w!=null?w:TMS&&TM.at>=0?TM.at:tmFirstLine(tmFromView());
+  TMS={t0:performance.now(),b0:TM.it[k].c,i:k};for(let j=0;j<TM.it.length;j++)tmMark(j,j<k);TM.at=-1;txtEl.style.transform=''}
+function tmTap(e){
+  const hit=document.elementFromPoint(e.clientX,e.clientY),ln=hit&&hit.closest?hit.closest('#txt .ln'):null,k=ln?TM.it.findIndex(x=>x.el===ln):-1;
+  if(k>=0){tmStart(k);return}           /* a lyric line: start / re-sync here */
+  setPlay(!playing)}                     /* beside the lyrics: pause, or go on (tick() resumes the clock) */
+function tmSet(i,b){const x=TM.it[i];
+  if(TM.at!==i){if(TM.at>=0)for(let j=TM.at;j<i;j++)tmMark(j,1);
+    TM.at=i;
+    if(x.k==='l'){x.el.classList.add('tnow');x.el.classList.remove('tdone');if((PREF.thl||'k')==='w')x.w=tmWords(x.el)}
+    else x.el.classList.add('tpause')}
+  if(x.k==='l'){const p=Math.max(0,Math.min(1,(b-x.c)/x.b));
+    if(x.w&&(PREF.thl||'k')==='w'){const n=x.w.length;x.w.forEach((sp,j)=>sp.classList.toggle('lit',j<=p*n))}
+    else x.el.style.setProperty('--p',(p*100).toFixed(1)+'%')}
+  else if(x.k==='p'){const left=String(Math.max(1,Math.ceil(x.bars-(b-x.c)/TM.bpb)));if(x.el.dataset.left!==left)x.el.dataset.left=left}}
+function tmTick(t){
+  const L=$('#lyr'),dt=last?Math.min((t-last)/1000,.1):0;last=t;
+  const b=TMS.b0+(performance.now()-TMS.t0)/TM.ms;let i=TMS.i;
+  while(i<TM.it.length){const x=TM.it[i];
+    if(x.k==='w'){if(b>=x.c){tmSet(i,b);TMS.i=i;TMS.wait=tmFirstLine(i+1);waiting=true;tmFollow(L,x.el,1);setPlay(false);return}break}
+    if(b<x.c+x.b)break;i++}
+  if(i>=TM.it.length){tmMark(TM.it.length-1,1);TM.at=TM.it.length-1;setPlay(false);return} /* end of the song */
+  TMS.i=i;tmSet(i,b);tmFollow(L,TM.it[i].el,Math.min(1,dt*5));
+  playRaf=requestAnimationFrame(tick)}
+/* the line being sung glides to the reading line */
+function tmFollow(L,el,k){const tgt=Math.max(0,Math.min(L.scrollHeight-L.clientHeight,el.offsetTop-RLP(L)));
+  pos+=(tgt-pos)*k;const ip=Math.round(pos);if(L.scrollTop!==ip)L.scrollTop=ip}
 function tick(t){
   if(!playing)return;
+  if(tmOn()){if(!TMS||TMS.stale)tmResume();tmTick(t);return}
   if(!last)last=t;
   const L=$('#lyr'),dt=Math.min((t-last)/1000,.1);last=t;
   const base=cur.speed+SPEED_BONUS;bst+=((boostSp?1:0)-bst)*Math.min(1,dt*6);if(!boostSp&&bst<.01)bst=0; /* hold boost eases in and out */
@@ -2289,7 +2361,7 @@ function gEnd(e,cancel){
   if(g.boost){boostSp=0;return}
   if(g.sp){hudHide();return}
   if(!cancel&&!g.mv&&performance.now()-g.t<600){
-        setPlay(!playing)}}
+        if(tmOn())tmTap(e);else setPlay(!playing)}}
 Ly.addEventListener('pointerup',e=>gEnd(e,false));Ly.addEventListener('pointercancel',e=>gEnd(e,true));
 Ly.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
 Ly.addEventListener('contextmenu',e=>e.preventDefault());
@@ -2344,11 +2416,11 @@ $('#cbox').onclick=e=>{if(e.target.id==='cbox')$('#cbox').classList.remove('on')
 const ta=$('#ta');let st;
 /* v71: tempo. speed px/s = (speed+3) x .8 x font x .12 and a lyric line is 1.45 x font high, so
    speed = BPM / (60 x beatsPerLine) x 1.45 / .096 - 3. Tap tempo and a server lookup (/api/tempo) fill the BPM. */
-const TEMPO_UI=false; /* v72: tempo UI hidden for now; flip to true to bring it back */
+const TEMPO_UI=true; /* v176 (beta): tempo is back – it now drives Tempo mode in the lyrics screen (see tmPrep) */
 const tmSpeed=(bpm,n)=>Math.max(1,Math.min(25,Math.round((bpm*1.45/.096/60/n-SPEED_BONUS)*10)/10));
-function tmLoad(src){$('#etm').hidden=!TEMPO_UI;if(!TEMPO_UI)return;$('#eb').value=src&&src.bpm?src.bpm:'';$('#ebl').value=String(src&&src.bpl||4);$('#ebn').hidden=true;tmTaps=[]}
-function tmRead(){const b=Math.round(+$('#eb').value);return{bpm:b>=30&&b<=300?b:0,bpl:+$('#ebl').value||4}}
-function tmApply(s,t){if(!TEMPO_UI)return;if(!t.bpm){delete s.bpm;delete s.bpl;return}
+function tmLoad(src){$('#etm').hidden=!TEMPO_UI;if(!TEMPO_UI)return;$('#eb').value=src&&src.bpm?src.bpm:'';$('#ebl').value=String(src&&src.bpl||4);$('#ets').value=src&&TS_BEATS[src.ts]?src.ts:'4/4';$('#ebn').hidden=true;tmTaps=[]}
+function tmRead(){const b=Math.round(+$('#eb').value);return{bpm:b>=30&&b<=300?b:0,bpl:+$('#ebl').value||4,ts:TS_BEATS[$('#ets').value]?$('#ets').value:'4/4'}}
+function tmApply(s,t){if(!TEMPO_UI)return;if(!t.bpm){delete s.bpm;delete s.bpl;delete s.ts;delete s.tsec;return}if(t.ts&&t.ts!=='4/4')s.ts=t.ts;else delete s.ts;
   const ch=s.bpm!==t.bpm||s.bpl!==t.bpl;s.bpm=t.bpm;s.bpl=t.bpl;if(ch)s.speed=tmSpeed(t.bpm,t.bpl)}
 let tmTaps=[];
 $('#ebt').onclick=()=>{const n=performance.now();if(tmTaps.length&&n-tmTaps[tmTaps.length-1]>2000)tmTaps=[];tmTaps.push(n);if(tmTaps.length>9)tmTaps.shift();
@@ -2371,7 +2443,7 @@ $('#ebf').onclick=async()=>{
 function openEdit(s,txt,title,base,pre){
   exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
-  const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
+  const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},tsec:JSON.parse(JSON.stringify((src&&src.tsec)||{})),ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
   ed.annLyr=v;$('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';tmLoad(src);
   $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;cs=null;csRender();ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
@@ -2387,9 +2459,20 @@ function secInfo(){
   {let j=a+1;while(j<L.length&&!L[j].trim())j++;if(j<L.length&&isLbl(L[j])&&isGen(L[j].trim().slice(1,-1).toLowerCase())&&!isGen(L[a].trim().slice(1,-1).toLowerCase()))from=j+1}
   let b=L.length;for(let i=from;i<L.length;i++)if(isLbl(L[i])){b=i;break}
   const nm=L[a].trim().slice(1,-1);$('#sn').textContent=nm;stopBtn(nm.toLowerCase());$('#sn').style.color=lblColor({colors:ed&&ed.colors},nm.toLowerCase());bar.hidden=false;return{L,a,b}}
-function stopBtn(lo){const b=$('#sstop');b.hidden=!stopEligible(lo);if(b.hidden)return;const on=stopOf(ed,lo);b.textContent=on?'⏸ Pause here':'▶ Keep going';b.title=on?'Auto-scroll pauses at this section':'Auto-scroll keeps going through this section';b.classList.toggle('on',on)}
+function stopBtn(lo){tsecUI(lo);const b=$('#sstop');b.hidden=!stopEligible(lo);if(b.hidden)return;const on=stopOf(ed,lo);b.textContent=on?'⏸ Pause here':'▶ Keep going';b.title=on?'Auto-scroll pauses at this section':'Auto-scroll keeps going through this section';b.classList.toggle('on',on)}
 $('#sstop').onclick=()=>{const x=secInfo();if(!x)return;const lo=x.L[x.a].trim().slice(1,-1).toLowerCase(),want=!stopOf(ed,lo);
   if(want===stopDef(lo))delete ed.stops[lo];else ed.stops[lo]=want?'p':'k';ed.dirty=true;stopBtn(lo)};
+/* v176 (beta): Tempo mode per section. A section that pauses can last N bars (empty = wait for a tap, as before);
+   any other section can use its own beats per line. Only shown once the song has a BPM. Stored in song.tsec[label]. */
+let tsLo='';
+function tsecUI(lo){tsLo=lo;const has=TEMPO_UI&&ed&&tmRead().bpm>0,o=(ed&&ed.tsec&&ed.tsec[lo])||{},st=has&&stopOf(ed,lo);
+  $('#sbarsw').hidden=!st;$('#sbpl').hidden=!has||st;
+  if(document.activeElement!==$('#sbars'))$('#sbars').value=o.bars?String(o.bars):'';$('#sbpl').value=o.bpl?String(o.bpl):''}
+function tsecSet(k,v){if(!ed||!tsLo)return;const o={...(ed.tsec[tsLo]||{})};if(v>0)o[k]=v;else delete o[k];
+  if(Object.keys(o).length)ed.tsec[tsLo]=o;else delete ed.tsec[tsLo];ed.dirty=true}
+$('#sbars').oninput=()=>{const v=Math.round(+$('#sbars').value);tsecSet('bars',v>0&&v<=64?v:0)};
+$('#sbpl').onchange=()=>tsecSet('bpl',+$('#sbpl').value||0);
+$('#eb').addEventListener('input',()=>secInfo());
 function editSec(all){
   const x=secInfo();if(!x)return;snap();const{L,a,b}=x;
   if(all){L.splice(a,b-a);if(a>0&&a<L.length&&!L[a-1].trim()&&!L[a].trim())L.splice(a,1)}else L.splice(a,1);
@@ -2761,6 +2844,7 @@ $('#eS').onclick=()=>{
   if(ed.s){Object.assign(ed.s,{title,artist:art,lyrics:lyr,key,colors,md:Date.now()});if(Object.keys(stops).length)ed.s.stops=stops;else delete ed.s.stops;if(!ed.s.cr)ed.s.cr=crOf(ed.s);cur=ed.s}
   else{const b=ed.base;cur={id:'s'+Date.now(),title,artist:art,lyrics:lyr,key,colors,speed:b?b.speed:5,font:b?b.font:defFont(),fav:false,cr:Date.now(),md:Date.now()};songs.push(cur)}
   tmApply(cur,tm);
+  {const tsec={};Object.keys(ed.tsec||{}).forEach(k=>{if(used.has(k))tsec[k]=ed.tsec[k]});if(cur.bpm&&Object.keys(tsec).length)cur.tsec=tsec;else delete cur.tsec}
   if(ed.ann&&ed.ann.length)cur.ann=ed.ann;else delete cur.ann;if(!ed.s&&Object.keys(stops).length)cur.stops=stops;
   applyCats(cur.id,ed.cats);save();ed.dirty=false;openSong(cur)};
 $('#eX').onclick=()=>{

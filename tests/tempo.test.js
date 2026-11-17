@@ -1,4 +1,4 @@
-/* v176 (beta): Tempo mode – the clock drives the highlight and the scroll (fictional lyrics only).
+/* v177 (beta): Tempo mode – the clock drives the highlight and the scroll (fictional lyrics only).
    240 BPM and 1 beat per line = 250 ms per line, so the tests stay short. */
 const LYR=['[Verse 1]','Lampu kota mulai redup','Langkahku pelan menuju pulang','Jalan basah sisa hujan','Ku ingat semua tentangmu','','[Interlude]','(solo gitar)','','[Chorus]','Pulanglah, pulanglah padaku','Rumah ini masih menunggu','Lampu teras masih menyala','Untuk dirimu yang kucinta'].join('\n');
 module.exports=({test,assert,eq,open})=>{

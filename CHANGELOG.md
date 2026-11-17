@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v176 – Search the internet under every search
+- **Search the internet** now shows under every song search – All Songs, Recent, inside a category and in the side panel – also when songs in your Library match. A song with the same title may be another one you don't have yet. Not shown in the Categories tab.
+- Tests updated in `tests/polish.test.js` and `tests/weblyric.test.js`.
+
 ## v175 – Clear Sections in the editor
 - New **Clear Sections** button under **Auto Section** in the editor's Section panel. It removes every section label (`[Verse]`, `[Chorus]`…) after asking, so songs opened from LRCLIB (which still get Auto Section labels by themselves) can be labelled again by hand once saved. The lyrics themselves are untouched, **Undo** brings the labels back, and nothing changes in the Library until **Save**. Tests in `tests/autosec.test.js`.
 

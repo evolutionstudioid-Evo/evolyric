@@ -13,14 +13,16 @@ test('Polish: the setlist search box looks like the other search boxes',async()=
 test('Polish: no tempo credit on the sign-in card while tempo is not in use',async()=>{
   const t=await open(),p=t.page;await p.evaluate(()=>openAuth());await p.waitForTimeout(200);
   eq(await p.evaluate(()=>[...document.querySelectorAll('#authbox p')].some(e=>e.offsetParent&&/GetSongBPM/.test(e.textContent))),false,'hidden');await t.close()});
-test('Polish: no Library match offers “Search the internet”, which runs the globe search for what was typed',async()=>{
+test('Polish: every song search offers “Search the internet”, which runs the globe search for what was typed',async()=>{
   const t=await open(),p=t.page;
-  await p.fill('#q','pulang');await p.waitForTimeout(200);eq(await p.$('#items .ewb'),null,'not shown when songs match');
+  await p.fill('#q','pulang');await p.waitForTimeout(200);
+  eq(await p.evaluate(()=>{const b=$('#items'),c=b.querySelector('.ewb');return !!c&&!!b.querySelector('.it')&&b.lastElementChild===c&&c.classList.contains('after')}),true,'v176: also when songs match, under them');
   await p.fill('#q','lagu baru sekali');await p.waitForTimeout(200);
   eq(await p.$eval('#items .ewb',e=>[e.querySelector('b').textContent,e.querySelector('small').textContent]),['Search the internet','lagu baru sekali'],'offered with the query');
   await p.evaluate(()=>{window.__wl=null;const o=wlGo;wlGo=(q,b)=>{window.__wl=q}});await p.click('#items .ewb');
   eq(await p.evaluate(()=>window.__wl),'lagu baru sekali','globe search started');
-  await p.evaluate(()=>{lib.v='cats';refresh()});eq(await p.$('#items .ewb'),null,'only in All Songs');await t.close()});
+  await p.evaluate(()=>{lib.v='recent';refresh()});eq(!!(await p.$('#items .ewb')),true,'v176: also in Recent');
+  await p.evaluate(()=>{lib.v='cats';refresh()});eq(await p.$('#items .ewb'),null,'not in the Categories tab');await t.close()});
 test('Polish: switching tab plays the list entrance once; switches have a name for screen readers',async()=>{
   const t=await open(),p=t.page;await p.click('#tabs [data-v=cats]');
   eq(await p.evaluate(()=>$('#items').classList.contains('lin')),true,'entrance on');await p.waitForTimeout(1000);

@@ -670,6 +670,7 @@ body.touring #tsv{display:none!important}
 /* v152 polish: list entrance, internet search from an empty result, bigger touch areas for small close buttons */
 #items.lin>*{animation:itin .34s var(--ease) both}
 #items.lin>:nth-child(2){animation-delay:0.025s}#items.lin>:nth-child(3){animation-delay:0.050s}#items.lin>:nth-child(4){animation-delay:0.075s}#items.lin>:nth-child(5){animation-delay:0.100s}#items.lin>:nth-child(6){animation-delay:0.125s}#items.lin>:nth-child(7){animation-delay:0.150s}#items.lin>:nth-child(8){animation-delay:0.175s}#items.lin>:nth-child(9){animation-delay:0.200s}#items.lin>:nth-child(10){animation-delay:0.225s}#items.lin>:nth-child(11){animation-delay:0.250s}#items.lin>:nth-child(12){animation-delay:0.275s}#items.lin>:nth-child(13){animation-delay:0.300s}#items.lin>:nth-child(14){animation-delay:0.325s}#items.lin>:nth-child(n+15){animation-delay:.33s}
+.ewb.after{margin-top:14px} /* v176: under the matching songs */
 .ewb{display:flex;align-items:center;gap:12px;width:calc(100% - 24px);margin:14px 12px;padding:14px 16px;border-radius:14px;border:1px dashed rgba(240,160,75,.5);background:rgba(240,160,75,.06);color:var(--fg);text-align:left;animation:itin .3s var(--ease) both}
 .ewb svg{flex:none;width:26px;height:26px;fill:none;stroke:var(--acct);stroke-width:1.6}
 .ewb span{min-width:0}.ewb b{display:block;font-weight:700;color:var(--acct)}.ewb small{display:block;margin-top:2px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1046,10 +1047,12 @@ function refresh(){
 /* v152: nothing in the Library for what was typed -> one tap to look for it on the internet (same as the globe button) */
 function webCard(box,q,go){const b=E('button','ewb');b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z"/><path d="M2.5 12h19"/></svg>';
   const t=E('span');t.append(E('b','',L('Search the internet','Cari di internet')));const qq=E('small','',q);qq.setAttribute('data-nt','');t.append(qq);b.append(t);b.onclick=()=>go(b);box.append(b);return b}
-/* v154: the globe buttons are gone – this card is the way to search online from the search box (Home: All Songs) */
-function emptyWeb(){const q=$('#q').value.trim(),box=$('#items');if(lib.v!=='all'||!q||box.querySelector('.it'))return;webCard(box,q,b=>wlGo(q,b))}
-/* v154: same card in the side panel (All Songs) */
-function dEmptyWeb(){const q=$('#dq').value.trim(),box=$('#dItems');if($('#dcat').value||!q||box.querySelector('.it'))return;webCard(box,q,b=>{drawer(false);wlGo(q,b)})}
+/* v154: the globe buttons are gone – this card is the way to search online from the search box.
+   v176: shown under EVERY song search (All Songs, Recent, inside a category), also when songs match:
+   a song with the same title may be a different one you don't have yet. Not in the Categories tab. */
+function emptyWeb(){const q=$('#q').value.trim(),box=$('#items');if(lib.v==='cats'||!q)return;webCard(box,q,b=>wlGo(q,b)).classList.toggle('after',!!box.querySelector('.it'))}
+/* v154/v176: same card in the side panel, under every search */
+function dEmptyWeb(){const q=$('#dq').value.trim(),box=$('#dItems');if(!q)return;webCard(box,q,b=>{drawer(false);wlGo(q,b)}).classList.toggle('after',!!box.querySelector('.it'))}
 /* v152: the list slides in when you switch tab or open a category */
 function listIn(){const b=$('#items');b.classList.remove('lin');void b.offsetWidth;b.classList.add('lin');clearTimeout(listIn.t);listIn.t=setTimeout(()=>b.classList.remove('lin'),900)}
 $('#tabs').onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;lib.v=b.dataset.v;lib.id=null;$('#q').value='';refresh();listIn()};
@@ -1297,7 +1300,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='175',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='176',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();

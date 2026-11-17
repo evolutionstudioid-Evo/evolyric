@@ -227,13 +227,13 @@ test('v154: the globe buttons are gone; the search boxes use the full width',asy
   assert(d<=14,'side panel search box reaches the edge (gap '+d+')');
   await p.selectOption('#dcat','c1');await p.waitForTimeout(200);eq(await p.evaluate(()=>[...document.querySelectorAll('#dItems .it')].length),3,'dropdown still filters');
   eq(t.errors,[],'no page errors');await t.close()});
-test('v154: side panel – no match in All Songs shows Search the internet, which closes the panel and searches',async()=>{
+test('v154/v176: side panel – every search shows Search the internet, which closes the panel and searches',async()=>{
   const t=await open(),p=t.page;await stub(p,r=>json(r,ONE));
   await p.evaluate(()=>{openSong(songs[0]);drawer(true)});await p.waitForTimeout(400);
-  await p.fill('#dq','pulang');await p.waitForTimeout(200);eq(await p.$('#dItems .ewb'),null,'not when songs match');
+  await p.fill('#dq','pulang');await p.waitForTimeout(200);eq(await p.evaluate(()=>{const b=$('#dItems');return !!b.querySelector('.it')&&b.lastElementChild===b.querySelector('.ewb')}),true,'v176: also when songs match, under them');
   await p.fill('#dq','separuh nafas');await p.waitForTimeout(200);
   eq(await p.$eval('#dItems .ewb small',e=>e.textContent),'separuh nafas','card with the query');
-  await p.selectOption('#dcat','c1');await p.waitForTimeout(150);eq(await p.$('#dItems .ewb'),null,'only for All Songs');await p.selectOption('#dcat','');
+  await p.selectOption('#dcat','c1');await p.waitForTimeout(150);eq(!!(await p.$('#dItems .ewb')),true,'v176: also inside a category');await p.selectOption('#dcat','');
   await p.click('#dItems .ewb');await p.waitForTimeout(700);
   eq(await p.evaluate(()=>[$('#drawer').classList.contains('open'),isTemp(cur),cur.title]),[false,true,'Separuh Nafas'],'panel closed, lyrics shown');
   await t.close()});

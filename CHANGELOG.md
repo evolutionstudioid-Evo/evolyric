@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v177 – Opens on a weak signal
+- Fixed: on a weak signal (network reachable but very slow) EvoLyric could fail to open at all, while airplane mode worked. The page and `config.js` waited on the network (the page for up to 2.5 s, then still streamed slowly; `config.js` with no time limit and it blocks the page).
+- The service worker is now **offline-first**: the saved app opens at once with or without signal. Only online features (search, Friends, sending songs, sign-in, sync) use the network.
+- New versions are pre-cached in the background by the new service worker and appear on the next launch, or right away with **Reload app**.
+- Google Fonts: a stylesheet never saved before is given up after 3 s (system fonts until next time), so it can no longer block the first paint.
+- Test `PWA: on a weak signal …` in `tests/pwa.test.js` opens the app while the server stalls every request.
+
 ## v176 – Search the internet under every search
 - **Search the internet** now shows under every song search – All Songs, Recent, inside a category and in the side panel – also when songs in your Library match. A song with the same title may be another one you don't have yet. Not shown in the Categories tab.
 - Tests updated in `tests/polish.test.js` and `tests/weblyric.test.js`.

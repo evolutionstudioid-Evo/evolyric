@@ -26,6 +26,21 @@ test('PWA: after the first visit the app opens with no internet',async()=>{
   await t.ctx.setOffline(true);await p.reload();await p.waitForTimeout(1200);
   eq(await p.evaluate(()=>typeof songs!=='undefined'&&!!document.querySelector('#items')),true,'app shell loaded offline');
   await t.ctx.setOffline(false);await t.close()});
+test('PWA: on a weak signal (network reachable but stalling) the saved app still opens at once',async()=>{
+  /* airplane mode fails fast; a weak signal does not – requests hang. v177: the shell and config.js are offline-first */
+  const http=require('http'),{chromium}=require('playwright'),WWW=path.join(ROOT,'www');let stall=false;
+  const M={'.html':'text/html','.js':'text/javascript','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp'};
+  const srv=http.createServer((q,res)=>{let f=path.join(WWW,decodeURIComponent(q.url.split('?')[0]));if(!f.startsWith(WWW))f=WWW;if(fs.existsSync(f)&&fs.statSync(f).isDirectory())f=path.join(f,'index.html');
+    if(stall)return; /* keep the connection open, never answer */
+    fs.readFile(f,(e,b)=>{if(e){res.writeHead(404);return res.end()}res.writeHead(200,{'content-type':M[path.extname(f)]||'application/octet-stream'});res.end(b)})});
+  await new Promise(r=>srv.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+srv.address().port+'/';
+  const b=await chromium.launch(),ctx=await b.newContext({serviceWorkers:'allow'}),p=await ctx.newPage();
+  try{await p.goto(url);await p.evaluate(()=>navigator.serviceWorker.ready);
+    await p.waitForFunction(()=>navigator.serviceWorker.controller,null,{timeout:15000}).catch(()=>{});
+    stall=true;const t0=Date.now();await p.goto(url,{waitUntil:'commit',timeout:8000});
+    await p.waitForFunction(()=>typeof songs!=='undefined'&&!!document.querySelector('#items'),null,{timeout:8000});
+    assert(Date.now()-t0<5000,'opened in '+(Date.now()-t0)+' ms')}
+  finally{await b.close();srv.closeAllConnections&&srv.closeAllConnections();srv.close()}});
 test('Repo: no stray debug scripts in the project root',async()=>{
   eq(fs.readdirSync(ROOT).filter(f=>/^_.*\.js$/.test(f)),[],'root')});
 };

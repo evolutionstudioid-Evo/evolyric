@@ -1,6 +1,6 @@
-const V='evolyric-app-176',F='evolyric-fonts';
+const V='evolyric-app-177',F='evolyric-fonts';
 const TUTIMG=['g_home','g_add','g_edit2','g_play','g_queue','g_temp','g_prefs','g_gear'].flatMap(n=>['id','en'].map(l=>'man/'+n+'_'+l+'.webp'));
-const SHELL=['./','manifest.webmanifest','config.js','cloud.js','legal.js','import.js','tutorial.js',...TUTIMG,'vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
+const SHELL=['./','manifest.webmanifest','style.css','config.js','cloud.js','legal.js','import.js','app.js','tutorial.js',...TUTIMG,'vendor/supabase.js','icon-192.png','icon-512.png','apple-touch-icon.png'];
 /* v167: Safari refuses a page the service worker answers with a redirected response ("Response served by service worker has
    redirections"). The host redirects /index.html to /, so the shell is cached as ./ only, and any redirected response is rebuilt. */
 const clean=async x=>x&&x.redirected?new Response(await x.blob(),{status:x.status,statusText:x.statusText,headers:x.headers}):x;

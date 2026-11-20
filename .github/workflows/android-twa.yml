@@ -6,10 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: twa } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with: { distribution: temurin, java-version: 17 }
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - run: npm i -g @bubblewrap/cli
       - name: Configure Bubblewrap
@@ -19,14 +19,31 @@ jobs:
       - name: Restore upload keystore
         run: echo "$KEYSTORE_B64" | base64 -d > android.keystore
         env: { KEYSTORE_B64: "${{ secrets.ANDROID_KEYSTORE_B64 }}" }
-      - name: Build
-        run: bubblewrap build --skipPwaValidation
+      - name: Check keystore
+        run: |
+          test -s android.keystore || { echo "::error::ANDROID_KEYSTORE_B64 kosong atau belum diisi"; exit 1; }
+          keytool -list -keystore android.keystore -storepass "$KSPASS" | grep -i evolyric
+        env: { KSPASS: "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" }
+      - name: Generate Android project
+        run: bubblewrap update --skipVersionUpgrade --manifest=twa-manifest.json
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      - name: Build AAB with Gradle
+        run: |
+          ls
+          chmod +x gradlew
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          ./gradlew --no-daemon bundleRelease
+      - name: Sign AAB
+        run: |
+          AAB=$(find . -name '*.aab' -path '*release*' | head -1)
+          echo "AAB: $AAB"
+          jarsigner -keystore android.keystore -storepass "$KSPASS" -keypass "$KSPASS" "$AAB" evolyric
+          jarsigner -verify "$AAB" | head -3
+          cp "$AAB" app-release-bundle.aab
+        env: { KSPASS: "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" }
       - uses: actions/upload-artifact@v4
         with:
           name: evolyric-android
-          path: |
-            twa/app-release-bundle.aab
-            twa/app-release-signed.apk
+          path: twa/app-release-bundle.aab

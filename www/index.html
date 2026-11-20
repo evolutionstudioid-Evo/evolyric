@@ -14,6 +14,7 @@
 <meta name="description" content="EvoLyric: lyric teleprompter with auto-scroll, sections and fullscreen mode. Works offline.">
 <title>EvoLyric</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@400;600;800&family=Instrument+Serif:ital@0;1&display=swap">
+<script>/* v179: Lite mode flag before first paint */try{if(JSON.parse(localStorage.getItem('evo.prefs')||'{}').lite)document.documentElement.dataset.lite='1'}catch(e){}</script>
 <style>
 :root{--bg:#15110e;--fg:#f3ece3;--mut:#a89c8e;--card:#221c17;--ln:#33291f;--acc:#f0a04b;--acct:#f0a04b;--m:#6ab0ff;--f:#ff6b6b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme="dark"]{--bg:#15110e;--fg:#f3ece3;--mut:#a89c8e;--card:#221c17;--ln:#33291f;--acc:#f0a04b;--m:#6ab0ff;--f:#ff6b6b}
@@ -725,6 +726,13 @@ body.touring #tsv{display:none!important}
 #moved{margin:0 12px 10px;padding:12px 14px;border-radius:14px;border:1px solid rgba(240,160,75,.55);background:rgba(240,160,75,.1);display:flex;flex-direction:column;gap:10px}
 #moved .mvt b{display:block;color:var(--acct);margin-bottom:2px}#moved .mvt span{font-size:13.5px;line-height:1.4;color:var(--fg)}
 #moved .mvb{display:flex;gap:8px;flex-wrap:wrap}#moved .pill{text-decoration:none}
+/* ===== v179: Lite mode (Preferences > Screen): no blur, shadows or CSS animations, for low-end phones ===== */
+html[data-lite] *,html[data-lite] *::before,html[data-lite] *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important;animation:none!important;transition:none!important}
+html[data-lite] #aura{display:none!important}
+html[data-lite] #drawer{background:var(--card)!important}
+html[data-lite] #shud{background:rgba(21,17,14,.94)!important}
+html[data-lite][data-theme="light"] #shud{background:rgba(255,255,255,.96)!important}
+html[data-lite] #dTop{background:rgba(21,17,14,.88)!important}
 </style>
 </head>
 <body>
@@ -1300,7 +1308,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='178',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='179',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1309,12 +1317,15 @@ const lightMQ=window.matchMedia?matchMedia('(prefers-color-scheme: light)'):null
 function themeNow(){return PREF.theme==='auto'?(lightMQ&&lightMQ.matches?'light':'dark'):PREF.theme==='light'?'light':'dark'}
 function applyTheme(){const t=themeNow();document.documentElement.dataset.theme=t;const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#faf6f0':'#15110e';if(typeof themeChanged==='function')themeChanged(t)}
 if(lightMQ&&lightMQ.addEventListener)lightMQ.addEventListener('change',()=>{if(PREF.theme==='auto')applyTheme()});
-applyTheme();toneApply();
+applyTheme();toneApply();applyLite();
 const defFont=()=>Math.max(20,Math.min(60,+PREF.font||32));
 function setFscrPref(on){PREF.fscr=on?1:0;prefSave();if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
 function setAwakePref(on){PREF.awake=on?1:0;prefSave();if(!on){try{wl&&wl.release&&wl.release()}catch(e){}wl=null;try{nsV&&nsV.pause()}catch(e){}nsOn=0}else if(typeof playing!=='undefined'&&playing)keepAwake()}
 function setDimPref(on){PREF.dim=on?1:0;prefSave();$('#play').classList.toggle('nodim',!on)}
 function setAuraPref(on){PREF.aura=on?1:0;prefSave();$('#play').classList.toggle('noaura',!on)}
+/* v179: Lite mode – the html[data-lite] rules above switch off blur, shadows and CSS animations */
+function applyLite(){if(PREF.lite)document.documentElement.dataset.lite='1';else delete document.documentElement.dataset.lite}
+function setLitePref(on){PREF.lite=on?1:0;prefSave();applyLite()}
 /* ---------- v76: language (English / Indonesia) ----------
    HOW IT WORKS: every piece of visible text is written in English in the code. When the language is Indonesia,
    a translator swaps exact English strings for the Indonesian ones in ID below (and patterns in IDP for text that
@@ -1453,6 +1464,7 @@ function prefRender(){const b=$('#prefbody');b.textContent='';
     sRow(L('Keep screen awake','Layar tetap menyala'),{sub:L('While a song is playing','Saat lagu diputar'),right:sSwitch(!!PREF.awake,setAwakePref)}),
     sRow(L('Fade buttons while scrolling','Redupkan tombol saat menggulir'),{sub:L('Floating buttons nearly disappear during auto-scroll','Tombol melayang hampir hilang saat auto-scroll'),right:sSwitch(!!PREF.dim,setDimPref)}),
     sRow(L('Visual effect while scrolling','Efek visual saat menggulir'),{sub:L('A soft, colour-changing light around the screen edges during auto-scroll','Cahaya lembut berganti warna di tepi layar saat auto-scroll'),right:sSwitch(!!PREF.aura,setAuraPref)}),
+    sRow(L('Lite mode','Mode hemat'),{sub:L('Turns off blur, shadows and animations so the app runs smoother on low-end phones','Mematikan blur, bayangan, dan animasi agar aplikasi lebih lancar di HP spek rendah'),right:sSwitch(!!PREF.lite,setLitePref)}),
     sRow(L('Full screen on lyrics','Layar penuh di lirik'),{sub:L('Hides the phone’s status and navigation bars. Turn off to stop Chrome’s “To exit full screen” notice','Menyembunyikan bar status dan navigasi HP. Matikan agar pemberitahuan “To exit full screen” dari Chrome tidak muncul'),right:sSwitch(!!PREF.fscr,setFscrPref)}),
     sRow(L('Text size for new songs','Ukuran teks lagu baru'),{right:sStep(defFont(),20,60,2,v=>{PREF.font=v;prefSave()})})));
   if(!pwaInstalled())b.append(E('div','sgrp',L('App','Aplikasi')),sCard(sRow(L('Install EvoLyric','Pasang EvoLyric'),{sub:L('Add EvoLyric to your Home Screen','Tambahkan EvoLyric ke Layar Utama'),go:()=>pwaOffer(null,true)})));

@@ -29,14 +29,21 @@ jobs:
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      - name: Build
-        run: bubblewrap build --skipPwaValidation --manifest=twa-manifest.json
-        env:
-          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      - name: Build AAB with Gradle
+        run: |
+          ls
+          chmod +x gradlew
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          ./gradlew --no-daemon bundleRelease
+      - name: Sign AAB
+        run: |
+          AAB=$(find . -name '*.aab' -path '*release*' | head -1)
+          echo "AAB: $AAB"
+          jarsigner -keystore android.keystore -storepass "$KSPASS" -keypass "$KSPASS" "$AAB" evolyric
+          jarsigner -verify "$AAB" | head -3
+          cp "$AAB" app-release-bundle.aab
+        env: { KSPASS: "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" }
       - uses: actions/upload-artifact@v4
         with:
           name: evolyric-android
-          path: |
-            twa/app-release-bundle.aab
-            twa/app-release-signed.apk
+          path: twa/app-release-bundle.aab

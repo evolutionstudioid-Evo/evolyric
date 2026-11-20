@@ -1300,7 +1300,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='177',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='178',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -2026,10 +2026,17 @@ function setFont(v){
   cur.font=nf;$('#txt').style.fontSize=nf+'px';SO=null;annPlay(); /* v68: annotations re-anchor and rescale with the lyrics */
   if(y>S)L.scrollTop=S+(y-S)*nf/old-rl}
 $('#sp').onchange=save;
+/* v178: inside the Android app (Trusted Web Activity) the app itself is immersive, so the browser Fullscreen API is not requested:
+   it only added Chrome's "To exit full screen" notice every time a lyric opened. Detected from the launch referrer
+   (android-app://<package>) and remembered for the session; a fullscreen display mode counts too. */
+function inTwa(){try{
+  if(sessionStorage.getItem('evo.twa')==='1')return true;
+  if(/^android-app:\/\/id\.evolyric\.app/.test(document.referrer||'')||(window.matchMedia&&matchMedia('(display-mode: fullscreen)').matches)){sessionStorage.setItem('evo.twa','1');return true}
+}catch(e){}return false}
 function enterFs(){ /* the play view IS the fullscreen view: layout class stays for as long as a song is open; browser fullscreen is best-effort */
   if(!fs){fs=true;$('#play').classList.add('fs');setTimeout(()=>{fixPad();$('#lyr').scrollTop=$('#lyr').scrollTop;hl()},80)}
   const el=document.documentElement;
-  if(PREF.fscr&&!document.fullscreenElement&&el.requestFullscreen&&!/iPhone|iPad|iPod/.test(navigator.userAgent))el.requestFullscreen().catch(()=>{});
+  if(PREF.fscr&&!inTwa()&&!document.fullscreenElement&&el.requestFullscreen&&!/iPhone|iPad|iPod/.test(navigator.userAgent))el.requestFullscreen().catch(()=>{});
 }
 function exitFs(){
   if(!fs)return;fs=false;$('#play').classList.remove('fs');

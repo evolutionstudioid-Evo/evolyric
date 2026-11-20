@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v178 – No full-screen notice in the Android app
+- In the Android app (APK) the lyric screen no longer asks Chrome for browser full screen, so Chrome's "To exit full screen" notice stops appearing every time a lyric opens. The app itself is immersive instead.
+- Website and installed PWA are unchanged.
+
 ## v177 – Opens on a weak signal
 - Fixed: on a weak signal (network reachable but very slow) EvoLyric could fail to open at all, while airplane mode worked. The page and `config.js` waited on the network (the page for up to 2.5 s, then still streamed slowly; `config.js` with no time limit and it blocks the page).
 - The service worker is now **offline-first**: the saved app opens at once with or without signal. Only online features (search, Friends, sending songs, sign-in, sync) use the network.

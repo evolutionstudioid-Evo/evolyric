@@ -3,7 +3,7 @@
   "host": "evolyric.com",
   "name": "EvoLyric",
   "launcherName": "EvoLyric",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "default",
   "themeColor": "#15110e",
   "themeColorDark": "#15110e",

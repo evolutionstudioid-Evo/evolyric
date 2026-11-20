@@ -46,8 +46,9 @@ jobs:
       - name: Build installable test APK
         run: |
           curl -fsSL -o bundletool.jar https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar
+          printf '%s' "$KSPASS" > "$RUNNER_TEMP/kspass"
           java -jar bundletool.jar build-apks --bundle=app-release-bundle.aab --output=app.apks --mode=universal \
-            --ks=android.keystore --ks-pass=env:KSPASS --ks-key-alias=evolyric --key-pass=env:KSPASS
+            --ks=android.keystore --ks-pass=file:$RUNNER_TEMP/kspass --ks-key-alias=evolyric --key-pass=file:$RUNNER_TEMP/kspass
           unzip -o app.apks universal.apk
           mv universal.apk evolyric-test.apk
         env: { KSPASS: "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" }

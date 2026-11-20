@@ -43,7 +43,17 @@ jobs:
           jarsigner -verify "$AAB" | head -3
           cp "$AAB" app-release-bundle.aab
         env: { KSPASS: "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" }
+      - name: Build installable test APK
+        run: |
+          curl -fsSL -o bundletool.jar https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar
+          java -jar bundletool.jar build-apks --bundle=app-release-bundle.aab --output=app.apks --mode=universal \
+            --ks=android.keystore --ks-pass=env:KSPASS --ks-key-alias=evolyric --key-pass=env:KSPASS
+          unzip -o app.apks universal.apk
+          mv universal.apk evolyric-test.apk
+        env: { KSPASS: "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" }
       - uses: actions/upload-artifact@v4
         with:
           name: evolyric-android
-          path: twa/app-release-bundle.aab
+          path: |
+            twa/app-release-bundle.aab
+            twa/evolyric-test.apk

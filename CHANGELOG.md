@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v179 – Lite mode for low-end phones
+- New **Lite mode** switch in **Preferences → Screen** (off by default, never turns on by itself). When on it switches off blur, shadows and CSS animations, hides the colour-changing scroll light, and gives the side panel, speed HUD and back-to-top button solid backgrounds so they stay readable. Auto-scroll itself is unchanged.
+- The choice is saved on this device only (not synced to the account) and is applied before the first paint, so there is no flash of the full-effect look.
+- Test in `tests/lite.test.js`.
+
 ## v178 – No full-screen notice in the Android app
 - In the Android app (APK) the lyric screen no longer asks Chrome for browser full screen, so Chrome's "To exit full screen" notice stops appearing every time a lyric opens. The app itself is immersive instead.
 - Website and installed PWA are unchanged.

@@ -19,7 +19,10 @@
   "webManifestUrl": "https://evolyric.com/manifest.webmanifest",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
-  "signingKey": { "path": "./android.keystore", "alias": "evolyric" },
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "evolyric"
+  },
   "fallbackType": "customtabs",
   "features": {},
   "isChromeOSOnly": false,
@@ -28,5 +31,14 @@
   "fullScopeUrl": "https://evolyric.com/",
   "retainedBundles": [],
   "additionalTrustedOrigins": [],
-  "shareTarget": null
+  "shareTarget": null,
+  "splashScreenFadeOutDuration": 300,
+  "enableSiteSettingsShortcut": true,
+  "generatorApp": "bubblewrap-cli",
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "shortcuts": [],
+  "protocolHandlers": [],
+  "fileHandlers": []
 }

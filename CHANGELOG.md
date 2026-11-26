@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v180 – Chords above the lyrics
+- New **Chords** item at the bottom of the **Key** dropdown in the editor. It opens a chord screen where every lyric line gets a row of boxes above it, one box per 2 characters (spaces count).
+- Chords are typed on a **chord keyboard** (C–B, #, b, m, 7, maj7, sus, /, 2, 4, 6, 9, dim, aug, add). Keys that would make an invalid chord are disabled; chords already used in the song appear as shortcuts; ◀ ▶ move between boxes. Choosing Chords does not change the song's key.
+- The lyric screen shows each chord above its letter. The lyric text, wrapping, annotations and highlights stay the same.
+- Chords are saved with the song and synced to the account; they stay on their line when lines are added or removed. They are not sent to friends.
+- Tests in `tests/chords.test.js`.
+
 ## v179 – Lite mode for low-end phones
 - New **Lite mode** switch in **Preferences → Screen** (off by default, never turns on by itself). When on it switches off blur, shadows and CSS animations, hides the colour-changing scroll light, and gives the side panel, speed HUD and back-to-top button solid backgrounds so they stay readable. Auto-scroll itself is unchanged.
 - The choice is saved on this device only (not synced to the account) and is applied before the first paint, so there is no flash of the full-effect look.

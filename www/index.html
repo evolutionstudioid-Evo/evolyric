@@ -77,7 +77,8 @@ h1,.it b,.ltr{font-family:'Bricolage Grotesque',system-ui,sans-serif}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 14px color-mix(in srgb,currentColor 25%,transparent),0 0 10px color-mix(in srgb,currentColor 45%,transparent),0 0 22px color-mix(in srgb,currentColor 22%,transparent);
 }
 #lyr{flex:1;overflow-y:auto;position:relative;padding:0 18px;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 36px,#000 calc(100% - 44px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 36px,#000 calc(100% - 44px),transparent 100%)}
-.ln{line-height:1.45;white-space:pre-wrap;text-align:center;font-weight:700}.sec{color:var(--acct);font-size:.6em;font-weight:700;margin:1.1em 0 .2em;text-align:center}#ttl+.sec{margin-top:0}.sec .gtag{margin-left:.8em;font-size:.95em}#ttl{font:800 60px/1.1 'Bricolage Grotesque',system-ui,sans-serif;text-align:center;margin:0 0 24px;color:var(--fg);overflow-wrap:anywhere}
+.ln{line-height:1.45;white-space:pre-wrap;text-align:center;font-weight:700}
+.ln.hasch{line-height:2.15;padding-top:.15em}.chd{position:relative;display:inline;width:0}.chd::before{content:attr(data-c);position:absolute;left:0;bottom:80%;font:800 .52em/1 'Bricolage Grotesque',system-ui,sans-serif;color:var(--acct);white-space:nowrap;letter-spacing:.01em;pointer-events:none}.sec{color:var(--acct);font-size:.6em;font-weight:700;margin:1.1em 0 .2em;text-align:center}#ttl+.sec{margin-top:0}.sec .gtag{margin-left:.8em;font-size:.95em}#ttl{font:800 60px/1.1 'Bricolage Grotesque',system-ui,sans-serif;text-align:center;margin:0 0 24px;color:var(--fg);overflow-wrap:anywhere}
 .m{color:var(--m)}.f{color:var(--f)}
 .ctl{display:flex;align-items:center;gap:10px;padding:10px 12px}
 .ctl label{flex:1;display:flex;flex-direction:column;font-size:12px;color:var(--mut)}
@@ -445,6 +446,17 @@ html:has(#play.on){background:#0d0a08}
 #antx{position:relative;max-width:960px;margin:0 auto;padding:16px 0 45vh}.ancap{position:absolute;inset:0;z-index:3;pointer-events:none;touch-action:none}
 #antools{flex:none;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln);background:var(--card)}#antools .tb{padding-top:4px;align-items:center}#antools .tb[hidden],#antools button[hidden]{display:none!important}
 #antools .tb button.on{background:var(--acc);color:#15110e;border-color:var(--acc)}#antools .asw{width:26px;height:26px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,.2);background:var(--c)!important}#antools .asw.on{border-color:transparent;box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--acc);background:var(--c)!important}
+#chd{background:var(--bg)}#chl{flex:1;overflow-y:auto;padding:0 12px;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}#chtx{max-width:960px;margin:0 auto;padding:14px 0 40vh}
+.chsec{color:var(--acct);font:700 13px/1 'Bricolage Grotesque',system-ui,sans-serif;margin:16px 0 6px;text-transform:uppercase;letter-spacing:.06em}.chgap{height:8px}
+.chrow{display:flex;flex-wrap:wrap;align-items:flex-end;margin:0 0 10px;font:700 19px/1.2 'Atkinson Hyperlegible',system-ui,sans-serif}
+.chc{display:inline-flex;flex-direction:column;align-items:stretch;padding:0;margin:0;background:none;border:0;border-radius:0;color:var(--fg);font:inherit;cursor:pointer}
+.chn{display:block;height:20px;width:0;min-width:100%;overflow:visible;position:relative;margin:0 1px 3px 0;padding:0 3px;border:1px dashed var(--ln);border-radius:5px;font:800 12px/18px 'Bricolage Grotesque',system-ui,sans-serif;color:var(--acct);white-space:nowrap;text-align:left;box-sizing:border-box}
+.chn:not(:empty){border-style:solid;border-color:rgba(240,160,75,.45);z-index:1;background:var(--bg)}.chc.on .chn{border:2px solid var(--acc);background:rgba(240,160,75,.15)}.cht{white-space:pre;text-align:left}
+#chkb{flex:none;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ln);background:var(--card)}#chkb[hidden]{display:none!important}
+#chkb .chcur{text-align:center;font:800 20px/24px 'Bricolage Grotesque',system-ui,sans-serif;color:var(--acct);min-height:24px;margin:2px 0 6px}
+#chkb .chrec{display:flex;gap:6px;overflow-x:auto;margin:0 0 6px;padding-bottom:2px}#chkb .chrec:empty{display:none}#chkb .chrec button{flex:none;padding:6px 12px;border-radius:16px;border:1px solid var(--acc);background:none;color:var(--acct);font:800 14px/1 'Bricolage Grotesque',system-ui,sans-serif}
+#chkb .kr{display:flex;gap:5px;margin:0 0 5px}#chkb .kr button{flex:1;min-width:0;height:42px;padding:0;border-radius:9px;border:1px solid var(--ln);background:var(--bg);color:var(--fg);font:700 16px/1 'Bricolage Grotesque',system-ui,sans-serif}
+#chkb .kr button:disabled{opacity:.3}#chkb .kr .wide{flex:2}#chkb .kr .ok{background:var(--acc);color:#15110e;border-color:var(--acc)}
 /* v42: notes (editor) */
 .note{line-height:1.3;white-space:pre-wrap;max-width:100%}
 #notebox{position:fixed;inset:0;z-index:62;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);padding:12px}#notebox.on{display:flex}
@@ -838,6 +850,11 @@ html[data-lite] #dTop{background:rgba(21,17,14,.88)!important}
     <div class="tb" id="anT"><button data-t="hand">Scroll</button><button data-t="pen">Pen</button><button data-t="text">Text</button><button data-t="shape">Shape</button><button id="anImg" hidden>Image</button><button data-t="sel">Move</button><button data-t="erase">Erase</button></div>
   </div>
   <input type="file" id="anFile" accept="image/*" hidden>
+</section>
+<section id="chd" class="v">
+  <div class="hd"><button class="ic" id="chX" aria-label="Cancel">✕</button><h1 style="font-size:20px">Chords</h1><button class="pill" id="chOK">Done</button></div>
+  <div id="chl"><div id="chtx" data-nt></div></div>
+  <div id="chkb" hidden></div>
 </section>
 <div id="notebox"><div class="sheet nsheet"><h3 id="nbt">New note</h3>
   <textarea id="nbtx" rows="2" maxlength="160" placeholder="e.g. Drums stop here" aria-label="Note text"></textarea>
@@ -1308,7 +1325,7 @@ function shareTake(){let d=window.__evoShare||null;try{const v=sessionStorage.ge
 {const st=setInterval(()=>{if(!sharePending())return clearInterval(st);if($('#welcome').classList.contains('on')||!$('#list').classList.contains('on')||document.querySelector('#authbox.on'))return;clearInterval(st);shareTake()},400)}
 
 /* ---------- v75: preferences, help and account settings ---------- */
-const APP_VER='179',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
+const APP_VER='180',APP_REL='1.0'; /* APP_VER = build (cache) number; APP_REL = the version people see */
 const PREF=(()=>{const o={theme:'dark',lang:'en',awake:1,dim:1,aura:1,fscr:1,font:32};try{Object.assign(o,JSON.parse(localStorage.getItem('evo.prefs')||'{}'))}catch(e){}return o})();
 const prefSave=()=>{try{localStorage.setItem('evo.prefs',JSON.stringify(PREF))}catch(e){}};
 const LID=new Set();
@@ -1333,7 +1350,7 @@ function setLitePref(on){PREF.lite=on?1:0;prefSave();applyLite()}
    screens are covered automatically.
    RULE FOR NEW FEATURES: add the new English strings to ID / IDP. Run `node tools/i18n-audit.js` – it lists any
    English text that is still untranslated in Indonesia mode. Musical terms and user content are never translated. */
-const ID={'Clear Sections':'Hapus Section','Remove all section labels? The lyrics stay. Undo brings them back.':'Hapus semua label section? Liriknya tetap. Undo bisa mengembalikannya.','No section labels to clear':'Tidak ada label section untuk dihapus','Replace the existing section labels? Undo brings them back.':'Ganti label section yang sudah ada? Undo bisa mengembalikannya.','Replace':'Ganti','No sections recognised':'Tidak ada section yang dikenali','More version':'Lebih banyak','Loading the latest version…':'Memuat versi terbaru…','Versions':'Versi','versions':'versi','Close versions':'Tutup versi','Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCLIB','Copied the lyrics?':'Sudah copy liriknya?','Copy the lyrics on the Google page, then tap Show lyrics.':'Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Show lyrics':'Tampilkan lirik','Not found on LRCLIB':'Tidak ditemukan di LRCLIB','Search Google':'Cari di Google','Paste the lyrics':'Tempel liriknya','Paste the lyrics here':'Tempel lirik di sini','No lyrics copied yet. Copy the lyrics first, then try again.':'Belum ada lirik yang di-copy. Copy liriknya dulu, lalu coba lagi.','You are offline. Lyrics search needs an internet connection.':'Kamu sedang offline. Pencarian lirik butuh koneksi internet.','Save to Library':'Simpan ke Library','Edit in Editor':'Edit di Editor','A song with this title is already in your Library. Save another copy?':'Lagu dengan judul ini sudah ada di Library-mu. Simpan salinan lain?','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
+const ID={'Backspace':'Hapus mundur','Chords':'Chord','Discard chords?':'Buang chord?','Next box':'Kotak berikutnya','Previous box':'Kotak sebelumnya','Your chord changes on this page will be lost.':'Perubahan chord di halaman ini akan hilang.','Clear Sections':'Hapus Section','Remove all section labels? The lyrics stay. Undo brings them back.':'Hapus semua label section? Liriknya tetap. Undo bisa mengembalikannya.','No section labels to clear':'Tidak ada label section untuk dihapus','Replace the existing section labels? Undo brings them back.':'Ganti label section yang sudah ada? Undo bisa mengembalikannya.','Replace':'Ganti','No sections recognised':'Tidak ada section yang dikenali','More version':'Lebih banyak','Loading the latest version…':'Memuat versi terbaru…','Versions':'Versi','versions':'versi','Close versions':'Tutup versi','Choose a version':'Pilih versi','Lyrics from LRCLIB':'Lirik dari LRCLIB','Copied the lyrics?':'Sudah copy liriknya?','Copy the lyrics on the Google page, then tap Show lyrics.':'Copy lirik di halaman Google, lalu ketuk Tampilkan lirik.','Show lyrics':'Tampilkan lirik','Not found on LRCLIB':'Tidak ditemukan di LRCLIB','Search Google':'Cari di Google','Paste the lyrics':'Tempel liriknya','Paste the lyrics here':'Tempel lirik di sini','No lyrics copied yet. Copy the lyrics first, then try again.':'Belum ada lirik yang di-copy. Copy liriknya dulu, lalu coba lagi.','You are offline. Lyrics search needs an internet connection.':'Kamu sedang offline. Pencarian lirik butuh koneksi internet.','Save to Library':'Simpan ke Library','Edit in Editor':'Edit di Editor','A song with this title is already in your Library. Save another copy?':'Lagu dengan judul ini sudah ada di Library-mu. Simpan salinan lain?','Clear queue':'Hapus antrean','Tap again':'Ketuk lagi','Search songs':'Cari lagu','Songs you add appear here, in order.':'Lagu yang kamu tambahkan muncul di sini, berurutan.','Select a song first':'Pilih lagu dulu','Open lyrics':'Buka lirik','Done':'Selesai','Back':'Kembali','Setlist':'Setlist','In setlist':'Ada di setlist','Choose a category':'Pilih kategori','Choose where to pick songs from. You can come back and pick from another place; press Set when the setlist is ready.':'Pilih dari mana lagunya diambil. Kamu bisa kembali dan memilih dari tempat lain; tekan Set kalau setlist sudah siap.','Create setlist':'Buat setlist','Your queue is not empty':'Antreanmu belum kosong','Replace the queue':'Ganti antrean','Add to the end':'Tambahkan di akhir','Send category':'Kirim kategori','This category has no songs yet':'Kategori ini belum punya lagu','Received category':'Kategori diterima','Save a copy':'Simpan salinan','Use mine':'Pakai punyaku','Skip':'Lewati','You already have this song':'Kamu sudah punya lagu ini','New':'Baru','Section panel':'Panel section','Hide section panel':'Sembunyikan panel section','Show section panel':'Tampilkan panel section','Song':'Lagu','Voicing':'Suara','Performance':'Penampilan',
 'Remove':'Hapus','Orange':'Jingga','Blue':'Biru','Indigo':'Nila','Violet':'Ungu',
 'A lyric teleprompter for live performers.':'Teleprompter lirik untuk musisi panggung.','Continue as guest (Demo)':'Lanjut sebagai tamu (Demo)','Signing you in…':'Sedang memasukkanmu…','Choose a username':'Pilih username','Friends find you by this name. You can change it later in your profile.':'Teman mencarimu lewat nama ini. Kamu bisa mengubahnya nanti di profil.','Continue':'Lanjut','Use a different account':'Pakai akun lain','Something went wrong. Try again.':'Terjadi kesalahan. Coba lagi.',
 '+ Create new category':'+ Buat kategori baru','+ New Category':'+ Kategori Baru','‹ My Categories':'‹ Kategori Saya','⚠ Not saved':'⚠ Belum disimpan',
@@ -1944,9 +1961,16 @@ function lineEl(ln,col){
   const d=E('div','ln'),re=/\{([roygbiv]):([^{}]*)\}/g;let i=0,m;
   while((m=re.exec(ln))){if(m.index>i)d.append(ln.slice(i,m.index));const k=E('mark','',m[2]);tc(k,HC[m[1]],'background');d.append(k);i=m.index+m[0].length}
   if(i<ln.length)d.append(ln.slice(i));if(!d.childNodes.length)d.textContent='\u00a0';if(col)d.style.color=col;return d}
+/* Chords (secret, beta): an empty inline anchor before character c of a lyric line; the chord name is drawn above it by CSS, so the text, its wrapping and character offsets (annotations, tempo) do not change */
+function chordApply(le,items){if(!items||!items.length||!le)return;const by={};items.forEach(it=>{(by[it.l]=by[it.l]||[]).push(it)});
+  Object.keys(by).forEach(l=>{const d=le[+l];if(!d||!d.classList||!d.classList.contains('ln'))return;const len=(d.textContent||'').length;if(!len)return;
+    by[l].slice().sort((a,b)=>b.c-a.c).forEach(it=>{const c=Math.max(0,Math.min(it.c|0,len-1)),nodes=chNodes(d);
+      for(const[nd,o]of nodes){if(c>=o&&c<o+nd.data.length){const a=E('span','chd');a.dataset.c=String(it.n||'');const r=nd.splitText(c-o);r.parentNode.insertBefore(a,r);break}}});
+    d.classList.add('hasch')})}
 function render(){
   const t=$('#txt'),bar=$('#secs');t.textContent='';bar.textContent='';t.style.fontSize=cur.font+'px';lastA=null;let col='';$('#ptit').toggleAttribute('data-nt',!!cur.title);$('#ptit').textContent=cur.title||'Untitled';fitTitle();t.append(E('div','start'));
   t._le=buildLines(t,cur.lyrics,cur.colors,(d,n,lc)=>{const c=E('button','chip',n);c.style.color=lc;c.onclick=()=>jump(d);d._c=c;bar.append(c)});
+  if(CHORD_ON)chordApply(t._le,cur.chords);
   t.append(E('div','end'));t.append(E('div','nxl'));const p=E('div');p.style.height='60vh';t.append(p);SE=secEls();SE.forEach(d=>d._stop=stopOf(cur,d.dataset.k));SO=null;fixPad();watchEnd();qRender()}
 function fixPad(){placeQ();if(!cur)return;annPlay();const L=$('#lyr');$('#txt').style.paddingTop='12px';SO=null;fitTitle()}
 /* v52: the song title lives in the header above the section selector (fixed, centred) and shrinks to fit */
@@ -2362,7 +2386,7 @@ SW.forEach(c=>{const b=E('button');b.style.background=c;b.dataset.c=c;b.setAttri
 const cb=E('button','','Custom…');cb.onclick=()=>{$('#cn').value='';pickSw(SW[0]);$('#cbox').classList.add('on')};$('#side').append(cb);
 $('#cok').onclick=()=>{const n=$('#cn').value.replace(/[\[\]]/g,'').trim();if(!n)return;$('#cbox').classList.remove('on');ins(n,swc)};
 $('#cbox').onclick=e=>{if(e.target.id==='cbox')$('#cbox').classList.remove('on')};
-['','C','D','E','F','G','A','B','C#/Db','D#/Eb','F#/Gb','G#/Ab','A#/Bb'].forEach(k=>{const o=E('option','',k||'Key');o.value=k;$('#ek').append(o)});
+['','C','D','E','F','G','A','B','C#/Db','D#/Eb','F#/Gb','G#/Ab','A#/Bb'].forEach(k=>{const o=E('option','',k||'Key');o.value=k;$('#ek').append(o)});{const k=$('#ek'),sp=E('option','','──────');sp.disabled=true;sp.value='__sep';const o=E('option','','Chords');o.value='__chord';k.append(sp,o)}
 const ta=$('#ta');let st;
 /* v71: tempo. speed px/s = (speed+3) x .8 x font x .12 and a lyric line is 1.45 x font high, so
    speed = BPM / (60 x beatsPerLine) x 1.45 / .096 - 3. Tap tempo and a server lookup (/api/tempo) fill the BPM. */
@@ -2393,8 +2417,8 @@ $('#ebf').onclick=async()=>{
 function openEdit(s,txt,title,base,pre){
   exitFs(); /* leave the performance view before editing (it is re-entered when the song reopens) */
   const src=s||base,v=txt!=null?txt:(s?s.lyrics:'');
-  const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
-  ed.annLyr=v;$('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';tmLoad(src);
+  const own=s||base;ed={s,base,stops:{...((src&&src.stops)||{})},ann:JSON.parse(JSON.stringify((src&&src.ann)||[])),chords:JSON.parse(JSON.stringify((src&&src.chords)||[])),h:[v],i:0,dirty:!s&&!!(txt||title),arm:0,colors:{...((src&&src.colors)||{})},cats:new Set(own?cats.filter(c=>c.ids.includes(own.id)).map(c=>c.id):(pre||[]))};
+  ed.annLyr=v;ed.chLyr=v;$('#et').value=title!=null?title:(s?s.title:'');$('#ea').value=src?src.artist||'':'';$('#ek').value=src?src.key||'':'';$('#ek').dataset.v=$('#ek').value;tmLoad(src);
   $('#eX').classList.remove('arm');$('#hlbar').hidden=true;$('#eH').classList.remove('on');lastSel=null;cs=null;csRender();ta.value=v;setKb(false);catSummary();show('edit');setTimeout(snapCaret,0)}
 function snapCaret(){if(ta.inputMode==='none'&&ta.selectionStart===ta.selectionEnd){const p=ta.selectionStart,ls=p?ta.value.lastIndexOf('\n',p-1)+1:0;if(ta.selectionStart!==ls||ta.selectionEnd!==ls)ta.setSelectionRange(ls,ls)}secInfo()}
 let dsArm=0;const isLbl=l=>/^\[.+\]$/.test(l.trim());
@@ -2496,7 +2520,8 @@ ta.addEventListener('pointerup',e=>{if(cs&&csTap&&Math.hypot(e.clientX-csTap.x,e
 ta.addEventListener('scroll',csPos);window.addEventListener('resize',csRender);if(window.ResizeObserver)new ResizeObserver(()=>csRender()).observe(ta);
 function snap(){clearTimeout(st);if(ta.value!==ed.h[ed.i]){ed.h.length=ed.i+1;ed.h.push(ta.value);ed.i++}}
 ta.oninput=()=>{ed.dirty=true;clearTimeout(st);st=setTimeout(snap,500)};
-$('#et').oninput=$('#ea').oninput=$('#ek').onchange=()=>ed.dirty=true;
+$('#et').oninput=$('#ea').oninput=()=>ed.dirty=true;
+$('#ek').onchange=()=>{const k=$('#ek');if(k.value==='__chord'||k.value==='__sep'){k.value=k.dataset.v||'';if(ed)openChd();return}k.dataset.v=k.value;ed.dirty=true};
 function undo(d){snap();const n=ed.i+d;if(n<0||n>=ed.h.length)return;ed.i=n;ta.value=ed.h[n];ed.dirty=true;secInfo()}
 $('#eU').onclick=()=>undo(-1);$('#eR').onclick=()=>undo(1);
 document.addEventListener('keydown',e=>{
@@ -2740,6 +2765,61 @@ $('#nbok').onclick=()=>{if(!nbCur)return;const t=$('#nbtx').value.replace(/\s+/g
   if(nbCur.idx>=0){L[nbCur.idx]=noteStr(o);ci=nbCur.idx}else{ci=lineIdx()+1;L.splice(ci,0,noteStr(o))}
   closeNote();setLines(L,ci)};
 $('#nbdel').onclick=()=>{if(nbCur&&nbCur.cb){const d=nbCur.del;closeNote();d&&d();return}if(!nbCur||nbCur.idx<0)return;const L=ta.value.split('\n'),i=nbCur.idx;snap();L.splice(i,1);closeNote();setLines(L,i)};
+/* Chords (secret, beta): chord editor screen. One box per 2 characters of the visible lyric text (spaces count); tap a box and type the chord on the chord keyboard. */
+let chs=null;
+const chVis=ln=>ln.replace(/\{[roygbiv]:([^{}]*)\}/g,'$1');
+const CH_TOK=/(maj7|sus|dim|aug|add|[A-G]|[#b]|m|\/|\d)$/;
+function chCan(b,k){
+  if(/^[A-G]$/.test(k))return true;
+  if(b.length>=12)return false;
+  if(k==='#'||k==='b')return /[A-G]$/.test(b);
+  if(k==='m')return /^[A-G][#b]?$/.test(b);
+  if(k==='/')return /^[A-G]/.test(b)&&!b.includes('/');
+  return /^[A-G]/.test(b)&&!b.includes('/')}
+function chAdd(b,k){if(!chCan(b,k))return b;if(/^[A-G]$/.test(k)&&!b.endsWith('/'))return k;return b+k}
+function chNow(){return Object.keys(chs.map).map(k=>{const p=k.split(':');return{l:+p[0],c:+p[1],n:chs.map[k]}}).sort((a,b)=>a.l-b.l||a.c-b.c)}
+function openChd(){if(!ed)return;const lyr=ta.value;
+  if(ed.chords&&ed.chords.length&&ed.chLyr!=null&&ed.chLyr!==lyr)annRemap(ed.chords,ed.chLyr.split('\n'),lyr.split('\n'));ed.chLyr=lyr;
+  chs={map:{},sel:-1,cells:[],buf:''};(ed.chords||[]).forEach(it=>{if(it&&it.n)chs.map[it.l+':'+it.c]=String(it.n)});
+  chBuild(lyr);chs.start=JSON.stringify(chNow());chKbBuild();show('chd');$('#chl').scrollTop=0;chSelect(-1)}
+function chBuild(lyr){const box=$('#chtx');box.textContent='';chs.cells=[];const keep={};
+  lyr.split('\n').forEach((ln,l)=>{const tr=ln.trim();
+    if(!tr){box.append(E('div','chgap'));return}
+    if(/^\[.+\]$/.test(tr)){box.append(E('div','chsec',tr.slice(1,-1)));return}
+    if(noteParse(ln))return;
+    const v=chVis(ln),row=E('div','chrow');
+    for(let c=0;c<v.length;c+=2){const k=l+':'+c,cell=E('button','chc');cell.type='button';cell.dataset.i=chs.cells.length;
+      const n=E('b','chn',chs.map[k]||''),t=E('span','cht',v.slice(c,c+2));cell.append(n,t);row.append(cell);chs.cells.push({l,c,el:cell,nEl:n});if(chs.map[k])keep[k]=chs.map[k]}
+    box.append(row)});
+  chs.map=keep}
+function chSelect(i){if(!chs)return;chs.cells.forEach(x=>x.el.classList.remove('on'));const k=$('#chkb');
+  if(i<0||i>=chs.cells.length){chs.sel=-1;k.hidden=true;return}
+  chs.sel=i;const x=chs.cells[i];x.el.classList.add('on');k.hidden=false;chs.buf=chs.map[x.l+':'+x.c]||'';chKbState();
+  try{x.el.scrollIntoView({block:'nearest'})}catch(e){}}
+function chSet(n){const x=chs&&chs.cells[chs.sel];if(!x)return;const k=x.l+':'+x.c;if(n)chs.map[k]=n;else delete chs.map[k];x.nEl.textContent=n||'';chs.buf=n||'';chKbState()}
+const CH_ROWS=[['C','D','E','F','G','A','B'],['#','b','m','7','maj7','sus','/'],['2','4','6','9','dim','aug','add']];
+function chKbBuild(){const k=$('#chkb');if(k.dataset.ok)return;k.dataset.ok='1';
+  k.append(E('div','chcur'),E('div','chrec'));
+  CH_ROWS.forEach(r=>{const d=E('div','kr');r.forEach(t=>{const b=E('button','',t);b.type='button';b.dataset.k=t;d.append(b)});k.append(d)});
+  const d=E('div','kr');[['prev','◀',''],['next','▶',''],['bs','⌫',''],['clr','Clear','wide'],['done','Done','wide ok']].forEach(([a,t,c])=>{const b=E('button',c,t);b.type='button';b.dataset.a=a;b.setAttribute('aria-label',a==='prev'?'Previous box':a==='next'?'Next box':a==='bs'?'Backspace':t);d.append(b)});k.append(d);
+  k.onclick=e=>{const b=e.target.closest('button');if(!b||!chs||chs.sel<0||b.disabled)return;
+    if(b.dataset.r){chSet(b.dataset.r);chSelect(Math.min(chs.sel+1,chs.cells.length-1));return}
+    if(b.dataset.k){chSet(chAdd(chs.buf,b.dataset.k));return}
+    const a=b.dataset.a;
+    if(a==='prev')chSelect(Math.max(0,chs.sel-1));
+    else if(a==='next')chSelect(Math.min(chs.cells.length-1,chs.sel+1));
+    else if(a==='bs')chSet(chs.buf.replace(CH_TOK,''));
+    else if(a==='clr')chSet('');
+    else if(a==='done')chSelect(-1)}}
+function chKbState(){const k=$('#chkb');if(!chs)return;k.querySelector('.chcur').textContent=chs.buf||'–';
+  k.querySelectorAll('[data-k]').forEach(b=>{b.disabled=!chCan(chs.buf,b.dataset.k)});
+  const r=k.querySelector('.chrec');r.textContent='';const seen=[];chNow().forEach(it=>{if(!seen.includes(it.n))seen.push(it.n)});
+  seen.slice(0,10).forEach(n=>{const b=E('button','',n);b.type='button';b.dataset.r=n;r.append(b)})}
+function chDone(){if(!chs)return;const items=chNow(),j=JSON.stringify(items);if(j!==chs.start){ed.chords=items;ed.chLyr=ta.value;ed.dirty=true}chs=null;show('edit')}
+function chBack(){if(!chs){show('edit');return}if(JSON.stringify(chNow())===chs.start){chs=null;show('edit');return}ask('Discard chords?','Your chord changes on this page will be lost.','Discard',()=>{chs=null;show('edit')})}
+$('#chtx').addEventListener('click',e=>{const c=e.target.closest('.chc');if(c&&chs)chSelect(+c.dataset.i)});
+$('#chOK').onclick=chDone;$('#chX').onclick=chBack;
+let CHORD_ON=true; /* Chords: shown in the play screen whenever the song has chords; edited from the bottom of the Key dropdown */
 $('#eN').onclick=()=>openAnn();
 $('#nbEdit').onclick=()=>noteOpen(lineIdx());
 $('#nbRm').onclick=()=>{const L=ta.value.split('\n'),i=lineIdx();if(!noteParse(L[i]))return;snap();L.splice(i,1);setLines(L,i)};
@@ -2775,7 +2855,7 @@ $('#arOK').onclick=()=>{arEnd();const rows=[...$('#arl').children],lines=rows.ma
   $('#arr').classList.remove('on')};
 $('#eS').onclick=()=>{
   snap();const lyr=ta.value;
-  if(ed.ann&&ed.ann.length&&ed.annLyr!=null&&ed.annLyr!==lyr)annRemap(ed.ann,ed.annLyr.split('\n'),lyr.split('\n'));ed.annLyr=lyr;
+  if(ed.ann&&ed.ann.length&&ed.annLyr!=null&&ed.annLyr!==lyr)annRemap(ed.ann,ed.annLyr.split('\n'),lyr.split('\n'));ed.annLyr=lyr;if(ed.chords&&ed.chords.length&&ed.chLyr!=null&&ed.chLyr!==lyr)annRemap(ed.chords,ed.chLyr.split('\n'),lyr.split('\n'));ed.chLyr=lyr;
   const title=$('#et').value.trim()||lyr.split('\n').find(l=>l.trim()&&!/^\[.+\]$/.test(l.trim())&&!noteParse(l)&&!/^\{n[|:]/.test(l.trim()))||'Untitled';
   const art=$('#ea').value.trim(),key=$('#ek').value,tm=tmRead();
   const used=new Set([...lyr.matchAll(/^\[(.+)\]$/gm)].map(m=>m[1].toLowerCase()));
@@ -2783,7 +2863,7 @@ $('#eS').onclick=()=>{
   if(ed.s){Object.assign(ed.s,{title,artist:art,lyrics:lyr,key,colors,md:Date.now()});if(Object.keys(stops).length)ed.s.stops=stops;else delete ed.s.stops;if(!ed.s.cr)ed.s.cr=crOf(ed.s);cur=ed.s}
   else{const b=ed.base;cur={id:'s'+Date.now(),title,artist:art,lyrics:lyr,key,colors,speed:b?b.speed:5,font:b?b.font:defFont(),fav:false,cr:Date.now(),md:Date.now()};songs.push(cur)}
   tmApply(cur,tm);
-  if(ed.ann&&ed.ann.length)cur.ann=ed.ann;else delete cur.ann;if(!ed.s&&Object.keys(stops).length)cur.stops=stops;
+  if(ed.ann&&ed.ann.length)cur.ann=ed.ann;else delete cur.ann;if(ed.chords&&ed.chords.length)cur.chords=ed.chords;else delete cur.chords;if(!ed.s&&Object.keys(stops).length)cur.stops=stops;
   applyCats(cur.id,ed.cats);save();ed.dirty=false;openSong(cur)};
 $('#eX').onclick=()=>{
   if(ed.dirty&&!ed.arm){ed.arm=1;$('#eX').classList.add('arm');return}
@@ -3219,6 +3299,7 @@ async function initAuth(){
     const v=(document.querySelector('.v.on')||{}).id;
     if(v==='play')return void leavePlay();
     if(v==='ann')return void anBack();
+    if(v==='chd')return void chBack();
     if(v==='edit'){if(ed&&ed.dirty)return void ask('Discard changes?','Your edits to this song have not been saved.','Discard',()=>{ed.dirty=false;$('#eX').onclick()});return void $('#eX').onclick()}
     if(v==='friends'||v==='profile'||v==='prefs'||v==='help'||v==='acct')return void show('list');
     if(v==='doc')return void $('#dcX').onclick();

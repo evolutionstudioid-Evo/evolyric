@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v181 – Bigger chords
+- Chord names in the lyric screen are bigger and sit a little higher above the lyrics.
+
 ## v180 – Chords above the lyrics
 - New **Chords** item at the bottom of the **Key** dropdown in the editor. It opens a chord screen where every lyric line gets a row of boxes above it, one box per 2 characters (spaces count).
 - Chords are typed on a **chord keyboard** (C–B, #, b, m, 7, maj7, sus, /, 2, 4, 6, 9, dim, aug, add). Keys that would make an invalid chord are disabled; chords already used in the song appear as shortcuts; ◀ ▶ move between boxes. Choosing Chords does not change the song's key.

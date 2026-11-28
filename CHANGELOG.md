@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v182 – Chords moved to EvoChords
+- v182: chords are written in EvoChords now. EvoLyric no longer shows or edits chords; chords on a song are kept and follow lyric edits.
+
 ## v181 – Bigger chords
 - Chord names in the lyric screen are bigger and sit a little higher above the lyrics.
 
